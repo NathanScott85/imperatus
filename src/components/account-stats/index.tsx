@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { PercentageIncrease } from '../percentage-increase';
 
-interface AccountStats {
+interface AccountStatsProps {
     currentMonth: number;
     lastMonth: number;
 }
 
-export const AccountStats: React.FC<AccountStats> = ({ currentMonth, lastMonth }) => {
+export const AccountStats: React.FC<AccountStatsProps> = ({ currentMonth, lastMonth }) => {
     const [increase, setIncrease] = useState<number | null>(null);
     const [percentageIncrease, setPercentageIncrease] = useState<number | null>(null);
 
@@ -29,8 +29,8 @@ export const AccountStats: React.FC<AccountStats> = ({ currentMonth, lastMonth }
             {lastMonth !== 0 && (
                 <p>
                     Compared to last month:{' '}
-                    <StatValue isIncrease={increase && increase > 0 as any}>
-                        {increase && increase > 0 ? `Increase: +${increase}` : `Decrease: ${increase}`}
+                    <StatValue increase={(increase !== null && increase > 0).toString()}>
+                        {increase !== null && increase > 0 ? `Increase: +${increase}` : `Decrease: ${increase}`}
                     </StatValue>
                     {' '}
                     <PercentageIncrease percentageIncrease={percentageIncrease as any} />
@@ -54,7 +54,7 @@ const StatTitle = styled.h2`
     color: black;
 `;
 
-const StatValue = styled.div<{ isIncrease: boolean }>`
+const StatValue = styled.div<{ increase: string }>`
     font-size: 18px;
-    color: ${(props) => (props.isIncrease ? 'green' : 'red')};
+    color: ${(props) => (props.increase === 'true' ? 'green' : 'red')};
 `;

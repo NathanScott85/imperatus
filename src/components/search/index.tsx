@@ -4,20 +4,20 @@ import { styled } from '@mui/material';
 
 export const Search = () => { 
     const [search, setSearch] = React.useState('');
-    
+
     const onChange = (e: any) => {
         setSearch(e.target.value);
     };
 
     return(
-    <SearchContainer>
-        {/* <UsingTheme>Using Theme</UsingTheme> See comments below */}
-        <Input type="text" onChange={onChange} placeholder={search ? '' : "Search"} />
-        <SearchButton>
-            <SearchIcon />
-        </SearchButton>
-    </SearchContainer>
-);
+        <SearchContainer>
+            {/* <UsingTheme>Using Theme</UsingTheme> See comments below */}
+            <Input type="text" onChange={onChange} placeholder={search ? '' : "Search"} />
+            <SearchButton>
+                <SearchIcon />
+            </SearchButton>
+        </SearchContainer>
+    );
 }
 
 const SearchContainer = styled('div')`  
@@ -27,10 +27,19 @@ const SearchContainer = styled('div')`
     color: #D4B05F;
     margin: 0 3.5rem;
     padding: 1.2rem 0.75rem 1.2rem 0.75rem;
+    @media (max-width: 667px) {
+        margin: 0;
+        padding: 0.5rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 915px) {
+         width: 618px;
+    }
 `;
 
 export const Input = styled('input')`
-border: 1px solid rgba(172, 143, 255, 0.50);
+    border: 1px solid rgba(172, 143, 255, 0.50);
     border-right: none;
     background: transparent;
     color: white;
@@ -39,11 +48,9 @@ border: 1px solid rgba(172, 143, 255, 0.50);
     font-weight: 400;
     line-height: 14px;
     letter-spacing: 0em;
-    width: 618px;
+    flex: 1;
     height: 35px;
     text-align: left;
-    height: 35px;
-    line-height: 1.5rem;
     caret-color: white;
     padding: 0.75rem 0.75rem 0.75rem 0;
     margin: 0 0.5rem;
@@ -57,15 +64,23 @@ border: 1px solid rgba(172, 143, 255, 0.50);
         font-weight: 400;
         line-height: normal;
     }
-    text-indent:20px;
-    input:focus::placeholder {
+    text-indent: 20px;
+    &:focus::placeholder {
         color: transparent;
     }
-    input:active::placeholder {
+    &:active::placeholder {
         color: transparent;
     }
     &:focus {
         outline: none;
+    }
+  
+    @media (max-width: 768px) {
+        margin: 0;
+        width: 100%;
+    }
+    @media (min-width: 915px) {
+        width: 618px;
     }
 `;
 
@@ -86,35 +101,7 @@ export const SearchButton = styled('button')`
     &:focus {
         outline: none;
     }
+    @media (max-width: 768px) {
+        margin: 0;
+    }
 `;
-
-// const UsingTheme = styled('a')<{ thing: any}>(
-//     ({ theme }) => { 
-//         console.log(theme);
-//         return ({
-//             [theme.breakpoints.down('md')]: {
-//                 color: theme.palette.primary.light,
-//               },
-//       backgroundColor: theme.palette.primary.light,
-//       color: theme.palette.primary.main,
-//       padding: theme.spacing(2),
-//       textAlign: 'center',
-//       ...theme.typography.h6,
-    
-//     })},
-//   )
-
-// const TestingProps = styled(Box, {
-
-//     // Configure which props should be forwarded on DOM
-//    shouldForwardProp: (prop) => prop !== 'dark' && prop!== 'border'
- 
-//    })<{ dark: any}>
- 
-//    (({ dark, border, theme }) => ({
- 
-//    backgroundColor: dark? theme.palette.grey[900] : theme.palette.grey[100],
-//    color: dark? theme.palette.grey[100] : theme.palette.grey[900],
-//    border: border? `1rem solid ${theme.palette.primary.main}` : 'none'
- 
-// }));

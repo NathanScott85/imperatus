@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
-import { MainContainer } from '../../components/styled';
+import { Container, MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
 import { Link } from 'react-router-dom';
 
@@ -25,18 +25,18 @@ const catergories = [
 
 export const Categories = () => (
         <>
-            <Container>
-                <Background />
-            </Container>
             <TopHeader />
             <Header />
             <Navigation />
             <BreadCrumb label='Categories' />
+            <Container>
+                <Background />
+            </Container>
             <MainContainer>
                 <h1>Categories</h1>
                 {catergories.map((catergory: any) => (
                     <div key={catergory.id}>
-                        <Link to={`/shop/categories/category/${catergory.id}`}>
+                        <Link to={`/shop/categories/category/${catergory.id}/${catergory.name}`}>
                             <h2>{catergory.name}</h2>
                             <img src={catergory.img} alt={catergory.name} />
                         </Link>
@@ -48,17 +48,6 @@ export const Categories = () => (
         </>
 );
 
-const Container = styled('div')`
-    color: #10000E;
-    height: 625px;
-    width: 100%;
-    position: absolute;
-    top: 100;
-    left: 0;
-    z-index: -1;
-    background-image: linear-gradient(to bottom, black, #05030F);
-`;
-
 const Background = styled('div')`
     background: #130A30;
     height: 100%;
@@ -66,4 +55,5 @@ const Background = styled('div')`
     position: absolute;
     top: 0;
     left: 0;
+    z-index: -2;
 `;

@@ -29,8 +29,6 @@ export const Admin = ({ user }: AdminProps) => {
             </Container>
             <BreadCrumb label='Admin' />
             <MainContainer>
-              akhjsdfh
-              
             <Section>
             <GrowthRate currentMonth={3} lastMonth={2} previousMonth={1}  />  
             <SalesGrowthChart sales={salesData} />
@@ -50,21 +48,17 @@ const Background = styled('div')`
     position: absolute;
     top: 0;
     left: 0;
-    body {
-        background-color: #130A30;
-    }
-    background-color:
+    z-index: -2;
 `;
 
-const Section = styled('section')`
+const Section = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #130A30;
+    background-color: white;
     width: 100%;
     height: 100%;
-    border: 3px solid red;
-    color: #FFF;
+    padding: 2rem 0;
+    color: black;
     font-size: 1.5rem;
-    background-color: #05030F;
 `;

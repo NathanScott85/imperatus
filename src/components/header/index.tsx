@@ -7,6 +7,7 @@ import { Basket } from '../basket';
 import { AdminIcon } from '../svg';
 import { Link } from 'react-router-dom';
 
+// TODO: bring users back from api;
 // const usersArray = [
 //     {
 //         id: 1,
@@ -56,7 +57,7 @@ const HeaderContainer = styled('header')`
     background-color: transparent;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     color: #D4B05F;
     height: 62px;

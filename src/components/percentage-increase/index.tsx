@@ -1,21 +1,23 @@
 import styled from "@emotion/styled";
 import { ArrowUp } from '../svg/arrow';
 
-interface PercentageIncrease {
-    percentageIncrease: number;
+interface PercentageIncreaseProps {
+    percentageIncrease: number | null;
 }
 
-export const PercentageIncrease = ({ percentageIncrease }: PercentageIncrease) => {
+export const PercentageIncrease = ({ percentageIncrease }: PercentageIncreaseProps) => {
+    const increase = percentageIncrease !== null && percentageIncrease > 0;
+    
     return (
-        <PercentageIncreaseContainer isIncrease={percentageIncrease && percentageIncrease > 0 as any}>
-            {percentageIncrease && percentageIncrease > 0
+        <PercentageIncreaseContainer increase={increase}>
+            {increase
                 ? <><ArrowUp type='small' /> {percentageIncrease.toFixed(2)}%</>
                 : `${percentageIncrease?.toFixed(2)}% `}
         </PercentageIncreaseContainer>
     );
 }
 
-const PercentageIncreaseContainer = styled.span<{ isIncrease: boolean }>`
+const PercentageIncreaseContainer = styled.span<{ increase: boolean }>`
   font-size: 14px;
-  color: ${(props) => (props.isIncrease ? 'green' : 'red')};
+  color: ${(props) => (props.increase ? 'green' : 'red')};
 `;

@@ -1,13 +1,12 @@
 import styled from "@emotion/styled";
 import HomeIMG from '../../components/svg/website-images/0_10.png';
 
-export const MainContainer = styled('main')`
+export const MainContainer = styled.main`
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #10000E;
-    height: calc(100vh - 80px);
-    padding: 2.5rem;
+    width: 100%;
+    min-height: 100vh;
 `;
 
 export const ContactHeader = styled('header')`
@@ -21,21 +20,25 @@ export const ContactHeader = styled('header')`
     padding: 0 1.75rem;
 `;
 
-export const Container = styled('div')`
-    color: #10000E;
-    height: 625px;
-    width: 100%;
-    position: absolute;
+export const ImageContainer = styled.div`
+    position: fixed;
     top: 0;
     left: 0;
-    z-index: -2;
-    background-image: linear-gradient(to bottom, black, #05030F);
-`;
-
-export const ImageContainer = styled('div')`
+    width: 100%;
+    height: 100%;
     background-image: url(${HomeIMG});
     background-repeat: no-repeat;
     background-size: cover;
-    height: 100%;
+    z-index: -1;
+`;
+
+export const Container = styled.div`
+    color: #10000E;
+    height: auto; /* Adjust as needed */
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 `;

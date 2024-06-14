@@ -22,6 +22,14 @@ const categories = [
     {
         id: 2,
         name: 'Yu-Gi-Oh',
+    },
+    {
+        id: 3,
+        name: "Cardfight!! Vanguard"
+    },
+    {
+        id: 4,
+        name: 'Disney Lorcana'
     }
 ]
 // todo: get users from api
@@ -57,7 +65,7 @@ export const AppRoutes = () => {
             <Route path="/basket" element={<Basket />} />
             <Route  index path="/shop/categories" element={<Categories />} />
             {categories.map((category: any) => (
-                <Route key={category.id} path={`/shop/categories/category/${category.id}`} 
+                <Route key={category.id} path={`/shop/categories/category/${category.id}/${category.name}`} 
                     element={<Category name={category.name} id={category.id} />} 
                 />
             ))

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-interface Order {
+interface SingleOrderProps {
     month: string;
     value: number;
 }
 
 interface OrderProps {
-    order: Order;
-    previousOrder?: Order;
+    order: SingleOrderProps;
+    previousOrder?: SingleOrderProps;
 }
 
 const Order: React.FC<OrderProps> = ({ order, previousOrder } : OrderProps) => {
@@ -26,21 +26,21 @@ const Order: React.FC<OrderProps> = ({ order, previousOrder } : OrderProps) => {
             <OrderTitle>Orders for {order.month}</OrderTitle>
             <OrderValue>{order.value}</OrderValue>
             {increase !== null && (
-                <OrderIncrease isIncrease={increase > 0}>{increase}</OrderIncrease>
+                <OrderIncrease increase={(increase > 0).toString()}>{increase}</OrderIncrease>
             )}
         </OrderContainer>
     );
 };
 
 interface OrderListProps {
-    orders: Order[];
+    orders: SingleOrderProps[];
     currentMonth: string;
 }
 
-export const OrderList: React.FC<OrderListProps> = ({ orders, currentMonth }: OrderListProps) => {
+export const OrderList: React.FC<OrderListProps> = ({ orders, currentMonth }) => {
     return (
       <div>
-        {orders.map((order: any, index: number) => {
+        {orders.map((order, index) => {
           if (order.month === currentMonth) {
             return (
               <Order
@@ -57,8 +57,7 @@ export const OrderList: React.FC<OrderListProps> = ({ orders, currentMonth }: Or
     );
   };
 
-
-  const OrderContainer = styled.div`
+const OrderContainer = styled.div`
   width: 300px;
   border-radius: 4px;
   padding: 15px;
@@ -77,8 +76,8 @@ const OrderValue = styled.div`
   color: black;
 `;
 
-const OrderIncrease = styled.div<{ isIncrease: boolean }>`
-  color: ${(props) => (props.isIncrease ? 'green' : 'red')};
+const OrderIncrease = styled.div<{ increase: string }>`
+  color: ${(props) => (props.increase === 'true' ? 'green' : 'red')};
   font-size: 14px;
   margin-top: 5px;
 `;

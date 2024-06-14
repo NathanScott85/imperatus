@@ -57,7 +57,7 @@ const FooterContainer = styled('footer')`
     justify-content: center;
     align-items: center;
     padding: 1.5rem 1.5rem;
-    background-color: #1E2D3F;
+    background-color: #05030F;
     color: white;
     
     h1{

@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { ArrowUp } from '../svg/arrow';
 import { PercentageIncrease } from "../percentage-increase";
 
 
@@ -21,7 +20,7 @@ export const GrowthRate: React.FC<GrowthRateProps> = ({ currentMonth, lastMonth,
         <>
           <p>
             Compared to last month:</p>
-          <GrowthRateStatValue isIncrease={percentageIncrease && percentageIncrease > 0}>
+          <GrowthRateStatValue increase={percentageIncrease && percentageIncrease > 0}>
             <>{percentage.toFixed(2)}%</>
           </GrowthRateStatValue>
           <PercentageIncrease percentageIncrease={percentageIncrease as any} />
@@ -47,7 +46,7 @@ const GrowthRateTitle = styled.h2`
     color: black;
 `;
 
-const GrowthRateStatValue = styled.div<{ isIncrease: number | boolean }>`
+const GrowthRateStatValue = styled.div<{ increase: number | boolean }>`
     font-size: 18px;
-    color: ${(props) => (props.isIncrease ? 'green' : 'red')};
+    color: ${(props) => (props.increase ? 'green' : 'red')};
 `;
