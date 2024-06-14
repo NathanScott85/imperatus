@@ -2,14 +2,22 @@ import React from "react";
 import styled from "styled-components";
 import { Product } from "../product";
 
-interface ProductsProps {
-    products: any[]
+type Product = {
+    img: string;
+    name: string;
+    price: string;
+    rrp: string;
 }
-export const Products = ({ products }: ProductsProps) => {
+
+interface ProductsProps {
+    products: Product[];
+    label: string;
+}
+export const Products = ({ products, label }: ProductsProps) => {
     return (
         <Section>
             <ProductsWrapper>
-            <ProductsHeader> Latest Products</ProductsHeader>
+            <ProductsHeader>{label}</ProductsHeader>
             <ProductsContainer>
                 {products.map((product: any) => {
                     return (<Product key={product.id} product={product} />)

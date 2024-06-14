@@ -34,11 +34,11 @@ export const ImageContainer = styled.div`
 
 export const Container = styled.div`
     color: #10000E;
-    height: auto; /* Adjust as needed */
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 7.5rem;
 `;
