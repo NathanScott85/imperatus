@@ -6,6 +6,7 @@ import { ImperatusLink } from '../imperatus-link';
 import { Basket } from '../basket';
 import { AdminIcon } from '../svg';
 import { Link } from 'react-router-dom';
+import { mediaQueries } from '../../styled/breakpoints';
 
 // TODO: bring users back from api;
 // const usersArray = [
@@ -64,6 +65,13 @@ const HeaderContainer = styled('header')`
     width: 100%;
     padding: 0 1.75rem;
     border-bottom: 1px solid #4D3C7B;
+    ${mediaQueries("md")`
+        width: 100%;
+    `};
+    ${mediaQueries("xl")`
+        padding-left: 0rem;
+        width: 100%;
+    `};
 `;
 
 const HeaderWrapper = styled('span')`
@@ -79,5 +87,12 @@ const ContactHeader = styled('header')`
     height: 38px;
     width: 100%;
     padding: 0 1.75rem;
+     ${mediaQueries("md")`
+        width: 100%;
+    `};
+    ${mediaQueries("xl")`
+        padding-left: 0rem;
+        width: 100%;
+    `};
 `;
 

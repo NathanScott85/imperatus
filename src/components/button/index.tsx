@@ -25,4 +25,7 @@ const StyledButton = styled.button`
     padding: 0.5rem;
     border-radius: 3px;
     margin: 0.75rem;
+    &:hover { 
+        color: white;
+    }
 `;

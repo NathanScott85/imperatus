@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import ArenaImage from '../../components/svg/website-images/0_71.png';
 import { DiamondSVGContainer } from '../../components/svg/filters-diamond';
+import { mediaQueries } from '../../styled/breakpoints';
 
 export const ImperatusBanner = () => {
     return (
@@ -39,17 +40,17 @@ export const ImperatusBanner = () => {
     background-image: url(${ArenaImage});
     background-size: cover;
     background-position: bottom center;
-    background-repeat: no-repeat;
-  
-    @media (max-width: 768px) {
-      padding: 1.5rem 0;
-      font-size: 1.25rem;
-    }
-  
-    @media (max-width: 480px) {
-      padding: 1rem 0;
-      font-size: 1rem;
-    }
+    background-repeat: no-repeat;  
+   ${mediaQueries("md")`
+        width: 100%;
+        height: 35vh;
+        padding: 0rem 0;
+    `};
+    ${mediaQueries("xl")`
+        padding-left: 0rem;
+        width: 100%;
+        height: 100%;
+    `};
   `;
   
   const Container = styled.div`
@@ -61,6 +62,18 @@ export const ImperatusBanner = () => {
     height: 100%;
     padding: 20px;
     box-sizing: border-box;
+    ${mediaQueries("sm")`
+      padding: 0;
+    `};
+    ${mediaQueries("md")`
+        width: 100%;
+        height: 100%
+    `};
+    ${mediaQueries("xl")`
+        padding-left: 0rem;
+        width: 100%;
+        height: 100%
+    `};
   `;
   
   const HeadingText = styled.h1`
@@ -80,4 +93,7 @@ export const ImperatusBanner = () => {
     text-align: center;
     color: white;
     margin: 20px 0 0 0;
+    ${mediaQueries("sm")`
+      margin: 0;
+    `};
   `;

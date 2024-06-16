@@ -12,4 +12,3 @@ export const ImperatusLink = () => (
 const ImperatusLinkContainer = styled(Link)`
     display: flex;
 `;
-

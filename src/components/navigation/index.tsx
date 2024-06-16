@@ -1,6 +1,7 @@
 import React from "react";
 import { styled } from "@mui/material";
 import { Link } from "react-router-dom";
+import { mediaQueries } from "../../styled/breakpoints";
 
 const navItems = [
     {
@@ -75,6 +76,9 @@ export const NavigationList = styled('ul')`
     list-style-type: none;
     width: 100%;
     padding: 0 1.75rem;
+     ${mediaQueries("md")`
+        padding: 1rem;
+    `};
 `;
 
 export const NavigationItem = styled(Link)`
@@ -96,7 +100,9 @@ export const NavigationItem = styled(Link)`
         font-weight: 700;
     }
     height: 19px;
-   
+    ${mediaQueries("md")`
+        padding: 1.75rem;
+    `};
 `;
 
 export const Divider = styled('div')`

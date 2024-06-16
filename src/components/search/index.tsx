@@ -1,6 +1,7 @@
 import React from 'react';
 import { SearchIcon } from '../svg';
 import { styled } from '@mui/material';
+import { mediaQueries } from '../../styled/breakpoints';
 
 export const Search = () => { 
     const [search, setSearch] = React.useState('');
@@ -11,7 +12,6 @@ export const Search = () => {
 
     return(
         <SearchContainer>
-            {/* <UsingTheme>Using Theme</UsingTheme> See comments below */}
             <Input type="text" onChange={onChange} placeholder={search ? '' : "Search"} />
             <SearchButton>
                 <SearchIcon />
@@ -27,19 +27,19 @@ const SearchContainer = styled('div')`
     color: #D4B05F;
     margin: 0 3.5rem;
     padding: 1.2rem 0.75rem 1.2rem 0.75rem;
-    @media (max-width: 667px) {
-        margin: 0;
-        padding: 0.5rem;
+    ${mediaQueries("md")`
         width: 100%;
-    }
-    
-    @media (min-width: 915px) {
-         width: 618px;
-    }
+    `};
+    ${mediaQueries("xl")`
+        padding-left: 0rem;
+        width: 600px;
+    `};
 `;
 
 export const Input = styled('input')`
     border: 1px solid rgba(172, 143, 255, 0.50);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     border-right: none;
     background: transparent;
     color: white;
@@ -74,19 +74,19 @@ export const Input = styled('input')`
     &:focus {
         outline: none;
     }
-  
-    @media (max-width: 768px) {
-        margin: 0;
-        width: 100%;
-    }
-    @media (min-width: 915px) {
-        width: 618px;
-    }
+    ${mediaQueries("md")`
+        width: 280px;
+    `};
+    ${mediaQueries("xl")`
+        width: 200px;
+    `};
 `;
 
 export const SearchButton = styled('button')`
     border: 1px solid #AC8FFF80;
     border-left: none;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     background: transparent;
     color: #FFF;
     font-size: 1rem;
@@ -101,7 +101,12 @@ export const SearchButton = styled('button')`
     &:focus {
         outline: none;
     }
-    @media (max-width: 768px) {
-        margin: 0;
-    }
+    ${mediaQueries("sm")`
+        border: 1px solid #AC8FFF80;
+    `};
+    ${mediaQueries("md")`
+         padding: 1rem;
+    `};
+
+    
 `;

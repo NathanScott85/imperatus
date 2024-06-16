@@ -3,29 +3,36 @@ import styled from 'styled-components';
 import Button from '../button';
 
 type Product = {
-    img: string;
-    name: string;
-    price: string;
-    rrp: string;
-}
+  id: any;
+  img: string;
+  name: string;
+  price: string;
+  rrp: string;
+  category: string;
+  game: string;
+};
+
 interface ProductProps {
-    product: Product
+  product: Product;
 }
 
 export const Product = ({ product }: ProductProps) => {
-    return (
-        <ProductContainer>
-            <ProductWrapper>
-                <ImageWrapper>
-                    <ProductImage src={product?.img} alt={product?.name} />
-                </ImageWrapper>
-                <ProductName>{product?.name}</ProductName>
-                <ProductPrice>{product?.price}</ProductPrice>
-                <StyledRRP>RRP {product?.rrp}</StyledRRP>
-                <Button label="Add to cart" />
-            </ProductWrapper>
-        </ProductContainer>
-    );
+  return (
+    <ProductContainer>
+      <ProductWrapper>
+        <ImageWrapper>
+          <ProductImage src={product?.img} alt={product?.name} />
+        </ImageWrapper>
+        <ProductName>{product?.name}</ProductName>
+        <ProductPriceWrapper>
+        <ProductPrice>£{product?.price}</ProductPrice>
+        <StyledRRP>RRP {product?.rrp}</StyledRRP>
+        </ProductPriceWrapper>
+    
+        <Button label="Add to cart" />
+      </ProductWrapper>
+    </ProductContainer>
+  );
 };
 
 const ProductContainer = styled.div`
@@ -35,18 +42,10 @@ const ProductContainer = styled.div`
   flex-direction: row;
   width: 200px;
   margin: 0.5rem;
-  padding: 1rem;
+  padding: 0.9rem;
   font-family: Cinzel;
-
-  @media (max-width: 768px) {
-    width: 150px;
-    flex-direction: column;
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-    padding: 0.5rem;
-    margin: 0.25rem;
+  &:hover { 
+        border: 1px solid #D4B05F;
   }
 `;
 
@@ -55,25 +54,20 @@ const ProductWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   text-align: center;
+   &:hover { 
+        color: #ac8fff;
+  }
 `;
 
-const ImageWrapper = styled.div`
+const ImageWrapper = styled.div` /* Add packs prop type */
   padding: 1rem;
-  width: 75%;
-  height: 75%;
+  width: 100%;
+  height: 200px;
   max-width: 100%;
   max-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 768px) {
-    padding: 0.5rem;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0.25rem;
-  }
 `;
 
 const ProductImage = styled.img`
@@ -81,6 +75,9 @@ const ProductImage = styled.img`
   max-height: 100%;
   width: auto;
   height: auto;
+     &:hover { 
+        transform: scale(1.1);
+  }
 `;
 
 const ProductName = styled.span`
@@ -89,16 +86,12 @@ const ProductName = styled.span`
   font-weight: 600;
   line-height: 16.8px;
   text-align: center;
+`;
 
-  @media (max-width: 768px) {
-    font-size: 12px;
-    line-height: 14.4px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 10px;
-    line-height: 12px;
-  }
+const ProductPriceWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 `;
 
 const ProductPrice = styled.span`
@@ -107,6 +100,7 @@ const ProductPrice = styled.span`
   font-weight: 600;
   line-height: 16.8px;
   text-align: left;
+  padding: 0.4rem;
 `;
 
 const StyledRRP = styled.span`
@@ -118,4 +112,5 @@ const StyledRRP = styled.span`
   color: grey;
   text-decoration: line-through;
   opacity: 0.5;
+  padding: 0.4rem;
 `;

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Lorcana, Magic, Yugioh, DoctorWho, ParadoxRift, AgeofOverlord, FinalFantasy } from '../../components/svg/product-icons';
+import { mediaQueries } from '../../styled/breakpoints';
 
 const toplinks = [
     {
@@ -60,6 +61,9 @@ const ProductLinksContainer = styled('div')`
     align-items: center;
     width: 100%;
     height: 100%;
+    ${mediaQueries("sm")`
+        width: 100%;
+    `};
 `;
 
 const TopImage = styled('img')`
@@ -74,6 +78,15 @@ const TopImage = styled('img')`
         transform: scale(1.1);
         border: 2px solid #D4B05F;
     }
+    ${mediaQueries("md")`
+        width: 200px;
+        height: 125px;
+    `};
+     ${mediaQueries("xl")`
+        width: 350px;
+        height: 225px;
+    `};
+ 
 `;
 const Image = styled('img')`
     width: 150px;
@@ -86,4 +99,5 @@ const Image = styled('img')`
         transform: scale(1.1);
         border: 1px solid #D4B05F;
     }
+    
 `;
