@@ -41,7 +41,7 @@ export const BreadCrumb = ({ label, text }: BreadCrumbProps) => {
     </>
   );
 };
-// style={{ lineHeight: '24px', fontSize: '16px', maxWidth: '720px', textAlign: 'center' }}
+
 const Text = styled('p')<{ text: any }>`
     font-size: 1rem;
     font-weight: 500;

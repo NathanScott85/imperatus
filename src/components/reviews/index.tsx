@@ -117,7 +117,8 @@ const ReviewsWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     position: relative;
-    overflow: hidden;   
+    overflow: hidden;  
+    padding: 2rem;
 `;
 
 const ReviewsHeader = styled.h1`

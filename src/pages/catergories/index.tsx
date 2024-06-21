@@ -33,7 +33,6 @@ export const Categories = () => (
                 <Background />
             </Container>
             <MainContainer>
-                <h1>Categories</h1>
                 {catergories.map((catergory: any) => (
                     <div key={catergory.id}>
                         <Link to={`/shop/categories/category/${catergory.id}/${catergory.name}`}>

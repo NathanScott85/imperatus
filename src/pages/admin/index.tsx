@@ -13,7 +13,7 @@ import { salesData, orders } from './mock-data';
 interface AdminProps {
     user: any;
 }
-  
+
 const currentMonth = 'Dec';
 export const Admin = ({ user }: AdminProps) => {
     const { role } = user;
@@ -22,19 +22,19 @@ export const Admin = ({ user }: AdminProps) => {
             <TopHeader />
             <Header />
             <Navigation />
+            <BreadCrumb label='Admin' />
             <Container>
                 {
-                    role === 'admin' ? <Background /> : <ImageContainer />
+                    role === 'admin' ?  <ImageContainer />  :<Background />
                 }
             </Container>
-            <BreadCrumb label='Admin' />
             <MainContainer>
-            <Section>
-            <GrowthRate currentMonth={3} lastMonth={2} previousMonth={1}  />  
-            <SalesGrowthChart sales={salesData} />
-            <AccountStats currentMonth={500} lastMonth={450} />
-            <OrderList orders={orders} currentMonth={currentMonth} />
-            </Section>
+                <Section>
+                    <GrowthRate currentMonth={3} lastMonth={2} previousMonth={1} />
+                    <SalesGrowthChart sales={salesData} />
+                    <AccountStats currentMonth={500} lastMonth={450} />
+                    <OrderList orders={orders} currentMonth={currentMonth} />
+                </Section>
             </MainContainer>
             <Footer />
         </>

@@ -27,13 +27,20 @@ const navItems = [
     },
     {
         id: 4,
+        name: 'Boardgames',
+        path: '/shop/board-games',
+        divider: false,
+        displayed: true,
+    },
+    {
+        id: 5,
         name: "Coming Soon",
         path: "/shop/coming-soon",
         divider: false,
         displayed: true,
     },
     {
-        id: 5,
+        id: 6,
         name: "Offers",
         path: "/shop/offers",
         divider: false,
