@@ -52,8 +52,13 @@ export const Reviews: React.FC<ReviewsProps> = ({ label = "Customer Reviews" }) 
         <Section>
             <ReviewsWrapper>
               <ArrowContainer>
-                    <StyledChevronLeft onClick={prevReview} />
-                    <StyledChevronRight onClick={nextReview} />
+              {reviews.length !== 0 ? (
+                       <>
+                         <StyledChevronLeft onClick={prevReview} />
+                         <StyledChevronRight onClick={nextReview} />
+                         </>
+                    ) : null}
+                  
                 </ArrowContainer>
                 <ReviewsHeader>{label}</ReviewsHeader>
                 <ReviewContainer>
@@ -84,11 +89,10 @@ const Section = styled.section`
 `;
 
 const ArrowContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: absolute;
-    border: 2px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
 `;
 
 const StyledChevronLeft = styled(ChevronLeft)`

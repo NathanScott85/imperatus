@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import ArenaImage from '../../components/svg/website-images/0_71.png';
-import { DiamondSVGContainer } from '../../components/svg/filters-diamond';
+import { ImperatusBanner as DiamondBox } from '../../components/svg/filters-diamond';
 import { mediaQueries } from '../../styled/breakpoints';
 
 export const ImperatusBanner = () => {
     return (
       <Section>
-        <DiamondSVGContainer second>
-          <foreignObject x="0" y="10" width="100%" height="100%">
+        <DiamondBox>
             <Container>
               <HeadingText>
                 Imperatus Trading
@@ -23,8 +22,7 @@ export const ImperatusBanner = () => {
                 and games that cater to every level of player. Unveil the power of your favorite characters, mastermind cunning tactics, and forge alliances that will determine the fate of entire realms.
               </ContentText>
             </Container>
-          </foreignObject>
-        </DiamondSVGContainer>
+        </DiamondBox>
       </Section>
     );
   }
@@ -40,7 +38,8 @@ export const ImperatusBanner = () => {
     background-image: url(${ArenaImage});
     background-size: cover;
     background-position: bottom center;
-    background-repeat: no-repeat;  
+    background-repeat: no-repeat; 
+ 
    ${mediaQueries("md")`
         width: 100%;
         height: 35vh;
@@ -60,7 +59,7 @@ export const ImperatusBanner = () => {
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding: 20px;
+    z-index: 500;
     box-sizing: border-box;
     ${mediaQueries("sm")`
       padding: 0;
