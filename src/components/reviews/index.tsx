@@ -86,6 +86,7 @@ const Section = styled.section`
     height: 100%;
     color: black;
     font-size: 1.5rem;
+    overflow: auto;
 `;
 
 const ArrowContainer = styled.div`

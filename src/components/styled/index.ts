@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import HomeIMG from '../../components/svg/website-images/0_10.png';
-
+import FooterIMG from '../../components/svg/website-images/footer-bg.png'
 export const MainContainer = styled.main`
     display: flex;
     flex-direction: column;
@@ -20,14 +19,14 @@ export const ContactHeader = styled('header')`
     padding: 0 1.75rem;
 `;
 
-export const ImageContainer = styled.div`
+export const ImageContainer = styled.div<{ img?: any }>`
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     padding: 7rem 0;
-    background-image: url(${HomeIMG});
+    background-image: ${({ img }) => `url(${img})`};
     background-repeat: no-repeat;
     background-size: cover;
     z-index: -1;
