@@ -11,10 +11,4 @@ export { typography } from './typography';
 export { spacing } from './spacing';
 export { lineHeights } from './line-heights';
 
-export type { 
-    Typography,
-    Colors,
-    Spacing,
-    Breakpoints,
-    LineHeights,
-}
+export type { Typography, Colors, Spacing, Breakpoints, LineHeights };

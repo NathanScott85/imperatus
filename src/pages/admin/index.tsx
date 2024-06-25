@@ -3,7 +3,11 @@ import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import { ImageContainer, MainContainer, Container } from '../../components/styled';
+import {
+    ImageContainer,
+    MainContainer,
+    Container,
+} from '../../components/styled';
 import SalesGrowthChart from '../../components/line';
 import { GrowthRate } from '../../components/growth-rate';
 import { OrderList } from '../../components/orders-per-month';
@@ -22,15 +26,17 @@ export const Admin = ({ user }: AdminProps) => {
             <TopHeader />
             <Header />
             <Navigation />
-            <BreadCrumb label='Admin' />
+            <BreadCrumb label="Admin" />
             <Container>
-                {
-                    role === 'admin' ?  <ImageContainer />  :<Background />
-                }
+                {role === 'admin' ? <ImageContainer /> : <Background />}
             </Container>
             <MainContainer>
                 <Section>
-                    <GrowthRate currentMonth={3} lastMonth={2} previousMonth={1} />
+                    <GrowthRate
+                        currentMonth={3}
+                        lastMonth={2}
+                        previousMonth={1}
+                    />
                     <SalesGrowthChart sales={salesData} />
                     <AccountStats currentMonth={500} lastMonth={450} />
                     <OrderList orders={orders} currentMonth={currentMonth} />
@@ -38,11 +44,11 @@ export const Admin = ({ user }: AdminProps) => {
             </MainContainer>
             <Footer />
         </>
-    )
+    );
 };
 
 const Background = styled('div')`
-    background: #130A30;
+    background: #130a30;
     height: 100%;
     width: 100%;
     position: absolute;

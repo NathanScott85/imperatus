@@ -1,5 +1,3 @@
-export interface LineHeights {
-}
+export interface LineHeights {}
 
-export const lineHeights: LineHeights = {
-}
+export const lineHeights: LineHeights = {};

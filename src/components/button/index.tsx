@@ -7,9 +7,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({ label, onClick }) => (
-    <StyledButton onClick={onClick}>
-        {label}
-    </StyledButton>
+    <StyledButton onClick={onClick}>{label}</StyledButton>
 );
 
 export default Button;
@@ -20,12 +18,12 @@ const StyledButton = styled.button`
     font-weight: 700;
     line-height: 18.87px;
     text-align: left;
-    background: #C79D0A;
+    background: #c79d0a;
     border: none;
     padding: 0.5rem;
     border-radius: 3px;
     margin: 0.75rem;
-    &:hover { 
+    &:hover {
         color: white;
     }
 `;

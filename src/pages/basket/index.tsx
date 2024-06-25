@@ -7,21 +7,20 @@ import { Footer } from '../../components/footer';
 
 export const Basket = () => (
     <>
-       <TopHeader />
+        <TopHeader />
         <Header />
         <Navigation />
-        <BreadCrumb label='Accessories' />
+        <BreadCrumb label="Accessories" />
         <Container>
             <Background />
         </Container>
-        <MainContainer>
-        </MainContainer>
+        <MainContainer></MainContainer>
         <Footer />
     </>
 );
 
 const Background = styled('div')`
-    background: #130A30;
+    background: #130a30;
     height: 100%;
     width: 100%;
     position: absolute;

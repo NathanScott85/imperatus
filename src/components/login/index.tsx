@@ -1,7 +1,7 @@
-import React from "react";
-import { UserIcon } from "../svg";
+import React from 'react';
+import { UserIcon } from '../svg';
 import { styled } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export const Login = () => (
     <Link to="/account/login">

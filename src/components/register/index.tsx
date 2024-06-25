@@ -10,7 +10,6 @@ export const Register = () => (
             Register
         </RegisterContainer>
     </Link>
-
 );
 
 const RegisterContainer = styled('span')`

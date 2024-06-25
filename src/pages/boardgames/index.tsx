@@ -8,23 +8,22 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 
 export const BoardGames = () => {
     return (
-    <>
-          <TopHeader />
-        <Header />
-        <Navigation />
-        <BreadCrumb label='Boardgames' />
-        <Container>
-            <Background />
-        </Container>
-        <MainContainer>
-        </MainContainer>
-        <Footer />
-    </>
+        <>
+            <TopHeader />
+            <Header />
+            <Navigation />
+            <BreadCrumb label="Boardgames" />
+            <Container>
+                <Background />
+            </Container>
+            <MainContainer></MainContainer>
+            <Footer />
+        </>
     );
 };
 
 const Background = styled('div')`
-    background: #130A30;
+    background: #130a30;
     height: 100%;
     width: 100%;
     position: absolute;

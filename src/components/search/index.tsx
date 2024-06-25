@@ -3,48 +3,52 @@ import { SearchIcon } from '../svg';
 import { styled } from '@mui/material';
 import { mediaQueries } from '../../styled/breakpoints';
 
-export const Search = () => { 
+export const Search = () => {
     const [search, setSearch] = React.useState('');
 
     const onChange = (e: any) => {
         setSearch(e.target.value);
     };
 
-    return(
+    return (
         <SearchContainer>
-            <Input type="text" onChange={onChange} placeholder={search ? '' : "Search"} />
+            <Input
+                type="text"
+                onChange={onChange}
+                placeholder={search ? '' : 'Search'}
+            />
             <SearchButton>
                 <SearchIcon />
             </SearchButton>
         </SearchContainer>
     );
-}
+};
 
-const SearchContainer = styled('div')`  
+const SearchContainer = styled('div')`
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #D4B05F;
+    color: #d4b05f;
     margin: 0 3.5rem;
     padding: 1.2rem 0.75rem 1.2rem 0.75rem;
-    ${mediaQueries("md")`
+    ${mediaQueries('md')`
         width: 100%;
     `};
-    ${mediaQueries("xl")`
+    ${mediaQueries('xl')`
         padding-left: 0rem;
         width: 600px;
     `};
 `;
 
 export const Input = styled('input')`
-    border: 1px solid rgba(172, 143, 255, 0.50);
+    border: 1px solid rgba(172, 143, 255, 0.5);
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     border-right: none;
     background: transparent;
     color: white;
     font-family: Barlow;
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: 400;
     line-height: 14px;
     letter-spacing: 0em;
@@ -55,10 +59,10 @@ export const Input = styled('input')`
     padding: 0.75rem 0.75rem 0.75rem 0;
     margin: 0 0.5rem;
     ::placeholder {
-        color: #D3D3D3 !important;
+        color: #d3d3d3 !important;
         margin-left: 0.1rem;
         font-size: 1rem;
-        color: #FFF;
+        color: #fff;
         font-family: Barlow;
         font-style: normal;
         font-weight: 400;
@@ -74,21 +78,21 @@ export const Input = styled('input')`
     &:focus {
         outline: none;
     }
-    ${mediaQueries("md")`
+    ${mediaQueries('md')`
         width: 280px;
     `};
-    ${mediaQueries("xl")`
+    ${mediaQueries('xl')`
         width: 200px;
     `};
 `;
 
 export const SearchButton = styled('button')`
-    border: 1px solid #AC8FFF80;
+    border: 1px solid #ac8fff80;
     border-left: none;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     background: transparent;
-    color: #FFF;
+    color: #fff;
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -101,12 +105,10 @@ export const SearchButton = styled('button')`
     &:focus {
         outline: none;
     }
-    ${mediaQueries("sm")`
+    ${mediaQueries('sm')`
         border: 1px solid #AC8FFF80;
     `};
-    ${mediaQueries("md")`
+    ${mediaQueries('md')`
          padding: 1rem;
     `};
-
-    
 `;

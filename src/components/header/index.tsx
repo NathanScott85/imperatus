@@ -27,31 +27,28 @@ import { mediaQueries } from '../../styled/breakpoints';
 // ]
 export const Header = () => (
     <HeaderContainer>
-      <ImperatusLink />
-      <Search />
-        <HeaderWrapper>  
-        <Login />
-        <Basket />
+        <ImperatusLink />
+        <Search />
+        <HeaderWrapper>
+            <Login />
+            <Basket />
         </HeaderWrapper>
         {
             // usersArray.map((user: any) => (
             //     user.role.includes('admin') && <Link key={user.id} to={`/account/admin`}>
-            //         <AdminIcon /> 
+            //         <AdminIcon />
             //     </Link>
             // ))
-            
-                <Link  to={`/account/admin`}>
-                    <AdminIcon /> 
-                </Link>
 
+            <Link to={`/account/admin`}>
+                <AdminIcon />
+            </Link>
         }
     </HeaderContainer>
 );
 
 export const TopHeader = () => (
-    <ContactHeader>
-        01234 567 890   Mon - Fri 9:00am - 5:00pm 
-    </ContactHeader>
+    <ContactHeader>01234 567 890 Mon - Fri 9:00am - 5:00pm</ContactHeader>
 );
 
 const HeaderContainer = styled('header')`
@@ -60,15 +57,15 @@ const HeaderContainer = styled('header')`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    color: #D4B05F;
+    color: #d4b05f;
     height: 62px;
     width: 100%;
     padding: 0 1.75rem;
-    border-bottom: 1px solid #4D3C7B;
-    ${mediaQueries("md")`
+    border-bottom: 1px solid #4d3c7b;
+    ${mediaQueries('md')`
         width: 100%;
     `};
-    ${mediaQueries("xl")`
+    ${mediaQueries('xl')`
         padding-left: 0rem;
         width: 100%;
     `};
@@ -79,20 +76,19 @@ const HeaderWrapper = styled('span')`
 `;
 
 const ContactHeader = styled('header')`
-    background-color: #05030F;    
+    background-color: #05030f;
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #D4B05F;
+    color: #d4b05f;
     height: 38px;
     width: 100%;
     padding: 0 1.75rem;
-     ${mediaQueries("md")`
+    ${mediaQueries('md')`
         width: 100%;
     `};
-    ${mediaQueries("xl")`
+    ${mediaQueries('xl')`
         padding-left: 0rem;
         width: 100%;
     `};
 `;
-

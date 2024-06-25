@@ -1,18 +1,18 @@
 import { PaletteOptions } from '@mui/material';
 import { createTheme } from '@mui/system';
 import { createGlobalStyle } from 'styled-components';
-import { Colors, colors } from "./colors";
-import { Spacing, spacing } from "./spacing";
-import { Typography, typography } from "./typography";
-import { LineHeights, lineHeights } from "./line-heights";
-import { Breakpoints, breakpoints } from "./breakpoints";
+import { Colors, colors } from './colors';
+import { Spacing, spacing } from './spacing';
+import { Typography, typography } from './typography';
+import { LineHeights, lineHeights } from './line-heights';
+import { Breakpoints, breakpoints } from './breakpoints';
 
 export interface Palette extends PaletteOptions {
-    colors: Colors,
-    spacing: Spacing,
-    typography: Typography,
-    breakpoints: Breakpoints,
-    lineHeights: LineHeights,
+    colors: Colors;
+    spacing: Spacing;
+    typography: Typography;
+    breakpoints: Breakpoints;
+    lineHeights: LineHeights;
 }
 
 const palette: Palette = {
@@ -20,12 +20,11 @@ const palette: Palette = {
     spacing,
     typography,
     breakpoints,
-    lineHeights
+    lineHeights,
 };
 const theme = createTheme({
-   palette,
+    palette,
 });
-
 
 const GlobalStyle = createGlobalStyle`
     * {

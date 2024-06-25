@@ -14,7 +14,7 @@ export const latestproducts = [
         img: ObsidianFlames,
         price: '3.99',
         type: 'pack',
-        rrp: '4.29'
+        rrp: '4.29',
     },
     {
         id: 2,
@@ -24,7 +24,7 @@ export const latestproducts = [
         img: MtgCore,
         type: 'booster',
         price: '89.99',
-        rrp: '99.99'
+        rrp: '99.99',
     },
     {
         id: 3,
@@ -34,7 +34,7 @@ export const latestproducts = [
         img: SynchroStorm,
         type: 'booster',
         price: '59.99',
-        rrp: '64.99'
+        rrp: '64.99',
     },
     {
         id: 4,
@@ -43,7 +43,7 @@ export const latestproducts = [
         name: 'Magic The Gathering: Zendikar Rising Draft Booster Box (36 Packs)',
         img: Zendikar,
         price: '94.99',
-        rrp: '109.99'
+        rrp: '109.99',
     },
     {
         id: 5,
@@ -52,7 +52,7 @@ export const latestproducts = [
         name: 'Yu-Gi-Oh! Genesis Impact Booster Box (24 Packs)',
         img: GenesisImpact,
         price: '49.99',
-        rrp: '54.99'
+        rrp: '54.99',
     },
     {
         id: 6,
@@ -61,6 +61,6 @@ export const latestproducts = [
         name: 'Magic: The Gathering Theros Beyond Death Booster Box (36 Packs)',
         img: Theros,
         price: '89.99',
-        rrp: '104.99'
-    }
+        rrp: '104.99',
+    },
 ];

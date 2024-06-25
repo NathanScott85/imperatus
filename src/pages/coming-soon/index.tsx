@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from '@emotion/styled';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -8,20 +9,20 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 
 export const ComingSoon = () => (
     <>
-             <TopHeader />
-            <Header />
-            <Navigation />
-            <BreadCrumb label='Coming Soon' />
-            <Container>
-                <Background />
-            </Container>
-            <MainContainer />
-            <Footer />
-        </>
+        <TopHeader />
+        <Header />
+        <Navigation />
+        <BreadCrumb label="Coming Soon" />
+        <Container>
+            <Background />
+        </Container>
+        <MainContainer />
+        <Footer />
+    </>
 );
 
 const Background = styled('div')`
-    background: #130A30;
+    background: #130a30;
     height: 100%;
     width: 100%;
     position: absolute;

@@ -12,43 +12,42 @@ const catergories = [
     {
         id: 1,
         name: 'pokemon',
-        img: 'https://images.pokemontcg.io/ex14/1.png'
-
+        img: 'https://images.pokemontcg.io/ex14/1.png',
     },
     {
         id: 2,
         name: 'yugioh',
-        src: 'https://images.pokemontcg.io/ex14/1.png'
-    }
-]
-
+        src: 'https://images.pokemontcg.io/ex14/1.png',
+    },
+];
 
 export const Categories = () => (
-        <>
-            <TopHeader />
-            <Header />
-            <Navigation />
-            <BreadCrumb label='Categories' />
-            <Container>
-                <Background />
-            </Container>
-            <MainContainer>
-                {catergories.map((catergory: any) => (
-                    <div key={catergory.id}>
-                        <Link to={`/shop/categories/category/${catergory.id}/${catergory.name}`}>
-                            <h2>{catergory.name}</h2>
-                            <img src={catergory.img} alt={catergory.name} />
-                        </Link>
-                    </div>
-                ))
-                }
-            </MainContainer>
-            <Footer />
-        </>
+    <>
+        <TopHeader />
+        <Header />
+        <Navigation />
+        <BreadCrumb label="Categories" />
+        <Container>
+            <Background />
+        </Container>
+        <MainContainer>
+            {catergories.map((catergory: any) => (
+                <div key={catergory.id}>
+                    <Link
+                        to={`/shop/categories/category/${catergory.id}/${catergory.name}`}
+                    >
+                        <h2>{catergory.name}</h2>
+                        <img src={catergory.img} alt={catergory.name} />
+                    </Link>
+                </div>
+            ))}
+        </MainContainer>
+        <Footer />
+    </>
 );
 
 const Background = styled('div')`
-    background: #130A30;
+    background: #130a30;
     height: 100%;
     width: 100%;
     position: absolute;

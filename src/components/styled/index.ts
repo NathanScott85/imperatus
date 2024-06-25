@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import FooterIMG from '../../components/svg/website-images/footer-bg.png'
+import styled from '@emotion/styled';
+
 export const MainContainer = styled.main`
     display: flex;
     flex-direction: column;
@@ -9,11 +9,11 @@ export const MainContainer = styled.main`
 `;
 
 export const ContactHeader = styled('header')`
-    background-color: #05030F;    
+    background-color: #05030f;
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #D4B05F;
+    color: #d4b05f;
     height: 38px;
     width: 100%;
     padding: 0 1.75rem;
@@ -34,7 +34,7 @@ export const ImageContainer = styled.div<{ img?: any }>`
 `;
 
 export const Container = styled.div`
-    color: #10000E;
+    color: #10000e;
     height: auto;
     width: 100%;
     display: flex;

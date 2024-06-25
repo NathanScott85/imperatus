@@ -1,11 +1,13 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 export const Review = ({ name, rating, review }: any) => {
     return (
         <ReviewContainer>
             <ReviewerName>{name}</ReviewerName>
-            <StarRating>{'★'.repeat(rating) + '☆'.repeat(5 - rating)}</StarRating>
+            <StarRating>
+                {'★'.repeat(rating) + '☆'.repeat(5 - rating)}
+            </StarRating>
             <ReviewText>{review}</ReviewText>
         </ReviewContainer>
     );
@@ -28,7 +30,6 @@ const ReviewerName = styled.span`
     text-align: left;
     display: block;
     margin-bottom: 5px;
-    
 `;
 
 const StarRating = styled.div`
@@ -37,7 +38,7 @@ const StarRating = styled.div`
     line-height: 12px;
     letter-spacing: 0.02em;
     text-align: left;
-    color: #D4B05F;
+    color: #d4b05f;
     margin: 15px;
     margin-left: -2px;
 `;

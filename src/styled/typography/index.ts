@@ -1,14 +1,11 @@
-
 export interface Typography {
     fontWeights: FontWeights;
     fontSizes: FontSizes;
     fonts: Fonts;
 }
 
-export interface FontWeights {
-}
-export interface FontSizes {
-}
+export interface FontWeights {}
+export interface FontSizes {}
 
 export interface Fonts {
     Barlow: string;
@@ -20,12 +17,10 @@ export const typography: Typography = {
     fontSizes: {},
     fonts: {
         Barlow: 'Barlow, sans-serif',
-        Cinzel: 'Cinzel, serif'
+        Cinzel: 'Cinzel, serif',
     },
-}
+};
 
-export const fontWeights: FontWeights = {
-}
+export const fontWeights: FontWeights = {};
 
-export const fontSizes: FontSizes = {
-}
+export const fontSizes: FontSizes = {};

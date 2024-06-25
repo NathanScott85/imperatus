@@ -5,7 +5,7 @@ import { Footer } from '../../components/footer';
 import { ProductLinks } from './product-links';
 import { MainContainer, Container } from '../../components/styled';
 import { Products } from '../../components/products';
-import { latestproducts } from '../../lib/mocks'
+import { latestproducts } from '../../lib/mocks';
 import { ImperatusBanner } from '../../components/banner';
 import { Reviews } from '../../components/reviews';
 
@@ -22,11 +22,13 @@ export const Home = () => (
             <ProductLinks />
         </Container>
         <MainContainer>
-            <Products label='Latest Products' products={latestproducts} />
-            <Products label='Product Recomendations' products={latestproducts} />
+            <Products label="Latest Products" products={latestproducts} />
+            <Products
+                label="Product Recomendations"
+                products={latestproducts}
+            />
             <ImperatusBanner />
             <Reviews />
-            {/* <ContactFooter /> */}
         </MainContainer>
         <Footer />
     </>

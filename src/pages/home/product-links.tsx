@@ -1,38 +1,46 @@
 import styled from '@emotion/styled';
-import { Lorcana, Magic, Yugioh, DoctorWho, ParadoxRift, AgeofOverlord, FinalFantasy } from '../../components/svg/product-icons';
+import {
+    Lorcana,
+    Magic,
+    Yugioh,
+    DoctorWho,
+    ParadoxRift,
+    AgeofOverlord,
+    FinalFantasy,
+} from '../../components/svg/product-icons';
 import { mediaQueries } from '../../styled/breakpoints';
 
 const toplinks = [
     {
         id: 1,
-        src: DoctorWho
+        src: DoctorWho,
     },
     {
         id: 2,
-        src: ParadoxRift
+        src: ParadoxRift,
     },
     {
         id: 3,
-        src: AgeofOverlord
+        src: AgeofOverlord,
     },
 ];
 
 const bottomlinks = [
     {
         id: 1,
-        src: Yugioh
+        src: Yugioh,
     },
     {
         id: 2,
-        src: Lorcana
+        src: Lorcana,
     },
     {
         id: 3,
-        src: Magic
+        src: Magic,
     },
     {
         id: 4,
-        src: FinalFantasy
+        src: FinalFantasy,
     },
 ];
 
@@ -42,7 +50,11 @@ export const ProductLinks = () => {
             <span>
                 {toplinks.map((item) => {
                     return (
-                        <TopImage key={item.id} src={item.src} alt="product icon" />
+                        <TopImage
+                            key={item.id}
+                            src={item.src}
+                            alt="product icon"
+                        />
                     );
                 })}
             </span>
@@ -61,7 +73,7 @@ const ProductLinksContainer = styled('div')`
     align-items: center;
     width: 100%;
     height: 100%;
-    ${mediaQueries("sm")`
+    ${mediaQueries('sm')`
         width: 100%;
     `};
 `;
@@ -73,20 +85,19 @@ const TopImage = styled('img')`
     border: none;
     margin: 1rem;
     border-radius: 5px;
-    transition: all .2s ease-in-out; 
-    &:hover { 
+    transition: all 0.2s ease-in-out;
+    &:hover {
         transform: scale(1.1);
-        border: 2px solid #D4B05F;
+        border: 2px solid #d4b05f;
     }
-    ${mediaQueries("md")`
+    ${mediaQueries('md')`
         width: 200px;
         height: 125px;
     `};
-     ${mediaQueries("xl")`
+    ${mediaQueries('xl')`
         width: 350px;
         height: 225px;
     `};
- 
 `;
 const Image = styled('img')`
     width: 150px;
@@ -94,10 +105,9 @@ const Image = styled('img')`
     margin: 1.25rem;
     border-radius: 5px;
     border: none;
-    transition: all .2s ease-in-out; 
-    &:hover { 
+    transition: all 0.2s ease-in-out;
+    &:hover {
         transform: scale(1.1);
-        border: 1px solid #D4B05F;
+        border: 1px solid #d4b05f;
     }
-    
 `;

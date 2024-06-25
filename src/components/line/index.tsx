@@ -8,32 +8,34 @@ import { options } from './options';
 Chart.register(...registerables);
 
 interface SalesGrowthChartProps {
-  sales: {
-    labels: string[];
-    datasets: {
-      label: string;
-      data: number[];
-      fill?: boolean;
-      borderColor?: string;
-    }[];
-  };
+    sales: {
+        labels: string[];
+        datasets: {
+            label: string;
+            data: number[];
+            fill?: boolean;
+            borderColor?: string;
+        }[];
+    };
 }
 
 const StyledChartContainer = styled.div`
-  width: 50%;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #4D3C7B;
-  border-radius: 8px;
-  background-color: #fff;
+    width: 50%;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    background-color: #fff;
 `;
 
-const SalesGrowthChart: React.FC<SalesGrowthChartProps> = ({ sales }: SalesGrowthChartProps) => {
-  return (
-    <StyledChartContainer>
-      <Line data={sales} options={options as ChartOptions<"line">} />
-    </StyledChartContainer>
-  );
+const SalesGrowthChart: React.FC<SalesGrowthChartProps> = ({
+    sales,
+}: SalesGrowthChartProps) => {
+    return (
+        <StyledChartContainer>
+            <Line data={sales} options={options as ChartOptions<'line'>} />
+        </StyledChartContainer>
+    );
 };
 
 export default SalesGrowthChart;
