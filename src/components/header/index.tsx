@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 import { Search } from '../search';
 import { Login } from '../login';
 import { ImperatusLink } from '../imperatus-link';
@@ -9,24 +9,30 @@ import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
 // TODO: bring users back from api;
-// const usersArray = [
-//     {
-//         id: 1,
-//         username: 'Admin User',
-//         password: 'admin',
-//         email: 'admin@imperatus.co.uk',
-//         role: 'admin'
-//     },
-//     {
-//         id: 2,
-//         username: 'Normal User',
-//         password: 'user',
-//         email: 'user@user.co.uk',
-//         role: 'user'
-//     }
-// ]
-export const Header = () => (
-    <HeaderContainer>
+const usersArray = [
+    {
+        id: 1,
+        username: 'Admin User',
+        password: 'admin',
+        email: 'admin@imperatus.co.uk',
+        role: 'admin'
+    },
+    {
+        id: 2,
+        username: 'Normal User',
+        password: 'user',
+        email: 'user@user.co.uk',
+        role: 'user'
+    }
+]
+
+interface HeaderProps {
+    background?: boolean
+}
+export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => { 
+    return (
+
+    <HeaderContainer background={background}>
         <ImperatusLink />
         <Search />
         <HeaderWrapper>
@@ -34,25 +40,27 @@ export const Header = () => (
             <Basket />
         </HeaderWrapper>
         {
-            // usersArray.map((user: any) => (
-            //     user.role.includes('admin') && <Link key={user.id} to={`/account/admin`}>
-            //         <AdminIcon />
-            //     </Link>
-            // ))
+            usersArray.map((user: any) => (
+                user.role.includes('admin') && <Link key={user.id} to={`/account/admin`}>
+                    <AdminIcon />
+                </Link>
+            ))
 
-            <Link to={`/account/admin`}>
-                <AdminIcon />
-            </Link>
+            // <Link to={`/account/admin`}>
+            //     <AdminIcon />
+            // </Link>
         }
     </HeaderContainer>
-);
+)};
 
 export const TopHeader = () => (
     <ContactHeader>01234 567 890 Mon - Fri 9:00am - 5:00pm</ContactHeader>
 );
 
-const HeaderContainer = styled('header')`
-    background-color: transparent;
+const HeaderContainer = styled.header<HeaderProps>`
+    ${({ background }) => `
+        background-color: ${background ? '#130A30' : 'transparent'};
+    `}
     display: flex;
     flex-direction: row;
     justify-content: space-between;

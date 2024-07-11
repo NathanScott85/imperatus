@@ -24,8 +24,8 @@ export const Admin = ({ user }: AdminProps) => {
     return (
         <>
             <TopHeader />
-            <Header />
-            <Navigation />
+            <Header background />
+            <Navigation background />
             <BreadCrumb label="Admin" />
             <Container>
                 {role === 'admin' ? <ImageContainer /> : <Background />}

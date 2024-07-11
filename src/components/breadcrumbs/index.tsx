@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { HomeIcon } from '../svg/home';
 import { ChevronRight } from '../svg/chevron-right';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 
 interface BreadCrumbProps {
     label?: string;
     text?: string;
+    background?: boolean;
 }
 
 const renderText = (text: string | undefined) => {
@@ -15,7 +16,7 @@ const renderText = (text: string | undefined) => {
     return null;
 };
 
-export const BreadCrumb = ({ label, text }: BreadCrumbProps) => {
+export const BreadCrumb = ({ label, text, background }: BreadCrumbProps) => {
     const location = useLocation();
     const segments = location.pathname
         .split('/')
@@ -27,7 +28,7 @@ export const BreadCrumb = ({ label, text }: BreadCrumbProps) => {
 
     return (
         <>
-            <BreadCrumbNav>
+            <BreadCrumbNav background={background}>
                 <BreadCrumbWrapper>
                     <BreadcrumbList>
                         <Link to="/">
@@ -67,16 +68,15 @@ const Label = styled('h1')`
     color: #d4b05f;
 `;
 
-const BreadCrumbNav = styled('nav')`
+const BreadCrumbNav = styled.nav<BreadCrumbProps>`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    color: #10000e;
-    width: 100%;
-    padding: 5rem 1.75rem;
     color: white;
+    width: 100%;
     padding: 1.5rem;
+  ${(background) => (background ? 'background-color: #130A30' : 'background-color: none')};
 `;
 
 const BreadcrumbList = styled('ul')`

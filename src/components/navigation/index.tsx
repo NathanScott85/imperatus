@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
@@ -47,10 +47,13 @@ const navItems = [
         displayed: true,
     },
 ];
-
-export const Navigation = () => (
-    <NavigationContainer>
+interface NavigationProps {
+    background?: boolean;
+}
+export const Navigation = ({ background }: NavigationProps) => (
+    <NavigationContainer background={background}>
         <NavigationList>
+        <>{console.log(background, 'background')}</>
             {navItems.map((item, index) => (
                 <React.Fragment key={item.name + index + item.id}>
                     {item.displayed && (
@@ -64,8 +67,11 @@ export const Navigation = () => (
         </NavigationList>
     </NavigationContainer>
 );
-
-export const NavigationContainer = styled('nav')`
+// #130A30
+export const NavigationContainer = styled.nav<NavigationProps>`
+    ${({ background }) => `
+        background-color: ${background ? '#130A30' : 'transparent'};
+    `}
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
