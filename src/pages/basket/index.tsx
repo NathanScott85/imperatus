@@ -10,7 +10,7 @@ export const Basket = () => (
         <TopHeader />
         <Header />
         <Navigation />
-        <BreadCrumb label="Accessories" />
+        <BreadCrumb label="Basket" />
         <Container>
             <Background />
         </Container>
