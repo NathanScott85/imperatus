@@ -1,115 +1,202 @@
-import styled from '@emotion/styled';
 import React from 'react';
-import { ImageContainer } from '../styled';
+import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 import { ImperatusLink } from '../imperatus-link';
-import FooterIMG from '../../components/svg/website-images/footer-bg.png'
+import FooterIMG from '../../components/svg/website-images/footer-bg.png';
+import { footerContent } from './footer';
+
+
 export const Footer = () => (
     <FooterContainer>
-        <Section>
-       
-        <FooterWrapper>
-            <FooterContent>
-                <Span>
-                <ImperatusLink />
-                    <p>First Line of address,</p>
-                    <p> Second Line of address</p>
-                    <p>City, County, Postcode</p>
-                </Span>
-                <Span>
-                    <p>support@imperatus.co.uk</p>
-                    <p>01303 287091</p>
-                </Span>
-                <Span>
-                    VAT Number: 123456789
-                </Span>
-                <Span>
-                    Company Number: 123456789
-                </Span>
-            </FooterContent>
-            <FooterContent>
-                <h1>
-                    Social Media
-                </h1>
-                <Span> Facebook</Span>
-                <Span> Twitter</Span>
-                <Span> Instagram</Span>
-                <Span> Youtube</Span>
-            </FooterContent>
-            <FooterContent>
-                <h1>
-                    Payment Methods
-                </h1>
-                <Span>Visa</Span>
-                <Span>Mastercard</Span>
-                <Span>Paypal</Span>
-            </FooterContent>
-            <FooterContent>
-                <h1>
-                    My Account
-                </h1>
-                <Span>My Account</Span>
-                <Span>Adresses</Span>
-                <Span>Europe</Span>
-                <Span>Rest of the World</Span>
-            </FooterContent>
-        </FooterWrapper>
-        </Section>
-        <ImageContainer img={FooterIMG}/> 
-
-       
-       
-       
+        <ImageContainer img={FooterIMG}>
+            <FooterWrapper>
+                <SignUpSection>
+                    <ImperatusLink />
+                    <SignUpText>
+                        Sign up for our information about our <br /> latest
+                        deals and product releases!
+                    </SignUpText>
+                    <SignUpForm>
+                        <Input type="email" placeholder="Enter your email" />
+                        <Button type="submit">SIGN UP</Button>
+                    </SignUpForm>
+                </SignUpSection>
+                <FooterSections>
+                    {footerContent.map((section, index) => (
+                        <FooterSection key={index}>
+                            {section.sectionTitle && (
+                                <SectionTitle>
+                                    {section.sectionTitle}
+                                </SectionTitle>
+                            )}
+                            <FooterContent>
+                                {section.items.map((item, subIndex) => (
+                                    <ContentItem key={subIndex}>
+                                        {item.type === 'text' &&
+                                            (Array.isArray(item.content) ? (
+                                                item.content.map(
+                                                    (line, lineIndex) => (
+                                                        <p key={lineIndex}>
+                                                            {line}
+                                                        </p>
+                                                    ),
+                                                )
+                                            ) : (
+                                                <>
+                                                 <FooterLink
+                                                    to={`/${item.content
+                                                        .replace(/ /g, '-')
+                                                        .toLowerCase()}`}
+                                                >
+                                                    {item.content}
+                                                </FooterLink>
+                                                </>
+                                               
+                                            ))}
+                                    </ContentItem>
+                                ))}
+                            </FooterContent>
+                        </FooterSection>
+                    ))}
+                </FooterSections>
+            </FooterWrapper>
+        </ImageContainer>
     </FooterContainer>
 );
 
-const FooterContainer = styled('footer')`
+const FooterLink = styled(Link)`
+    color: white;
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+`;
+const FooterContainer = styled.footer`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2.5rem 2.5rem;
-    margin: 2.5rem 2.5rem;
-    height: 100%;
-    
-    h1{
-        color: #D4B05F;
-        font-size: 1.2rem;
-    }
+    font-family: Cinzel, serif;
 `;
-const Span = styled.span`
-   font-family: Barlow, sans-serif;
-font-size: 16px;
-font-weight: 400;
-line-height: 28px;
-text-align: left;
 
-
-`;
-const Section = styled.section`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
+const ImageContainer = styled.div<{ img: any }>`
+    position: relative;
     width: 100%;
-    height: 100%;
-    color: white;
-    font-weight: bold;
-    font-size: 1.5rem;
+    height: 509px;
+    background-image: ${({ img }) => `url(${img})`};
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: brightness(90%);
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
-const FooterWrapper = styled('div')`
+const SignUpSection = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: flex-start;
-    font-size: 16px;
+    align-items: center;
+    text-align: center;
+    color: white;
+    padding-bottom: 2rem;
 `;
 
-const FooterContent = styled.span`
+const SignUpText = styled.p`
+    font-family: Barlow;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 28px;
+    text-align: left;
+
+`;
+
+const SignUpForm = styled.form`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #d4b05f;
+    background: #130a30;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+`;
+
+const Input = styled.input`
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    font-size: 16px;
+    flex: 1;
+    margin-left: 0;
+    border: none;
+    height: 100%;
+    background-color: transparent;
+    color: white;
+    &:focus {
+        outline: none;
+        border: none;
+    }
+    font-family: Barlow, serif;
+    &::placeholder {
+        color: white;
+        font-size: 12px;
+    }
+    &:focus::placeholder {
+        color: transparent;
+    }
+    &:active::placeholder {
+        color: transparent;
+    }
+`;
+
+const Button = styled.button`
+    padding: 0.4rem;
+    font-size: 16px;
+    color: white;
+    background-color: #d4b05f;
+    border: none;
+    cursor: pointer;
+    width: 104px;
+    height: 100%;
+    border-radius: 2px;
+`;
+
+const FooterWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin: 1.5rem 1.5rem 0 0;
-    padding: 1rem;
-    text-align: left;
+    width: 100%;
+    max-width: 1200px;
+    padding: 3rem 1rem;
+`;
+
+const FooterSections = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const FooterSection = styled.section`
+    margin-bottom: 2rem;
+`;
+
+const SectionTitle = styled.h2`
+    color: #d4b05f;
+    font-family: Cinzel;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 28px;
+`;
+
+const FooterContent = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const ContentItem = styled.div`
+    color: white;
+    margin-bottom: 0.5rem;
+    p {
+        font-size: 1.2rem;
+        padding: 0.25rem;
+    }
 `;
