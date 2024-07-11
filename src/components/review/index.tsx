@@ -14,11 +14,15 @@ export const Review = ({ name, rating, review }: any) => {
 };
 
 const ReviewContainer = styled.div`
-    border: 1px solid #ccc;
+    border: 1px solid #ac8fff;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     padding: 2rem;
+    &:hover {
+        border: 1px solid #d4b05f;
+    }
+    min-height: 300px;
 `;
 
 const ReviewerName = styled.span`
