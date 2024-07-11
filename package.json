@@ -30,6 +30,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "lint": "eslint --fix \"src/**/*.{ts,tsx}\"",
+        "prettier": "prettier . --write",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -59,8 +60,9 @@
         "@eslint/js": "^9.5.0",
         "@typescript-eslint/eslint-plugin": "^7.14.1",
         "@typescript-eslint/parser": "^7.14.1",
-        "eslint": "9.x",
+        "eslint": "^9.5.0",
         "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-react-app": "^7.0.1",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-react": "^7.34.3",
         "globals": "^15.6.0",
