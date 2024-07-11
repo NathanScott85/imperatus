@@ -29,7 +29,7 @@ export const Product = ({ product }: ProductProps) => {
                     <StyledRRP>RRP {product?.rrp}</StyledRRP>
                 </ProductPriceWrapper>
 
-                <Button label="Add to cart" />
+                <Button label="Add to cart" variant='primary' size='small'  />
             </ProductWrapper>
         </ProductContainer>
     );
@@ -60,7 +60,6 @@ const ProductWrapper = styled.div`
 `;
 
 const ImageWrapper = styled.div`
-    /* Add packs prop type */
     padding: 1rem;
     width: 100%;
     height: 200px;
