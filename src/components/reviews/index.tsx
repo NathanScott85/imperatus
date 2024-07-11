@@ -53,7 +53,7 @@ export const Reviews: React.FC<ReviewsProps> = ({
 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const reviewsPerPage = 2; // Number of reviews per page
+    const reviewsPerPage = 3;
     const totalReviews = reviews.length;
     const totalPages = Math.ceil(totalReviews / reviewsPerPage);
 
@@ -146,15 +146,9 @@ const ArrowContainer = styled.div`
         left: 50%;
         transform: translateX(-50%);
         flex-direction: row;
+        padding-bottom: 1.5rem;
     `};
 
-    ${mediaQueries('xl')`
-        position: absolute;
-        top: 75%;
-        left: 43px;
-        transform: translateY(-50%);
-        flex-direction: column;
-    `};
 `;
 
 const Dots = styled.div`
@@ -170,9 +164,6 @@ const Dot = styled.div<{ active: boolean }>`
     border-radius: 50%;
     background-color: ${(props) => (props.active ? '#ac8fff' : 'transparent')};
     border: 1px solid #ac8fff;
-    ${mediaQueries('xl')`
-        display: none;
-    `};
 `;
 
 const StyledChevronLeft = styled(ChevronLeft)`
@@ -194,8 +185,9 @@ const StyledChevronRight = styled(ChevronRight)`
     padding: 5px;
     cursor: pointer;
     background-color: white;
+    margin-left: 10px;
     ${mediaQueries('sm')`
-        margin-right: 7px;
+        margin-right: 10px;
     `};
 `;
 
@@ -207,7 +199,8 @@ const ReviewsWrapper = styled.div`
     overflow: hidden;
     padding: 2rem;
     ${mediaQueries('sm')`
-        padding: 5rem;
+        padding: 3rem 0 3.5rem 0;
+        margin-bottom: 2rem;
     `};
 `;
 
