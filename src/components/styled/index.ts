@@ -1,11 +1,12 @@
 import styled from '@emotion/styled';
 
 export const MainContainer = styled.main`
+    background-color: #130A30;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100vh;
 `;
 
 export const ContactHeader = styled('header')`
@@ -20,9 +21,6 @@ export const ContactHeader = styled('header')`
 `;
 
 export const ImageContainer = styled.div<{ img?: any }>`
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     padding: 7rem 0;
