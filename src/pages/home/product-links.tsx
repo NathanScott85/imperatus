@@ -47,7 +47,7 @@ const bottomlinks = [
 export const ProductLinks = () => {
     return (
         <ProductLinksContainer>
-            <span>
+            <ProductTopLinksWrapper>
                 {toplinks.map((item) => {
                     return (
                         <TopImage
@@ -57,15 +57,33 @@ export const ProductLinks = () => {
                         />
                     );
                 })}
-            </span>
-            <span>
+            </ProductTopLinksWrapper>
+            <ProductBottomLinksWrapper>
                 {bottomlinks.map((item) => (
                     <Image key={item.id} src={item.src} alt="product icon" />
                 ))}
-            </span>
+            </ProductBottomLinksWrapper>
         </ProductLinksContainer>
     );
 };
+
+const ProductTopLinksWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 3rem;
+`;
+
+const ProductBottomLinksWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 5rem;
+    width: 100%;
+    ${mediaQueries('sm')`
+        padding-bottom: 2rem;
+    `};
+`;
 
 const ProductLinksContainer = styled('div')`
     display: flex;
@@ -73,9 +91,7 @@ const ProductLinksContainer = styled('div')`
     align-items: center;
     width: 100%;
     height: 100%;
-    ${mediaQueries('sm')`
-        width: 100%;
-    `};
+    padding-bottom: 3rem;
 `;
 
 const TopImage = styled('img')`
