@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Review } from '../review';
+import { mediaQueries } from '../../styled/breakpoints';
+import { reviews } from '../../lib/mocks';
 
 export const ChevronLeft: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg
@@ -13,7 +15,7 @@ export const ChevronLeft: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     >
         <path
             d="M15 18L9 12L15 6"
-            stroke="currentColor"
+            stroke="#ac8fff"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -34,72 +36,13 @@ export const ChevronRight: React.FC<React.SVGProps<SVGSVGElement>> = (
     >
         <path
             d="M9 18L15 12L9 6"
-            stroke="currentColor"
+            stroke="#ac8fff"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
         />
     </svg>
 );
-
-interface ReviewProps {
-    name: string;
-    rating: number;
-    review: string;
-}
-
-const reviews: ReviewProps[] = [
-    {
-        name: 'John Doe',
-        rating: 4,
-        review: "Great product, highly recommend! I've been using this for a few weeks now, and it has exceeded my expectations in every way. The build quality is solid, and it performs exactly as described. I would definitely purchase this again.",
-    },
-    {
-        name: 'Jane Smith',
-        rating: 5,
-        review: "Excellent quality and fast shipping. The customer service was outstanding, and the product arrived well-packaged and on time. It's rare to find such high quality at this price point. Highly recommended!",
-    },
-    {
-        name: 'Samuel Green',
-        rating: 3,
-        review: 'Good, but could be better. The product works as advertised, but I encountered a few minor issues. The instructions were a bit unclear, and it took some time to set up properly. Overall, a decent purchase for the price.',
-    },
-    {
-        name: 'Michael Brown',
-        rating: 4,
-        review: 'Satisfied with the purchase. This product met most of my expectations, and I appreciate the thoughtful design. There were a few small flaws, but nothing that affected its overall performance. Worth the money.',
-    },
-    {
-        name: 'Emily White',
-        rating: 5,
-        review: "Amazing! Exceeded my expectations. From the moment I opened the box, I knew I had made a good choice. The attention to detail and quality of materials are evident. I've recommended this to all my friends.",
-    },
-    {
-        name: 'Jessica Johnson',
-        rating: 2,
-        review: "Not what I expected. Unfortunately, this product did not meet my needs. It was difficult to use and didn't perform as I had hoped. The return process was straightforward, though, and the customer service was helpful.",
-    },
-    {
-        name: 'David Wilson',
-        rating: 4,
-        review: "Good value for money. This is a solid product for the price. It performs well and is made of quality materials. There are a few areas for improvement, but overall, I'm happy with my purchase.",
-    },
-    {
-        name: 'Chris Lee',
-        rating: 3,
-        review: "Average product. This item is okay for occasional use, but I wouldn't rely on it for heavy-duty tasks. The performance is adequate, but it lacks some features that would make it truly outstanding.",
-    },
-    {
-        name: 'Sarah Taylor',
-        rating: 5,
-        review: "Fantastic! Will buy again. This is one of the best products I've ever bought. It's well-designed, easy to use, and performs flawlessly. I've already placed an order for another one as a gift.",
-    },
-    {
-        name: 'Daniel Moore',
-        rating: 4,
-        review: "Very good quality. I am impressed with the quality of this product. It has been reliable and durable, even with frequent use. The only downside is the slightly higher price, but it's worth it for what you get.",
-    },
-];
 
 interface ReviewsProps {
     label?: string;
@@ -108,37 +51,63 @@ interface ReviewsProps {
 export const Reviews: React.FC<ReviewsProps> = ({
     label = 'Customer Reviews',
 }) => {
-    const [currentindex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const reviewsPerPage = 2; // Number of reviews per page
+    const totalReviews = reviews.length;
+    const totalPages = Math.ceil(totalReviews / reviewsPerPage);
 
     const nextReview = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+        setCurrentIndex(
+            (prevIndex) => (prevIndex + reviewsPerPage) % totalReviews,
+        );
     };
 
     const prevReview = () => {
         setCurrentIndex(
-            (prevIndex) => (prevIndex - 1 + reviews.length) % reviews.length,
+            (prevIndex) =>
+                (prevIndex - reviewsPerPage + totalReviews) % totalReviews,
         );
     };
+
+    const visibleReviews = reviews.slice(
+        currentIndex,
+        currentIndex + reviewsPerPage,
+    );
 
     return (
         <Section>
             <ReviewsWrapper>
                 <ArrowContainer>
-                    {reviews.length !== 0 ? (
+                    {totalReviews !== 0 ? (
                         <>
                             <StyledChevronLeft onClick={prevReview} />
+                            <Dots>
+                                {Array.from(
+                                    { length: totalPages },
+                                    (_, index) => (
+                                        <Dot
+                                            key={index}
+                                            active={
+                                                Math.floor(
+                                                    currentIndex /
+                                                        reviewsPerPage,
+                                                ) === index
+                                            }
+                                        />
+                                    ),
+                                )}
+                            </Dots>
                             <StyledChevronRight onClick={nextReview} />
                         </>
                     ) : null}
                 </ArrowContainer>
                 <ReviewsHeader>{label}</ReviewsHeader>
                 <ReviewContainer>
-                    {reviews.length !== 0 ? (
-                        reviews
-                            .slice(currentindex, currentindex + 4)
-                            .map((review, index) => (
-                                <Review key={index} {...review} />
-                            ))
+                    {visibleReviews.length !== 0 ? (
+                        visibleReviews.map((review, index) => (
+                            <Review key={index} {...review} />
+                        ))
                     ) : (
                         <NoReviewsMessage>
                             No reviews available, consider leaving a review?
@@ -160,35 +129,74 @@ const Section = styled.section`
     height: 100%;
     color: black;
     font-size: 1.5rem;
-    overflow: auto;
 `;
 
 const ArrowContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     position: absolute;
+    top: 55%;
+    left: 5px;
+    transform: translateY(-50%);
+
+    ${mediaQueries('sm')`
+        position: absolute;
+        bottom: -175px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+    `};
+
+    ${mediaQueries('xl')`
+        position: absolute;
+        top: 75%;
+        left: 43px;
+        transform: translateY(-50%);
+        flex-direction: column;
+    `};
+`;
+
+const Dots = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Dot = styled.div<{ active: boolean }>`
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    border-radius: 50%;
+    background-color: ${(props) => (props.active ? '#ac8fff' : 'transparent')};
+    border: 1px solid #ac8fff;
+    ${mediaQueries('xl')`
+        display: none;
+    `};
 `;
 
 const StyledChevronLeft = styled(ChevronLeft)`
     width: 35px;
     height: 35px;
-    border: 2px solid black;
+    border: 2px solid #ac8fff;
     border-radius: 50%;
     padding: 5px;
     cursor: pointer;
     background-color: white;
-    margin-bottom: 10px;
+    margin-right: 10px;
 `;
 
 const StyledChevronRight = styled(ChevronRight)`
     width: 35px;
     height: 35px;
-    border: 2px solid black;
+    border: 2px solid #ac8fff;
     border-radius: 50%;
     padding: 5px;
     cursor: pointer;
     background-color: white;
+    ${mediaQueries('sm')`
+        margin-right: 7px;
+    `};
 `;
 
 const ReviewsWrapper = styled.div`
@@ -198,6 +206,9 @@ const ReviewsWrapper = styled.div`
     position: relative;
     overflow: hidden;
     padding: 2rem;
+    ${mediaQueries('sm')`
+        padding: 5rem;
+    `};
 `;
 
 const ReviewsHeader = styled.h1`
@@ -225,6 +236,7 @@ const NoReviewsMessage = styled.div`
     text-align: center;
     margin-top: 20px;
     width: 100%;
+    padding: 3rem;
 `;
 
 export default Reviews;
