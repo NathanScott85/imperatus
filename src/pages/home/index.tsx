@@ -29,7 +29,7 @@ export const Home = () => (
                 products={latestproducts}
             />
             <Section>
-                <FancyContainer variant="small" size="medium">
+                <FancyContainer variant="small" size="small">
                     <ContentContainer>
                         <HeadingText>Imperatus Trading</HeadingText>
                         <HeadingText>Cards & Games</HeadingText>
@@ -49,7 +49,6 @@ export const Home = () => (
                     </ContentContainer>
                 </FancyContainer>
             </Section>
-
             <Reviews />
         </MainContainer>
         <Footer />
@@ -106,6 +105,12 @@ const ContentText = styled.p`
     color: white;
     margin: 20px 0 0 0;
     word-spacing: 4px;
+    ${mediaQueries('sm')`
+        font-family: Barlow;
+        text-align: center;
+        color: white;
+        margin: 0;
+    `};
 `;
 
 const HeadingText = styled.h1`
@@ -117,4 +122,14 @@ const HeadingText = styled.h1`
     text-align: center;
     color: white;
     margin: 0;
+    ${mediaQueries('sm')`
+         font-family: Cinzel;
+    font-size: 35px;
+    font-weight: 700;
+    line-height: 57px;
+    letter-spacing: 0.1em;
+    text-align: center;
+    color: white;
+    margin: 0;
+    `};
 `;
