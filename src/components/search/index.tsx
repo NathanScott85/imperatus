@@ -1,7 +1,8 @@
 import React from 'react';
 import { SearchIcon } from '../svg';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
+import { Input } from '../input';
 
 export const Search = () => {
     const [search, setSearch] = React.useState('');
@@ -13,24 +14,25 @@ export const Search = () => {
     return (
         <SearchContainer>
             <Input
+                variant="search"
+                className="search-input"
                 type="text"
                 onChange={onChange}
                 placeholder={search ? '' : 'Search'}
             />
-            <SearchButton>
+            <SearchButton className="search-button">
                 <SearchIcon />
             </SearchButton>
         </SearchContainer>
     );
 };
 
-const SearchContainer = styled('div')`
+const SearchContainer = styled.div`
     display: flex;
-    flex-direction: row;
     align-items: center;
     color: #d4b05f;
     margin: 0 3.5rem;
-    padding: 1.2rem 0.75rem 1.2rem 0.75rem;
+    padding: 1.2rem 0.75rem;
     ${mediaQueries('md')`
         width: 100%;
     `};
@@ -38,55 +40,24 @@ const SearchContainer = styled('div')`
         padding-left: 0rem;
         width: 600px;
     `};
-`;
 
-export const Input = styled('input')`
-    border: 1px solid rgba(172, 143, 255, 0.5);
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-right: none;
-    background: transparent;
-    color: white;
-    font-family: Barlow;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 14px;
-    letter-spacing: 0em;
-    flex: 1;
-    height: 35px;
-    text-align: left;
-    caret-color: white;
-    padding: 0.75rem 0.75rem 0.75rem 0;
-    margin: 0 0.5rem;
-    ::placeholder {
-        color: #d3d3d3 !important;
-        margin-left: 0.1rem;
-        font-size: 1rem;
-        color: #fff;
-        font-family: Barlow;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-    }
-    text-indent: 20px;
-    &:focus::placeholder {
-        color: transparent;
-    }
-    &:active::placeholder {
-        color: transparent;
-    }
-    &:focus {
-        outline: none;
-    }
-    ${mediaQueries('md')`
-        width: 280px;
-    `};
-    ${mediaQueries('xl')`
-        width: 200px;
-    `};
-`;
+    &:focus-within {
+        .search-button {
+            border: 1px solid #d4b05f;
+            outline: none;
 
-export const SearchButton = styled('button')`
+            border-top-right-radius: 5px;
+            border-right-radius: 5px;
+            border-top-left-radius: 0px;
+        }
+        .search-input {
+            border: 1px solid #d4b05f;
+            border-top-right-radius: 0px;
+            border-right: none;
+        }
+    }
+`;
+export const SearchButton = styled.button`
     border: 1px solid #ac8fff80;
     border-left: none;
     border-top-right-radius: 5px;
@@ -99,14 +70,11 @@ export const SearchButton = styled('button')`
     justify-content: center;
     font-weight: 500;
     line-height: 1.5rem;
-    height: 35px;
+    height: 36px;
     padding: 1rem 1.25rem 1.15rem 0.25rem;
     margin: -0.5rem;
-    &:focus {
-        outline: none;
-    }
     ${mediaQueries('sm')`
-        border: 1px solid #AC8FFF80;
+        border: 1px solid #ac8fff80;
     `};
     ${mediaQueries('md')`
          padding: 1rem;
