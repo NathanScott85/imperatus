@@ -27,15 +27,14 @@ export const AppRoutes = () => {
     return (
         <Routes location={location}>
             <Route path="/" element={<Home />} />
-            {users.map(
-                (user: any) =>
-                    user.role.includes('admin') && (
-                        <Route
-                            key={user.id}
-                            path={`/account/admin`}
-                            element={<Admin user={user} />}
-                        />
-                    ),
+            {users.map((user: any) =>
+                user.role.includes('admin') ? (
+                    <Route
+                        key={user.id}
+                        path={`/account/admin`}
+                        element={<Admin user={user} />}
+                    />
+                ) : null,
             )}
             <Route path="/account/login" element={<Login />} />
             <Route path="/account/register" element={<Register />} />

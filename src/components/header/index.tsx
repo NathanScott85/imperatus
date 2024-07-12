@@ -9,49 +9,30 @@ import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
 // TODO: bring users back from api;
-const usersArray = [
-    {
-        id: 1,
-        username: 'Admin User',
-        password: 'admin',
-        email: 'admin@imperatus.co.uk',
-        role: 'admin'
-    },
-    {
-        id: 2,
-        username: 'Normal User',
-        password: 'user',
-        email: 'user@user.co.uk',
-        role: 'user'
-    }
-]
+import { usersArray } from '../../lib/users-mocks';
 
 interface HeaderProps {
-    background?: boolean
+    background?: boolean;
 }
-export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => { 
+export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
     return (
-
-    <HeaderContainer background={background}>
-        <ImperatusLink />
-        <Search />
-        <HeaderWrapper>
-            <Login />
-            <Basket />
-        </HeaderWrapper>
-        {
-            usersArray.map((user: any) => (
-                user.role.includes('admin') && <Link key={user.id} to={`/account/admin`}>
-                    <AdminIcon />
-                </Link>
-            ))
-
-            // <Link to={`/account/admin`}>
-            //     <AdminIcon />
-            // </Link>
-        }
-    </HeaderContainer>
-)};
+        <HeaderContainer background={background}>
+            <ImperatusLink />
+            <Search />
+            <HeaderWrapper>
+                <Login />
+                <Basket />
+            </HeaderWrapper>
+            {usersArray.map((user: any) =>
+                user.role.includes('admin') ? (
+                    <Link key={user.id} to={`/account/admin`}>
+                        <AdminIcon />
+                    </Link>
+                ) : null,
+            )}
+        </HeaderContainer>
+    );
+};
 
 export const TopHeader = () => (
     <ContactHeader>01234 567 890 Mon - Fri 9:00am - 5:00pm</ContactHeader>
