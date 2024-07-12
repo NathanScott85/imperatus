@@ -6,7 +6,6 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { FancyContainer } from '../../components/fancy-container';
 import { Input } from '../../components/input';
-import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 import Button from '../../components/button';
 
@@ -22,9 +21,9 @@ export const Login = () => (
                     <Form>
                         <FormContents>
                             <label> Email Address</label>
-                            <Input />
-                            <label> Password</label>
-                            <Input />
+                            <Input variant="secondary" />
+                            <label>Password</label>
+                            <Input variant="secondary" />
                             <StyledFormWrapper>
                                 <Button
                                     label="Login"
@@ -132,20 +131,13 @@ const FormContents = styled.div`
     flex-direction: column;
     label {
         font-family: Barlow;
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 400;
         line-height: 24px;
         text-align: left;
+        margin-bottom: 0.5rem;
+        margin-top: 0.5rem;
     }
-`;
-
-const StyledLink = styled(Link)`
-    color: white;
-    font-family: Barlow;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 19.2px;
-    text-align: left;
 `;
 
 const StyledFormWrapper = styled.div`
@@ -155,22 +147,12 @@ const StyledFormWrapper = styled.div`
     margin-top: 1rem;
 `;
 
-// const Button = styled.button`
-//     padding: 0.4rem;
-//     font-size: 16px;
-//     color: white;
-//     background-color: #d4b05f;
-//     border: none;
-//     cursor: pointer;
-//     width: 104px;
-//     height: 35px;
-//     border-radius: 2px;
-// `;
-
 const Form = styled.form`
     color: white;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    width: 350px;
+    border: 1px solid red;
 `;

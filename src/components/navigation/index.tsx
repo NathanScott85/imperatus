@@ -53,7 +53,6 @@ interface NavigationProps {
 export const Navigation = ({ background }: NavigationProps) => (
     <NavigationContainer background={background}>
         <NavigationList>
-        <>{console.log(background, 'background')}</>
             {navItems.map((item, index) => (
                 <React.Fragment key={item.name + index + item.id}>
                     {item.displayed && (
@@ -67,7 +66,7 @@ export const Navigation = ({ background }: NavigationProps) => (
         </NavigationList>
     </NavigationContainer>
 );
-// #130A30
+
 export const NavigationContainer = styled.nav<NavigationProps>`
     ${({ background }) => `
         background-color: ${background ? '#130A30' : 'transparent'};

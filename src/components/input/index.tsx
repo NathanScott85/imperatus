@@ -9,7 +9,7 @@ interface InputProps {
     type?: string;
     placeholder?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    variant?: 'search' | 'primary' | 'text' | 'none';
+    variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary';
     className?: string;
 }
 
@@ -28,21 +28,6 @@ export const Input: React.FC<InputProps> = ({
 };
 
 const StyledInput = styled.input<InputProps>`
-    padding: 1.45rem 1rem;
-    margin-right: 0.5rem;
-    margin-top: 0.75rem;
-    margin-bottom: 0.75rem;
-    font-size: 16px;
-    width: 320px;
-    height: 35px;
-    background: #130a30;
-    border: 1px solid rgba(172, 143, 255, 0.5);
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    color: white;
-
-    font-family: Barlow, serif;
-
     &:focus {
         outline: none;
         border: 1.5px solid #d4b05f;
@@ -60,6 +45,19 @@ const StyledInput = styled.input<InputProps>`
     ${({ variant }) =>
         variant === 'search' &&
         css`
+            padding: 1.45rem 1rem;
+            margin-right: 0.5rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 16px;
+            width: 320px;
+            height: 35px;
+            background: #130a30;
+            border: 1px solid rgba(172, 143, 255, 0.5);
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            color: white;
+            font-family: Barlow, serif;
             width: 320px;
             height: 33px;
             border: 1px solid rgba(172, 143, 255, 0.5);
@@ -69,10 +67,6 @@ const StyledInput = styled.input<InputProps>`
             &:focus::placeholder,
             &:active::placeholder {
                 color: transparent;
-            }
-
-            &:focus {
-                border: 1px solid #d4b05f;
             }
 
             ${mediaQueries('md')`
@@ -91,17 +85,29 @@ const StyledInput = styled.input<InputProps>`
     ${({ variant }) =>
         variant === 'primary' &&
         css`
-            border: 1px solid rgba(172, 143, 255, 0.5);
-            font-size: 1rem;
-            font-weight: 400;
-            line-height: 14px;
-            letter-spacing: 0em;
+            margin-right: 0.5rem;
+            font-size: 16px;
             flex: 1;
-            text-align: left;
-            caret-color: white;
-            padding: 0.75rem 0.75rem 0.75rem 0;
-            margin: 0 0.5rem;
+            margin-left: 0;
+            border: none;
 
+            background-color: transparent;
+            color: white;
+            &:focus {
+                outline: none;
+                border: none;
+            }
+            font-family: Barlow, serif;
+            &::placeholder {
+                color: white;
+                font-size: 12px;
+            }
+            &:focus::placeholder {
+                color: transparent;
+            }
+            &:active::placeholder {
+                color: transparent;
+            }
             ::placeholder {
                 color: #d3d3d3 !important;
                 margin-left: 0.1rem;
@@ -113,6 +119,29 @@ const StyledInput = styled.input<InputProps>`
                 line-height: normal;
             }
 
-            text-indent: 20px;
+            text-indent: 5px;
+        `}
+        ${({ variant }) =>
+        variant === 'secondary' &&
+        css`
+            margin-right: 0.5rem;
+            font-size: 16px;
+            flex: 1;
+            margin-left: 0;
+            padding: 0.5rem;
+            border: 1px solid rgba(172, 143, 255, 0.5);
+            background-color: transparent;
+            color: white;
+            &:focus {
+                outline: none;
+                border: 1px solid #d4b05f;
+            }
+            font-family: Barlow, serif;
+            &::placeholder {
+                color: white;
+                font-size: 12px;
+            }
+            text-indent: 5px;
+            width: 325px;
         `}
 `;

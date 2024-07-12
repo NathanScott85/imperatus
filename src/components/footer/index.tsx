@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ImperatusLink } from '../imperatus-link';
 import FooterIMG from '../../components/svg/website-images/footer-bg.png';
 import { footerContent } from './footer';
-
+import { Input } from '../input';
 
 export const Footer = () => (
     <FooterContainer>
@@ -17,7 +17,11 @@ export const Footer = () => (
                         deals and product releases!
                     </SignUpText>
                     <SignUpForm>
-                        <Input type="email" placeholder="Enter your email" />
+                        <Input
+                            variant="primary"
+                            type="email"
+                            placeholder="Enter your email"
+                        />
                         <Button type="submit">SIGN UP</Button>
                     </SignUpForm>
                 </SignUpSection>
@@ -43,15 +47,14 @@ export const Footer = () => (
                                                 )
                                             ) : (
                                                 <>
-                                                 <FooterLink
-                                                    to={`/${item.content
-                                                        .replace(/ /g, '-')
-                                                        .toLowerCase()}`}
-                                                >
-                                                    {item.content}
-                                                </FooterLink>
+                                                    <FooterLink
+                                                        to={`/${item.content
+                                                            .replace(/ /g, '-')
+                                                            .toLowerCase()}`}
+                                                    >
+                                                        {item.content}
+                                                    </FooterLink>
                                                 </>
-                                               
                                             ))}
                                     </ContentItem>
                                 ))}
@@ -111,7 +114,6 @@ const SignUpText = styled.p`
     font-weight: 500;
     line-height: 28px;
     text-align: left;
-
 `;
 
 const SignUpForm = styled.form`
@@ -123,7 +125,8 @@ const SignUpForm = styled.form`
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 `;
 
-const Input = styled.input`
+const Test = styled.input`
+    border: 1px solid red;
     padding: 0.5rem 1rem;
     margin-right: 0.5rem;
     font-size: 16px;
