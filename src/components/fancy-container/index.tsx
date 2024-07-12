@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { mediaQueries } from '../../styled/breakpoints';
+
 interface Variant {
-    variant: 'small' | 'login';
-    size: 'small';
+    variant: 'small' | 'medium' | 'filters' | 'login';
+    size: 'small' | 'medium' | 'filters' | 'login';
 }
 
 export const FancyContainer = ({ children, variant, size }: any) => {
@@ -26,20 +26,60 @@ const gradient = `
   )
 `;
 
+const reversedGradient = `
+  linear-gradient(
+    to left,
+    #AC8FFF 0%,
+    #D4B05F 17.5%,
+    #D4B05F 76.5%,
+    #AC8FFF 100%
+  )
+`;
+
 const StyledContainer = styled.div<Variant>`
-    width: ${({ size }: any) => {
+    padding: ${({ size }) => {
+        switch (size) {
+            case 'login':
+                return '2rem';
+            case 'filters':
+                return '1rem';
+            case 'small':
+                return '1.5rem';
+            case 'medium':
+                return '2rem';
+            default:
+                return '1rem';
+        }
+    }};
+    margin: ${({ size }) => {
+        switch (size) {
+            case 'login':
+            case 'filters':
+                return '2rem';
+            case 'small':
+                return '2rem';
+            case 'medium':
+                return '2rem';
+            default:
+                return '1rem';
+        }
+    }};
+
+    width: ${({ size }) => {
         switch (size) {
             case 'login':
                 return '600px';
+            case 'filters':
+                return '257px';
             case 'small':
                 return '700px';
             case 'medium':
                 return '762px';
             default:
-                return '0 16px';
+                return 'auto';
         }
     }};
-    height: ${({ size }: any) => {
+    height: ${({ size }) => {
         switch (size) {
             case 'login':
                 return '350px';
@@ -48,19 +88,7 @@ const StyledContainer = styled.div<Variant>`
             case 'medium':
                 return '450px';
             default:
-                return '0 16px';
-        }
-    }};
-    margin: ${({ size }: any) => {
-        switch (size) {
-            case 'login':
-                return '2rem';
-            case 'small':
-                return '2rem';
-            case 'medium':
-                return '3rem';
-            default:
-                return '0 16px';
+                return 'auto';
         }
     }};
     position: relative;
@@ -68,6 +96,21 @@ const StyledContainer = styled.div<Variant>`
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+    background: ${({ variant }) => {
+        switch (variant) {
+            case 'login':
+                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
+            case 'small':
+                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
+            case 'medium':
+                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
+            case 'filters':
+                return 'none';
+            default:
+                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
+        }
+    }};
 
     &::before {
         content: '';
@@ -76,9 +119,20 @@ const StyledContainer = styled.div<Variant>`
         left: -2px;
         right: -2px;
         bottom: -2px;
-        border-radius: 36px;
+        border-radius: ${({ size }) => (size === 'filters' ? '0px' : '36px')};
         padding: 2px;
-        background: ${gradient};
+        background: ${({ size }) => {
+            switch (size) {
+                case 'login':
+                case 'small':
+                case 'medium':
+                    return gradient;
+                case 'filters':
+                    return reversedGradient;
+                default:
+                    return gradient;
+            }
+        }};
         -webkit-mask:
             linear-gradient(#fff 0 0) content-box,
             linear-gradient(#fff 0 0);
@@ -90,18 +144,6 @@ const StyledContainer = styled.div<Variant>`
         z-index: 1;
     }
 
-    background: ${({ variant }: any) => {
-        switch (variant) {
-            case 'login':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
-            case 'small':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
-            case 'medium':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
-            default:
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
-        }
-    }};
     > * {
         z-index: 2;
     }

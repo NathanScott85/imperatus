@@ -2,15 +2,74 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { To } from 'react-router-dom';
-type Variant = 'primary' | 'secondary' | 'text';
+
 interface ButtonProps {
     label?: string;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    size?: string;
-    variant?: string;
+    size?: 'small' | 'medium';
+    variant?: 'primary' | 'secondary' | 'text' | 'none';
     pathname?: To;
     link?: boolean;
 }
+
+const getTextDecoration = (variant?: string) => {
+    switch (variant) {
+        case 'text':
+            return 'underline';
+        default:
+            return 'none';
+    }
+};
+
+const getFontFamily = (variant?: string) => {
+    switch (variant) {
+        case 'text':
+            return 'Barlow';
+        case 'none':
+            return 'Barlow';
+        default:
+            return 'Cinzel';
+    }
+};
+
+const getFontWeight = (variant?: string) => {
+    switch (variant) {
+        case 'primary':
+        case 'secondary':
+            return '700';
+        default:
+            return '400';
+    }
+};
+
+const getBackgroundColor = (variant?: string) => {
+    switch (variant) {
+        case 'primary':
+            return '#D4B05F';
+        case 'secondary':
+            return '#AC8FFF';
+        case 'text':
+        case 'none':
+            return 'transparent';
+        default:
+            return '#D4B05F';
+    }
+};
+
+const getHoverStyles = (variant?: string) => {
+    switch (variant) {
+        case 'primary':
+            return 'color: black; background-color: #D4B05F;';
+        case 'secondary':
+            return 'color: black; background-color: #AC8FFF;';
+        case 'text':
+            return 'color: #AC8FFF; background-color: transparent;';
+        case 'none':
+            return 'color: #D4B05F; background-color: transparent;';
+        default:
+            return 'color: #AC8FFF; background-color: #D4B05F;';
+    }
+};
 
 const Button: React.FC<ButtonProps> = ({
     label,
@@ -21,8 +80,10 @@ const Button: React.FC<ButtonProps> = ({
     link,
 }) => (
     <StyledButton variant={variant} size={size} onClick={onClick}>
-        {variant === 'text' || link && variant === 'secondary' ? (
-            <StyledLink variant={variant} link={link} to={pathname as string}>
+        {variant === 'text' ||
+        variant === 'none' ||
+        (link && variant === 'secondary') ? (
+            <StyledLink variant={variant} to={pathname as string}>
                 {label}
             </StyledLink>
         ) : (
@@ -38,88 +99,49 @@ const StyledLink = styled(Link)<ButtonProps>`
     font-size: 14px;
     line-height: 19.2px;
     text-align: left;
-    text-decoration: ${({ variant }: ButtonProps) => {
-        switch (variant) {
-            case 'primary':
-                return 'none';
-            case 'secondary':
-                return 'none';
-            case 'text':
-                return 'underline';
-            default:
-                return 'none';
-        }
-    }};
-    font-family: ${({ variant }: ButtonProps) => {
-        switch (variant) {
-            case 'primary':
-                return 'Cinzel';
-            case 'secondary':
-                return 'Cinzel';
-            case 'text':
-                return 'Barlow';
-            default:
-                return 'Cinzel';
-        }
-    }};
+    text-decoration: ${({ variant }) => getTextDecoration(variant)};
+    font-family: ${({ variant }) => getFontFamily(variant)};
+    font-weight: ${({ variant }) => getFontWeight(variant)};
 
-    font-weight: ${({ variant }: ButtonProps) => {
-        switch (variant) {
-            case 'primary':
-                return '700';
-            case 'secondary':
-                return '700';
-            case 'text':
-                return '400';
-            default:
-                return 'Cinzel';
-        }
-    }};
+    &:hover {
+        ${({ variant }) => getHoverStyles(variant)}
+    }
 `;
 
-const StyledButton = styled.button<ButtonProps>`
+const StyledButton = styled.button<{ variant?: string; size?: string }>`
     font-family: Cinzel;
     font-size: 14px;
     font-weight: 700;
     text-align: center;
     border: none;
     border-radius: 3px;
+    color: white;
+
     &:hover {
-        color: white;
+        ${({ variant }) => getHoverStyles(variant)}
     }
 
-    background-color: ${({ variant }: any) => {
-        switch (variant) {
-            case 'primary':
-                return '#D4B05F';
-            case 'secondary':
-                return '#AC8FFF';
-            case 'text':
-                return 'transparent';
-            default:
-                return '#D4B05F';
-        }
-    }};
+    background-color: ${({ variant }) => getBackgroundColor(variant)};
 
-    width: ${({ size }: any) => {
+    width: ${({ size }) => {
         switch (size) {
             case 'small':
                 return '150px';
             case 'medium':
                 return '250px';
             default:
-                return '0 16px';
+                return 'auto';
         }
     }};
 
-    height: ${({ size }: any) => {
+    height: ${({ size }) => {
         switch (size) {
             case 'small':
                 return '40px';
             case 'medium':
-                return '250px';
+                return '50px';
             default:
-                return '0 16px';
+                return 'auto';
         }
     }};
 `;

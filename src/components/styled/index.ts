@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const MainContainer = styled.main`
-    background-color: #130A30;
+    background-color: #130a30;
     display: flex;
     flex-direction: column;
     justify-content: center;

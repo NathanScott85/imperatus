@@ -17,41 +17,10 @@ import { NewsAndEvents } from '../pages/news-&-events';
 import { Register } from '../pages/register';
 import { useLocation } from 'react-router-dom';
 
-const categories = [
-    {
-        id: 1,
-        name: 'Pokemon',
-    },
-    {
-        id: 2,
-        name: 'Yu-Gi-Oh',
-    },
-    {
-        id: 3,
-        name: 'Cardfight!! Vanguard',
-    },
-    {
-        id: 4,
-        name: 'Disney Lorcana',
-    },
-];
+import { categories } from '../lib/category-mocks';
 // todo: get users from api
-export const usersArray = [
-    {
-        id: 1,
-        username: 'Admin User',
-        password: 'admin',
-        email: 'admin@imperatus.co.uk',
-        role: 'admin',
-    },
-    {
-        id: 2,
-        username: 'Normal User',
-        password: 'user',
-        email: 'user@user.co.uk',
-        role: 'user',
-    },
-];
+import { usersArray } from '../lib/users-mocks';
+
 export const AppRoutes = () => {
     const location = useLocation();
     const [users] = useState(usersArray);
@@ -70,7 +39,10 @@ export const AppRoutes = () => {
             )}
             <Route path="/account/login" element={<Login />} />
             <Route path="/account/register" element={<Register />} />
-            <Route path="/account/forgot-password" element={<div>Forgot Password</div>} />
+            <Route
+                path="/account/forgot-password"
+                element={<div>Forgot Password</div>}
+            />
             <Route path="/basket" element={<Basket />} />
             <Route index path="/shop/categories" element={<Categories />} />
             {categories.map((category: any) => (
@@ -95,9 +67,18 @@ export const AppRoutes = () => {
 
             <Route path="/cookie-policy" element={<div>cookie-policy</div>} />
             <Route path="/site-map" element={<div>site-map</div>} />
-            <Route path="/terms-&-conditions" element={<div>terms-&-conditions</div>} />
-            <Route path="/payment-methods" element={<div>payment-methods</div>} />
-            <Route path="/international-delivery" element={<div>international-delivery</div>} />
+            <Route
+                path="/terms-&-conditions"
+                element={<div>terms-&-conditions</div>}
+            />
+            <Route
+                path="/payment-methods"
+                element={<div>payment-methods</div>}
+            />
+            <Route
+                path="/international-delivery"
+                element={<div>international-delivery</div>}
+            />
             <Route path="/returns-policy" element={<div>returns-policy</div>} />
             <Route path="/discount-codes" element={<div>discount-codes</div>} />
             <Route path="*" element={<>404 Page Not Found</>} />
