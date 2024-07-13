@@ -1,31 +1,30 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { Footer } from '../../components/footer';
-import { ProductLinks } from './product-links';
-import { MainContainer, Container } from '../../components/styled';
 import { Products } from '../../components/products';
 import { latestproducts } from '../../lib/mocks';
 import { FancyContainer } from '../../components/fancy-container';
 import { Reviews } from '../../components/reviews';
+import { Carousel } from '../../components/carousel'; // Renamed to avoid conflict with Carousel interface
 import ArenaImage from '../../components/svg/website-images/0_71.png';
-import HomeIMG from '../../components/svg/website-images/0_10.png';
-import styled from 'styled-components';
+import { MainContainer, Container } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
+import { sampleItems } from '../../lib/carousel-mocks';
 
-export const Home = () => (
+export const Home: React.FC = () => (
     <>
         <TopHeader />
-        <Header background={false} />
-        <Navigation background={false} />
+        <Header background />
+        <Navigation background />
         <Container>
-            <ImageContainer img={HomeIMG} />
-            <ProductLinks />
+            <Carousel items={sampleItems} />
         </Container>
         <MainContainer>
             <Products label="Latest Products" products={latestproducts} />
             <Products
-                label="Product Recomendations"
+                label="Product Recommendations"
                 products={latestproducts}
             />
             <Section>

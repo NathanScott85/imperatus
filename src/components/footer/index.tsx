@@ -125,34 +125,6 @@ const SignUpForm = styled.form`
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 `;
 
-const Test = styled.input`
-    border: 1px solid red;
-    padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
-    font-size: 16px;
-    flex: 1;
-    margin-left: 0;
-    border: none;
-    height: 100%;
-    background-color: transparent;
-    color: white;
-    &:focus {
-        outline: none;
-        border: none;
-    }
-    font-family: Barlow, serif;
-    &::placeholder {
-        color: white;
-        font-size: 12px;
-    }
-    &:focus::placeholder {
-        color: transparent;
-    }
-    &:active::placeholder {
-        color: transparent;
-    }
-`;
-
 const Button = styled.button`
     padding: 0.4rem;
     font-size: 16px;

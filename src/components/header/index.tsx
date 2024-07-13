@@ -50,7 +50,6 @@ const HeaderContainer = styled.header<HeaderProps>`
     height: 62px;
     width: 100%;
     padding: 0 1.75rem;
-    border-bottom: 1px solid #4d3c7b;
     ${mediaQueries('md')`
         width: 100%;
     `};

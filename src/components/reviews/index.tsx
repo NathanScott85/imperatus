@@ -1,51 +1,15 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Review } from '../review';
 import { mediaQueries } from '../../styled/breakpoints';
 import { reviews } from '../../lib/mocks';
-
-export const ChevronLeft: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-    <svg
-        {...props}
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M15 18L9 12L15 6"
-            stroke="#ac8fff"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
-);
-
-export const ChevronRight: React.FC<React.SVGProps<SVGSVGElement>> = (
-    props,
-) => (
-    <svg
-        {...props}
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M9 18L15 12L9 6"
-            stroke="#ac8fff"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
-);
+import { Dots } from '../../components/dots';
+import { ChevronRight } from '../svg/chevron-right';
+import { ChevronLeft } from '../svg/chevron-left';
 
 interface ReviewsProps {
     label?: string;
+    variant?: any;
 }
 
 export const Reviews: React.FC<ReviewsProps> = ({
@@ -75,6 +39,10 @@ export const Reviews: React.FC<ReviewsProps> = ({
         currentIndex + reviewsPerPage,
     );
 
+    const handleDotClick = (index: number) => {
+        setCurrentIndex(index * reviewsPerPage);
+    };
+
     return (
         <Section>
             <ReviewsWrapper>
@@ -82,23 +50,19 @@ export const Reviews: React.FC<ReviewsProps> = ({
                     {totalReviews !== 0 ? (
                         <>
                             <StyledChevronLeft onClick={prevReview} />
-                            <Dots>
-                                {Array.from(
-                                    { length: totalPages },
-                                    (_, index) => (
-                                        <Dot
-                                            key={index}
-                                            active={
-                                                Math.floor(
-                                                    currentIndex /
-                                                        reviewsPerPage,
-                                                ) === index
-                                            }
-                                        />
-                                    ),
-                                )}
-                            </Dots>
-                            <StyledChevronRight onClick={nextReview} />
+                            <Dots
+                                variant="reviews"
+                                reviews
+                                totalPages={totalPages}
+                                currentIndex={currentIndex}
+                                reviewsPerPage={reviewsPerPage}
+                                handleDotClick={handleDotClick}
+                            />
+                            <StyledChevronRight
+                                stroke="#ac8fff"
+                                variant="reviews"
+                                onClick={nextReview}
+                            />
                         </>
                     ) : null}
                 </ArrowContainer>
@@ -148,22 +112,6 @@ const ArrowContainer = styled.div`
         flex-direction: row;
         padding-bottom: 1.5rem;
     `};
-
-`;
-
-const Dots = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Dot = styled.div<{ active: boolean }>`
-    width: 10px;
-    height: 10px;
-    margin: 0 5px;
-    border-radius: 50%;
-    background-color: ${(props) => (props.active ? '#ac8fff' : 'transparent')};
-    border: 1px solid #ac8fff;
 `;
 
 const StyledChevronLeft = styled(ChevronLeft)`
@@ -177,7 +125,7 @@ const StyledChevronLeft = styled(ChevronLeft)`
     margin-right: 10px;
 `;
 
-const StyledChevronRight = styled(ChevronRight)`
+const StyledChevronRight = styled(ChevronRight)<ReviewsProps>`
     width: 35px;
     height: 35px;
     border: 2px solid #ac8fff;
@@ -189,6 +137,39 @@ const StyledChevronRight = styled(ChevronRight)`
     ${mediaQueries('sm')`
         margin-right: 10px;
     `};
+    ${({ variant }) =>
+        variant === 'carousel' &&
+        css`
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: #130a30;
+            border: 1px solid #ac8fff;
+            transition: all 0.3s ease-in-out;
+            width: 35px;
+            height: 35px;
+            border: 2px solid #ac8fff;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        `}
+
+    ${({ variant }) =>
+        variant === 'reviews' &&
+        css`
+            margin: 0 5px;
+            border-radius: 50%;
+            background-color: white;
+            border: 1px solid #ac8fff;
+            transition: all 0.3s ease-in-out;
+            width: 35px;
+            height: 35px;
+            border: 2px solid #ac8fff;
+            border-radius: 50%;
+            padding: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        `}
 `;
 
 const ReviewsWrapper = styled.div`
