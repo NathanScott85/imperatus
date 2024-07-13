@@ -35,7 +35,7 @@ export const BreadCrumb = ({ label, text, background }: BreadCrumbProps) => {
                             <HomeIcon />
                         </Link>
                     </BreadcrumbList>
-                    <ChevronRight />
+                    <ChevronRight stroke="white" />
                     {segments.map((segment: string) => (
                         <BreadcrumbList key={segment}>
                             <Link to={location.pathname}>{segment}</Link>
@@ -76,7 +76,8 @@ const BreadCrumbNav = styled.nav<BreadCrumbProps>`
     color: white;
     width: 100%;
     padding: 1.5rem;
-  ${(background) => (background ? 'background-color: #130A30' : 'background-color: none')};
+    ${(background) =>
+        background ? 'background-color: #130A30' : 'background-color: none'};
 `;
 
 const BreadcrumbList = styled('ul')`

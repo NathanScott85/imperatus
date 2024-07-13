@@ -154,5 +154,4 @@ const Form = styled.form`
     justify-content: center;
     align-items: center;
     width: 350px;
-    border: 1px solid red;
 `;
