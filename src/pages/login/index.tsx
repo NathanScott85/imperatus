@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from '@emotion/styled';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -8,61 +8,115 @@ import { FancyContainer } from '../../components/fancy-container';
 import { Input } from '../../components/input';
 import { mediaQueries } from '../../styled/breakpoints';
 import Button from '../../components/button';
+import { FormInformation } from '../../components/form/form-information';
 
-export const Login = () => (
-    <>
-        <TopHeader />
-        <Header background />
-        <Navigation background />
-        <BreadCrumb label="Login" />
-        <MainContainer>
-            <Section>
-                <FancyContainer variant="login" size="login">
-                    <Form>
-                        <FormContents>
-                            <label> Email Address</label>
-                            <Input variant="secondary" />
-                            <label>Password</label>
-                            <Input variant="secondary" />
-                            <StyledFormWrapper>
-                                <Button
-                                    label="Login"
-                                    variant="primary"
-                                    size="small"
-                                />
-                                <Button
-                                    label="Forgot Password?"
-                                    variant="text"
-                                    pathname="/account/forgot-password"
-                                />
-                            </StyledFormWrapper>
-                        </FormContents>
-                    </Form>
-                </FancyContainer>
-                <FormInformation>
-                    <HeaderContainer>
-                        <h1>New Customer?</h1>
-                        <p>Create an account with us and you'll be able to:</p>
-                    </HeaderContainer>
-                    <p>Check out faster</p>
-                    <p>Save multiple shipping addresses</p>
-                    <p>Access your order history</p>
-                    <p>Track new orders</p>
+export const Login = () => {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
 
-                    <p>Save items to your Wish List</p>
-                    <Button
-                        link
-                        pathname="/account/register"
-                        label="Create Account"
-                        size="small"
-                        variant="secondary"
-                    />
-                </FormInformation>
-            </Section>
-        </MainContainer>
-        <Footer />
-    </>
-);
+    const [errors, setErrors] = useState({
+        email: '',
+        password: '',
+    });
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setErrors({ ...errors, [name]: '' });
+    };
+
+    const validateForm = () => {
+        const newErrors = { ...errors };
+        let valid = true;
+
+        if (!formData.email) {
+            newErrors.email = 'Email address is required';
+            valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Email address is invalid';
+            valid = false;
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+            valid = false;
+        }
+
+        setErrors(newErrors);
+        return valid;
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (validateForm()) {
+            // Handle form submission
+            console.log('Form submitted:', formData);
+        }
+    };
+
+    return (
+        <>
+            <TopHeader />
+            <Header background />
+            <Navigation background />
+            <BreadCrumb label="Login" />
+            <MainContainer>
+                <Section>
+                    <FancyContainer variant="login" size="login">
+                        <Form onSubmit={handleSubmit}>
+                            <FormContents>
+                                <label> Email Address</label>
+                                <Input
+                                    value={formData.email}
+                                    name="email"
+                                    variant="secondary"
+                                    onChange={handleInputChange}
+                                />
+                                {errors.email && (
+                                    <StyledParagraph>
+                                        {errors.email}
+                                    </StyledParagraph>
+                                )}
+
+                                <label>Password</label>
+                                <Input
+                                    value={formData.password}
+                                    name="password"
+                                    variant="secondary"
+                                    type="password"
+                                    onChange={handleInputChange}
+                                />
+                                {errors.password && (
+                                    <StyledParagraph>
+                                        {errors.password}
+                                    </StyledParagraph>
+                                )}
+
+                                <StyledFormWrapper>
+                                    <Button
+                                        label="Login"
+                                        variant="primary"
+                                        size="small"
+                                        type="submit"
+                                    />
+                                    <Button
+                                        label="Forgot Password?"
+                                        variant="text"
+                                        pathname="/account/forgot-password"
+                                    />
+                                </StyledFormWrapper>
+                            </FormContents>
+                        </Form>
+                    </FancyContainer>
+                    <FormInformation login />
+                </Section>
+            </MainContainer>
+            <Footer />
+        </>
+    );
+};
 
 const MainContainer = styled.main`
     display: flex;
@@ -100,32 +154,6 @@ const HeaderContainer = styled.div`
     max-width: 350px;
 `;
 
-const FormInformation = styled.div`
-    align-content: flex-start;
-    color: white;
-    color: #fff;
-    font-family: Cinzel;
-    margin-left: 2rem;
-    h1 {
-        color: #fff;
-        font-family: Cinzel;
-        font-size: 26px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        padding-left: 0.5rem;
-    }
-    p {
-        color: #fff;
-        font-family: Barlow;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-    }
-`;
-
 const FormContents = styled.div`
     display: flex;
     flex-direction: column;
@@ -145,6 +173,10 @@ const StyledFormWrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-top: 1rem;
+`;
+
+const StyledParagraph = styled.p`
+    color: red;
 `;
 
 const Form = styled.form`

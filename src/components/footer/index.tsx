@@ -1,71 +1,130 @@
-import React from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { ImperatusLink } from '../imperatus-link';
+import { Input } from '../input';
+import Button from '../button';
 import FooterIMG from '../../components/svg/website-images/footer-bg.png';
 import { footerContent } from './footer';
-import { Input } from '../input';
+import { ImperatusLink } from '../imperatus-link';
 
-export const Footer = () => (
-    <FooterContainer>
-        <ImageContainer img={FooterIMG}>
-            <FooterWrapper>
-                <SignUpSection>
-                    <ImperatusLink />
-                    <SignUpText>
-                        Sign up for our information about our <br /> latest
-                        deals and product releases!
-                    </SignUpText>
-                    <SignUpForm>
-                        <Input
-                            variant="primary"
-                            type="email"
-                            placeholder="Enter your email"
-                        />
-                        <Button type="submit">SIGN UP</Button>
-                    </SignUpForm>
-                </SignUpSection>
-                <FooterSections>
-                    {footerContent.map((section, index) => (
-                        <FooterSection key={index}>
-                            {section.sectionTitle && (
-                                <SectionTitle>
-                                    {section.sectionTitle}
-                                </SectionTitle>
+interface FormData {
+    email: string;
+}
+
+export const Footer = () => {
+    const [formData, setFormData] = useState<FormData>({
+        email: '',
+    });
+
+    const [errors, setErrors] = useState({
+        email: '',
+    });
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+        setErrors({ ...errors, [name]: '' }); // Clear previous errors on input change
+    };
+
+    const validateForm = () => {
+        const newErrors = { ...errors };
+        let valid = true;
+
+        if (!formData.email) {
+            newErrors.email = 'Email address is required';
+            valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Email address is invalid';
+            valid = false;
+        }
+
+        setErrors(newErrors);
+        return valid;
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (validateForm()) {
+            // Handle form submission (currently logging the email)
+            console.log('Email submitted:', formData.email);
+            // You can add further handling like sending data to server, etc.
+            // Reset form after submission if needed:
+            // setFormData({ email: '' });
+        }
+    };
+
+    return (
+        <FooterContainer>
+            <ImageContainer img={FooterIMG}>
+                <FooterWrapper>
+                    <SignUpSection>
+                        <ImperatusLink />
+                        <SignUpText>
+                            Sign up for our information about our <br /> latest
+                            deals and product releases!
+                        </SignUpText>
+                        <SignUpForm onSubmit={handleSubmit}>
+                            <Input
+                                name="email"
+                                value={formData.email}
+                                variant="primary"
+                                type="email"
+                                placeholder="Enter your email"
+                                onChange={handleInputChange}
+                            />
+                            {errors.email && (
+                                <StyledParagraph>
+                                    {errors.email}
+                                </StyledParagraph>
                             )}
-                            <FooterContent>
-                                {section.items.map((item, subIndex) => (
-                                    <ContentItem key={subIndex}>
-                                        {item.type === 'text' &&
-                                            (Array.isArray(item.content) ? (
-                                                item.content.map(
-                                                    (line, lineIndex) => (
-                                                        <p key={lineIndex}>
-                                                            {line}
-                                                        </p>
-                                                    ),
-                                                )
-                                            ) : (
-                                                <>
-                                                    <FooterLink
-                                                        to={`/${item.content
-                                                            .replace(/ /g, '-')
-                                                            .toLowerCase()}`}
-                                                    >
-                                                        {item.content}
-                                                    </FooterLink>
-                                                </>
-                                            ))}
-                                    </ContentItem>
-                                ))}
-                            </FooterContent>
-                        </FooterSection>
-                    ))}
-                </FooterSections>
-            </FooterWrapper>
-        </ImageContainer>
-    </FooterContainer>
-);
+                            <Button label="SIGN UP" type="submit" />
+                        </SignUpForm>
+                    </SignUpSection>
+                    <FooterSections>
+                        {footerContent.map((section, index) => (
+                            <FooterSection key={index}>
+                                {section.sectionTitle && (
+                                    <SectionTitle>
+                                        {section.sectionTitle}
+                                    </SectionTitle>
+                                )}
+                                <FooterContent>
+                                    {section.items.map((item, subIndex) => (
+                                        <ContentItem key={subIndex}>
+                                            {item.type === 'text' &&
+                                                (Array.isArray(item.content) ? (
+                                                    item.content.map(
+                                                        (line, lineIndex) => (
+                                                            <p key={lineIndex}>
+                                                                {line}
+                                                            </p>
+                                                        ),
+                                                    )
+                                                ) : (
+                                                    <>
+                                                        <FooterLink
+                                                            to={`/${item.content
+                                                                .replace(
+                                                                    / /g,
+                                                                    '-',
+                                                                )
+                                                                .toLowerCase()}`}
+                                                        >
+                                                            {item.content}
+                                                        </FooterLink>
+                                                    </>
+                                                ))}
+                                        </ContentItem>
+                                    ))}
+                                </FooterContent>
+                            </FooterSection>
+                        ))}
+                    </FooterSections>
+                </FooterWrapper>
+            </ImageContainer>
+        </FooterContainer>
+    );
+};
 
 const FooterLink = styled(Link)`
     color: white;
@@ -76,6 +135,7 @@ const FooterLink = styled(Link)`
     font-size: 1.2rem;
     margin-bottom: 0.5rem;
 `;
+
 const FooterContainer = styled.footer`
     display: flex;
     flex-direction: column;
@@ -125,16 +185,8 @@ const SignUpForm = styled.form`
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 `;
 
-const Button = styled.button`
-    padding: 0.4rem;
-    font-size: 16px;
-    color: white;
-    background-color: #d4b05f;
-    border: none;
-    cursor: pointer;
-    width: 104px;
-    height: 100%;
-    border-radius: 2px;
+const StyledParagraph = styled.p`
+    color: red;
 `;
 
 const FooterWrapper = styled.div`
