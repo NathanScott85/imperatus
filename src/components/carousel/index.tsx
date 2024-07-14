@@ -142,7 +142,7 @@ const CarouselContent = styled.div`
         font-weight: 800;
         padding: 0.5rem;
         color: #d4b05f;
-        filter: drop-shadow(-2px -3px 2px #4444dd); /* Bottom-right shadow */
+        filter: drop-shadow(-2px -3px 2px #4444dd);
         font-size: 4em;
     }
 `;
@@ -153,8 +153,8 @@ const ArrowContainer = styled.div`
     align-items: center;
     justify-content: center;
     position: absolute;
-    bottom: 10px;
-    right: 50%;
+    bottom: 20px;
+    right: 45%;
 `;
 
 const StyledChevronLeft = styled(ChevronLeft)`

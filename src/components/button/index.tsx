@@ -10,6 +10,7 @@ interface ButtonProps {
     variant?: 'primary' | 'secondary' | 'text' | 'none';
     pathname?: To;
     link?: boolean;
+    type?: string;
 }
 
 const getTextDecoration = (variant?: string) => {
@@ -78,12 +79,13 @@ const Button: React.FC<ButtonProps> = ({
     variant,
     pathname,
     link,
+    type,
 }) => (
     <StyledButton variant={variant} size={size} onClick={onClick}>
         {variant === 'text' ||
         variant === 'none' ||
         (link && variant === 'secondary') ? (
-            <StyledLink variant={variant} to={pathname as string}>
+            <StyledLink type={type} variant={variant} to={pathname as string}>
                 {label}
             </StyledLink>
         ) : (
