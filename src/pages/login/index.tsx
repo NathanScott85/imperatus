@@ -150,10 +150,6 @@ const Section = styled.section`
    `};
 `;
 
-const HeaderContainer = styled.div`
-    max-width: 350px;
-`;
-
 const FormContents = styled.div`
     display: flex;
     flex-direction: column;
