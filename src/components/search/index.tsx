@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { SearchIcon } from '../svg';
 import { styled } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
@@ -7,7 +7,7 @@ import { Input } from '../input';
 export const Search = () => {
     const [search, setSearch] = React.useState('');
 
-    const onChange = (e: any) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
     };
 

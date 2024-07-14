@@ -173,6 +173,8 @@ const StyledFormWrapper = styled.div`
 
 const StyledParagraph = styled.p`
     color: red;
+    font-size: 10px;
+    margin: 0.5rem 0rem 0rem 0rem;
 `;
 
 const Form = styled.form`

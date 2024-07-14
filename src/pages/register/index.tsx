@@ -4,66 +4,187 @@ import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import { MainContainer, Container } from '../../components/styled';
+import { MainContainer } from '../../components/styled';
 import { FancyContainer } from '../../components/fancy-container';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { FormInformation } from '../../components/form/form-information';
 
+type DOB = {
+    day?: string;
+    month?: string;
+    year?: string;
+};
+
+type Address = {
+    fullName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    phoneNumber: string;
+    address1: string;
+    address2?: string;
+    city: string;
+    postalCode: string;
+};
+
 interface FormErrors {
-    fullName?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-    phoneNumber?: string;
-    address1?: string;
-    city?: string;
-    postalCode?: string;
-    birthdayDay?: string;
-    birthdayMonth?: string;
-    birthdayYear?: string;
+    address: Address;
+    dateOfBirth: DOB;
 }
 
 export const Register = () => {
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        phoneNumber: '',
-        address1: '',
-        address2: '',
-        city: '',
-        postalCode: '',
-        birthdayDay: '',
-        birthdayMonth: '',
-        birthdayYear: '',
+    const [formData, setFormData] = useState<FormErrors>({
+        address: {
+            fullName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            phoneNumber: '',
+            address1: '',
+            address2: '',
+            city: '',
+            postalCode: '',
+        },
+        dateOfBirth: {
+            day: '',
+            month: '',
+            year: '',
+        },
     });
 
-    const [errors, setErrors] = useState<FormErrors | null>(null);
+    const [errors, setErrors] = useState<FormErrors>({
+        address: {
+            fullName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            phoneNumber: '',
+            address1: '',
+            address2: '',
+            city: '',
+            postalCode: '',
+        },
+        dateOfBirth: {
+            day: '',
+            month: '',
+            year: '',
+        },
+    });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+
+        if (name === 'day' || name === 'month' || name === 'year') {
+            setFormData({
+                ...formData,
+                dateOfBirth: {
+                    ...formData.dateOfBirth,
+                    [name]: value,
+                },
+            });
+            setErrors({
+                ...errors,
+                dateOfBirth: {
+                    ...errors.dateOfBirth,
+                    [name]: '',
+                },
+            });
+        } else {
+            setFormData({
+                ...formData,
+                address: {
+                    ...formData.address,
+                    [name]: value,
+                },
+            });
+
+            if (name === 'password' && value.length >= 8) {
+                setErrors({
+                    ...errors,
+                    address: { ...errors.address, [name]: '' },
+                });
+            } else if (name === 'password' && value.length < 8) {
+                setErrors({
+                    ...errors,
+                    address: {
+                        ...errors.address,
+                        [name]: 'Password must be at least 8 characters',
+                    },
+                });
+            } else {
+                setErrors({
+                    ...errors,
+                    address: { ...errors.address, [name]: '' },
+                });
+            }
+        }
     };
 
     const validateForm = () => {
-        const newErrors: FormErrors = {};
-        if (!formData.fullName) newErrors.fullName = 'Full Name is required';
-        if (!formData.email) newErrors.email = 'Email address is required';
-        if (!/\S+@\S+\.\S+/.test(formData.email))
-            newErrors.email = 'Email address is invalid';
-        if (!formData.password) newErrors.password = 'Password is required';
-        if (formData.password !== formData.confirmPassword)
-            newErrors.confirmPassword = 'Passwords do not match';
-        if (!formData.phoneNumber)
-            newErrors.phoneNumber = 'Phone Number is required';
-        if (!formData.address1) newErrors.address1 = 'Address is required';
-        if (!formData.city) newErrors.city = 'Town/City is required';
-        if (!formData.postalCode)
-            newErrors.postalCode = 'Postal/Zip code is required';
+        const newErrors: FormErrors = {
+            address: {
+                fullName: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                phoneNumber: '',
+                address1: '',
+                address2: '',
+                city: '',
+                postalCode: '',
+            },
+            dateOfBirth: {
+                day: '',
+                month: '',
+                year: '',
+            },
+        };
+
+        const { address, dateOfBirth } = formData;
+
+        if (!address.fullName)
+            newErrors.address.fullName = 'Full Name is required';
+        if (!address.email)
+            newErrors.address.email = 'Email address is required';
+        if (!/\S+@\S+\.\S+/.test(address.email))
+            newErrors.address.email = 'Email address is invalid';
+        if (!address.password)
+            newErrors.address.password = 'Password is required';
+        if (address.password.length < 8)
+            newErrors.address.password =
+                'Password must be at least 8 characters';
+        if (address.password !== address.confirmPassword)
+            newErrors.address.confirmPassword = 'Passwords do not match';
+        if (!address.phoneNumber)
+            newErrors.address.phoneNumber = 'Phone Number is required';
+        if (!address.address1)
+            newErrors.address.address1 = 'Address is required';
+        if (!address.city) newErrors.address.city = 'Town/City is required';
+        if (!address.postalCode)
+            newErrors.address.postalCode = 'Postal/Zip code is required';
+
+        if (dateOfBirth) {
+            const dobError = validateDateOfBirth(
+                dateOfBirth.day,
+                dateOfBirth?.month,
+                dateOfBirth.year,
+            );
+            if (dobError) {
+                newErrors.dateOfBirth = {
+                    day: dobError,
+                    month: dobError,
+                    year: dobError,
+                };
+            }
+        }
+
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return (
+            Object.keys(newErrors.address).length === 0 &&
+            (!newErrors.dateOfBirth ||
+                Object.keys(newErrors.dateOfBirth).length === 0)
+        );
     };
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -71,18 +192,55 @@ export const Register = () => {
         if (validateForm()) {
             // Handle form submission
             console.log('Form submitted:', formData);
+        } else {
+            console.log('Form validation failed');
         }
     };
 
+    const validateDateOfBirth = (
+        day: string | undefined,
+        month: string | undefined,
+        year: string | undefined,
+    ) => {
+        const currentYear = new Date().getFullYear();
+        const minYear = currentYear - 120;
+        const maxYear = currentYear - 18;
+
+        const dayNum = Number(day);
+        const monthNum = Number(month);
+        const yearNum = Number(year);
+
+        if (!day || !month || !year) return 'Date of Birth is required';
+        if (isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum))
+            return 'Date of Birth must be numbers';
+
+        if (yearNum < minYear || yearNum > maxYear)
+            return `Year must be between ${minYear} and ${maxYear}`;
+
+        if (monthNum < 1 || monthNum > 12)
+            return 'Month must be between 1 and 12';
+
+        const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+        if (dayNum < 1 || dayNum > daysInMonth)
+            return `Day must be between 1 and ${daysInMonth}`;
+
+        const date = new Date(yearNum, monthNum - 1, dayNum);
+        if (
+            date.getFullYear() !== yearNum ||
+            date.getMonth() !== monthNum - 1 ||
+            date.getDate() !== dayNum
+        )
+            return 'Invalid Date of Birth';
+
+        return null;
+    };
+    const { address, dateOfBirth } = formData;
     return (
         <>
             <TopHeader />
-            <Header />
-            <Navigation />
+            <Header background />
+            <Navigation background />
             <BreadCrumb label="Register" />
-            <Container>
-                <Background />
-            </Container>
             <MainContainer>
                 <Section>
                     <FancyContainer>
@@ -93,12 +251,12 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="fullName"
-                                    value={formData.fullName}
+                                    value={address.fullName}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.fullName && (
+                                {errors.address.fullName && (
                                     <StyledParagraph>
-                                        {errors.fullName}
+                                        {errors.address.fullName}
                                     </StyledParagraph>
                                 )}
 
@@ -106,12 +264,12 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="email"
-                                    value={formData.email}
+                                    value={address.email}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.email && (
+                                {errors.address.email && (
                                     <StyledParagraph>
-                                        {errors.email}
+                                        {errors.address.email}
                                     </StyledParagraph>
                                 )}
 
@@ -120,12 +278,12 @@ export const Register = () => {
                                     variant="secondary"
                                     name="password"
                                     type="password"
-                                    value={formData.password}
+                                    value={address.password}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.password && (
+                                {errors.address.password && (
                                     <StyledParagraph>
-                                        {errors.password}
+                                        {errors.address.password}
                                     </StyledParagraph>
                                 )}
 
@@ -134,12 +292,12 @@ export const Register = () => {
                                     variant="secondary"
                                     name="confirmPassword"
                                     type="password"
-                                    value={formData.confirmPassword}
+                                    value={address.confirmPassword}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.confirmPassword && (
+                                {errors.address.confirmPassword && (
                                     <StyledParagraph>
-                                        {errors.confirmPassword}
+                                        {errors.address.confirmPassword}
                                     </StyledParagraph>
                                 )}
 
@@ -148,26 +306,35 @@ export const Register = () => {
                                     <BirthdayWrapper>
                                         <Input
                                             variant="birthday"
-                                            name="birthdayDay"
+                                            name="day"
                                             placeholder="DD"
-                                            value={formData.birthdayDay}
+                                            value={dateOfBirth.day}
                                             onChange={handleInputChange}
                                         />
                                         <Input
                                             variant="birthday"
-                                            name="birthdayMonth"
+                                            name="month"
                                             placeholder="MM"
-                                            value={formData.birthdayMonth}
+                                            value={dateOfBirth.month}
                                             onChange={handleInputChange}
                                         />
                                         <Input
                                             variant="birthday"
-                                            name="birthdayYear"
+                                            name="year"
                                             placeholder="YYYY"
-                                            value={formData.birthdayYear}
+                                            value={dateOfBirth.year}
                                             onChange={handleInputChange}
                                         />
                                     </BirthdayWrapper>
+                                    {(errors.dateOfBirth.day ||
+                                        errors.dateOfBirth.month ||
+                                        errors.dateOfBirth.year) && (
+                                        <StyledParagraph>
+                                            {errors.dateOfBirth.day ||
+                                                errors.dateOfBirth.month ||
+                                                errors.dateOfBirth.year}
+                                        </StyledParagraph>
+                                    )}
                                 </BirthdayContainer>
                             </>
                             <>
@@ -176,12 +343,12 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="phoneNumber"
-                                    value={formData.phoneNumber}
+                                    value={address.phoneNumber}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.phoneNumber && (
+                                {errors.address.phoneNumber && (
                                     <StyledParagraph>
-                                        {errors.phoneNumber}
+                                        {errors.address.phoneNumber}
                                     </StyledParagraph>
                                 )}
 
@@ -189,12 +356,12 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="address1"
-                                    value={formData.address1}
+                                    value={address.address1}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.address1 && (
+                                {errors.address.address1 && (
                                     <StyledParagraph>
-                                        {errors.address1}
+                                        {errors.address.address1}
                                     </StyledParagraph>
                                 )}
 
@@ -202,7 +369,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="address2"
-                                    value={formData.address2}
+                                    value={address.address2}
                                     onChange={handleInputChange}
                                 />
 
@@ -210,12 +377,12 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="city"
-                                    value={formData.city}
+                                    value={address.city}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.city && (
+                                {errors.address.city && (
                                     <StyledParagraph>
-                                        {errors.city}
+                                        {errors.address.city}
                                     </StyledParagraph>
                                 )}
 
@@ -223,14 +390,15 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="postalCode"
-                                    value={formData.postalCode}
+                                    value={address.postalCode}
                                     onChange={handleInputChange}
                                 />
-                                {errors?.postalCode && (
+                                {errors.address.postalCode && (
                                     <StyledParagraph>
-                                        {errors.postalCode}
+                                        {errors.address.postalCode}
                                     </StyledParagraph>
                                 )}
+                                <StyledFormWrapper></StyledFormWrapper>
                                 <Button
                                     label="Register"
                                     variant="primary"
@@ -247,6 +415,10 @@ export const Register = () => {
         </>
     );
 };
+
+const StyledFormWrapper = styled.div`
+    margin-top: 1rem;
+`;
 
 const BirthdayContainer = styled.div`
     display: flex;
@@ -299,14 +471,6 @@ const Form = styled.form`
 
 const StyledParagraph = styled.p`
     color: red;
-`;
-
-const Background = styled('div')`
-    background: #130a30;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -2;
+    font-size: 10px;
+    margin: 0.5rem 0rem 0.5rem 0rem;
 `;

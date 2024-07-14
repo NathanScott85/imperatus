@@ -6,11 +6,11 @@ import { To } from 'react-router-dom';
 interface ButtonProps {
     label?: string;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-    size?: 'small' | 'medium';
+    size?: 'small' | 'medium' | 'xsmall';
     variant?: 'primary' | 'secondary' | 'text' | 'none';
     pathname?: To;
     link?: boolean;
-    type?: string;
+    type?: 'submit' | 'reset' | 'button' | undefined;
 }
 
 const getTextDecoration = (variant?: string) => {
@@ -81,7 +81,7 @@ const Button: React.FC<ButtonProps> = ({
     link,
     type,
 }) => (
-    <StyledButton variant={variant} size={size} onClick={onClick}>
+    <StyledButton type={type} variant={variant} size={size} onClick={onClick}>
         {variant === 'text' ||
         variant === 'none' ||
         (link && variant === 'secondary') ? (
@@ -127,6 +127,8 @@ const StyledButton = styled.button<{ variant?: string; size?: string }>`
 
     width: ${({ size }) => {
         switch (size) {
+            case 'xsmall':
+                return '100px';
             case 'small':
                 return '150px';
             case 'medium':
@@ -138,6 +140,8 @@ const StyledButton = styled.button<{ variant?: string; size?: string }>`
 
     height: ${({ size }) => {
         switch (size) {
+            case 'xsmall':
+                return '30px';
             case 'small':
                 return '40px';
             case 'medium':

@@ -12,7 +12,7 @@ interface InputProps {
     variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary' | 'birthday';
     className?: string;
     name: string;
-    value: string;
+    value: string | undefined;
 }
 
 export const Input: React.FC<InputProps> = ({

@@ -16,7 +16,7 @@ export const FormInformation: React.FC<FormInformationProps> = ({
             {register && (
                 <StyledFormInformation>
                     <HeaderContainer>
-                        <h1>New Customer?</h1>
+                        <h1>Already a customer?</h1>
                         <p>Create an account with us and you'll be able to:</p>
                     </HeaderContainer>
                     <p>Check out faster</p>
@@ -24,13 +24,15 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                     <p>Access your order history</p>
                     <p>Track new orders</p>
                     <p>Save items to your Wish List</p>
-                    <Button
-                        link
-                        pathname="/account/login"
-                        label="Sign In"
-                        size="small"
-                        variant="secondary"
-                    />
+                    <ButtonContainer>
+                        <Button
+                            link
+                            pathname="/account/login"
+                            label="Sign In"
+                            size="small"
+                            variant="secondary"
+                        />
+                    </ButtonContainer>
                 </StyledFormInformation>
             )}
             {login && (
@@ -44,29 +46,26 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                     <p>Access your order history</p>
                     <p>Track new orders</p>
                     <p>Save items to your Wish List</p>
-                    <Button
-                        link
-                        pathname="/account/register"
-                        label="Create Account"
-                        size="small"
-                        variant="secondary"
-                    />
+                    <ButtonContainer>
+                        <Button
+                            link
+                            pathname="/account/register"
+                            label="Create Account"
+                            size="small"
+                            variant="secondary"
+                        />
+                    </ButtonContainer>
                 </StyledFormInformation>
             )}
         </>
     );
 };
 
-const HeaderContainer = styled.div`
-    max-width: 350px;
+const ButtonContainer = styled.div`
+    padding: 1.25rem 0rem;
 `;
 
-const StyledFormInformation = styled.div`
-    align-content: flex-start;
-    color: #fff;
-    font-family: Cinzel;
-    margin-left: 2rem;
-
+const HeaderContainer = styled.div`
     h1 {
         color: #fff;
         font-family: Cinzel;
@@ -74,9 +73,12 @@ const StyledFormInformation = styled.div`
         font-style: normal;
         font-weight: 400;
         line-height: normal;
-        padding-left: 0.5rem;
     }
+`;
 
+const StyledFormInformation = styled.div`
+    font-family: Cinzel;
+    margin: 2rem;
     p {
         color: #fff;
         font-family: Barlow;

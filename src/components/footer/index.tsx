@@ -77,7 +77,12 @@ export const Footer = () => {
                                     {errors.email}
                                 </StyledParagraph>
                             )}
-                            <Button label="SIGN UP" type="submit" />
+                            <Button
+                                variant="primary"
+                                size="xsmall"
+                                label="SIGN UP"
+                                type="submit"
+                            />
                         </SignUpForm>
                     </SignUpSection>
                     <FooterSections>
@@ -182,7 +187,7 @@ const SignUpForm = styled.form`
     align-items: center;
     border: 1px solid #d4b05f;
     background: #130a30;
-    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    padding: 0.25rem;
 `;
 
 const StyledParagraph = styled.p`
