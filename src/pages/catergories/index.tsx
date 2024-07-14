@@ -50,7 +50,6 @@ export const Categories = () => (
                                             alt={category?.name}
                                         />
                                     </ImageWrapper>
-                                    <h2>{category.name}</h2>
                                 </CategoryItem>
                             </Link>
                         </>
@@ -143,6 +142,7 @@ const CategoriesListContainer = styled.div`
 `;
 
 const CategoryItem = styled.div`
+    border-radius: 12px;
     background: transparent;
     padding: 1rem;
     font-family: Barlow, sans-serif;
@@ -156,21 +156,5 @@ const CategoryItem = styled.div`
     &:hover {
         color: #ac8fff;
         border: 1px solid #d4b05f;
-    }
-
-    h2 {
-        font-family: Barlow;
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 21.6px;
-        letter-spacing: 0.02em;
-        padding: 0.75rem;
-        border-top: 1px solid #ac8fff;
-        color: white;
-        border-top: 1px solid #ac8fff;
-        &:hover {
-            color: #ac8fff;
-            border-top: 1px solid #d4b05f;
-        }
     }
 `;

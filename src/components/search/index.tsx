@@ -11,16 +11,23 @@ export const Search = () => {
         setSearch(e.target.value);
     };
 
+    const onSubmit = () => {
+        console.log('Search submitted:', search);
+        setSearch(''); // Clear the search input
+    };
+
     return (
         <SearchContainer>
             <Input
+                value={search}
+                name="search"
                 variant="search"
                 className="search-input"
                 type="text"
                 onChange={onChange}
                 placeholder={search ? '' : 'Search'}
             />
-            <SearchButton className="search-button">
+            <SearchButton className="search-button" onClick={onSubmit}>
                 <SearchIcon />
             </SearchButton>
         </SearchContainer>
@@ -45,9 +52,8 @@ const SearchContainer = styled.div`
         .search-button {
             border: 1px solid #d4b05f;
             outline: none;
-
             border-top-right-radius: 5px;
-            border-right-radius: 5px;
+            border-bottom-right-radius: 5px;
             border-top-left-radius: 0px;
         }
         .search-input {
@@ -57,6 +63,7 @@ const SearchContainer = styled.div`
         }
     }
 `;
+
 export const SearchButton = styled.button`
     border: 1px solid #ac8fff80;
     border-left: none;

@@ -9,20 +9,30 @@ interface InputProps {
     type?: string;
     placeholder?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary';
+    variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary' | 'birthday';
     className?: string;
+    name: string;
+    value: string;
 }
 
 export const Input: React.FC<InputProps> = ({
     placeholder,
     variant,
     className,
+    name,
+    value,
+    onChange,
+    type,
 }) => {
     return (
         <StyledInput
+            type={type}
+            value={value}
+            name={name}
             className={className}
             variant={variant}
             placeholder={placeholder}
+            onChange={onChange}
         />
     );
 };
@@ -120,6 +130,30 @@ const StyledInput = styled.input<InputProps>`
             }
 
             text-indent: 5px;
+        `}
+
+         ${({ variant }) =>
+        variant === 'birthday' &&
+        css`
+            margin-right: 0.5rem;
+            font-size: 16px;
+            flex: 1;
+            margin-left: 0;
+            padding: 0.5rem;
+            border: 1px solid rgba(172, 143, 255, 0.5);
+            background-color: transparent;
+            color: white;
+            &:focus {
+                outline: none;
+                border: 1px solid #d4b05f;
+            }
+            font-family: Barlow, serif;
+            &::placeholder {
+                color: white;
+                font-size: 12px;
+            }
+            text-indent: 5px;
+            width: 90px;
         `}
         ${({ variant }) =>
         variant === 'secondary' &&
