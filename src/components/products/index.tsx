@@ -15,7 +15,7 @@ type Product = {
 
 interface ProductsProps {
     products: Product[];
-    label: string;
+    label?: string;
 }
 export const Products = ({ products, label }: ProductsProps) => {
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';

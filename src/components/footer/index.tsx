@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Input } from '../input';
 import Button from '../button';
