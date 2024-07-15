@@ -1,58 +1,13 @@
-import React from 'react';
-import styled from '@emotion/styled';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { Container, MainContainer } from '../../components/styled';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { Product } from '../../components/product';
-import ObsidianFlames from '../../lib/mock-images/pokemon-obsidian.jpg';
-import { FancyContainer } from '../../components/fancy-container';
-import { Input } from '../../components/input';
-
-const products = [
-    {
-        id: 1,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    },
-
-    {
-        id: 2,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    },
-    {
-        id: 3,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    },
-    {
-        id: 4,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    }
-];
+import { products } from '../../lib/product-mocks';
+import { Checkbox } from '../../components/checkbox'; // Adjust import path as per your project structure
 
 type Product = {
     id: number;
@@ -64,12 +19,22 @@ type Product = {
     game: string;
 };
 
-interface ProductsProps {
-    products: Product[];
-    label?: string;
-}
-
 export const CardGames = () => {
+    const [checkedStatus, setCheckedStatus] = useState({
+        inStock: false,
+        outOfStock: true,
+    });
+
+    const handleChecked = (type: keyof typeof checkedStatus) => {
+        setCheckedStatus(prevState => {
+            const newState = {
+                ...prevState,
+                [type]: !prevState[type],
+            };
+            return newState;
+        });
+    };
+
     return (
         <>
             <TopHeader />
@@ -86,13 +51,24 @@ export const CardGames = () => {
                         <FilterSection>
                             <FilterTitle>Stock Status</FilterTitle>
                             <FilterOption>
-
-                                <label htmlFor="in-stock">In Stock</label>
-                                <Input variant='checkbox' type="checkbox" id="in-stock" />
+                                <label htmlFor="inStock">In Stock</label>
+                                <Checkbox
+                                    type="checkbox"
+                                    className=''
+                                    checked={checkedStatus.inStock}
+                                    onChange={() => handleChecked('inStock')}
+                                    id="inStock"
+                                />
                             </FilterOption>
                             <FilterOption>
-                                <label htmlFor="out-of-stock">Out of Stock</label>
-                                <Input variant='checkbox' type="checkbox" id="out-of-stock" />
+                                <label htmlFor="outOfStock">Out of Stock</label>
+                                <Checkbox
+                                    className=''
+                                    checked={checkedStatus.outOfStock}
+                                    type="checkbox"
+                                    onChange={() => handleChecked('outOfStock')}
+                                    id="outOfStock"
+                                />
                             </FilterOption>
                         </FilterSection>
                         <FilterList>
@@ -227,3 +203,5 @@ const NoProductsMessage = styled.div`
     margin-top: 20px;
     width: 100%;
 `;
+
+export default CardGames;
