@@ -44,8 +44,6 @@ export const Carousel: React.FC<CarouselProps> = ({ items }: CarouselProps) => {
         <CarouselContainer>
             {items.map((item, index) => (
                 <CarouselSlide key={item.id} index={index - currentIndex}>
-                    <> {console.log(item, 'item')}</>
-
                     <CarouselContentContainer>
                         <CarouselImage src={item.img} alt={item.name} />
                         <CarouselContentWrapper>
