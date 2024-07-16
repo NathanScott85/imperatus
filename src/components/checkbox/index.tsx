@@ -12,6 +12,7 @@ interface CheckboxProps {
 const CheckboxContainer = styled.div`
     display: inline-block;
     vertical-align: middle;
+    z-index: 50;
 `;
 
 const Icon = styled.svg`
@@ -52,15 +53,29 @@ const StyledCheckbox = styled.div<{ checked: boolean }>`
     }
 `;
 
-export const Checkbox: React.FC<CheckboxProps> = ({ className, checked, onChange, id, type }) => {
+export const Checkbox: React.FC<CheckboxProps> = ({
+    className,
+    checked,
+    onChange,
+    id,
+    type,
+}) => {
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onChange();
     };
 
     return (
         <CheckboxContainer className={className}>
-            <HiddenCheckbox checked={checked} id={id} type={type} onChange={handleChange} />
-            <StyledCheckbox checked={checked} onClick={(e: any) => handleChange(e)}>
+            <HiddenCheckbox
+                checked={checked}
+                id={id}
+                type={type}
+                onChange={handleChange}
+            />
+            <StyledCheckbox
+                checked={checked}
+                onClick={(e: any) => handleChange(e)}
+            >
                 <Icon viewBox="0 0 24 24">
                     <polyline points="20 6 9 17 4 12" />
                 </Icon>

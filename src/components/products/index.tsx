@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Product } from '../product';
 import { mediaQueries } from '../../styled/breakpoints';
 
-type Product = {
+type ProductType = {
     id: any;
     img: string;
     name: string;
@@ -14,7 +14,7 @@ type Product = {
 };
 
 interface ProductsProps {
-    products: Product[];
+    products: ProductType[];
     label?: string;
 }
 export const Products = ({ products, label }: ProductsProps) => {
@@ -24,7 +24,7 @@ export const Products = ({ products, label }: ProductsProps) => {
                 <ProductsHeader>{label}</ProductsHeader>
                 <ProductsContainer>
                     {products?.length !== 0 ? (
-                        products.map((product: Product) => (
+                        products.map((product: ProductType) => (
                             <Product key={product.img} product={product} />
                         ))
                     ) : (

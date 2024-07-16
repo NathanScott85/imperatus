@@ -1,8 +1,9 @@
 import Yugioh from '../components/svg/product-icons/yugioh_2.png';
-import Disney from '../components/svg/product-icons/DisneyLorcana.png';
-import OnePiece from '../components/svg/product-icons/onepiece.png';
-import Lorcana from '../lib/mock-images/featured-image-disney-lorcana-art.png';
-import One from '../lib/mock-images/one-piece-card.jpg';
+import YugiohBanner from '../components/svg/page-headers/yugioh-banner-one.png';
+import LorcanaLogo from '../components/svg/product-icons/DisneyLorcana.png';
+import OnePeiceLogo from '../components/svg/product-icons/onepiece.png';
+import OneTwo from '../components/svg/page-headers/one-peice-banner-one.png';
+import Lorcana from '../components/svg/page-headers/lorcana-banner-one.png';
 
 interface CarouselItem {
     id: number;
@@ -20,7 +21,7 @@ interface CarouselItem {
 export const sampleItems: CarouselItem[] = [
     {
         id: 1,
-        img: 'https://cdn.chaoscards.co.uk/uploads/home_header/3_173_h.jpg?v=1720773948',
+        img: YugiohBanner,
         name: 'Yu-gi-oh, The Infinite Forbidden',
         price: 19.99,
         rrp: 24.99,
@@ -37,19 +38,19 @@ export const sampleItems: CarouselItem[] = [
         price: 29.99,
         rrp: 34.99,
         category: 'Card Games',
-        game: Disney,
+        game: LorcanaLogo,
         description: `Ursula's Return`,
         product: `Ursula's Return`,
         buttontext: 'Pre-order Today',
     },
     {
         id: 3,
-        img: One,
+        img: OneTwo,
         name: 'Demon Slayer: Kimetsu no Yaiba Hashira Training Arc',
         price: 14.99,
         rrp: 19.99,
         category: 'Card Games',
-        game: OnePiece,
+        game: OnePeiceLogo,
         description: 'Wings Of The Captain',
         product: '',
         buttontext: 'Pre-order Today',

@@ -8,8 +8,9 @@ import { Footer } from '../../components/footer';
 import { Product } from '../../components/product';
 import { products } from '../../lib/product-mocks';
 import { Checkbox } from '../../components/checkbox'; // Adjust import path as per your project structure
+import { FancyContainer } from '../../components/fancy-container';
 
-type Product = {
+type ProductType = {
     id: number;
     img: string;
     name: string;
@@ -22,11 +23,11 @@ type Product = {
 export const CardGames = () => {
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
-        outOfStock: true,
+        outOfStock: false,
     });
 
     const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus(prevState => {
+        setCheckedStatus((prevState) => {
             const newState = {
                 ...prevState,
                 [type]: !prevState[type],
@@ -44,32 +45,38 @@ export const CardGames = () => {
             <Container>
                 <Background />
             </Container>
-            <MainContainer>
+            <CardGamesMain>
                 <Content>
                     <FiltersContainer>
                         <h1>Filters</h1>
                         <FilterSection>
                             <FilterTitle>Stock Status</FilterTitle>
-                            <FilterOption>
-                                <label htmlFor="inStock">In Stock</label>
-                                <Checkbox
-                                    type="checkbox"
-                                    className=''
-                                    checked={checkedStatus.inStock}
-                                    onChange={() => handleChecked('inStock')}
-                                    id="inStock"
-                                />
-                            </FilterOption>
-                            <FilterOption>
-                                <label htmlFor="outOfStock">Out of Stock</label>
-                                <Checkbox
-                                    className=''
-                                    checked={checkedStatus.outOfStock}
-                                    type="checkbox"
-                                    onChange={() => handleChecked('outOfStock')}
-                                    id="outOfStock"
-                                />
-                            </FilterOption>
+                            <FancyContainer variant="stock" size="stock">
+                                <FilterOption display>
+                                    <label htmlFor="inStock">In Stock</label>
+                                    <Checkbox
+                                        type="checkbox"
+                                        checked={checkedStatus.inStock}
+                                        onChange={() =>
+                                            handleChecked('inStock')
+                                        }
+                                        id="inStock"
+                                    />
+                                </FilterOption>
+                                <FilterOption display={false}>
+                                    <label htmlFor="outOfStock">
+                                        Out of Stock
+                                    </label>
+                                    <Checkbox
+                                        checked={checkedStatus.outOfStock}
+                                        type="checkbox"
+                                        onChange={() =>
+                                            handleChecked('outOfStock')
+                                        }
+                                        id="outOfStock"
+                                    />
+                                </FilterOption>
+                            </FancyContainer>
                         </FilterSection>
                         <FilterList>
                             <FilterItem>BRAND</FilterItem>
@@ -83,8 +90,11 @@ export const CardGames = () => {
                     <ProductsSection>
                         {products.length !== 0 ? (
                             <ProductsGrid>
-                                {products.map((product: Product) => (
-                                    <Product key={product.id} product={product} />
+                                {products.map((product: ProductType) => (
+                                    <Product
+                                        key={product.id}
+                                        product={product}
+                                    />
                                 ))}
                             </ProductsGrid>
                         ) : (
@@ -94,18 +104,26 @@ export const CardGames = () => {
                         )}
                     </ProductsSection>
                 </Content>
-            </MainContainer>
+            </CardGamesMain>
             <Footer />
         </>
     );
 };
 
+const FiltersWrapper = styled(FancyContainer)``;
+const CardGamesMain = styled.main`
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+`;
 const FiltersContainer = styled.div`
     color: black;
     text-align: left;
     margin: 2rem;
-    border-bottom: 1px solid #E5DEF9;
-
+    border-bottom: 1px solid #e5def9;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
     h1 {
         font-family: Cinzel, serif;
         font-size: 30px;
@@ -124,16 +142,20 @@ const FilterTitle = styled.p`
     font-family: Cinzel, serif;
     font-size: 18px;
     font-weight: 400;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
     color: black;
+    line-height: 2;
+    border-bottom: 1px solid #e5def9;
 `;
 
-const FilterOption = styled.div`
+const FilterOption = styled.div<{ display: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 0.5rem;
-
+    padding-bottom: 0.5rem;
+    border-bottom: ${({ display }) => (display ? '1px solid #e5def9' : 'none')};
     input {
         margin-right: 0.5rem;
     }
@@ -155,19 +177,24 @@ const FilterList = styled.ul`
 
 const FilterItem = styled.li`
     font-family: Cinzel;
-    font-size: 16px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 500;
     line-height: 24.26px;
     letter-spacing: 0.02em;
     text-align: left;
-    border-bottom: 1px solid #E5DEF9;
+    padding: 0.5rem 0rem 0.75rem 0rem;
+    border-bottom: 1px solid #e5def9;
 `;
 
 const Content = styled.div`
     display: flex;
     flex-direction: row;
-    width: 100%;
+    justify-content: space-between;
+    padding: 1rem;
+    margin: 1rem;
     background-color: white;
+    height: 100vh;
+    z-index: 0;
 `;
 
 const ProductsSection = styled.div`

@@ -51,7 +51,7 @@ const StyledInput = styled.input<InputProps>`
     &:focus::placeholder {
         color: transparent;
     }
-
+    z-index: 50;
     ${({ variant }) =>
         variant === 'search' &&
         css`

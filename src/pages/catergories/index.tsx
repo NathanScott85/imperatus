@@ -126,6 +126,7 @@ const CatergoriesWrapper = styled.div`
         border-bottom: 1px solid #4d3c7b;
     }
     padding: 1rem;
+    z-index: 50;
 `;
 
 const CategoriesListContainer = styled.div`

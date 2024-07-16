@@ -101,6 +101,7 @@ const StyledLink = styled(Link)<ButtonProps>`
     font-size: 14px;
     line-height: 19.2px;
     text-align: left;
+    z-index: 50;
     text-decoration: ${({ variant }) => getTextDecoration(variant)};
     font-family: ${({ variant }) => getFontFamily(variant)};
     font-weight: ${({ variant }) => getFontWeight(variant)};
@@ -118,7 +119,7 @@ const StyledButton = styled.button<{ variant?: string; size?: string }>`
     border: none;
     border-radius: 3px;
     color: white;
-
+    z-index: 50;
     &:hover {
         ${({ variant }) => getHoverStyles(variant)}
     }
