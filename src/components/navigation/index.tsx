@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
 const navItems = [
@@ -47,16 +47,18 @@ const navItems = [
         displayed: true,
     },
 ];
+
 interface NavigationProps {
     background?: boolean;
 }
+
 export const Navigation = ({ background }: NavigationProps) => (
     <NavigationContainer background={background}>
         <NavigationList>
             {navItems.map((item, index) => (
                 <React.Fragment key={item.name + index + item.id}>
                     {item.displayed && (
-                        <NavigationItem to={item.path}>
+                        <NavigationItem to={item.path} end>
                             {item.name}
                         </NavigationItem>
                     )}
@@ -95,13 +97,12 @@ export const NavigationList = styled('ul')`
     `};
 `;
 
-export const NavigationItem = styled(Link)`
+export const NavigationItem = styled(NavLink)`
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     list-style-type: none;
-    width: 100%;
     padding: 0 1.75rem;
     font-size: 1.2rem;
     font-weight: 600;
@@ -109,11 +110,16 @@ export const NavigationItem = styled(Link)`
     text-transform: uppercase;
     letter-spacing: 0.1rem;
     cursor: pointer;
+    color: white;
+    text-decoration: none;
+    height: 100%;
     &:hover {
         color: #d4b05f;
         font-weight: 700;
     }
-    height: 19px;
+    &.active {
+        border-bottom: 2px solid #d4b05f;
+    }
     ${mediaQueries('md')`
         padding: 1.75rem;
     `};
