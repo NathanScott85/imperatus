@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
 const navItems = [
@@ -52,22 +52,29 @@ interface NavigationProps {
     background?: boolean;
 }
 
-export const Navigation = ({ background }: NavigationProps) => (
-    <NavigationContainer background={background}>
-        <NavigationList>
-            {navItems.map((item, index) => (
-                <React.Fragment key={item.name + index + item.id}>
-                    {item.displayed && (
-                        <NavigationItem to={item.path} end>
-                            {item.name}
-                        </NavigationItem>
-                    )}
-                    {item.divider && <Divider />}
-                </React.Fragment>
-            ))}
-        </NavigationList>
-    </NavigationContainer>
-);
+export const Navigation = ({ background }: NavigationProps) => {
+    const { pathname } = useLocation();
+    console.log(pathname, 'pathname');
+    return (
+        <NavigationContainer background={background}>
+            <NavigationList>
+                {navItems.map((item, index) => (
+                    <React.Fragment key={item.name + index + item.id}>
+                        {item.displayed && (
+                            <NavigationItem
+                                to={item.path}
+                                end={item.path === pathname}
+                            >
+                                {item.name}
+                            </NavigationItem>
+                        )}
+                        {item.divider && <Divider />}
+                    </React.Fragment>
+                ))}
+            </NavigationList>
+        </NavigationContainer>
+    );
+};
 
 export const NavigationContainer = styled.nav<NavigationProps>`
     ${({ background }) => `
