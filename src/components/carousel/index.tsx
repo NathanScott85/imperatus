@@ -12,7 +12,7 @@ interface CarouselItem {
     price: number;
     rrp: number;
     category: string;
-    game: string;
+    cardgame: string;
     description: string;
     buttontext: string;
 }
@@ -47,7 +47,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items }: CarouselProps) => {
                     <CarouselContentContainer>
                         <CarouselImage src={item.img} alt={item.name} />
                         <CarouselContentWrapper>
-                            <GameImage src={item.game} />
+                            <GameImage src={item.cardgame} />
                             <CarouselContent>
                                 <p>{item.description}</p>
                                 <Button

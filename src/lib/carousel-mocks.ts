@@ -12,7 +12,7 @@ interface CarouselItem {
     price: number;
     rrp: number;
     category: string;
-    game: string;
+    cardgame: string;
     description: string;
     buttontext: string;
     product: string;
@@ -26,7 +26,7 @@ export const sampleItems: CarouselItem[] = [
         price: 19.99,
         rrp: 24.99,
         category: 'Card Games',
-        game: Yugioh,
+        cardgame: Yugioh,
         product: '',
         description: 'Infinite Forbidden',
         buttontext: 'Pre-order Today',
@@ -38,7 +38,7 @@ export const sampleItems: CarouselItem[] = [
         price: 29.99,
         rrp: 34.99,
         category: 'Card Games',
-        game: LorcanaLogo,
+        cardgame: LorcanaLogo,
         description: `Ursula's Return`,
         product: `Ursula's Return`,
         buttontext: 'Pre-order Today',
@@ -50,7 +50,7 @@ export const sampleItems: CarouselItem[] = [
         price: 14.99,
         rrp: 19.99,
         category: 'Card Games',
-        game: OnePeiceLogo,
+        cardgame: OnePeiceLogo,
         description: 'Wings Of The Captain',
         product: '',
         buttontext: 'Pre-order Today',

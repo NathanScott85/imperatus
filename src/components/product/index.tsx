@@ -9,7 +9,7 @@ type ProductType = {
     price: string;
     rrp: string;
     category: string;
-    game: string;
+    cardgame: string;
 };
 
 interface ProductProps {

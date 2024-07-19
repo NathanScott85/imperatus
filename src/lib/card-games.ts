@@ -40,8 +40,8 @@ export const cardgames = [
         products: [
             {
                 id: 1,
-                category: 'card games',
-                game: 'pokemon',
+                category: 'cardgames',
+                cardgame: 'pokemon',
                 name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
                 img: ObsidianFlames,
                 price: '3.99',
@@ -50,8 +50,8 @@ export const cardgames = [
             },
             {
                 id: 2,
-                category: 'card games',
-                game: 'pokemon',
+                category: 'cardgames',
+                cardgame: 'pokemon',
                 name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
                 img: ObsidianFlames,
                 price: '3.99',
@@ -68,8 +68,8 @@ export const cardgames = [
         products: [
             {
                 id: 1,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
                 img: InfiniteForbidden,
                 price: '3.99',
@@ -78,8 +78,8 @@ export const cardgames = [
             },
             {
                 id: 2,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
                 img: InfiniteForbidden,
                 price: '3.99',
@@ -96,8 +96,8 @@ export const cardgames = [
         products: [
             {
                 id: 1,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Cardfight!! Vanguard Booster 13: Flight of Chakrabarthi Booster Pack',
                 img: Chakrabarthi,
                 price: '3.99',
@@ -106,8 +106,8 @@ export const cardgames = [
             },
             {
                 id: 2,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Cardfight!! Vanguard Booster 13: Flight of Chakrabarthi Booster Pack',
                 img: Chakrabarthi,
                 price: '3.99',
@@ -124,8 +124,8 @@ export const cardgames = [
         products: [
             {
                 id: 1,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
                 img: InfiniteForbidden,
                 price: '3.99',
@@ -134,8 +134,8 @@ export const cardgames = [
             },
             {
                 id: 2,
-                category: 'card games',
-                game: 'Yugioh',
+                category: 'cardgames',
+                cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
                 img: InfiniteForbidden,
                 price: '3.99',
@@ -152,8 +152,8 @@ export const cardgames = [
         products: [
             {
                 id: 1,
-                category: 'card games',
-                game: 'Disney Lorcana',
+                category: 'cardgames',
+                cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
                 img: DisneyLorcanaFirst,
                 price: '3.99',
@@ -162,8 +162,8 @@ export const cardgames = [
             },
             {
                 id: 2,
-                category: 'card games',
-                game: 'Disney Lorcana',
+                category: 'cardgames',
+                cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
                 img: DisneyLorcanaFirst,
                 price: '3.99',

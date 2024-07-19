@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Home } from '../pages/home';
 import { Login } from '../pages/login';
 import { Basket } from '../pages/basket';
@@ -15,10 +15,7 @@ import { AboutUs } from '../pages/about-us';
 import { FrequentlyAskedQuestions } from '../pages/faqs';
 import { NewsAndEvents } from '../pages/news-&-events';
 import { Register } from '../pages/register';
-import { useLocation } from 'react-router-dom';
-
-import { categories } from '../lib/category-mocks';
-// todo: get users from api
+import { CardGame } from '../pages/cardgames/cardgame';
 import { usersArray } from '../lib/users-mocks';
 
 export const AppRoutes = () => {
@@ -27,7 +24,7 @@ export const AppRoutes = () => {
     return (
         <Routes location={location}>
             <Route path="/" element={<Home />} />
-            {users.map((user: any) =>
+            {users.map((user) =>
                 user.role.includes('admin') ? (
                     <Route
                         key={user.id}
@@ -43,27 +40,26 @@ export const AppRoutes = () => {
                 element={<div>Forgot Password</div>}
             />
             <Route path="/basket" element={<Basket />} />
-            <Route index path="/shop/categories" element={<Categories />} />
-            {categories.map((category: any) => (
-                <Route
-                    key={category.id}
-                    path={`/shop/categories/category/${category.id}/${category.name}`}
-                    element={<Category name={category.name} id={category.id} />}
-                />
-            ))}
+            <Route path="/shop/categories" element={<Categories />} />
+            <Route
+                path="/shop/categories/category/:id/:name"
+                element={<Category />}
+            />
             <Route path="/shop/card-games" element={<CardGames />} />
+            <Route
+                path="/shop/card-games/cardgame/:id/:name"
+                element={<CardGame />}
+            />
             <Route path="/shop/accessories" element={<Accessories />} />
             <Route path="/shop/coming-soon" element={<ComingSoon />} />
             <Route path="/shop/board-games" element={<BoardGames />} />
             <Route path="/shop/offers" element={<Offers />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
-
             <Route path="/news-&-events" element={<NewsAndEvents />} />
             <Route path="/careers" element={<div>careers</div>} />
             <Route path="/shop-by-brand" element={<div>shop-by-brand</div>} />
             <Route path="/privacy-policy" element={<div>privacy-policy</div>} />
-
             <Route path="/cookie-policy" element={<div>cookie-policy</div>} />
             <Route path="/site-map" element={<div>site-map</div>} />
             <Route
@@ -80,7 +76,7 @@ export const AppRoutes = () => {
             />
             <Route path="/returns-policy" element={<div>returns-policy</div>} />
             <Route path="/discount-codes" element={<div>discount-codes</div>} />
-            <Route path="*" element={<>404 Page Not Found</>} />
+            <Route path="*" element={<div>404 Page Not Found</div>} />
         </Routes>
     );
 };

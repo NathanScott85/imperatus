@@ -9,7 +9,7 @@ export const latestproducts = [
     {
         id: 1,
         category: 'card games',
-        game: 'pokemon',
+        cardgame: 'pokemon',
         name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
         img: ObsidianFlames,
         price: '3.99',
@@ -19,7 +19,7 @@ export const latestproducts = [
     {
         id: 2,
         category: 'card games',
-        game: 'magic the gathering',
+        cardgame: 'magic the gathering',
         name: 'Magic The Gathering Core Set 2021: Booster Box (36 Packs)',
         img: MtgCore,
         type: 'booster',
@@ -29,7 +29,7 @@ export const latestproducts = [
     {
         id: 3,
         category: 'card games',
-        game: 'yu-gi-oh',
+        cardgame: 'yu-gi-oh',
         name: 'Yu-Gi-Oh! Legendary Duelists: Synchro Storm Booster Box (36 Packs)',
         img: SynchroStorm,
         type: 'booster',
@@ -39,7 +39,7 @@ export const latestproducts = [
     {
         id: 4,
         category: 'card games',
-        game: 'magic the gathering',
+        cardgame: 'magic the gathering',
         name: 'Magic The Gathering: Zendikar Rising Draft Booster Box (36 Packs)',
         img: Zendikar,
         price: '94.99',
@@ -48,7 +48,7 @@ export const latestproducts = [
     {
         id: 5,
         category: 'card games',
-        game: 'yu-gi-oh',
+        cardgame: 'yu-gi-oh',
         name: 'Yu-Gi-Oh! Genesis Impact Booster Box (24 Packs)',
         img: GenesisImpact,
         price: '49.99',
@@ -57,7 +57,7 @@ export const latestproducts = [
     {
         id: 6,
         category: 'card games',
-        game: 'magic the gathering',
+        cardgame: 'magic the gathering',
         name: 'Magic: The Gathering Theros Beyond Death Booster Box (36 Packs)',
         img: Theros,
         price: '89.99',
