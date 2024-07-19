@@ -4,7 +4,6 @@ import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
-import Button from '../../components/button';
 import { Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
@@ -25,15 +24,17 @@ export const Categories = () => (
                     <h1>Categories</h1>
                     <FancyContainer variant="filters" size="filters">
                         <CategoriesFilter>
-                            {categories.map((category) => (
-                                <CatergoriesWrapper key={category.id}>
-                                    <Button
-                                        variant="none"
-                                        pathname={`/shop/categories/category/${category.id}/${category.name}`}
-                                        label={category.name}
-                                    />
-                                </CatergoriesWrapper>
-                            ))}
+                            {categories
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((category) => (
+                                    <CatergoriesWrapper key={category.id}>
+                                        <StyledLink
+                                            to={`/shop/categories/category/${category.id}/${category.name}`}
+                                        >
+                                            {category.name}
+                                        </StyledLink>
+                                    </CatergoriesWrapper>
+                                ))}
                         </CategoriesFilter>
                     </FancyContainer>
                 </CategoriesFilterContainer>
@@ -50,6 +51,7 @@ export const Categories = () => (
                                             alt={category?.name}
                                         />
                                     </ImageWrapper>
+                                    <p> {category?.name}</p>
                                 </CategoryItem>
                             </Link>
                         </>
@@ -63,9 +65,26 @@ export const Categories = () => (
     </>
 );
 
+const StyledLink = styled(Link)`
+    font-family: Cinzel;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 25px;
+    letter-spacing: 0.02em;
+    color: white;
+    &:hover {
+        color: #d4b05f;
+    }
+    p {
+        margin: 1rem;
+        border: 2px solid red;
+    }
+`;
+
 const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: row;
+    margin-bottom: 2.5rem;
 `;
 
 const ImageWrapper = styled.div`
@@ -144,12 +163,8 @@ const CategoriesListContainer = styled.div`
 
 const CategoryItem = styled.div`
     border-radius: 12px;
-    background: transparent;
+    background: #160d35;
     padding: 1rem;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 16.8px;
     text-align: left;
     padding: 0.4rem;
     text-align: center;
@@ -157,5 +172,12 @@ const CategoryItem = styled.div`
     &:hover {
         color: #ac8fff;
         border: 1px solid #d4b05f;
+    }
+    p {
+        font-family: Barlow, sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 16.8px;
+        margin: 1rem;
     }
 `;

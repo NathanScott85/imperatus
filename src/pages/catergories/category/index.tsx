@@ -1,62 +1,104 @@
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
-import styled from 'styled-components';
-import Pokemon from '../../../components/svg/page-headers/Pokemon.png';
 import { MainContainer } from '../../../components/styled';
+import { Filters } from '../../../components/filters';
+import { Products } from '../../../components/products';
+import { Footer } from '../../../components/footer';
+import { categories } from '../../../lib/category-mocks';
 
-interface CategoryProps {
-    name: string;
-    id: number;
-}
+export const Category = () => {
+    const { id } = useParams();
 
-export const Category = ({ name }: CategoryProps) => (
-    <>
-        <Container>
-            <Top />
-            <ImageContainer />
-        </Container>
-        <TopHeader />
-        <Header />
-        <Navigation />
-        <MainContainer>
-            <section>
-                <h1>{name}</h1>
-            </section>
-        </MainContainer>
-    </>
-);
+    const category = categories.find((category) => category.id === id);
 
-const Container = styled('div')`
-    color: #10000e;
-    height: 625px;
-    width: 100%;
-    position: absolute;
-    top: 100;
-    left: 0;
-    z-index: -1;
-    background-image: linear-gradient(to bottom, black, #05030f);
-`;
+    const [checkedStatus, setCheckedStatus] = useState({
+        inStock: false,
+        outOfStock: false,
+    });
 
-const Top = styled('div')`
+    const handleChecked = (type: keyof typeof checkedStatus) => {
+        setCheckedStatus((prevState) => {
+            const newState = {
+                ...prevState,
+                [type]: !prevState[type],
+            };
+            return newState;
+        });
+    };
+    return (
+        <>
+            <TopHeader />
+            <Header background />
+            <Navigation background />
+            {category && (
+                <ImageWrapper>
+                    <ImageContainer img={category.banner} />
+                </ImageWrapper>
+            )}
+            <CategoriesMain>
+                <Section>
+                    <ProductFiltersContainer>
+                        <Filters
+                            filters
+                            checkedStatus={checkedStatus}
+                            handleChecked={handleChecked}
+                        />
+                    </ProductFiltersContainer>
+                    {category && <Products products={category?.products} />}
+                </Section>
+            </CategoriesMain>
+            <Footer />
+        </>
+    );
+};
+
+const Section = styled.section`
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
     align-items: center;
-    background: linear-gradient(0deg, #130a30, #130a30),
-        linear-gradient(0deg, #4d3c7b, #4d3c7b);
-    padding: 1rem;
-    width: 100vw;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-`;
-const ImageContainer = styled('div')`
-    background-image: url(${Pokemon});
-    background-repeat: no-repeat;
-    height: 100%;
+    justify-content: center;
+    background-color: white;
     width: 100%;
-    position: relative;
-    top: 200;
-    left: 0;
-    margin-top: 13.5rem;
+    height: 100%;
+    color: black;
+    font-size: 1.5rem;
+`;
+
+const CategoriesMain = styled(MainContainer)`
+    flex-direction: row;
+    background-color: white;
+`;
+
+const ProductFiltersContainer = styled.div`
+    h1 {
+        color: white;
+        font-family: Cinzel;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 57px;
+        letter-spacing: 0.02em;
+        text-align: left;
+        padding-bottom: 2rem;
+        margin-left: 2rem;
+    }
+`;
+
+const ImageWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ImageContainer = styled.div<{ img?: any }>`
+    background-image: url(${(props) => props.img});
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    height: calc(100vh - 450px);
+    width: 100%;
+    z-index: -1;
 `;
