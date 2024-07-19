@@ -1,80 +1,58 @@
-import Pokemon from '../components/svg/product-icons/Pokémon__logo.png';
-import Yugioh from '../components/svg/product-icons/yugioh_2.png';
-import CardFight from '../components/svg/product-icons/cardfight.jpg';
-import FleshAndBlood from '../components/svg/product-icons/Flesh_and_Blood.png';
-import OnePiece from '../components/svg/product-icons/onepiece.png';
-import DisneyLorcana from '../components/svg/product-icons/DisneyLorcana.png';
-import DigimonLogo from '../components/svg/product-icons/digimonlogo.png';
-import MagicTheGathering from '../components/svg/product-icons/Magicthegathering.png';
-import Altered from '../components/svg/product-icons/alteredtcg.png';
-import DragonBallSuper from '../components/svg/product-icons/DragonBallSuper.png';
-import StarWars from '../components/svg/product-icons/star-wars.png';
-import Weiss from '../components/svg/product-icons/weiss.png';
+import CardGames from '../components/svg/product-icons/card-game.png';
+import CardSleeves from '../components/svg/product-icons/card-sleeves.png';
+import DeckBox from '../components/svg/product-icons/deck-box.png';
+import DiceBag from '../components/svg/product-icons/dice-bag.png';
+import BoardGames from '../components/svg/product-icons/board-games.png';
+
+// Banners
+import TradingCardGames from '../components/svg/page-headers/trading-card-games.png';
+import BoardGamesBanner from '../components/svg/page-headers/board-games.png';
+import DiceBagBanner from '../components/svg/page-headers/dice-bags.png';
+import CardSleevesBanner from '../components/svg/page-headers/card-sleeves.png';
+import Minatures from '../components/svg/page-headers/minatures.png';
+import DeckBoxesBanner from '../components/svg/page-headers/deck-boxes-png.png';
 
 export const categories = [
     {
-        id: 1,
-        name: 'Pokemon',
-        img: Pokemon,
+        id: '1',
+        name: 'Card Games',
+        img: CardGames,
+        banner: TradingCardGames,
+        products: [],
     },
     {
-        id: 2,
-        name: 'Yu-gi-oh',
-        img: Yugioh,
+        id: '2',
+        name: 'Deck Boxes',
+        img: DeckBox,
+        banner: DeckBoxesBanner,
+        products: [],
     },
     {
-        id: 4,
-        name: 'Cardfight!! Vanguard',
-        img: CardFight,
+        id: '3',
+        name: 'Dice Bags',
+        img: DiceBag,
+        banner: DiceBagBanner,
+        products: [],
     },
     {
-        id: 5,
-        name: 'One Piece',
-        img: OnePiece,
+        id: '4',
+        name: 'Card Sleeves',
+        img: CardSleeves,
+        banner: CardSleevesBanner,
+        products: [],
     },
     {
-        id: 6,
-        name: 'Disney Lorcana',
-        img: DisneyLorcana,
+        id: '5',
+        name: 'Board Games',
+        img: BoardGames,
+        banner: BoardGamesBanner,
+        products: [],
     },
     {
-        id: 7,
-        name: 'Digimon',
-        img: DigimonLogo,
+        id: '6',
+        name: 'Miniatures',
+        img: BoardGames,
+        banner: Minatures,
+        products: [],
     },
-    {
-        id: 8,
-        name: 'Magic the Gathering',
-        img: MagicTheGathering,
-    },
-    {
-        id: 9,
-        name: 'Flesh and Blood',
-        img: FleshAndBlood,
-    },
-    {
-        id: 10,
-        name: 'Dragonball Super',
-        img: DragonBallSuper,
-    },
-    {
-        id: 11,
-        name: 'Altered',
-        img: Altered,
-    },
-    {
-        id: 12,
-        name: 'Star Wars',
-        img: StarWars,
-    },
-    {
-        id: 13,
-        name: 'Weiss Schwarz',
-        img: Weiss,
-    },
-    // {
-    //     id: 14,
-    //     name: '',
-    //     img:,
-    // },
 ];

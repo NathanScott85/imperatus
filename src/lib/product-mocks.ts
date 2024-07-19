@@ -11,11 +11,10 @@ export const products = [
         type: 'pack',
         rrp: '4.29',
     },
-
     {
         id: 2,
         category: 'card games',
-        game: 'pokemon',
+        game: 'yugioh',
         name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
         img: ObsidianFlames,
         price: '3.99',
@@ -24,16 +23,6 @@ export const products = [
     },
     {
         id: 3,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    },
-    {
-        id: 4,
         category: 'card games',
         game: 'pokemon',
         name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
@@ -54,16 +43,6 @@ export const products = [
     },
     {
         id: 6,
-        category: 'card games',
-        game: 'pokemon',
-        name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
-        type: 'pack',
-        rrp: '4.29',
-    },
-    {
-        id: 7,
         category: 'card games',
         game: 'pokemon',
         name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
