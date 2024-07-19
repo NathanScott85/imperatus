@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Product } from '../product';
 import { mediaQueries } from '../../styled/breakpoints';
+import { FancyContainer } from '../fancy-container';
 
 type ProductType = {
-    id: any;
+    id: number;
     img: string;
     name: string;
     price: string;
@@ -19,24 +20,72 @@ interface ProductsProps {
 }
 export const Products = ({ products, label }: ProductsProps) => {
     return (
-        <Section>
-            <ProductsWrapper>
-                <ProductsHeader>{label}</ProductsHeader>
-                <ProductsContainer>
-                    {products?.length !== 0 ? (
-                        products.map((product: ProductType) => (
-                            <Product key={product.img} product={product} />
-                        ))
+        <>
+            {(label === 'Latest Products' ||
+                label === 'Product Recommendations') && (
+                <Section>
+                    <ProductsWrapper>
+                        <ProductsHeader>{label}</ProductsHeader>
+                        <ProductsContainer>
+                            {products?.length !== 0 ? (
+                                products.map((product: ProductType) => (
+                                    <Product
+                                        key={product.img}
+                                        product={product}
+                                    />
+                                ))
+                            ) : (
+                                <NoProductsMessage>
+                                    <FancyContainer variant="medium">
+                                        No products available, please check back
+                                        later
+                                    </FancyContainer>
+                                </NoProductsMessage>
+                            )}
+                        </ProductsContainer>
+                    </ProductsWrapper>
+                </Section>
+            )}
+            {label === undefined && (
+                <ProductsSection>
+                    {products.length !== 0 ? (
+                        <ProductsGrid>
+                            {products.map((product: ProductType) => (
+                                <Product key={product.id} product={product} />
+                            ))}
+                        </ProductsGrid>
                     ) : (
                         <NoProductsMessage>
-                            No products available, please check back later
+                            <FancyContainer variant="filters" size="medium">
+                                <p>
+                                    No products available, please check back
+                                    later
+                                </p>
+                            </FancyContainer>
                         </NoProductsMessage>
                     )}
-                </ProductsContainer>
-            </ProductsWrapper>
-        </Section>
+                </ProductsSection>
+            )}
+        </>
     );
 };
+
+const ProductsSection = styled.div`
+    flex: 1;
+    & > div {
+        padding: 0rem;
+    }
+`;
+
+const ProductsGrid = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    & > div {
+        flex: 0 0 200px;
+        max-width: 215px;
+    }
+`;
 
 const Section = styled.section`
     display: flex;
@@ -89,9 +138,30 @@ const ProductsWrapper = styled.div`
 `;
 
 const NoProductsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 18px;
     color: #777;
     text-align: center;
     margin-top: 20px;
     width: 100%;
+
+    p {
+        color: black;
+        height: 100%;
+        color: black;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding-bottom: 1rem;
+    }
 `;
