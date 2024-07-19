@@ -39,9 +39,9 @@ const reversedGradient = `
 const stockGradient = `
   linear-gradient(
     to left,
-    rgba(172, 143, 255, 0.4) 0%,  /* #AC8FFF with 40% opacity */
-    rgba(212, 176, 95, 0.9) 30%,   /* #D4B05F with 90% opacity */
-    rgba(172, 143, 255, 0.4) 100% /* #AC8FFF with 40% opacity */
+    rgba(172, 143, 255, 0.4) 0%,
+    rgba(212, 176, 95, 0.9) 30%,
+    rgba(172, 143, 255, 0.4) 100%
   )
 `;
 
@@ -132,9 +132,9 @@ const StyledContainer = styled.div<Variant>`
             case 'medium':
                 return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'filters':
-                return 'none';
+                return null;
             case 'stock':
-                return 'none';
+                return null;
             default:
                 return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
         }
@@ -182,7 +182,7 @@ const StyledContainer = styled.div<Variant>`
                 case 'medium':
                     return 2;
                 case 'stock':
-                    return -1;
+                    return 0;
                 case 'filters':
                     return 0;
                 default:
@@ -273,11 +273,10 @@ const StyledRectBottom = styled.div<Variant>`
             case 'filters':
                 return '2px solid #ac8fff';
             default:
-                return '#130a30';
+                return '2px solid #ac8fff';
         }
     }};
     transform: rotate(45deg);
     bottom: -9px;
-    z-index: 2; /* Ensure this is above the ::before element */
     left: calc(50% - 7.5px);
 `;
