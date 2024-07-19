@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '../button';
 
-type Product = {
+type ProductType = {
     id: any;
     img: string;
     name: string;
@@ -13,7 +13,7 @@ type Product = {
 };
 
 interface ProductProps {
-    product: Product;
+    product: ProductType;
 }
 
 export const Product = ({ product }: ProductProps) => {
@@ -28,8 +28,7 @@ export const Product = ({ product }: ProductProps) => {
                     <ProductPrice>£{product?.price}</ProductPrice>
                     <StyledRRP>RRP {product?.rrp}</StyledRRP>
                 </ProductPriceWrapper>
-
-                <Button label="Add to cart" variant='primary' size='small'  />
+                <Button label="Add to cart" variant="primary" size="small" />
             </ProductWrapper>
         </ProductContainer>
     );
