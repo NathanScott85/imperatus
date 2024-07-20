@@ -6,15 +6,13 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
+import { accessories } from '../../../lib/accessories-mocks';
 
-// TODO: bring back categories from api
-import { categories } from '../../../lib/category-mocks';
-
-export const Category = () => {
+export const Accessory = () => {
     const { id } = useParams();
 
-    const category = categories.find((category) => category.id === id);
-
+    const accessory = accessories.find((accessories) => accessories.id === id);
+    console.log(accessory, 'accessory');
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,
@@ -34,31 +32,39 @@ export const Category = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            {category && (
+            {accessory && (
                 <ImageWrapper>
-                    <p>{category.name}</p>
+                    <p>{accessory.name}</p>
                 </ImageWrapper>
             )}
-            <CategoriesMain>
-                <CategoriesContainer>
-                    <CategoriesFilterContainer>
+            <CardGameMain>
+                <CardGameContainer>
+                    <FiltersContainer>
                         <Filters
                             filters
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
                         />
-                    </CategoriesFilterContainer>
-                    <CategoriesListContainer>
-                        {category && <Products products={category?.products} />}
-                    </CategoriesListContainer>
-                </CategoriesContainer>
-            </CategoriesMain>
+                    </FiltersContainer>
+                    <CardGameListContainer>
+                        {accessory && (
+                            <Products products={accessory?.products} />
+                        )}
+                    </CardGameListContainer>
+                </CardGameContainer>
+            </CardGameMain>
             <Footer />
         </>
     );
 };
 
-const CategoriesContainer = styled.section`
+const CardGameListContainer = styled.div`
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+`;
+
+const CardGameContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -66,20 +72,15 @@ const CategoriesContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CategoriesMain = styled.main`
+const CardGameMain = styled.main`
+    flex-direction: row;
     background-color: white;
-    display: flex;
     justify-content: center;
-    align-items: center;
-    align-content: center;
-    color: #d4b05f;
-    padding: 2rem;
-    margin: auto;
-    width: 80%;
-    padding: 1rem 0rem;
+    align-items; center;
+    margin-bottom: 2.5rem;
 `;
 
-const CategoriesFilterContainer = styled.div`
+const FiltersContainer = styled.div`
     h1 {
         color: black;
         font-family: Cinzel;
@@ -110,9 +111,4 @@ const ImageWrapper = styled.div`
         padding-bottom: 2rem;
         margin-left: 2rem;
     }
-`;
-
-const CategoriesListContainer = styled.div`
-    display: flex;
-    padding: 2rem;
 `;

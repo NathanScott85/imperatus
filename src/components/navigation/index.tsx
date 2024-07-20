@@ -54,7 +54,6 @@ interface NavigationProps {
 
 export const Navigation = ({ background }: NavigationProps) => {
     const { pathname } = useLocation();
-    console.log(pathname, 'pathname');
     return (
         <NavigationContainer background={background}>
             <NavigationList>

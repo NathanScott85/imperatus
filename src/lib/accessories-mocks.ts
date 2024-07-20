@@ -1,29 +1,23 @@
-import CardGames from '../components/svg/product-icons/card-game.png';
 import CardSleeves from '../components/svg/product-icons/card-sleeves.png';
 import DeckBox from '../components/svg/product-icons/deck-box.png';
 import DiceBag from '../components/svg/product-icons/dice-bag.png';
-import BoardGames from '../components/svg/product-icons/board-games.png';
 import Binders from '../components/svg/product-icons/binders.png';
-import Minatures from '../components/svg/product-icons/minatures.png';
+import CardStorage from '../components/svg/product-icons/card-storage.png';
+import PlayMats from '../components/svg/product-icons/playmat.png';
+import Paints from '../components/svg/product-icons/paints.png';
 
-// Banners
-// import Minatures from '../components/svg/page-headers/minatures.png';
-
-// Card Game Image mock
-import InfiniteForbidden from '../lib/mock-images/Infinite-forbidden.png';
-
-export const categories = [
+export const accessories = [
     {
         id: '1',
-        name: 'Card Games',
-        img: CardGames,
+        name: 'Deck Boxes',
+        img: DeckBox,
         products: [
             {
                 id: 1,
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
-                img: InfiniteForbidden,
+                img: '',
                 price: '3.99',
                 type: 'pack',
                 rrp: '4.29',
@@ -32,39 +26,40 @@ export const categories = [
     },
     {
         id: '2',
-        name: 'Deck Boxes',
-        img: DeckBox,
-        // banner: DeckBoxesBanner,
-        products: [],
-    },
-    {
-        id: '3',
         name: 'Dice Bags',
         img: DiceBag,
         products: [],
     },
     {
-        id: '4',
+        id: '3',
         name: 'Card Sleeves',
         img: CardSleeves,
+
         products: [],
     },
     {
-        id: '5',
-        name: 'Board Games',
-        img: BoardGames,
-        products: [],
-    },
-    {
-        id: '6',
+        id: '4',
         name: 'Binders',
         img: Binders,
         products: [],
     },
     {
+        id: '5',
+        name: 'Card Storage',
+        img: CardStorage,
+        products: [],
+    },
+
+    {
+        id: '6',
+        name: 'Playmats',
+        img: PlayMats,
+        products: [],
+    },
+    {
         id: '7',
-        name: 'Minatures',
-        img: Minatures,
+        name: 'Paints',
+        img: Paints,
         products: [],
     },
 ];

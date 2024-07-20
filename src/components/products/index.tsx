@@ -144,9 +144,8 @@ const NoProductsMessage = styled.div`
     font-size: 18px;
     color: #777;
     text-align: center;
-    margin-top: 20px;
-    width: 100%;
 
+    width: 100%;
     p {
         color: black;
         height: 100%;

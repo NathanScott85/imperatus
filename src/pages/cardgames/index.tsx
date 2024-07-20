@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
@@ -25,35 +25,57 @@ export const CardGames = () => (
                         <CategoriesFilter>
                             {cardgames
                                 .sort((a, b) => a.name.localeCompare(b.name))
-                                .map((cardgame) => (
-                                    <CatergoriesWrapper key={cardgame.id}>
-                                        <StyledLink
-                                            to={`/shop/card-games/cardgame/${cardgame.id}/${cardgame.name}`}
-                                        >
-                                            {cardgame.name}
-                                        </StyledLink>
-                                    </CatergoriesWrapper>
-                                ))}
+                                .map((cardgame) => {
+                                    const cardgames = cardgame
+                                        ? generatePath(
+                                              '/shop/card-games/cardgame/:id/:name',
+                                              {
+                                                  id: cardgame.id,
+                                                  name: cardgame.name
+                                                      .replace(/\s+/g, '-')
+                                                      .toLowerCase(),
+                                              },
+                                          )
+                                        : '';
+
+                                    return (
+                                        <CatergoriesWrapper key={cardgame.id}>
+                                            <StyledLink to={cardgames}>
+                                                {cardgame.name}
+                                            </StyledLink>
+                                        </CatergoriesWrapper>
+                                    );
+                                })}
                         </CategoriesFilter>
                     </FancyContainer>
                 </CategoriesFilterContainer>
                 <CategoriesListContainer>
-                    {cardgames.map((cardgame) => (
-                        <Link
-                            key={cardgame.id}
-                            to={`/shop/card-games/cardgame/${cardgame.id}/${cardgame.name}`}
-                        >
-                            <CategoryItem>
-                                <ImageWrapper>
-                                    <CategoryImage
-                                        src={cardgame?.img}
-                                        alt={cardgame?.name}
-                                    />
-                                </ImageWrapper>
-                                <p>{cardgame?.name}</p>
-                            </CategoryItem>
-                        </Link>
-                    ))}
+                    {cardgames.map((cardgame) => {
+                        const cardgames = cardgame
+                            ? generatePath(
+                                  '/shop/card-games/cardgame/:id/:name',
+                                  {
+                                      id: cardgame.id,
+                                      name: cardgame.name
+                                          .replace(/\s+/g, '-')
+                                          .toLowerCase(),
+                                  },
+                              )
+                            : '';
+                        return (
+                            <Link key={cardgame.id} to={cardgames}>
+                                <CategoryItem>
+                                    <ImageWrapper>
+                                        <CategoryImage
+                                            src={cardgame?.img}
+                                            alt={cardgame?.name}
+                                        />
+                                    </ImageWrapper>
+                                    <p>{cardgame?.name}</p>
+                                </CategoryItem>
+                            </Link>
+                        );
+                    })}
                 </CategoriesListContainer>
             </CategoriesContainer>
             <Reviews />

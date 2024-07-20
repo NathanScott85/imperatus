@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
-import { MainContainer } from '../../../components/styled';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
 import { cardgames } from '../../../lib/card-games';
+import { mediaQueries } from '../../../styled/breakpoints';
 
 export const CardGame = () => {
     const { id } = useParams();
@@ -39,42 +39,49 @@ export const CardGame = () => {
                 </ImageWrapper>
             )}
             <CardGameMain>
-                <Section>
-                    <ProductFiltersContainer>
+                <CardGameContainer>
+                    <FiltersContainer>
                         <Filters
                             filters
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
                         />
-                    </ProductFiltersContainer>
-                    {cardgame && <Products products={cardgame?.products} />}
-                </Section>
+                    </FiltersContainer>
+                    <CardGameListContainer>
+                        {cardgame && <Products products={cardgame?.products} />}
+                    </CardGameListContainer>
+                </CardGameContainer>
             </CardGameMain>
             <Footer />
         </>
     );
 };
 
-const Section = styled.section`
+const CardGameListContainer = styled.div`
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+`;
+
+const CardGameContainer = styled.section`
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: center;
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    color: black;
-    font-size: 1.5rem;
+    align-items; center;
+    margin-bottom: 2.5rem;
 `;
 
-const CardGameMain = styled(MainContainer)`
+const CardGameMain = styled.main`
     flex-direction: row;
     background-color: white;
+    justify-content: center;
+    align-items; center;
+    margin-bottom: 2.5rem;
 `;
 
-const ProductFiltersContainer = styled.div`
+const FiltersContainer = styled.div`
     h1 {
-        color: white;
+        color: black;
         font-family: Cinzel;
         font-size: 30px;
         font-weight: 700;
@@ -82,7 +89,6 @@ const ProductFiltersContainer = styled.div`
         letter-spacing: 0.02em;
         text-align: left;
         padding-bottom: 2rem;
-        margin-left: 2rem;
     }
 `;
 
@@ -98,7 +104,18 @@ const ImageContainer = styled.div<{ img?: any }>`
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-    height: calc(100vh - 450px);
     width: 100%;
     z-index: -1;
+    ${mediaQueries('sm')`
+         height: calc(100vh - 1450px); 
+    `};
+    ${mediaQueries('md')`
+        height: calc(100vh - 1250px);
+    `};
+    ${mediaQueries('lg')`
+        height: calc(100vh - 1250px);
+    `};
+    ${mediaQueries('xl')`
+           height: calc(100vh - 450px);
+   `};
 `;

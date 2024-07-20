@@ -6,7 +6,9 @@ import { Basket } from '../pages/basket';
 import { Categories } from '../pages/catergories';
 import { Category } from '../pages/catergories/category';
 import { CardGames } from '../pages/cardgames';
+import { CardGame } from '../pages/cardgames/cardgame';
 import { Accessories } from '../pages/accessories';
+import { Accessory } from '../pages/accessories/accessory';
 import { ComingSoon } from '../pages/coming-soon';
 import { BoardGames } from '../pages/boardgames';
 import { Offers } from '../pages/offers';
@@ -15,7 +17,6 @@ import { AboutUs } from '../pages/about-us';
 import { FrequentlyAskedQuestions } from '../pages/faqs';
 import { NewsAndEvents } from '../pages/news-&-events';
 import { Register } from '../pages/register';
-import { CardGame } from '../pages/cardgames/cardgame';
 import { usersArray } from '../lib/users-mocks';
 
 export const AppRoutes = () => {
@@ -51,7 +52,12 @@ export const AppRoutes = () => {
                 element={<CardGame />}
             />
             <Route path="/shop/accessories" element={<Accessories />} />
+            <Route
+                path="/shop/accessories/accessory/:id/:name"
+                element={<Accessory />}
+            />
             <Route path="/shop/coming-soon" element={<ComingSoon />} />
+            <Route path="/shop/coming-soon/new/:id/:name" element={<>Soon</>} />
             <Route path="/shop/board-games" element={<BoardGames />} />
             <Route path="/shop/offers" element={<Offers />} />
             <Route path="/about-us" element={<AboutUs />} />

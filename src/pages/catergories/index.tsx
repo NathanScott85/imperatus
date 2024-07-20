@@ -4,7 +4,7 @@ import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
-import { Link } from 'react-router-dom';
+import { generatePath, Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
@@ -12,58 +12,79 @@ import { mediaQueries } from '../../styled/breakpoints';
 // TODO: bring back categories from api
 import { categories } from '../../lib/category-mocks';
 
-export const Categories = () => (
-    <>
-        <TopHeader />
-        <Header background />
-        <Navigation background />
-        <BreadCrumb label="Categories" />
-        <CategoriesMain>
-            <CategoriesContainer>
-                <CategoriesFilterContainer>
-                    <h1>Categories</h1>
-                    <FancyContainer variant="filters" size="filters">
-                        <CategoriesFilter>
-                            {categories
-                                .sort((a, b) => a.name.localeCompare(b.name))
-                                .map((category) => (
-                                    <CatergoriesWrapper key={category.id}>
-                                        <StyledLink
-                                            to={`/shop/categories/category/${category.id}/${category.name}`}
-                                        >
-                                            {category.name}
-                                        </StyledLink>
-                                    </CatergoriesWrapper>
-                                ))}
-                        </CategoriesFilter>
-                    </FancyContainer>
-                </CategoriesFilterContainer>
-                <CategoriesListContainer>
-                    {categories.map((category) => (
-                        <>
-                            <Link
-                                to={`/shop/categories/category/${category.id}/${category.name}`}
-                            >
-                                <CategoryItem key={category.id}>
-                                    <ImageWrapper>
-                                        <CategoryImage
-                                            src={category?.img}
-                                            alt={category?.name}
-                                        />
-                                    </ImageWrapper>
-                                    <p> {category?.name}</p>
-                                </CategoryItem>
-                            </Link>
-                        </>
-                    ))}
-                </CategoriesListContainer>
-            </CategoriesContainer>
+const getCategoriesPath = (category: any) => {
+    const categoryPath = category
+        ? generatePath('/shop/categories/category/:id/:name', {
+              id: category.id,
+              name: category.name.replace(/\s+/g, '-').toLowerCase(),
+          })
+        : '';
+    return {
+        categoryPath,
+    };
+};
+export const Categories = () => {
+    return (
+        <>
+            <TopHeader />
+            <Header background />
+            <Navigation background />
+            <BreadCrumb label="Categories" />
+            <CategoriesMain>
+                <CategoriesContainer>
+                    <CategoriesFilterContainer>
+                        <h1>Categories</h1>
+                        <FancyContainer variant="filters" size="filters">
+                            <CategoriesFilter>
+                                {categories
+                                    .sort((a, b) =>
+                                        a.name.localeCompare(b.name),
+                                    )
+                                    .map((category) => {
+                                        const { categoryPath } =
+                                            getCategoriesPath(category);
+                                        return (
+                                            <CatergoriesWrapper
+                                                key={category.id}
+                                            >
+                                                <StyledLink to={categoryPath}>
+                                                    {category.name}
+                                                </StyledLink>
+                                            </CatergoriesWrapper>
+                                        );
+                                    })}
+                            </CategoriesFilter>
+                        </FancyContainer>
+                    </CategoriesFilterContainer>
+                    <CategoriesListContainer>
+                        {categories.map((category) => {
+                            const { categoryPath } =
+                                getCategoriesPath(category);
+                            return (
+                                <>
+                                    <Link to={categoryPath}>
+                                        <CategoryItem key={category.id}>
+                                            <ImageWrapper>
+                                                <CategoryImage
+                                                    src={category?.img}
+                                                    alt={category?.name}
+                                                />
+                                            </ImageWrapper>
+                                            <p> {category?.name}</p>
+                                        </CategoryItem>
+                                    </Link>
+                                </>
+                            );
+                        })}
+                    </CategoriesListContainer>
+                </CategoriesContainer>
 
-            <Reviews />
-        </CategoriesMain>
-        <Footer />
-    </>
-);
+                <Reviews />
+            </CategoriesMain>
+            <Footer />
+        </>
+    );
+};
 
 const StyledLink = styled(Link)`
     font-family: Cinzel;
