@@ -6,13 +6,12 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { cardgames } from '../../../lib/card-games';
-import { mediaQueries } from '../../../styled/breakpoints';
+import { boardgames } from '../../../lib/boardgame-mocks'
 
-export const CardGame = () => {
+export const BoardGame = () => {
     const { id } = useParams();
 
-    const cardgame = cardgames.find((cardgame) => cardgame.id === id);
+    const boardgame = boardgames.find((boardgame) => boardgame.id === id);
 
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
@@ -33,9 +32,9 @@ export const CardGame = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            {cardgame && (
+            {boardgame && (
                 <ImageWrapper>
-                    <ImageContainer img={cardgame.banner} />
+                    <p>{boardgame.name}</p>
                 </ImageWrapper>
             )}
             <CardGameMain>
@@ -48,7 +47,7 @@ export const CardGame = () => {
                         />
                     </FiltersContainer>
                     <CardGameListContainer>
-                        {cardgame && <Products products={cardgame?.products} />}
+                        {boardgame && <Products products={boardgame?.products} />}
                     </CardGameListContainer>
                 </CardGameContainer>
             </CardGameMain>
@@ -97,25 +96,4 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-`;
-
-const ImageContainer = styled.div<{ img?: any }>`
-    background-image: url(${(props) => props.img});
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    width: 100%;
-    z-index: -1;
-    ${mediaQueries('sm')`
-         height: calc(100vh - 1450px); 
-    `};
-    ${mediaQueries('md')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('lg')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('xl')`
-           height: calc(100vh - 300px);
-   `};
 `;

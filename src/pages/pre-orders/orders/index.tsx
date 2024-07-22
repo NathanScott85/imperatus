@@ -6,13 +6,15 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { cardgames } from '../../../lib/card-games';
+
+// TODO: bring back categories from api
+import { preorders as orders } from '../../../lib/preorder-mocks';
 import { mediaQueries } from '../../../styled/breakpoints';
 
-export const CardGame = () => {
+export const Orders = () => {
     const { id } = useParams();
 
-    const cardgame = cardgames.find((cardgame) => cardgame.id === id);
+    const preorders = orders.find((order) => order.id === id);
 
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
@@ -33,37 +35,31 @@ export const CardGame = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            {cardgame && (
+            {preorders && (
                 <ImageWrapper>
-                    <ImageContainer img={cardgame.banner} />
-                </ImageWrapper>
+                <ImageContainer img={preorders.banner} />
+            </ImageWrapper>
             )}
-            <CardGameMain>
-                <CardGameContainer>
-                    <FiltersContainer>
+            <CategoriesMain>
+                <CategoriesContainer>
+                    <CategoriesFilterContainer>
                         <Filters
                             filters
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
                         />
-                    </FiltersContainer>
-                    <CardGameListContainer>
-                        {cardgame && <Products products={cardgame?.products} />}
-                    </CardGameListContainer>
-                </CardGameContainer>
-            </CardGameMain>
+                    </CategoriesFilterContainer>
+                    <CategoriesListContainer>
+                        {preorders && <Products products={preorders?.products} />}
+                    </CategoriesListContainer>
+                </CategoriesContainer>
+            </CategoriesMain>
             <Footer />
         </>
     );
 };
 
-const CardGameListContainer = styled.div`
-    display: flex;
-    gap: 1rem;
-    padding: 2rem;
-`;
-
-const CardGameContainer = styled.section`
+const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -71,15 +67,20 @@ const CardGameContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CardGameMain = styled.main`
-    flex-direction: row;
+const CategoriesMain = styled.main`
     background-color: white;
+    display: flex;
     justify-content: center;
-    align-items; center;
-    margin-bottom: 2.5rem;
+    align-items: center;
+    align-content: center;
+    color: #d4b05f;
+    padding: 2rem;
+    margin: auto;
+    width: 80%;
+    padding: 1rem 0rem;
 `;
 
-const FiltersContainer = styled.div`
+const CategoriesFilterContainer = styled.div`
     h1 {
         color: black;
         font-family: Cinzel;
@@ -118,4 +119,9 @@ const ImageContainer = styled.div<{ img?: any }>`
     ${mediaQueries('xl')`
            height: calc(100vh - 300px);
    `};
+`;
+
+const CategoriesListContainer = styled.div`
+    display: flex;
+    padding: 2rem;
 `;

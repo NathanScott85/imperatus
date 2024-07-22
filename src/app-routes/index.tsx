@@ -9,7 +9,7 @@ import { CardGames } from '../pages/cardgames';
 import { CardGame } from '../pages/cardgames/cardgame';
 import { Accessories } from '../pages/accessories';
 import { Accessory } from '../pages/accessories/accessory';
-import { ComingSoon } from '../pages/coming-soon';
+import { Preorders } from '../pages/pre-orders';
 import { BoardGames } from '../pages/boardgames';
 import { Offers } from '../pages/offers';
 import { Admin } from '../pages/admin';
@@ -18,6 +18,9 @@ import { FrequentlyAskedQuestions } from '../pages/faqs';
 import { NewsAndEvents } from '../pages/news-&-events';
 import { Register } from '../pages/register';
 import { usersArray } from '../lib/users-mocks';
+import { BoardGame } from '../pages/boardgames/boardgame';
+import { Orders } from '../pages/pre-orders/orders';
+import { ProductPage } from '../pages/product-page';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -46,6 +49,10 @@ export const AppRoutes = () => {
                 path="/shop/categories/category/:id/:name"
                 element={<Category />}
             />
+            <Route
+                path="/shop/categories/category/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
             <Route path="/shop/card-games" element={<CardGames />} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
@@ -56,9 +63,10 @@ export const AppRoutes = () => {
                 path="/shop/accessories/accessory/:id/:name"
                 element={<Accessory />}
             />
-            <Route path="/shop/coming-soon" element={<ComingSoon />} />
-            <Route path="/shop/coming-soon/new/:id/:name" element={<>Soon</>} />
+            <Route path="/shop/coming-soon" element={<Preorders />} />
+            <Route path="/shop/coming-soon/new/:id/:name" element={<Orders />} />
             <Route path="/shop/board-games" element={<BoardGames />} />
+            <Route path="/shop/board-games/boardgame/:id/:name" element={<BoardGame />} />
             <Route path="/shop/offers" element={<Offers />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faqs" element={<FrequentlyAskedQuestions />} />

@@ -9,6 +9,7 @@ import { Footer } from '../../../components/footer';
 
 // TODO: bring back categories from api
 import { categories } from '../../../lib/category-mocks';
+import { mediaQueries } from '../../../styled/breakpoints';
 
 export const Category = () => {
     const { id } = useParams();
@@ -110,6 +111,18 @@ const ImageWrapper = styled.div`
         padding-bottom: 2rem;
         margin-left: 2rem;
     }
+    ${mediaQueries('sm')`
+         height: calc(100vh - 1450px); 
+    `};
+    ${mediaQueries('md')`
+        height: calc(100vh - 1250px);
+    `};
+    ${mediaQueries('lg')`
+        height: calc(100vh - 1250px);
+    `};
+    ${mediaQueries('xl')`
+           height: calc(100vh - 450px);
+   `};
 `;
 
 const CategoriesListContainer = styled.div`

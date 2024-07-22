@@ -98,7 +98,7 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 650px);
+    height: 200px;
     background-color: #130a30;
     p {
         color: #d4b05f;

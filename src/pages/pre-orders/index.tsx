@@ -9,46 +9,46 @@ import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 
-// TODO: bring back boardgames from api
-import { boardgames } from '../../lib/boardgame-mocks';
+// TODO: bring back preorders from api
+import { preorders } from '../../lib/preorder-mocks';
 
-const getCategoriesPath = (boardgame: any) => {
-    const boardGamePath = boardgame
-        ? generatePath('/shop/board-games/boardgame/:id/:name', {
-              id: boardgame.id,
-              name: boardgame.name.replace(/\s+/g, '-').toLowerCase(),
+const getCategoriesPath = (orders: any) => {
+    const comingsoonPath = orders
+        ? generatePath('/shop/coming-soon/new/:id/:name', {
+              id: orders.id,
+              name: orders.name.replace(/\s+/g, '-').toLowerCase(),
           })
         : '';
     return {
-        boardGamePath,
+        comingsoonPath,
     };
 };
-export const BoardGames = () => {
+export const Preorders = () => {
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            <BreadCrumb label="Board Games" />
+            <BreadCrumb label="Coming Soon" />
             <CategoriesMain>
                 <CategoriesContainer>
                     <CategoriesFilterContainer>
-                        <h1>Board Games</h1>
+                        <h1>Coming Soon</h1>
                         <FancyContainer variant="filters" size="filters">
                             <CategoriesFilter>
-                                {boardgames
+                                {preorders
                                     .sort((a, b) =>
                                         a.name.localeCompare(b.name),
                                     )
-                                    .map((boardgame) => {
-                                        const { boardGamePath } =
-                                            getCategoriesPath(boardgame);
+                                    .map((orders) => {
+                                        const { comingsoonPath } =
+                                            getCategoriesPath(orders);
                                         return (
                                             <CatergoriesWrapper
-                                                key={boardgame.id}
+                                                key={orders.id}
                                             >
-                                                <StyledLink to={boardGamePath}>
-                                                    {boardgame.name}
+                                                <StyledLink to={comingsoonPath}>
+                                                    {orders.name}
                                                 </StyledLink>
                                             </CatergoriesWrapper>
                                         );
@@ -57,20 +57,20 @@ export const BoardGames = () => {
                         </FancyContainer>
                     </CategoriesFilterContainer>
                     <CategoriesListContainer>
-                        {boardgames.map((boardgame) => {
-                            const { boardGamePath } =
-                                getCategoriesPath(boardgame);
+                        {preorders.map((orders) => {
+                            const { comingsoonPath } =
+                                getCategoriesPath(orders);
                             return (
                                 <>
-                                    <Link to={boardGamePath}>
-                                        <CategoryItem key={boardgame.id}>
+                                    <Link to={comingsoonPath}>
+                                        <CategoryItem key={orders.id}>
                                             <ImageWrapper>
                                                 <CategoryImage
-                                                    src={boardgame?.img}
-                                                    alt={boardgame?.name}
+                                                    src={orders?.img}
+                                                    alt={orders?.name}
                                                 />
                                             </ImageWrapper>
-                                            <p> {boardgame?.name}</p>
+                                            <p> {orders?.name}</p>
                                         </CategoryItem>
                                     </Link>
                                 </>
