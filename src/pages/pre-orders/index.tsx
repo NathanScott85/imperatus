@@ -30,12 +30,12 @@ export const Preorders = () => {
             <Header background />
             <Navigation background />
             <BreadCrumb label="Coming Soon" />
-            <CategoriesMain>
-                <CategoriesContainer>
+            <PreOrdersMain>
+                <PreOrdersContainer>
                     <CategoriesFilterContainer>
                         <h1>Coming Soon</h1>
                         <FancyContainer variant="filters" size="filters">
-                            <CategoriesFilter>
+                            <PreOrdersFilter>
                                 {preorders
                                     .sort((a, b) =>
                                         a.name.localeCompare(b.name),
@@ -44,43 +44,43 @@ export const Preorders = () => {
                                         const { comingsoonPath } =
                                             getCategoriesPath(orders);
                                         return (
-                                            <CatergoriesWrapper
+                                            <OrdersLinkContainer
                                                 key={orders.id}
                                             >
                                                 <StyledLink to={comingsoonPath}>
                                                     {orders.name}
                                                 </StyledLink>
-                                            </CatergoriesWrapper>
+                                            </OrdersLinkContainer>
                                         );
                                     })}
-                            </CategoriesFilter>
+                            </PreOrdersFilter>
                         </FancyContainer>
                     </CategoriesFilterContainer>
-                    <CategoriesListContainer>
+                    <PreordersListContainer>
                         {preorders.map((orders) => {
                             const { comingsoonPath } =
                                 getCategoriesPath(orders);
                             return (
                                 <>
                                     <Link to={comingsoonPath}>
-                                        <CategoryItem key={orders.id}>
+                                        <PreOrderItem key={orders.id}>
                                             <ImageWrapper>
-                                                <CategoryImage
+                                                <PreOrdersImage
                                                     src={orders?.img}
                                                     alt={orders?.name}
                                                 />
                                             </ImageWrapper>
                                             <p> {orders?.name}</p>
-                                        </CategoryItem>
+                                        </PreOrderItem>
                                     </Link>
                                 </>
                             );
                         })}
-                    </CategoriesListContainer>
-                </CategoriesContainer>
+                    </PreordersListContainer>
+                </PreOrdersContainer>
 
                 <Reviews />
-            </CategoriesMain>
+            </PreOrdersMain>
             <Footer />
         </>
     );
@@ -102,7 +102,7 @@ const StyledLink = styled(Link)`
     }
 `;
 
-const CategoriesContainer = styled.section`
+const PreOrdersContainer = styled.section`
     display: flex;
     flex-direction: row;
     margin-bottom: 2.5rem;
@@ -124,7 +124,7 @@ const ImageWrapper = styled.div`
     gap: 0px;
 `;
 
-const CategoryImage = styled.img`
+const PreOrdersImage = styled.img`
     max-width: 100%;
     max-height: 100%;
     width: auto;
@@ -135,7 +135,7 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CategoriesMain = styled(MainContainer)`
+const PreOrdersMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
@@ -153,7 +153,7 @@ const CategoriesFilterContainer = styled.div`
     }
 `;
 
-const CategoriesFilter = styled.div`
+const PreOrdersFilter = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -161,7 +161,7 @@ const CategoriesFilter = styled.div`
     text-align: center;
 `;
 
-const CatergoriesWrapper = styled.div`
+const OrdersLinkContainer = styled.div`
     &:not(:last-child) {
         border-bottom: 1px solid #4d3c7b;
     }
@@ -169,7 +169,7 @@ const CatergoriesWrapper = styled.div`
     z-index: 50;
 `;
 
-const CategoriesListContainer = styled.div`
+const PreordersListContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -180,9 +180,12 @@ const CategoriesListContainer = styled.div`
     ${mediaQueries('xl')`
         grid-template-columns: repeat(3, 1fr);
     `};
+    p {
+        color: white;
+    }
 `;
 
-const CategoryItem = styled.div`
+const PreOrderItem = styled.div`
     border-radius: 12px;
     background: #160d35;
     padding: 1rem;

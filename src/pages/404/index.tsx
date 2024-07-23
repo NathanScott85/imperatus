@@ -6,16 +6,16 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { MainContainer, Container } from '../../components/styled';
 
-export const NewsAndEvents = () => (
+export const FourOFour = () => (
     <>
         <TopHeader />
         <Header />
         <Navigation />
-        <BreadCrumb label="News And Events" />
+        <BreadCrumb label="404 Error, Page not found" />
         <Container>
             <Background />
         </Container>
-        <MainContainer></MainContainer>
+        <MainContainer>404 Error, Page not found</MainContainer>
         <Footer />
     </>
 );

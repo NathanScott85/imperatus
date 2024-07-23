@@ -21,6 +21,18 @@ import { usersArray } from '../lib/users-mocks';
 import { BoardGame } from '../pages/boardgames/boardgame';
 import { Orders } from '../pages/pre-orders/orders';
 import { ProductPage } from '../pages/product-page';
+import { Careers } from '../pages/careers';
+import { FeaturedBrands } from '../pages/shop-by-brand';
+import { PrivacyPolicy } from '../pages/privacy-policy';
+import { CookiePolicy } from '../pages/cookie-policy';
+import { TermsAndConditions } from '../pages/terms-and-conditions';
+import { SiteMap } from '../pages/site-map';
+import { FourOFour } from '../pages/404';
+import { InternationalDelivery } from '../pages/international-delivery';
+import { PaymentMethods } from '../pages/payment-methods';
+import { Delivery } from '../pages/delivery';
+import { ReturnsPolicy } from '../pages/returns-policy';
+import { DiscountCodes } from '../pages/discount-codes';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -64,33 +76,37 @@ export const AppRoutes = () => {
                 element={<Accessory />}
             />
             <Route path="/shop/coming-soon" element={<Preorders />} />
-            <Route path="/shop/coming-soon/new/:id/:name" element={<Orders />} />
+            <Route
+                path="/shop/coming-soon/new/:id/:name"
+                element={<Orders />}
+            />
             <Route path="/shop/board-games" element={<BoardGames />} />
-            <Route path="/shop/board-games/boardgame/:id/:name" element={<BoardGame />} />
+            <Route
+                path="/shop/board-games/boardgame/:id/:name"
+                element={<BoardGame />}
+            />
             <Route path="/shop/offers" element={<Offers />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
             <Route path="/news-&-events" element={<NewsAndEvents />} />
-            <Route path="/careers" element={<div>careers</div>} />
-            <Route path="/shop-by-brand" element={<div>shop-by-brand</div>} />
-            <Route path="/privacy-policy" element={<div>privacy-policy</div>} />
-            <Route path="/cookie-policy" element={<div>cookie-policy</div>} />
-            <Route path="/site-map" element={<div>site-map</div>} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/featured-brands" element={<FeaturedBrands />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/site-map" element={<SiteMap />} />
             <Route
                 path="/terms-&-conditions"
-                element={<div>terms-&-conditions</div>}
+                element={<TermsAndConditions />}
             />
-            <Route
-                path="/payment-methods"
-                element={<div>payment-methods</div>}
-            />
+            <Route path="/payment-methods" element={<PaymentMethods />} />
+            <Route path="/delivery" element={<Delivery />} />
             <Route
                 path="/international-delivery"
-                element={<div>international-delivery</div>}
+                element={<InternationalDelivery />}
             />
-            <Route path="/returns-policy" element={<div>returns-policy</div>} />
-            <Route path="/discount-codes" element={<div>discount-codes</div>} />
-            <Route path="*" element={<div>404 Page Not Found</div>} />
+            <Route path="/returns-policy" element={<ReturnsPolicy />} />
+            <Route path="/discount-codes" element={<DiscountCodes />} />
+            <Route path="*" element={<FourOFour />} />
         </Routes>
     );
 };

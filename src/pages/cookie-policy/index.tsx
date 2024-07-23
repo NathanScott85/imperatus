@@ -6,12 +6,12 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { MainContainer, Container } from '../../components/styled';
 
-export const NewsAndEvents = () => (
+export const CookiePolicy = () => (
     <>
         <TopHeader />
         <Header />
         <Navigation />
-        <BreadCrumb label="News And Events" />
+        <BreadCrumb label="Cookie Policy" />
         <Container>
             <Background />
         </Container>

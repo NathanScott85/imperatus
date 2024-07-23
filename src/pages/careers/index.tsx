@@ -6,7 +6,7 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { MainContainer, Container } from '../../components/styled';
 
-export const AboutUs = () => (
+export const Careers = () => (
     <>
         <TopHeader />
         <Header />
