@@ -27,6 +27,8 @@ export const categories = [
                 price: '3.99',
                 type: 'pack',
                 rrp: '4.29',
+                description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation! 
+                              The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
             },
         ],
     },
@@ -34,7 +36,6 @@ export const categories = [
         id: '2',
         name: 'Deck Boxes',
         img: DeckBox,
-        // banner: DeckBoxesBanner,
         products: [],
     },
     {
