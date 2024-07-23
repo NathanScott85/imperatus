@@ -11,6 +11,7 @@ interface ButtonProps {
     pathname?: To;
     link?: boolean;
     type?: 'submit' | 'reset' | 'button' | undefined;
+    children?: React.ReactNode;
 }
 
 const getTextDecoration = (variant?: string) => {
@@ -80,6 +81,7 @@ const Button: React.FC<ButtonProps> = ({
     pathname,
     link,
     type,
+    children,
 }) => (
     <StyledButton type={type} variant={variant} size={size} onClick={onClick}>
         {variant === 'text' ||
@@ -91,6 +93,7 @@ const Button: React.FC<ButtonProps> = ({
         ) : (
             label
         )}
+        {children}
     </StyledButton>
 );
 
