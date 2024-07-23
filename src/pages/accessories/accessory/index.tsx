@@ -37,8 +37,8 @@ export const Accessory = () => {
                     <p>{accessory.name}</p>
                 </ImageWrapper>
             )}
-            <CardGameMain>
-                <CardGameContainer>
+            <AccessoryMain>
+                <AccessoryContainer>
                     <FiltersContainer>
                         <Filters
                             filters
@@ -46,25 +46,25 @@ export const Accessory = () => {
                             handleChecked={handleChecked}
                         />
                     </FiltersContainer>
-                    <CardGameListContainer>
+                    <AccessoryListContainer>
                         {accessory && (
                             <Products products={accessory?.products} />
                         )}
-                    </CardGameListContainer>
-                </CardGameContainer>
-            </CardGameMain>
+                    </AccessoryListContainer>
+                </AccessoryContainer>
+            </AccessoryMain>
             <Footer />
         </>
     );
 };
 
-const CardGameListContainer = styled.div`
+const AccessoryListContainer = styled.div`
     display: flex;
     gap: 1rem;
     padding: 2rem;
 `;
 
-const CardGameContainer = styled.section`
+const AccessoryContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -72,7 +72,7 @@ const CardGameContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CardGameMain = styled.main`
+const AccessoryMain = styled.main`
     flex-direction: row;
     background-color: white;
     justify-content: center;
