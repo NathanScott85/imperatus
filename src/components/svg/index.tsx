@@ -4,3 +4,5 @@ export { Icon as UserIcon } from './user';
 export { Icon as BasketIcon } from './basket';
 export { Icon as SearchIcon } from './search';
 export { Icon as AdminIcon } from './admin-settings';
+export { Icon as Cart } from './cart';
+export { Icon as Delete } from './delete';
