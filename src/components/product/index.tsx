@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '../button';
-import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 type ProductType = {
     id: any;
@@ -18,23 +18,23 @@ interface ProductProps {
 }
 
 export const Product = ({ product }: ProductProps) => {
-
-    const location  = useLocation();
-    const { id, productid, productname } = useParams();
-
+    const location = useLocation();
     return (
         <ProductContainer>
             <ProductWrapper>
-                <NavLink to={`${location.pathname}/${product.id}/${product.name}`}  state={{ product }}> 
-                <ImageWrapper>
-                    <ProductImage src={product?.img} alt={product?.name} />
-                </ImageWrapper>
-                <ProductName>{product?.name}</ProductName>
-                <ProductPriceWrapper>
-                    <ProductPrice>£{product?.price}</ProductPrice>
-                    <StyledRRP>RRP {product?.rrp}</StyledRRP>
-                </ProductPriceWrapper>
-                </NavLink>       
+                <NavLink
+                    to={`${location.pathname}/${product.id}/${product.name}`}
+                    state={{ product }}
+                >
+                    <ImageWrapper>
+                        <ProductImage src={product?.img} alt={product?.name} />
+                    </ImageWrapper>
+                    <ProductName>{product?.name}</ProductName>
+                    <ProductPriceWrapper>
+                        <ProductPrice>£{product?.price}</ProductPrice>
+                        <StyledRRP>RRP {product?.rrp}</StyledRRP>
+                    </ProductPriceWrapper>
+                </NavLink>
                 <Button label="Add to cart" variant="primary" size="small" />
             </ProductWrapper>
         </ProductContainer>
