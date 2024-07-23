@@ -174,6 +174,9 @@ const CategoriesListContainer = styled.div`
     ${mediaQueries('xl')`
         grid-template-columns: repeat(3, 1fr);
     `};
+    p {
+        color: white;
+    }
 `;
 
 const CategoryItem = styled.div`

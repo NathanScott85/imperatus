@@ -6,7 +6,7 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { boardgames } from '../../../lib/boardgame-mocks'
+import { boardgames } from '../../../lib/boardgame-mocks';
 
 export const BoardGame = () => {
     const { id } = useParams();
@@ -37,8 +37,8 @@ export const BoardGame = () => {
                     <p>{boardgame.name}</p>
                 </ImageWrapper>
             )}
-            <CardGameMain>
-                <CardGameContainer>
+            <BoardGameMain>
+                <BoardGameContainer>
                     <FiltersContainer>
                         <Filters
                             filters
@@ -46,23 +46,25 @@ export const BoardGame = () => {
                             handleChecked={handleChecked}
                         />
                     </FiltersContainer>
-                    <CardGameListContainer>
-                        {boardgame && <Products products={boardgame?.products} />}
-                    </CardGameListContainer>
-                </CardGameContainer>
-            </CardGameMain>
+                    <BoardGameListContainer>
+                        {boardgame && (
+                            <Products products={boardgame?.products} />
+                        )}
+                    </BoardGameListContainer>
+                </BoardGameContainer>
+            </BoardGameMain>
             <Footer />
         </>
     );
 };
 
-const CardGameListContainer = styled.div`
+const BoardGameListContainer = styled.div`
     display: flex;
     gap: 1rem;
     padding: 2rem;
 `;
 
-const CardGameContainer = styled.section`
+const BoardGameContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -70,7 +72,7 @@ const CardGameContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CardGameMain = styled.main`
+const BoardGameMain = styled.main`
     flex-direction: row;
     background-color: white;
     justify-content: center;

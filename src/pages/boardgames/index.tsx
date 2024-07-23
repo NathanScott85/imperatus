@@ -30,12 +30,12 @@ export const BoardGames = () => {
             <Header background />
             <Navigation background />
             <BreadCrumb label="Board Games" />
-            <CategoriesMain>
-                <CategoriesContainer>
-                    <CategoriesFilterContainer>
+            <BoardgamesMain>
+                <BoardGamesContainer>
+                    <BoardGamesFiltersContainer>
                         <h1>Board Games</h1>
                         <FancyContainer variant="filters" size="filters">
-                            <CategoriesFilter>
+                            <BoardGameFilter>
                                 {boardgames
                                     .sort((a, b) =>
                                         a.name.localeCompare(b.name),
@@ -44,19 +44,19 @@ export const BoardGames = () => {
                                         const { boardGamePath } =
                                             getCategoriesPath(boardgame);
                                         return (
-                                            <CatergoriesWrapper
+                                            <BoardGamesWrapper
                                                 key={boardgame.id}
                                             >
                                                 <StyledLink to={boardGamePath}>
                                                     {boardgame.name}
                                                 </StyledLink>
-                                            </CatergoriesWrapper>
+                                            </BoardGamesWrapper>
                                         );
                                     })}
-                            </CategoriesFilter>
+                            </BoardGameFilter>
                         </FancyContainer>
-                    </CategoriesFilterContainer>
-                    <CategoriesListContainer>
+                    </BoardGamesFiltersContainer>
+                    <BoardGamesListContainer>
                         {boardgames.map((boardgame) => {
                             const { boardGamePath } =
                                 getCategoriesPath(boardgame);
@@ -76,11 +76,11 @@ export const BoardGames = () => {
                                 </>
                             );
                         })}
-                    </CategoriesListContainer>
-                </CategoriesContainer>
+                    </BoardGamesListContainer>
+                </BoardGamesContainer>
 
                 <Reviews />
-            </CategoriesMain>
+            </BoardgamesMain>
             <Footer />
         </>
     );
@@ -98,11 +98,10 @@ const StyledLink = styled(Link)`
     }
     p {
         margin: 1rem;
-        border: 2px solid red;
     }
 `;
 
-const CategoriesContainer = styled.section`
+const BoardGamesContainer = styled.section`
     display: flex;
     flex-direction: row;
     margin-bottom: 2.5rem;
@@ -135,11 +134,11 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CategoriesMain = styled(MainContainer)`
+const BoardgamesMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
-const CategoriesFilterContainer = styled.div`
+const BoardGamesFiltersContainer = styled.div`
     h1 {
         color: white;
         font-family: Cinzel;
@@ -153,7 +152,7 @@ const CategoriesFilterContainer = styled.div`
     }
 `;
 
-const CategoriesFilter = styled.div`
+const BoardGameFilter = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -161,7 +160,7 @@ const CategoriesFilter = styled.div`
     text-align: center;
 `;
 
-const CatergoriesWrapper = styled.div`
+const BoardGamesWrapper = styled.div`
     &:not(:last-child) {
         border-bottom: 1px solid #4d3c7b;
     }
@@ -169,7 +168,7 @@ const CatergoriesWrapper = styled.div`
     z-index: 50;
 `;
 
-const CategoriesListContainer = styled.div`
+const BoardGamesListContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -180,6 +179,9 @@ const CategoriesListContainer = styled.div`
     ${mediaQueries('xl')`
         grid-template-columns: repeat(3, 1fr);
     `};
+    p {
+        color: white;
+    }
 `;
 
 const CategoryItem = styled.div`
