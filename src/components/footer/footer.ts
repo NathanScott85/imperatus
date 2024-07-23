@@ -1,4 +1,3 @@
-
 type FooterItem =
     | { type: 'text'; content: string }
     | { type: 'text'; content: string[] };
@@ -17,8 +16,9 @@ export const footerContent: FooterSection[] = [
                 content: [
                     '1 Address Land',
                     'Address',
-                    'Address City', 'Address County', 'AD1S 1PS',
-                    
+                    'Address City',
+                    'Address County',
+                    'AD1S 1PS',
                 ],
             },
             {
@@ -34,7 +34,7 @@ export const footerContent: FooterSection[] = [
             { type: 'text', content: 'FAQs' },
             { type: 'text', content: 'News & Events' },
             { type: 'text', content: 'Careers' },
-            { type: 'text', content: 'Shop by Brand' },
+            { type: 'text', content: 'Featured Brands' },
         ],
     },
     {
