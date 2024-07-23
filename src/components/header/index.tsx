@@ -39,9 +39,7 @@ export const TopHeader = () => (
 );
 
 const HeaderContainer = styled.header<HeaderProps>`
-    ${({ background }) => `
-        background-color: ${background ? '#130A30' : 'transparent'};
-    `}
+    background-color: ${({ background }) => ` ${background ? '#130A30' : 'transparent'};`}
     display: flex;
     flex-direction: row;
     justify-content: space-between;
