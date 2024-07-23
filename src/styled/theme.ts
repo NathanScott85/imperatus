@@ -49,8 +49,6 @@ const GlobalStyle = createGlobalStyle`
         text-decoration: none;
         color: inherit;
     }
-    p {
-        color: white; // remove from here later
 `;
 
 export { theme, GlobalStyle };
