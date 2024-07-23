@@ -6,13 +6,16 @@ interface InputProps {
     label?: string;
     onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     size?: 'small' | 'medium';
-    type?: string;
+    type?: string | number;
     placeholder?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary' | 'birthday';
     className?: string;
-    name: string;
-    value: string | undefined;
+    name?: string;
+    value?: string | undefined;
+    radio?: boolean;
+    checked?: boolean;
+    id?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -23,21 +26,44 @@ export const Input: React.FC<InputProps> = ({
     value,
     onChange,
     type,
+    radio,
+    checked,
+    id,
 }) => {
     return (
-        <StyledInput
-            type={type}
-            value={value}
-            name={name}
-            className={className}
-            variant={variant}
-            placeholder={placeholder}
-            onChange={onChange}
-        />
+        <Wrapper>
+            <StyledInput
+                type={radio ? 'radio' : type}
+                value={value}
+                name={name}
+                className={className}
+                variant={variant}
+                placeholder={placeholder}
+                onChange={onChange}
+                checked={checked}
+                radio={radio}
+                id={id}
+            />
+        </Wrapper>
     );
 };
 
+const Wrapper = styled.div`
+    position: relative;
+    display: inline-block;
+`;
+
 const StyledInput = styled.input<InputProps>`
+    ${({ radio }) =>
+        radio &&
+        css`
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        `}
+
     &:focus {
         outline: none;
         border: 1.5px solid #d4b05f;
@@ -52,6 +78,7 @@ const StyledInput = styled.input<InputProps>`
         color: transparent;
     }
     z-index: 50;
+
     ${({ variant }) =>
         variant === 'search' &&
         css`
@@ -132,7 +159,7 @@ const StyledInput = styled.input<InputProps>`
             text-indent: 5px;
         `}
 
-         ${({ variant }) =>
+    ${({ variant }) =>
         variant === 'birthday' &&
         css`
             margin-right: 0.5rem;
@@ -155,7 +182,7 @@ const StyledInput = styled.input<InputProps>`
             text-indent: 5px;
             width: 90px;
         `}
-        ${({ variant }) =>
+    ${({ variant }) =>
         variant === 'secondary' &&
         css`
             margin-right: 0.5rem;
