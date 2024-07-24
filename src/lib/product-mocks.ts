@@ -10,6 +10,13 @@ export const products = [
         price: '3.99',
         type: 'pack',
         rrp: '4.29',
+        stock: {
+            amount: 20,
+            sold: 15,
+            instock: 'instock',
+            soldout: 'soldout',
+            preorder: 'preorder',
+        },
     },
     {
         id: 2,
@@ -20,6 +27,13 @@ export const products = [
         price: '3.99',
         type: 'pack',
         rrp: '4.29',
+        stock: {
+            amount: 20,
+            sold: 15,
+            instock: 'instock',
+            soldout: 'soldout',
+            preorder: 'preorder',
+        },
     },
     {
         id: 3,
@@ -30,6 +44,13 @@ export const products = [
         price: '3.99',
         type: 'pack',
         rrp: '4.29',
+        stock: {
+            amount: 20,
+            sold: 15,
+            instock: 'instock',
+            soldout: 'soldout',
+            preorder: 'preorder',
+        },
     },
     {
         id: 5,
@@ -40,6 +61,13 @@ export const products = [
         price: '3.99',
         type: 'pack',
         rrp: '4.29',
+        stock: {
+            amount: 20,
+            sold: 15,
+            instock: 'instock',
+            soldout: 'soldout',
+            preorder: 'preorder',
+        },
     },
     {
         id: 6,
@@ -50,5 +78,12 @@ export const products = [
         price: '3.99',
         type: 'pack',
         rrp: '4.29',
+        stock: {
+            amount: 20,
+            sold: 15,
+            instock: 'instock',
+            soldout: 'soldout',
+            preorder: 'preorder',
+        },
     },
 ];

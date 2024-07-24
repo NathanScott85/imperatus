@@ -1,9 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+interface Product {
+    id: number;
+    category: string;
+    game: string;
+    name: string;
+    img: string;
+    price: string;
+    type: string;
+    rrp: string;
+    stock: {
+        amount: number;
+        sold: number;
+        instock: string;
+        soldout: string;
+        preorder: string;
+    };
+}
+
 interface SingleOrderProps {
     month: string;
-    value: number;
+    total: number;
+    products: Product[];
 }
 
 interface OrderProps {
@@ -13,22 +32,65 @@ interface OrderProps {
 
 const Order: React.FC<OrderProps> = ({ order, previousOrder }: OrderProps) => {
     const [increase, setIncrease] = useState<number | null>(null);
+    const [totalValue, setTotalValue] = useState<number>(0);
+    const [previousTotalValue, setPreviousTotalValue] = useState<number>(0);
 
     useEffect(() => {
         if (previousOrder) {
-            const increaseAmount = order.value - previousOrder.value;
+            const increaseAmount = order.total - previousOrder.total;
             setIncrease(increaseAmount);
+
+            // Calculate the total value for the previous month
+            const previousTotalPrice = previousOrder.products.reduce(
+                (acc, product) => {
+                    return acc + parseFloat(product.price);
+                },
+                0,
+            );
+            setPreviousTotalValue(previousTotalPrice);
         }
+
+        // Calculate the total value for the current month
+        const totalPrice = order.products.reduce((acc, product) => {
+            return acc + parseFloat(product.price);
+        }, 0);
+        setTotalValue(totalPrice);
     }, [order, previousOrder]);
 
     return (
         <OrderContainer>
-            <OrderTitle>Orders for {order.month}</OrderTitle>
-            <OrderValue>{order.value}</OrderValue>
+            <OrderTitle>Total Orders</OrderTitle>
+            <OrderValue>
+                Orders for {order?.month}: <strong>{order?.total}</strong>
+            </OrderValue>
+            <TotalValue>
+                Total value: <strong>${totalValue.toFixed(2)}</strong>
+            </TotalValue>
             {increase !== null && (
-                <OrderIncrease increase={(increase > 0).toString()}>
-                    {increase}
-                </OrderIncrease>
+                <>
+                    <OrderIncrease increase={(increase > 0).toString()}>
+                        {increase > 0 ? (
+                            <>Difference: {increase}</>
+                        ) : (
+                            <OrderDifferenceContainer>
+                                <OrderDifferenceContent>
+                                    Difference: {increase}
+                                </OrderDifferenceContent>
+                                <OrderDifferenceContent>
+                                    Previous month:
+                                </OrderDifferenceContent>
+                                <OrderDifferenceContent>
+                                    {previousOrder?.month}:{' '}
+                                    {previousOrder?.total}
+                                </OrderDifferenceContent>
+                            </OrderDifferenceContainer>
+                        )}
+                    </OrderIncrease>
+                    <PreviousTotalValue>
+                        Previous months total:
+                        <strong>${previousTotalValue.toFixed(2)}</strong>
+                    </PreviousTotalValue>
+                </>
             )}
         </OrderContainer>
     );
@@ -44,12 +106,12 @@ export const OrderList: React.FC<OrderListProps> = ({
     currentMonth,
 }) => {
     return (
-        <div>
+        <OrderListContainer>
             {orders.map((order, index) => {
-                if (order.month === currentMonth) {
+                if (order?.month === currentMonth) {
                     return (
                         <Order
-                            key={order.month}
+                            key={order?.month}
                             order={order}
                             previousOrder={
                                 index > 0 ? orders[index - 1] : undefined
@@ -60,31 +122,83 @@ export const OrderList: React.FC<OrderListProps> = ({
                     return null;
                 }
             })}
-        </div>
+        </OrderListContainer>
     );
 };
 
+const OrderDifferenceContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const OrderDifferenceContent = styled.span`
+    color: #e74949;
+    font-family: Barlow;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin: 0.25rem;
+`;
+
 const OrderContainer = styled.div`
-    width: 300px;
-    border-radius: 4px;
-    padding: 15px;
-    margin: 10px;
+    width: 100%;
+    max-width: 350px;
+    padding: 20px;
     border: 1px solid #4d3c7b;
-    background-color: #fff;
+    border-radius: 8px;
+    margin: 20px auto;
+    background-color: #130a30;
+    text-align: center;
 `;
 
 const OrderTitle = styled.h3`
+    color: #130a30;
+    font-family: Cinzel;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
     margin-bottom: 10px;
-    color: black;
+    color: white;
 `;
 
 const OrderValue = styled.div`
     font-size: 18px;
-    color: black;
+    color: white;
+    margin-bottom: 10px;
+    strong {
+        font-size: 18px;
+    }
+`;
+
+const TotalValue = styled.div`
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+    strong {
+        font-size: 18px;
+    }
+`;
+
+const PreviousTotalValue = styled.div`
+    font-size: 18px;
+    color: white;
+    margin-top: 10px;
+    strong {
+        font-size: 18px;
+    }
 `;
 
 const OrderIncrease = styled.div<{ increase: string }>`
-    color: ${(props) => (props.increase === 'true' ? 'green' : 'red')};
+    color: ${(props) => (props.increase === 'true' ? '#15B170' : '#E74949')};
     font-size: 14px;
     margin-top: 5px;
+`;
+
+const OrderListContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 `;

@@ -12,10 +12,15 @@ export const GrowthRate: React.FC<GrowthRateProps> = ({
     lastMonth,
     previousMonth,
 }) => {
-    const percentageIncrease = (currentMonth - lastMonth) * 100;
-    const PrevMonthPercentage =
-        ((lastMonth - previousMonth) / previousMonth) * 100;
-    const percentage = percentageIncrease - PrevMonthPercentage;
+    const percentageIncrease =
+        lastMonth !== 0 ? ((currentMonth - lastMonth) / lastMonth) * 100 : 0;
+
+    const prevMonthPercentage =
+        previousMonth !== 0
+            ? ((lastMonth - previousMonth) / previousMonth) * 100
+            : 0;
+
+    const percentageDifference = percentageIncrease - prevMonthPercentage;
 
     return (
         <GrowthRateContainer>
@@ -23,13 +28,11 @@ export const GrowthRate: React.FC<GrowthRateProps> = ({
             {lastMonth !== 0 && (
                 <>
                     <p>Compared to last month:</p>
-                    <GrowthRateStatValue
-                        increase={percentageIncrease && percentageIncrease > 0}
-                    >
-                        <>{percentage.toFixed(2)}%</>
+                    <GrowthRateStatValue increase={percentageDifference > 0}>
+                        {percentageDifference.toFixed(2)}%
                     </GrowthRateStatValue>
                     <PercentageIncrease
-                        percentageIncrease={percentageIncrease as any}
+                        percentageIncrease={percentageIncrease}
                     />
                     vs previous 30 days
                 </>
@@ -39,20 +42,43 @@ export const GrowthRate: React.FC<GrowthRateProps> = ({
 };
 
 const GrowthRateContainer = styled.div`
-    width: 150px;
     padding: 20px;
     border: 1px solid #4d3c7b;
     border-radius: 8px;
-    margin: 20px auto;
-    background-color: #fff;
+    margin: 20px;
+    background-color: #130a30;
+    text-align: center;
+    color: white;
+    font-family: Cinzel;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    p {
+        font-family: Cinzel;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
 `;
 
 const GrowthRateTitle = styled.h2`
     margin-bottom: 10px;
-    color: black;
+    color: white;
+    font-family: Cinzel;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
 `;
 
-const GrowthRateStatValue = styled.div<{ increase: number | boolean }>`
+const GrowthRateStatValue = styled.div<{ increase: boolean }>`
     font-size: 18px;
-    color: ${(props) => (props.increase ? 'green' : 'red')};
+    font-family: Cinzel;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+    color: ${(props) => (props.increase ? '#15B170' : '#E74949')};
 `;

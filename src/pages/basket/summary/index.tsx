@@ -91,7 +91,7 @@ const Tab = styled.span<TabProps>`
     flex-direction: row;
     align-items: center;
     border-bottom: ${({ isActive }) =>
-        isActive ? '2px solid #d4b05f' : ' none'};
+        isActive ? '2px solid #C79D0A' : ' none'};
     color: ${({ isActive }) => (isActive ? 'black' : '#bdbdbd')};
     font-size: 14px;
     padding: 10px 10px 10px 10px;
@@ -104,7 +104,7 @@ const Tab = styled.span<TabProps>`
     text-align: center;
     &:hover {
         color: black;
-        background: #d4b05f;
+        background: #c79d0a;
     }
 `;
 

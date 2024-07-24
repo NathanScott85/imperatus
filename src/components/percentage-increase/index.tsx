@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ArrowUp } from '../svg/arrow';
+import { ArrowDown, ArrowUp } from '../svg/arrow';
 
 interface PercentageIncreaseProps {
     percentageIncrease: number | null;
@@ -13,11 +13,15 @@ export const PercentageIncrease = ({
     return (
         <PercentageIncreaseContainer increase={increase}>
             {increase ? (
-                <>
-                    <ArrowUp type="small" /> {percentageIncrease.toFixed(2)}%
-                </>
+                <Container>
+                    <ArrowUp type="small" fill="#15B170" />
+                    <span>{percentageIncrease.toFixed(2)}%</span>
+                </Container>
             ) : (
-                `${percentageIncrease?.toFixed(2)}% `
+                <Container>
+                    <ArrowDown type="small" fill="red" />
+                    <span>{percentageIncrease?.toFixed(2)}%</span>
+                </Container>
             )}
         </PercentageIncreaseContainer>
     );
@@ -25,5 +29,22 @@ export const PercentageIncrease = ({
 
 const PercentageIncreaseContainer = styled.span<{ increase: boolean }>`
     font-size: 14px;
-    color: ${(props) => (props.increase ? 'green' : 'red')};
+    color: ${(props) => (props.increase ? '#15b170' : '#E74949')};
+`;
+
+const Container = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    span {
+        font-size: 18px;
+        font-family: Cinzel;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: bold;
+        line-height: normal;
+    }
+    margin: 0.5rem;
+    gap: 5px;
 `;

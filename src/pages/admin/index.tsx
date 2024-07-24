@@ -1,70 +1,73 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Header, TopHeader } from '../../components/header';
-import { Navigation } from '../../components/navigation';
+import { Header } from '../../components/header';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import {
-    ImageContainer,
-    MainContainer,
-    Container,
-} from '../../components/styled';
-import SalesGrowthChart from '../../components/line';
-import { GrowthRate } from '../../components/growth-rate';
-import { OrderList } from '../../components/orders-per-month';
-import { AccountStats } from '../../components/account-stats';
-import { salesData, orders } from './mock-data';
+import { Sidebar } from './sidebar';
+import { Overview } from './overview';
+import { Analytics } from './analytics';
+import { Orders } from './orders';
+import { Products } from './products';
+import { Shipping } from './shipping';
+import { Customers } from './customers';
+import { Settings } from './settings';
 
 interface AdminProps {
     user: any;
 }
 
-const currentMonth = 'Dec';
 export const Admin = ({ user }: AdminProps) => {
     const { role } = user;
+    const [selectedComponent, setSelectedComponent] = useState('Overview');
+
+    const renderComponent = () => {
+        switch (selectedComponent) {
+            case 'Overview':
+                return <Overview />;
+            case 'Analytics':
+                return <Analytics />;
+            case 'Orders':
+                return <Orders />;
+            case 'Products':
+                return <Products />;
+            case 'Shipping':
+                return <Shipping />;
+            case 'Customers':
+                return <Customers />;
+            case 'Settings':
+                return <Settings />;
+            default:
+                return <Overview />;
+        }
+    };
+
     return (
         <>
-            <TopHeader />
             <Header background />
-            <Navigation background />
             <BreadCrumb label="Admin" />
-            <Container>
-                {role === 'admin' ? <ImageContainer /> : <Background />}
-            </Container>
-            <MainContainer>
-                <Section>
-                    <GrowthRate
-                        currentMonth={3}
-                        lastMonth={2}
-                        previousMonth={1}
-                    />
-                    <SalesGrowthChart sales={salesData} />
-                    <AccountStats currentMonth={500} lastMonth={450} />
-                    <OrderList orders={orders} currentMonth={currentMonth} />
-                </Section>
-            </MainContainer>
+            <AdminMain>
+                <Sidebar setSelectedComponent={setSelectedComponent} />
+                <Section>{renderComponent()}</Section>
+            </AdminMain>
             <Footer />
         </>
     );
 };
 
-const Background = styled('div')`
-    background: #130a30;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -2;
+const AdminMain = styled.main`
+    display: flex;
+    flex-direction: row;
+    color: white;
+    background-color: #130a30;
+    padding: 2rem;
 `;
 
 const Section = styled.section`
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: white;
-    width: 100%;
-    height: 100%;
-    padding: 2rem 0;
     color: black;
     font-size: 1.5rem;
+    margin-left: 2rem;
+    padding: 1rem;
 `;
