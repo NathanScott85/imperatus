@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface Variant {
-    variant?: 'small' | 'medium' | 'filters' | 'login' | 'stock';
-    size: 'small' | 'medium' | 'filters' | 'login' | 'stock';
+    variant?: 'small' | 'medium' | 'filters' | 'login' | 'stock' | 'account';
+    size: 'small' | 'medium' | 'filters' | 'login' | 'stock' | 'account';
 }
 
 export const FancyContainer = ({ children, variant, size }: any) => {
@@ -19,10 +19,10 @@ export const FancyContainer = ({ children, variant, size }: any) => {
 const gradient = `
   linear-gradient(
     to right,
-    #D4B05F 0%,
+    #C79D0A 0%,
     #AC8FFF 17.5%,
     #AC8FFF 76.5%,
-    #D4B05F 100%
+    #C79D0A 100%
   )
 `;
 
@@ -30,8 +30,8 @@ const reversedGradient = `
   linear-gradient(
     to left,
     #AC8FFF 0%,
-    #D4B05F 17.5%,
-    #D4B05F 76.5%,
+    #C79D0A 17.5%,
+    #C79D0A 76.5%,
     #AC8FFF 100%
   )
 `;
@@ -51,6 +51,7 @@ const StyledContainer = styled.div<Variant>`
             case 'login':
                 return '2rem';
             case 'filters':
+            case 'account':
                 return '1rem';
             case 'small':
                 return '1.5rem';
@@ -66,6 +67,7 @@ const StyledContainer = styled.div<Variant>`
         switch (size) {
             case 'login':
             case 'filters':
+            case 'account':
                 return '2rem';
             case 'small':
                 return '2rem';
@@ -83,6 +85,7 @@ const StyledContainer = styled.div<Variant>`
             case 'login':
                 return '600px';
             case 'filters':
+            case 'account':
                 return '257px';
             case 'small':
                 return '700px';
@@ -109,10 +112,14 @@ const StyledContainer = styled.div<Variant>`
         }
     }};
     position: relative;
-    border-radius: 36px;
+    border-radius: ${({ size }) =>
+        size === 'filters' || size === 'account' || size === 'stock'
+            ? '0px'
+            : '36px'};
     display: ${({ variant }) => {
         switch (variant) {
             case 'filters':
+            case 'account':
                 return 'block';
             case 'stock':
                 return 'block';
@@ -133,6 +140,8 @@ const StyledContainer = styled.div<Variant>`
                 return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'filters':
                 return null;
+            case 'account':
+                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'stock':
                 return null;
             default:
@@ -148,7 +157,9 @@ const StyledContainer = styled.div<Variant>`
         right: -2px;
         bottom: -2px;
         border-radius: ${({ size }) =>
-            size === 'filters' || size === 'stock' ? '0px' : '36px'};
+            size === 'filters' || size === 'account' || size === 'stock'
+                ? '0px'
+                : ' 20px'};
         padding: 2px;
         background: ${({ size }) => {
             switch (size) {
@@ -159,6 +170,8 @@ const StyledContainer = styled.div<Variant>`
                 case 'stock':
                     return stockGradient;
                 case 'filters':
+                    return reversedGradient;
+                case 'account':
                     return reversedGradient;
                 default:
                     return gradient;
@@ -184,6 +197,8 @@ const StyledContainer = styled.div<Variant>`
                 case 'stock':
                     return 0;
                 case 'filters':
+                    return 0;
+                case 'account':
                     return 0;
                 default:
                     return 0;
@@ -211,6 +226,7 @@ const StyledRectTop = styled.div<Variant>`
             case 'stock':
                 return 'white';
             case 'filters':
+            case 'account':
                 return '#130a30';
             default:
                 return '#130a30';
@@ -220,22 +236,24 @@ const StyledRectTop = styled.div<Variant>`
     border: ${({ size }: any) => {
         switch (size) {
             case 'login':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'small':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'medium':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'stock':
-                return '2px solid #d4b05f';
+                return '1px solid #C79D0A';
             case 'filters':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
+            case 'account':
+                return '1px solid #C79D0A';
             default:
                 return '2px solid #ac8fff';
         }
     }};
     transform: rotate(45deg);
     top: -9px;
-    z-index: 2; /* Ensure this is above the ::before element */
+    z-index: 2;
     left: calc(50% - 7.5px);
 `;
 
@@ -255,6 +273,8 @@ const StyledRectBottom = styled.div<Variant>`
                 return 'white';
             case 'filters':
                 return '#130a30';
+            case 'account':
+                return '#130a30';
             default:
                 return '#130a30';
         }
@@ -263,17 +283,18 @@ const StyledRectBottom = styled.div<Variant>`
     border: ${({ size }: any) => {
         switch (size) {
             case 'login':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'small':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'medium':
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
             case 'stock':
-                return '2px solid #d4b05f';
+                return '1px solid #C79D0A';
             case 'filters':
-                return '2px solid #ac8fff';
+            case 'account':
+                return '1px solid #ac8fff';
             default:
-                return '2px solid #ac8fff';
+                return '1px solid #ac8fff';
         }
     }};
     transform: rotate(45deg);

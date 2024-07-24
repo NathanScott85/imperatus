@@ -139,7 +139,7 @@ const CarouselContent = styled.div`
         font-size: 40px;
         font-weight: 800;
         padding: 0.5rem;
-        color: #d4b05f;
+        color: #c79d0a;
         filter: drop-shadow(-2px -3px 2px #4444dd);
         font-size: 4em;
     }

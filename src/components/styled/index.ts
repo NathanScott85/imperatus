@@ -14,7 +14,7 @@ export const ContactHeader = styled('header')`
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #d4b05f;
+    color: #c79d0a;
     height: 38px;
     width: 100%;
     padding: 0 1.75rem;

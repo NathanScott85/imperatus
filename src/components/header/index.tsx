@@ -35,7 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
 };
 
 export const TopHeader = () => (
-    <ContactHeader>01234 567 890 Mon - Fri 9:00am - 5:00pm</ContactHeader>
+    <ContactHeader> Mon - Fri 9:00am - 5:00pm - 01234 567 890 </ContactHeader>
 );
 
 const HeaderContainer = styled.header<HeaderProps>`
@@ -44,7 +44,7 @@ const HeaderContainer = styled.header<HeaderProps>`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    color: #d4b05f;
+    color: #C79D0A;
     height: 62px;
     width: 100%;
     padding: 0 1.75rem;
@@ -66,15 +66,10 @@ const ContactHeader = styled('header')`
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #d4b05f;
+    color: #c79d0a;
     height: 38px;
     width: 100%;
+    padding-left: 0.75rem;
+    line-height: 57px;
     padding: 0 1.75rem;
-    ${mediaQueries('md')`
-        width: 100%;
-    `};
-    ${mediaQueries('xl')`
-        padding-left: 0rem;
-        width: 100%;
-    `};
 `;

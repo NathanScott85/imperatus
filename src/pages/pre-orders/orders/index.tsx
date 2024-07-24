@@ -37,8 +37,8 @@ export const Orders = () => {
             <Navigation background />
             {preorders && (
                 <ImageWrapper>
-                <ImageContainer img={preorders.banner} />
-            </ImageWrapper>
+                    <ImageContainer img={preorders.banner} />
+                </ImageWrapper>
             )}
             <CategoriesMain>
                 <CategoriesContainer>
@@ -50,7 +50,9 @@ export const Orders = () => {
                         />
                     </CategoriesFilterContainer>
                     <CategoriesListContainer>
-                        {preorders && <Products products={preorders?.products} />}
+                        {preorders && (
+                            <Products products={preorders?.products} />
+                        )}
                     </CategoriesListContainer>
                 </CategoriesContainer>
             </CategoriesMain>
@@ -73,7 +75,7 @@ const CategoriesMain = styled.main`
     justify-content: center;
     align-items: center;
     align-content: center;
-    color: #d4b05f;
+    color: #c79d0a;
     padding: 2rem;
     margin: auto;
     width: 80%;

@@ -154,10 +154,10 @@ const GradientBorder = styled.div`
     height: 1px;
     background: linear-gradient(
         to right,
-        #d4b05f 0%,
+        #c79d0a 0%,
         #ac8fff 17.5%,
         #ac8fff 76.5%,
-        #d4b05f 100%
+        #c79d0a 100%
     );
     margin: 1rem 0;
     position: relative;
@@ -350,7 +350,7 @@ const ProductImageWrapper = styled.div`
     max-width: 100%;
     max-height: 100%;
     display: flex;
-    border: 1px solid #d4b05f;
+    border: 1px solid #c79d0a;
 `;
 
 const ProductImage = styled.img`

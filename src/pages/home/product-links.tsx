@@ -104,7 +104,7 @@ const TopImage = styled('img')`
     transition: all 0.2s ease-in-out;
     &:hover {
         transform: scale(1.1);
-        border: 2px solid #d4b05f;
+        border: 2px solid #c79d0a;
     }
     ${mediaQueries('md')`
         width: 200px;
@@ -124,6 +124,6 @@ const Image = styled('img')`
     transition: all 0.2s ease-in-out;
     &:hover {
         transform: scale(1.1);
-        border: 1px solid #d4b05f;
+        border: 1px solid #c79d0a;
     }
 `;

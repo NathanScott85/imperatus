@@ -66,7 +66,7 @@ const StyledInput = styled.input<InputProps>`
 
     &:focus {
         outline: none;
-        border: 1.5px solid #d4b05f;
+        border: 1.5px solid #c79d0a;
         border-right: none;
     }
     &::placeholder {
@@ -172,7 +172,7 @@ const StyledInput = styled.input<InputProps>`
             color: white;
             &:focus {
                 outline: none;
-                border: 1px solid #d4b05f;
+                border: 1px solid #c79d0a;
             }
             font-family: Barlow, serif;
             &::placeholder {
@@ -195,7 +195,7 @@ const StyledInput = styled.input<InputProps>`
             color: white;
             &:focus {
                 outline: none;
-                border: 1px solid #d4b05f;
+                border: 1px solid #c79d0a;
             }
             font-family: Barlow, serif;
             &::placeholder {

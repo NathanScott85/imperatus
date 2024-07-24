@@ -185,7 +185,7 @@ const SignUpForm = styled.form`
     display: flex;
     flex-direction: row;
     align-items: center;
-    border: 1px solid #d4b05f;
+    border: 1px solid #c79d0a;
     background: #130a30;
     padding: 0.25rem;
 `;
@@ -212,7 +212,7 @@ const FooterSection = styled.section`
 `;
 
 const SectionTitle = styled.h2`
-    color: #d4b05f;
+    color: #c79d0a;
     font-family: Cinzel;
     font-size: 24px;
     font-weight: 400;

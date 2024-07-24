@@ -33,6 +33,9 @@ import { PaymentMethods } from '../pages/payment-methods';
 import { Delivery } from '../pages/delivery';
 import { ReturnsPolicy } from '../pages/returns-policy';
 import { DiscountCodes } from '../pages/discount-codes';
+import { Account } from '../pages/account';
+import { ForgotPassword } from '../pages/forgot-password';
+import { SignOut } from '../pages/sign-out';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -49,12 +52,15 @@ export const AppRoutes = () => {
                     />
                 ) : null,
             )}
+
+            <Route path="/account/user-account" element={<Account />} />
             <Route path="/account/login" element={<Login />} />
             <Route path="/account/register" element={<Register />} />
             <Route
                 path="/account/forgot-password"
-                element={<div>Forgot Password</div>}
+                element={<ForgotPassword />}
             />
+            <Route path="/account/sign-out" element={<SignOut />} />
             <Route path="/basket" element={<Basket />} />
             <Route path="/shop/categories" element={<Categories />} />
             <Route

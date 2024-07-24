@@ -73,7 +73,7 @@ const Label = styled.label<{ checked: boolean }>`
         top: 0;
         width: 20px;
         height: 20px;
-        border: 2px solid #d4b05f;
+        border: 2px solid #c79d0a;
         border-radius: 50%;
         background: white;
     }
@@ -86,7 +86,7 @@ const Label = styled.label<{ checked: boolean }>`
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background: #d4b05f;
+        background: #c79d0a;
         display: ${({ checked }) => (checked ? 'block' : 'none')};
     }
 `;

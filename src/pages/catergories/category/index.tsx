@@ -73,7 +73,7 @@ const CategoriesMain = styled.main`
     justify-content: center;
     align-items: center;
     align-content: center;
-    color: #d4b05f;
+    color: #c79d0a;
     padding: 2rem;
     margin: auto;
     width: 80%;
@@ -101,7 +101,7 @@ const ImageWrapper = styled.div`
     height: calc(100vh - 650px);
     background-color: #130a30;
     p {
-        color: #d4b05f;
+        color: #c79d0a;
         font-family: Cinzel;
         font-size: 40px;
         font-weight: 700;

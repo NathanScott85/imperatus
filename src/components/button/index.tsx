@@ -54,22 +54,22 @@ const getBackgroundColor = (variant?: string) => {
         case 'none':
             return 'transparent';
         default:
-            return '#D4B05F';
+            return '#C79D0A';
     }
 };
 
 const getHoverStyles = (variant?: string) => {
     switch (variant) {
         case 'primary':
-            return 'color: black; background-color: #D4B05F;';
+            return 'color: black; background-color: #C79D0A;';
         case 'secondary':
             return 'color: black; background-color: #AC8FFF;';
         case 'text':
             return 'color: #AC8FFF; background-color: transparent;';
         case 'none':
-            return 'color: #D4B05F; background-color: transparent;';
+            return 'color: #C79D0A; background-color: transparent;';
         default:
-            return 'color: #AC8FFF; background-color: #D4B05F;';
+            return 'color: #AC8FFF; background-color: #C79D0A;';
     }
 };
 

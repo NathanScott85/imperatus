@@ -120,11 +120,11 @@ export const NavigationItem = styled(NavLink)`
     text-decoration: none;
     height: 100%;
     &:hover {
-        color: #d4b05f;
+        color: #c79d0a;
         font-weight: 700;
     }
     &.active {
-        border-bottom: 2px solid #d4b05f;
+        border-bottom: 2px solid #c79d0a;
     }
     ${mediaQueries('md')`
         padding: 1.75rem;
@@ -134,5 +134,5 @@ export const NavigationItem = styled(NavLink)`
 export const Divider = styled('div')`
     height: 2.5rem;
     width: 1px;
-    background-color: #d4b05f;
+    background-color: #c79d0a;
 `;

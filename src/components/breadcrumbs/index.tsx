@@ -65,7 +65,7 @@ const Label = styled('h1')`
     font-size: 2rem;
     font-weight: 700;
     padding: 1.5rem;
-    color: #d4b05f;
+    color: #c79d0a;
 `;
 
 const BreadCrumbNav = styled.nav<BreadCrumbProps>`

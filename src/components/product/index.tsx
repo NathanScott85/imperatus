@@ -51,7 +51,7 @@ const ProductContainer = styled.div`
     padding: 0.9rem;
     font-family: Cinzel;
     &:hover {
-        border: 1px solid #d4b05f;
+        border: 1px solid #c79d0a;
     }
 `;
 

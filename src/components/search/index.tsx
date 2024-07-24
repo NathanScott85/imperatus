@@ -37,7 +37,7 @@ export const Search = () => {
 const SearchContainer = styled.div`
     display: flex;
     align-items: center;
-    color: #d4b05f;
+    color: #c79d0a;
     margin: 0 3.5rem;
     padding: 1.2rem 0.75rem;
     ${mediaQueries('md')`
@@ -50,14 +50,14 @@ const SearchContainer = styled.div`
 
     &:focus-within {
         .search-button {
-            border: 1px solid #d4b05f;
+            border: 1px solid #c79d0a;
             outline: none;
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
             border-top-left-radius: 0px;
         }
         .search-input {
-            border: 1px solid #d4b05f;
+            border: 1px solid #c79d0a;
             border-top-right-radius: 0px;
             border-right: none;
         }

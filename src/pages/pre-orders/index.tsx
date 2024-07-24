@@ -94,11 +94,10 @@ const StyledLink = styled(Link)`
     letter-spacing: 0.02em;
     color: white;
     &:hover {
-        color: #d4b05f;
+        color: #c79d0a;
     }
     p {
         margin: 1rem;
-        border: 2px solid red;
     }
 `;
 
@@ -195,7 +194,7 @@ const PreOrderItem = styled.div`
     border: 1px solid #ac8fff;
     &:hover {
         color: #ac8fff;
-        border: 1px solid #d4b05f;
+        border: 1px solid #c79d0a;
     }
     p {
         font-family: Barlow, sans-serif;

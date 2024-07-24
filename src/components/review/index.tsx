@@ -21,7 +21,7 @@ const ReviewContainer = styled.div`
     border-radius: 5px;
     padding: 2rem;
     &:hover {
-        border: 1px solid #d4b05f;
+        border: 1px solid #c79d0a;
     }
     min-height: 275px;
     ${mediaQueries('sm')`
@@ -29,11 +29,11 @@ const ReviewContainer = styled.div`
         width: 200px;
         min-width: 175px;
     `};
-     ${mediaQueries('md')`
+    ${mediaQueries('md')`
         min-width: 245px;
         padding: 1.5rem;
      `};
-     ${mediaQueries('xl')`
+    ${mediaQueries('xl')`
         min-width: 245px;
         padding: 1.5rem;
      `};
@@ -56,7 +56,7 @@ const StarRating = styled.div`
     line-height: 12px;
     letter-spacing: 0.02em;
     text-align: left;
-    color: #d4b05f;
+    color: #c79d0a;
     margin: 15px;
     margin-left: -2px;
 `;

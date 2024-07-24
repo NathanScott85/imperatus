@@ -54,8 +54,8 @@ const ItemContainer = styled.div`
         border-radius: 8px;
     }
     &:hover {
-        color: #d4b05f;
-        border: 1px solid #d4b05f;
+        color: #c79d0a;
+        border: 1px solid #c79d0a;
     }
 `;
 
@@ -102,7 +102,7 @@ const StyledInput = styled.input`
 
     &:focus {
         outline: none;
-        border: 2px solid #d4b05f;
+        border: 2px solid #c79d0a;
     }
     &[type='number'] {
         -moz-appearance: textfield;

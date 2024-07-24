@@ -101,7 +101,7 @@ const ImageWrapper = styled.div`
     height: 200px;
     background-color: #130a30;
     p {
-        color: #d4b05f;
+        color: #c79d0a;
         font-family: Cinzel;
         font-size: 40px;
         font-weight: 700;
