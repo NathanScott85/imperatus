@@ -7,7 +7,7 @@ import { Sidebar } from './sidebar';
 import { Overview } from './overview';
 import { Analytics } from './analytics';
 import { Orders } from './orders';
-import { Products } from './products';
+import { AdminProducts } from './products';
 import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
@@ -29,7 +29,7 @@ export const Admin = ({ user }: AdminProps) => {
             case 'Orders':
                 return <Orders />;
             case 'Products':
-                return <Products />;
+                return <AdminProducts />;
             case 'Shipping':
                 return <Shipping />;
             case 'Customers':
