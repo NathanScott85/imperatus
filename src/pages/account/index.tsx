@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
-import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
 import { Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
@@ -216,13 +215,4 @@ const Label = styled.label`
     font-family: Barlow;
     font-size: 18px;
     font-weight: 400;
-`;
-
-const BirthdayInputs = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    input {
-        width: 60px;
-    }
 `;

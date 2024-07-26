@@ -7,6 +7,8 @@ import { Navigation } from '../../components/navigation';
 import { Cart } from '../../components/svg';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
+import { Footer } from '../../components/footer';
+import { ProductDescription } from './product-page-description';
 
 interface Product {
     name: string;
@@ -22,7 +24,6 @@ export const ProductPage: React.FC = () => {
     const [product, setProduct] = useState<Product | null>(
         location.state?.product || null,
     );
-    const [activeTab, setActiveTab] = useState('description');
 
     useEffect(() => {
         if (!product) {
@@ -34,10 +35,6 @@ export const ProductPage: React.FC = () => {
         return <Loading />;
     }
 
-    const handleTabClick = (tab: string) => {
-        setActiveTab(tab);
-    };
-
     return (
         <>
             <TopHeader />
@@ -45,14 +42,33 @@ export const ProductPage: React.FC = () => {
             <Navigation background />
             <ProductPageMain>
                 <ProductContentSection>
-                    <ProductImageWrapper>
-                        <ProductImage src={product?.img} alt={product?.name} />
-                    </ProductImageWrapper>
+                    <div>
+                        <ProductImageWrapper>
+                            <ProductImage
+                                src={product!.img}
+                                alt={product!.name}
+                            />
+                        </ProductImageWrapper>
+                        <ProductImageSmallWrapper>
+                            <ProductImageSmall
+                                src={product!.img}
+                                alt={product!.name}
+                            />
+                            <ProductImageSmall
+                                src={product!.img}
+                                alt={product!.name}
+                            />
+                            <ProductImageSmall
+                                src={product!.img}
+                                alt={product!.name}
+                            />
+                        </ProductImageSmallWrapper>
+                    </div>
                     <ProductContent>
-                        <h1>{product.name}</h1>
+                        <h1>{product!.name}</h1>
                         <ProductPriceWrapper>
-                            <ProductPrice>£{product.price}</ProductPrice>
-                            <StyledRRP>RRP {product?.rrp}</StyledRRP>
+                            <ProductPrice>£{product!.price}</ProductPrice>
+                            <StyledRRP>RRP {product!.rrp}</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
                             <CartWrapper>
@@ -74,62 +90,9 @@ export const ProductPage: React.FC = () => {
                         </TitleAndStockContainer>
                     </ProductContent>
                 </ProductContentSection>
-                <GradientBorder>
-                    <Diamond activeTab={activeTab} />
-                </GradientBorder>
-                <Tabs>
-                    <TabButton
-                        active={activeTab === 'description'}
-                        onClick={() => handleTabClick('description')}
-                    >
-                        Product Description
-                    </TabButton>
-                    <TabButton
-                        active={activeTab === 'delivery'}
-                        onClick={() => handleTabClick('delivery')}
-                    >
-                        Delivery & Returns
-                    </TabButton>
-                    <TabButton
-                        active={activeTab === 'whychooseus'}
-                        onClick={() => handleTabClick('whychooseus')}
-                    >
-                        Why Choose Us
-                    </TabButton>
-                </Tabs>
-                <TabContentContainer>
-                    {activeTab === 'description' && (
-                        <TabContent>
-                            <p>{product.description}</p>
-                        </TabContent>
-                    )}
-                    {activeTab === 'delivery' && (
-                        <TabContent>
-                            <p>
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting industry. Lorem Ipsum has been
-                                the industry's standard dummy text ever since
-                                the 1500s, when an unknown printer took a galley
-                                of type and scrambled it to make a type specimen
-                                book. It has survived not only five centuries,
-                                but also the leap into electronic typesetting,
-                                remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of
-                                Letraset sheets containing Lorem Ipsum passages,
-                                and more recently with desktop publishing
-                                software like Aldus PageMaker including versions
-                                of Lorem Ipsum.
-                            </p>
-                        </TabContent>
-                    )}
-                    {activeTab === 'whychooseus' && (
-                        <TabContent>
-                            <p>{product.description}</p>
-                        </TabContent>
-                    )}
-                </TabContentContainer>
-                <GradientBorder />
+                <ProductDescription product={product} />
             </ProductPageMain>
+            <Footer />
         </>
     );
 };
@@ -149,43 +112,6 @@ const ProductControls = styled.span`
     background: #d9d9d9;
 `;
 
-const GradientBorder = styled.div`
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        #c79d0a 0%,
-        #ac8fff 17.5%,
-        #ac8fff 76.5%,
-        #c79d0a 100%
-    );
-    margin: 1rem 0;
-    position: relative;
-`;
-
-const Tabs = styled.div`
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    padding: 1rem 0;
-`;
-
-const TabButton = styled.button<{ active: boolean }>`
-    font-family: Cinzel;
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 29.66px;
-    text-align: center;
-    cursor: pointer;
-    background: none;
-    border: none;
-    color: ${(props) => (props.active ? '#000' : '#7f7f7f')};
-    padding: 0.5rem 1rem;
-    &:hover {
-        color: #000;
-    }
-`;
-
 const Diamond = styled.div<{ activeTab: string }>`
     position: absolute;
     bottom: -7px;
@@ -201,42 +127,6 @@ const Diamond = styled.div<{ activeTab: string }>`
     border: 2px solid #ac8fff;
     transform: rotate(45deg);
     z-index: 1;
-`;
-
-const TabContentContainer = styled.div`
-    position: relative;
-    width: 100%;
-    padding: 2rem;
-
-    min-height: 200px;
-    background: #fff;
-`;
-
-const TabContent = styled.div`
-    font-family: Barlow;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 26px;
-
-    h1 {
-        font-family: Cinzel;
-        font-size: 18px;
-        font-weight: 400;
-        line-height: 29.66px;
-        text-align: left;
-        margin-bottom: 1rem;
-    }
-    p {
-        font-family: Barlow;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 26px;
-        text-align: left;
-        color: #000;
-        word-wrap: break-word;
-        max-width: 100%;
-        overflow-wrap: break-word;
-    }
 `;
 
 const ProductPriceWrapper = styled.div`
@@ -311,6 +201,9 @@ const ProductPageMain = styled.main`
 const CartContainer = styled.div`
     display: flex;
     flex-direction: row;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 `;
 
 const CartWrapper = styled.div`
@@ -349,16 +242,40 @@ const ProductImageWrapper = styled.div`
     height: 400px;
     max-width: 100%;
     max-height: 100%;
-    display: flex;
+    display: block;
+    position: relative;
     border: 1px solid #c79d0a;
+`;
+
+const ProductImageSmallWrapper = styled.div`
+    display: flex;
+    width: 100%;
+    height: 165px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    justify-content: space-evenly;
+    padding: 0.5rem;
+`;
+
+const ProductImageSmall = styled.img`
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border: 2px solid #d4b05f;
+    border-radius: 8px;
+    margin: 0.5rem;
 `;
 
 const ProductImage = styled.img`
     max-width: 100%;
     max-height: 100%;
-    width: auto;
-    height: auto;
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+
+    padding: 0 !important;
     &:hover {
-        transform: scale(1.1);
+        transform: scale(0.9);
     }
 `;

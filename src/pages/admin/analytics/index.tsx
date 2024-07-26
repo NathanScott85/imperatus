@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { MainContainer } from '../../../components/styled';
 
-export const Analytics = () => <div>Here</div>;
+export const Analytics = () => <AnalyticsMain>Here</AnalyticsMain>;
+
+const AnalyticsMain = styled(MainContainer)`
+    flex-direction: column;
+`;

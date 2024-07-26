@@ -13,8 +13,8 @@ export const products = [
         stock: {
             amount: 20,
             sold: 15,
-            instock: 'instock',
-            soldout: 'soldout',
+            instock: 'In Stock',
+            soldout: 'sold out',
             preorder: 'preorder',
         },
     },
@@ -30,7 +30,7 @@ export const products = [
         stock: {
             amount: 20,
             sold: 15,
-            instock: 'instock',
+            instock: 'In Stock',
             soldout: 'soldout',
             preorder: 'preorder',
         },
@@ -47,7 +47,7 @@ export const products = [
         stock: {
             amount: 20,
             sold: 15,
-            instock: 'instock',
+            instock: 'In Stock',
             soldout: 'soldout',
             preorder: 'preorder',
         },
@@ -64,7 +64,7 @@ export const products = [
         stock: {
             amount: 20,
             sold: 15,
-            instock: 'instock',
+            instock: 'In Stock',
             soldout: 'soldout',
             preorder: 'preorder',
         },
@@ -81,7 +81,7 @@ export const products = [
         stock: {
             amount: 20,
             sold: 15,
-            instock: 'instock',
+            instock: 'In Stock',
             soldout: 'soldout',
             preorder: 'preorder',
         },

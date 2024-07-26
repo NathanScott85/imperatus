@@ -2,6 +2,7 @@
     "name": "imperatus-fe",
     "version": "0.1.0",
     "dependencies": {
+        "@apollo/client": "^3.11.1",
         "@babel/runtime": "^7.22.15",
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",

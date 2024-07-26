@@ -76,20 +76,36 @@ export const AppRoutes = () => {
                 path="/shop/card-games/cardgame/:id/:name"
                 element={<CardGame />}
             />
+            <Route
+                path="/shop/card-games/cardgame/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
             <Route path="/shop/accessories" element={<Accessories />} />
             <Route
                 path="/shop/accessories/accessory/:id/:name"
                 element={<Accessory />}
+            />
+            <Route
+                path="/shop/accessories/accessory/:id/:name/:productid/:productname"
+                element={<ProductPage />}
             />
             <Route path="/shop/coming-soon" element={<Preorders />} />
             <Route
                 path="/shop/coming-soon/new/:id/:name"
                 element={<Orders />}
             />
+            <Route
+                path="/shop/coming-soon/new/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
             <Route path="/shop/board-games" element={<BoardGames />} />
             <Route
                 path="/shop/board-games/boardgame/:id/:name"
                 element={<BoardGame />}
+            />
+            <Route
+                path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
+                element={<ProductPage />}
             />
             <Route path="/shop/offers" element={<Offers />} />
             <Route path="/about-us" element={<AboutUs />} />
