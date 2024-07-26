@@ -112,23 +112,6 @@ const ProductControls = styled.span`
     background: #d9d9d9;
 `;
 
-const Diamond = styled.div<{ activeTab: string }>`
-    position: absolute;
-    bottom: -7px;
-    left: ${(props) =>
-        props.activeTab === 'description'
-            ? 'calc(16.66% - 7.5px)'
-            : props.activeTab === 'delivery'
-              ? 'calc(50% + 20px)'
-              : 'calc(83.33% + 7.5px)'};
-    width: 15px;
-    height: 15px;
-    background: white;
-    border: 2px solid #ac8fff;
-    transform: rotate(45deg);
-    z-index: 1;
-`;
-
 const ProductPriceWrapper = styled.div`
     padding: 1.5rem 0;
     display: flex;
