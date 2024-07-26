@@ -9,6 +9,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { FormInformation } from '../../components/form/form-information';
+import { useRegisterContext } from '../../context/register';
 
 type DOB = {
     day?: string;
@@ -34,6 +35,8 @@ interface FormErrors {
 }
 
 export const Register = () => {
+    const { handleRegisterUser, data, loading, error } = useRegisterContext();
+
     const [formData, setFormData] = useState<FormErrors>({
         address: {
             fullName: '',
@@ -143,26 +146,35 @@ export const Register = () => {
 
         const { address, dateOfBirth } = formData;
 
-        if (!address.fullName)
+        if (!address.fullName) {
             newErrors.address.fullName = 'Full Name is required';
-        if (!address.email)
+        }
+        if (!address.email) {
             newErrors.address.email = 'Email address is required';
-        if (!/\S+@\S+\.\S+/.test(address.email))
+        } else if (!/\S+@\S+\.\S+/.test(address.email)) {
             newErrors.address.email = 'Email address is invalid';
-        if (!address.password)
+        }
+        if (!address.password) {
             newErrors.address.password = 'Password is required';
-        if (address.password.length < 8)
+        } else if (address.password.length < 8) {
             newErrors.address.password =
                 'Password must be at least 8 characters';
-        if (address.password !== address.confirmPassword)
+        }
+        if (address.password !== address.confirmPassword) {
             newErrors.address.confirmPassword = 'Passwords do not match';
-        if (!address.phoneNumber)
+        }
+        if (!address.phoneNumber) {
             newErrors.address.phoneNumber = 'Phone Number is required';
-        if (!address.address1)
+        }
+        if (!address.address1) {
             newErrors.address.address1 = 'Address is required';
-        if (!address.city) newErrors.address.city = 'Town/City is required';
-        if (!address.postalCode)
+        }
+        if (!address.city) {
+            newErrors.address.city = 'Town/City is required';
+        }
+        if (!address.postalCode) {
             newErrors.address.postalCode = 'Postal/Zip code is required';
+        }
 
         if (dateOfBirth) {
             const dobError = validateDateOfBirth(
@@ -180,18 +192,40 @@ export const Register = () => {
         }
 
         setErrors(newErrors);
+
+        console.log('Validation errors:', newErrors);
+
         return (
-            Object.keys(newErrors.address).length === 0 &&
+            Object.keys(newErrors.address).every(
+                (key) => !newErrors.address[key as keyof Address],
+            ) &&
             (!newErrors.dateOfBirth ||
-                Object.keys(newErrors.dateOfBirth).length === 0)
+                Object.keys(newErrors.dateOfBirth).every(
+                    (key) => !newErrors.dateOfBirth[key as keyof DOB],
+                ))
         );
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validateForm()) {
-            // Handle form submission
-            console.log('Form submitted:', formData);
+            const { address, dateOfBirth } = formData;
+            try {
+                await handleRegisterUser({
+                    fullname: address.fullName,
+                    email: address.email,
+                    password: address.password,
+                    dob: `${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}`,
+                    phone: address.phoneNumber,
+                    address: address.address1,
+                    city: address.city,
+                    postcode: address.postalCode,
+                    admin: false,
+                });
+                console.log('User registered successfully');
+            } catch (error) {
+                console.error('Error registering user:', error);
+            }
         } else {
             console.log('Form validation failed');
         }
@@ -234,7 +268,9 @@ export const Register = () => {
 
         return null;
     };
+
     const { address, dateOfBirth } = formData;
+
     return (
         <>
             <TopHeader />
@@ -407,6 +443,9 @@ export const Register = () => {
                                 />
                             </>
                         </Form>
+                        {loading && <p>Loading...</p>}
+                        {error && <p>Error: {error.message}</p>}
+                        {data && <p>Registration successful!</p>}
                     </FancyContainer>
                     <FormInformation register />
                 </Section>
