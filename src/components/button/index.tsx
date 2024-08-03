@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { To } from 'react-router-dom';
 
 interface ButtonProps {
@@ -12,6 +12,7 @@ interface ButtonProps {
     link?: boolean;
     type?: 'submit' | 'reset' | 'button' | undefined;
     children?: React.ReactNode;
+    disabled?: boolean;
 }
 
 const getTextDecoration = (variant?: string) => {
@@ -44,7 +45,8 @@ const getFontWeight = (variant?: string) => {
     }
 };
 
-const getBackgroundColor = (variant?: string) => {
+const getBackgroundColor = (variant?: string, disabled?: boolean) => {
+    if (disabled) return '#D3D3D3';
     switch (variant) {
         case 'primary':
             return '#D4B05F';
@@ -58,7 +60,8 @@ const getBackgroundColor = (variant?: string) => {
     }
 };
 
-const getHoverStyles = (variant?: string) => {
+const getHoverStyles = (variant?: string, disabled?: boolean) => {
+    if (disabled) return '';
     switch (variant) {
         case 'primary':
             return 'color: black; background-color: #C79D0A;';
@@ -82,12 +85,24 @@ const Button: React.FC<ButtonProps> = ({
     link,
     type,
     children,
+    disabled,
 }) => (
-    <StyledButton type={type} variant={variant} size={size} onClick={onClick}>
+    <StyledButton
+        type={type}
+        variant={variant}
+        size={size}
+        onClick={onClick}
+        disabled={disabled}
+    >
         {variant === 'text' ||
         variant === 'none' ||
         (link && variant === 'secondary') ? (
-            <StyledLink type={type} variant={variant} to={pathname as string}>
+            <StyledLink
+                type={type}
+                variant={variant}
+                to={pathname as string}
+                disabled={disabled}
+            >
                 {label}
             </StyledLink>
         ) : (
@@ -108,13 +123,19 @@ const StyledLink = styled(Link)<ButtonProps>`
     text-decoration: ${({ variant }) => getTextDecoration(variant)};
     font-family: ${({ variant }) => getFontFamily(variant)};
     font-weight: ${({ variant }) => getFontWeight(variant)};
+    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 
     &:hover {
-        ${({ variant }) => getHoverStyles(variant)}
+        ${({ variant, disabled }) => getHoverStyles(variant, disabled)}
     }
 `;
 
-const StyledButton = styled.button<{ variant?: string; size?: string }>`
+const StyledButton = styled.button<{
+    variant?: string;
+    size?: string;
+    disabled?: boolean;
+}>`
     font-family: Cinzel;
     font-size: 14px;
     font-weight: 700;
@@ -123,11 +144,15 @@ const StyledButton = styled.button<{ variant?: string; size?: string }>`
     border-radius: 3px;
     color: white;
     z-index: 50;
+    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+
     &:hover {
-        ${({ variant }) => getHoverStyles(variant)}
+        ${({ variant, disabled }) => getHoverStyles(variant, disabled)}
     }
 
-    background-color: ${({ variant }) => getBackgroundColor(variant)};
+    background-color: ${({ variant, disabled }) =>
+        getBackgroundColor(variant, disabled)};
 
     width: ${({ size }) => {
         switch (size) {

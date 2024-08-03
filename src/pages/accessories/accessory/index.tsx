@@ -12,7 +12,7 @@ export const Accessory = () => {
     const { id } = useParams();
 
     const accessory = accessories.find((accessories) => accessories.id === id);
-    console.log(accessory, 'accessory');
+
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,

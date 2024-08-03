@@ -159,7 +159,7 @@ const StyledContainer = styled.div<Variant>`
         border-radius: ${({ size }) =>
             size === 'filters' || size === 'account' || size === 'stock'
                 ? '0px'
-                : ' 20px'};
+                : ' 36px'};
         padding: 2px;
         background: ${({ size }) => {
             switch (size) {

@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, gql } from '@apollo/client';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
@@ -9,6 +11,19 @@ import { Input } from '../../components/input';
 import { mediaQueries } from '../../styled/breakpoints';
 import Button from '../../components/button';
 import { FormInformation } from '../../components/form/form-information';
+import { useAppContext } from '../../context';
+
+const LOGIN_MUTATION = gql`
+    mutation LoginUser($email: String!, $password: String!) {
+        loginUser(email: $email, password: $password) {
+            token
+            user {
+                email
+                password
+            }
+        }
+    }
+`;
 
 export const Login = () => {
     const [formData, setFormData] = useState({
@@ -20,6 +35,10 @@ export const Login = () => {
         email: '',
         password: '',
     });
+
+    const { login } = useAppContext();
+    const navigate = useNavigate();
+    const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -48,11 +67,23 @@ export const Login = () => {
         return valid;
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validateForm()) {
-            // Handle form submission
-            console.log('Form submitted:', formData);
+            try {
+                const { data } = await loginUser({
+                    variables: {
+                        email: formData.email,
+                        password: formData.password,
+                    },
+                });
+                if (data && data.loginUser && data.loginUser.token) {
+                    login(data.loginUser.token);
+                    navigate('/');
+                }
+            } catch (err) {
+                console.error('Login failed:', err);
+            }
         }
     };
 
@@ -67,7 +98,7 @@ export const Login = () => {
                     <FancyContainer variant="login" size="login">
                         <Form onSubmit={handleSubmit}>
                             <FormContents>
-                                <label> Email Address</label>
+                                <label>Email Address</label>
                                 <Input
                                     value={formData.email}
                                     name="email"
@@ -94,12 +125,19 @@ export const Login = () => {
                                     </StyledParagraph>
                                 )}
 
+                                {error && (
+                                    <StyledParagraph>
+                                        Login failed: {error.message}
+                                    </StyledParagraph>
+                                )}
+
                                 <StyledFormWrapper>
                                     <Button
                                         label="Login"
                                         variant="primary"
                                         size="small"
                                         type="submit"
+                                        disabled={loading}
                                     />
                                     <Button
                                         label="Forgot Password?"
@@ -185,3 +223,5 @@ const Form = styled.form`
     align-items: center;
     width: 350px;
 `;
+
+export default Login;

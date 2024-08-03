@@ -1,4 +1,6 @@
+// src/pages/register/index.tsx
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -9,7 +11,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { FormInformation } from '../../components/form/form-information';
-import { useRegisterContext } from '../../context/register';
+import { useRegister } from '../../context/register';
 
 type DOB = {
     day?: string;
@@ -35,7 +37,8 @@ interface FormErrors {
 }
 
 export const Register = () => {
-    const { handleRegisterUser, data, loading, error } = useRegisterContext();
+    const { handleRegisterUser, loading, error } = useRegister();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState<FormErrors>({
         address: {
@@ -193,8 +196,6 @@ export const Register = () => {
 
         setErrors(newErrors);
 
-        console.log('Validation errors:', newErrors);
-
         return (
             Object.keys(newErrors.address).every(
                 (key) => !newErrors.address[key as keyof Address],
@@ -211,7 +212,7 @@ export const Register = () => {
         if (validateForm()) {
             const { address, dateOfBirth } = formData;
             try {
-                await handleRegisterUser({
+                const user = await handleRegisterUser({
                     fullname: address.fullName,
                     email: address.email,
                     password: address.password,
@@ -220,11 +221,30 @@ export const Register = () => {
                     address: address.address1,
                     city: address.city,
                     postcode: address.postalCode,
-                    admin: false,
+                    roles: [],
                 });
-                console.log('User registered successfully');
-            } catch (error) {
-                console.error('Error registering user:', error);
+
+                if (user && user.id) {
+                    navigate('/account/verify-email');
+                } else {
+                    throw new Error('User registration failed');
+                }
+            } catch (error: any) {
+                if (
+                    error.message.includes(
+                        'An account with this email already exists',
+                    )
+                ) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        address: {
+                            ...prevErrors.address,
+                            email: 'An account with this email already exists',
+                        },
+                    }));
+                } else {
+                    console.error('Error registering user:', error);
+                }
             }
         } else {
             console.log('Form validation failed');
@@ -441,11 +461,15 @@ export const Register = () => {
                                     size="small"
                                     type="submit"
                                 />
+                                {loading && <p>Loading...</p>}
+                                {error && (
+                                    <StyledParagraph>
+                                        Error: Registration failed. Please try
+                                        again.
+                                    </StyledParagraph>
+                                )}
                             </>
                         </Form>
-                        {loading && <p>Loading...</p>}
-                        {error && <p>Error: {error.message}</p>}
-                        {data && <p>Registration successful!</p>}
                     </FancyContainer>
                     <FormInformation register />
                 </Section>

@@ -1,6 +1,8 @@
+// src/context/register.tsx
 import React, { createContext, ReactNode, useContext } from 'react';
-import { gql, useMutation } from '@apollo/client';
-import { client } from '../../apollo-client';
+import { useMutation } from '@apollo/client';
+import { REGISTER_USER } from '../../graphql/register';
+import { SEND_VERIFICATION_EMAIL } from '../../graphql/verification-email';
 
 interface RegisterContextProps {
     data: any;
@@ -15,56 +17,17 @@ interface RegisterContextProps {
         address: string;
         city: string;
         postcode: string;
-        admin: boolean;
-    }) => Promise<void>;
+        roles?: string[];
+    }) => Promise<any>;
 }
 
-const RegisterContext = createContext<RegisterContextProps | null>(null);
+const RegisterContext = createContext<RegisterContextProps | undefined>(
+    undefined,
+);
 
 export const RegisterProvider = ({ children }: { children: ReactNode }) => {
-    const REGISTER_USER = gql`
-        mutation RegisterUser(
-            $fullname: String!
-            $email: String!
-            $password: String!
-            $dob: String!
-            $phone: String!
-            $address: String!
-            $city: String!
-            $postcode: String!
-            $admin: Boolean!
-        ) {
-            createUser(
-                fullname: $fullname
-                email: $email
-                password: $password
-                dob: $dob
-                phone: $phone
-                address: $address
-                city: $city
-                postcode: $postcode
-                admin: $admin
-            ) {
-                id
-                fullname
-                email
-                dob
-                phone
-                address
-                city
-                postcode
-                admin
-            }
-        }
-    `;
-
-    const [registerUser, { data, loading, error }] = useMutation(
-        REGISTER_USER,
-        {
-            client,
-        },
-    );
-
+    const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER);
+    const [sendVerificationEmail] = useMutation(SEND_VERIFICATION_EMAIL);
     const handleRegisterUser = async (input: {
         fullname: string;
         email: string;
@@ -74,13 +37,25 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
         address: string;
         city: string;
         postcode: string;
-        admin: boolean;
     }) => {
         try {
-            await registerUser({ variables: input });
-        } catch (err) {
+            // Ensure the input is wrapped with the key "input"
+            const { data } = await registerUser({ variables: { input } });
+            if (data && data.registerUser) {
+                const userId = data.registerUser.id;
+                await sendVerificationEmail({ variables: { userId } });
+            }
+            return data.registerUser;
+        } catch (err: any) {
             console.error('Mutation error:', err);
-            throw err;
+            if (
+                err.message.includes(
+                    'An account with this email already exists',
+                )
+            ) {
+                throw new Error('An account with this email already exists');
+            }
+            throw new Error('Registration failed. Please try again.');
         }
     };
 
@@ -98,12 +73,10 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-export const useRegisterContext = () => {
+export const useRegister = () => {
     const context = useContext(RegisterContext);
-    if (!context) {
-        throw new Error(
-            'useRegisterContext must be used within a RegisterProvider',
-        );
+    if (context === undefined) {
+        throw new Error('useRegister must be used within a RegisterProvider');
     }
     return context;
 };

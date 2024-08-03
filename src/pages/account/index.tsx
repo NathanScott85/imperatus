@@ -64,9 +64,9 @@ export const Account = () => {
                             <Label>Email Address</Label>
                             <Input name="email" variant="secondary" />
                             <Label>Password</Label>
-                            <Input name="email" variant="secondary" />
+                            <Input name="password" variant="secondary" />
                             <Label>Confirm Password</Label>
-                            <Input name="email" variant="secondary" />
+                            <Input name="password" variant="secondary" />
                             <BirthdayContainer>
                                 <Label>Birthday</Label>
                                 <BirthdayWrapper>

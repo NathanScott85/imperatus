@@ -36,7 +36,10 @@ import { DiscountCodes } from '../pages/discount-codes';
 import { Account } from '../pages/account';
 import { ForgotPassword } from '../pages/forgot-password';
 import { SignOut } from '../pages/sign-out';
+import { VerifyEmail } from '../pages/verify-email';
+import { VerificationSuccess } from '../pages/verify-success';
 import { RegisterProvider } from '../context/register';
+import { VerificationProvider } from '../context/verification';
 import { AppProvider } from '../context';
 
 export const AppRoutes = () => {
@@ -55,9 +58,20 @@ export const AppRoutes = () => {
                         />
                     ) : null,
                 )}
-
                 <Route path="/account/user-account" element={<Account />} />
                 <Route path="/account/login" element={<Login />} />
+                <Route
+                    path="/account/verification-success"
+                    element={<VerificationSuccess />}
+                />
+                <Route
+                    path="/account/verify-email"
+                    element={
+                        <VerificationProvider>
+                            <VerifyEmail />
+                        </VerificationProvider>
+                    }
+                />
                 <Route
                     path="/account/register"
                     element={
