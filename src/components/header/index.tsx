@@ -9,12 +9,18 @@ import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 
 // TODO: bring users back from api;
-import { usersArray } from '../../lib/users-mocks';
+
+import { useAppContext } from '../../context';
 
 interface HeaderProps {
     background?: boolean;
 }
 export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
+    const { user } = useAppContext();
+    const userRoles = user?.userRoles.map((role) => role.name) || [];
+    // Bug with user roles not being picked up <<
+    const isAdminOrOwner =
+        userRoles.includes('ADMIN') || userRoles.includes('OWNER');
     return (
         <HeaderContainer background={background}>
             <ImperatusLink />
@@ -23,12 +29,11 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
                 <Login />
                 <Basket />
             </HeaderWrapper>
-            {usersArray.map((user: any) =>
-                user.role.includes('admin') ? (
-                    <Link key={user.id} to={`/account/admin`}>
-                        <AdminIcon />
-                    </Link>
-                ) : null,
+
+            {isAdminOrOwner && (
+                <Link to={`/account/admin`}>
+                    <AdminIcon />
+                </Link>
             )}
         </HeaderContainer>
     );

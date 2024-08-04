@@ -1,7 +1,7 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
@@ -28,6 +28,13 @@ export const Login = () => {
     const { login } = useAppContext();
     const navigate = useNavigate();
     const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION);
+
+    // // Redirect if already authenticated
+    // useEffect(() => {
+    //     if (isAuthenticated) {
+    //         navigate('/account/user-account', { replace: true }); // Redirect to the account page
+    //     }
+    // }, [isAuthenticated, navigate]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -66,10 +73,16 @@ export const Login = () => {
                         password: formData.password,
                     },
                 });
-                if (data && data.loginUser && data.loginUser.token) {
-                    const { token, user } = data.loginUser;
-                    login(token, user); // Call login with token and user data
-                    navigate('/account/user-account'); // Redirect to home page or another protected route
+
+                if (data && data.loginUser) {
+                    const { accessToken, refreshToken, user } = data.loginUser;
+
+                    login(accessToken, refreshToken, user); // Call login with accessToken, refreshToken, and user data
+
+                    // Navigate to the account page
+                    navigate('/account/user-account');
+                    //   navigate('/account/user-account', { replace: true });
+                    // decide if I want the login page to be redirected or not
                 }
             } catch (err) {
                 console.error('Login failed:', err);
@@ -145,7 +158,7 @@ export const Login = () => {
         </>
     );
 };
-
+// Styled components definitions (remain unchanged)
 const MainContainer = styled.main`
     display: flex;
     flex-direction: column;

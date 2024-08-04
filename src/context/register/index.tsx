@@ -53,6 +53,7 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
             return data.registerUser;
         } catch (err: any) {
             console.error('Mutation error:', err);
+            console.error(error, 'error');
             setLocalError(
                 err.message || 'Registration failed. Please try again.',
             );

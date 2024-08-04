@@ -16,8 +16,11 @@ import {
     SignOut,
 } from '../../components/svg';
 import { Input } from '../../components/input';
+import { useAppContext } from '../../context';
 
 export const Account = () => {
+    const { logout, user } = useAppContext();
+    console.log(user, 'user Account page');
     return (
         <>
             <TopHeader />
@@ -48,7 +51,7 @@ export const Account = () => {
                             <StyledLink to="/account/account-management">
                                 <AdminIcon /> Account management
                             </StyledLink>
-                            <StyledLink to="/account/sign-out">
+                            <StyledLink onClick={logout} to="/account/sign-out">
                                 <SignOut /> Sign out
                             </StyledLink>
                         </AccountLinksContainer>

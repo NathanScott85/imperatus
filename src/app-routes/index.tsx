@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { Home } from '../pages/home';
 import { Login } from '../pages/login';
@@ -17,7 +17,6 @@ import { AboutUs } from '../pages/about-us';
 import { FrequentlyAskedQuestions } from '../pages/faqs';
 import { NewsAndEvents } from '../pages/news-&-events';
 import { Register } from '../pages/register';
-import { usersArray } from '../lib/users-mocks';
 import { BoardGame } from '../pages/boardgames/boardgame';
 import { Orders } from '../pages/pre-orders/orders';
 import { ProductPage } from '../pages/product-page';
@@ -40,27 +39,40 @@ import { VerifyEmail } from '../pages/verify-email';
 import { VerificationSuccess } from '../pages/verify-success';
 import { RegisterProvider } from '../context/register';
 import { VerificationProvider } from '../context/verification';
-import { AppProvider, useAppContext } from '../context';
+import { useAppContext } from '../context';
 import { VerificationStatus } from '../pages/verify-status';
+import { ProtectedRoute } from './protected-routes';
 
 export const AppRoutes = () => {
     const location = useLocation();
-    const [users] = useState(usersArray);
-    const { user } = useAppContext();
-    console.log(user, 'user');
+    const { isAuthenticated, user } = useAppContext();
+    // Bug with user roles not being picked up <<
+    const userRoles = user?.userRoles.map((role) => role.name) || [];
+    const isAdminOrOwner =
+        userRoles.includes('ADMIN') || userRoles.includes('OWNER');
     return (
         <Routes location={location}>
             <Route path="/" element={<Home />} />
-            {users.map((user) =>
-                user.role.includes('admin') ? (
-                    <Route
-                        key={user.id}
-                        path={`/account/admin`}
-                        element={<Admin user={user} />}
-                    />
-                ) : null,
+
+            {isAdminOrOwner && (
+                <Route
+                    path={`/account/admin`}
+                    element={<ProtectedRoute element={<Admin user={user} />} />}
+                />
             )}
-            <Route path="/account/user-account" element={<Account />} />
+
+            <Route
+                path="/account/user-account"
+                element={
+                    <ProtectedRoute
+                        redirectPath={
+                            isAuthenticated ? '/account/user-account' : '/'
+                        }
+                        element={<Account />}
+                    />
+                }
+            />
+
             <Route path="/account/login" element={<Login />} />
             <Route
                 path="/account/verification-success"
