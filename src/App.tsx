@@ -2,13 +2,16 @@ import React from 'react';
 import { ThemeProvider } from '@mui/system';
 import { GlobalStyle, theme } from './styled';
 import { AppRoutes } from './app-routes';
+import { AppProvider, useAppContext } from './context';
 
 const App = (): React.ReactElement => {
     return (
-        <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <AppRoutes />
-        </ThemeProvider>
+        <AppProvider>
+            <ThemeProvider theme={theme}>
+                <GlobalStyle />
+                <AppRoutes />
+            </ThemeProvider>
+        </AppProvider>
     );
 };
 

@@ -1,14 +1,14 @@
 // src/context/register.tsx
-import React, { createContext, ReactNode, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { REGISTER_USER } from '../../graphql/register';
 import { SEND_VERIFICATION_EMAIL } from '../../graphql/verification-email';
 
-interface RegisterContextProps {
+type RegisterContextProps = {
     data: any;
     loading: boolean;
-    error: any;
-    handleRegisterUser: (data: {
+    error: string | null;
+    handleRegisterUser: (input: {
         fullname: string;
         email: string;
         password: string;
@@ -19,8 +19,10 @@ interface RegisterContextProps {
         postcode: string;
         roles?: string[];
     }) => Promise<any>;
-}
+    clearError: () => void; // Add the clearError function to the context type
+};
 
+// Create a context with default values
 const RegisterContext = createContext<RegisterContextProps | undefined>(
     undefined,
 );
@@ -28,6 +30,9 @@ const RegisterContext = createContext<RegisterContextProps | undefined>(
 export const RegisterProvider = ({ children }: { children: ReactNode }) => {
     const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER);
     const [sendVerificationEmail] = useMutation(SEND_VERIFICATION_EMAIL);
+    const [localError, setLocalError] = useState<string | null>(null); // Local state for error
+
+    // Handles the user registration process
     const handleRegisterUser = async (input: {
         fullname: string;
         email: string;
@@ -39,24 +44,27 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
         postcode: string;
     }) => {
         try {
-            // Ensure the input is wrapped with the key "input"
             const { data } = await registerUser({ variables: { input } });
             if (data && data.registerUser) {
                 const userId = data.registerUser.id;
                 await sendVerificationEmail({ variables: { userId } });
             }
+            setLocalError(null); // Clear local error on success
             return data.registerUser;
         } catch (err: any) {
             console.error('Mutation error:', err);
-            if (
-                err.message.includes(
-                    'An account with this email already exists',
-                )
-            ) {
-                throw new Error('An account with this email already exists');
-            }
-            throw new Error('Registration failed. Please try again.');
+            setLocalError(
+                err.message || 'Registration failed. Please try again.',
+            );
+            throw new Error(
+                err.message || 'Registration failed. Please try again.',
+            );
         }
+    };
+
+    // Method to clear error
+    const clearError = () => {
+        setLocalError(null);
     };
 
     return (
@@ -64,8 +72,9 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 data,
                 loading,
-                error,
+                error: localError, // Use localError instead of mutation error
                 handleRegisterUser,
+                clearError, // Provide the clearError function to the context
             }}
         >
             {children}

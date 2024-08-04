@@ -12,18 +12,7 @@ import { mediaQueries } from '../../styled/breakpoints';
 import Button from '../../components/button';
 import { FormInformation } from '../../components/form/form-information';
 import { useAppContext } from '../../context';
-
-const LOGIN_MUTATION = gql`
-    mutation LoginUser($email: String!, $password: String!) {
-        loginUser(email: $email, password: $password) {
-            token
-            user {
-                email
-                password
-            }
-        }
-    }
-`;
+import { LOGIN_MUTATION } from '../../graphql/login';
 
 export const Login = () => {
     const [formData, setFormData] = useState({
@@ -78,8 +67,9 @@ export const Login = () => {
                     },
                 });
                 if (data && data.loginUser && data.loginUser.token) {
-                    login(data.loginUser.token);
-                    navigate('/');
+                    const { token, user } = data.loginUser;
+                    login(token, user); // Call login with token and user data
+                    navigate('/account/user-account'); // Redirect to home page or another protected route
                 }
             } catch (err) {
                 console.error('Login failed:', err);

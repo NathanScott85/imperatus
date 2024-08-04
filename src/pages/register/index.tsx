@@ -1,4 +1,3 @@
-// src/pages/register/index.tsx
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -32,31 +31,30 @@ type Address = {
 };
 
 interface FormErrors {
-    address: Address;
-    dateOfBirth: DOB;
+    address: Partial<Address>;
+    dateOfBirth: Partial<DOB>;
 }
 
 export const Register = () => {
-    const { handleRegisterUser, loading, error } = useRegister();
+    const { handleRegisterUser, loading, error, clearError } = useRegister(); // Destructure clearError
     const navigate = useNavigate();
 
-    const [formData, setFormData] = useState<FormErrors>({
-        address: {
-            fullName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            phoneNumber: '',
-            address1: '',
-            address2: '',
-            city: '',
-            postalCode: '',
-        },
-        dateOfBirth: {
-            day: '',
-            month: '',
-            year: '',
-        },
+    const [formData, setFormData] = useState<Address>({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phoneNumber: '',
+        address1: '',
+        address2: '',
+        city: '',
+        postalCode: '',
+    });
+
+    const [dateOfBirth, setDateOfBirth] = useState<DOB>({
+        day: '',
+        month: '',
+        year: '',
     });
 
     const [errors, setErrors] = useState<FormErrors>({
@@ -81,153 +79,159 @@ export const Register = () => {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        if (name === 'day' || name === 'month' || name === 'year') {
-            setFormData({
-                ...formData,
-                dateOfBirth: {
-                    ...formData.dateOfBirth,
-                    [name]: value,
-                },
-            });
-            setErrors({
-                ...errors,
-                dateOfBirth: {
-                    ...errors.dateOfBirth,
-                    [name]: '',
-                },
-            });
-        } else {
-            setFormData({
-                ...formData,
-                address: {
-                    ...formData.address,
-                    [name]: value,
-                },
-            });
+        // Clear context errors when user starts typing
+        clearError();
 
-            if (name === 'password' && value.length >= 8) {
-                setErrors({
-                    ...errors,
-                    address: { ...errors.address, [name]: '' },
-                });
-            } else if (name === 'password' && value.length < 8) {
-                setErrors({
-                    ...errors,
-                    address: {
-                        ...errors.address,
-                        [name]: 'Password must be at least 8 characters',
-                    },
-                });
-            } else {
-                setErrors({
-                    ...errors,
-                    address: { ...errors.address, [name]: '' },
-                });
-            }
+        // Update formData for Address
+        if (name in formData) {
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+
+            // Clear error for the specific field if it exists and input is valid
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                address: {
+                    ...prevErrors.address,
+                    [name]: validateField(name as keyof Address, value),
+                },
+            }));
+        }
+
+        // Update formData for DateOfBirth
+        if (name in dateOfBirth) {
+            setDateOfBirth((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+
+            // Clear error for dateOfBirth field if input is valid
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                dateOfBirth: {
+                    ...prevErrors.dateOfBirth,
+                    [name]: validateDateOfBirthField(name as keyof DOB, value),
+                },
+            }));
+        }
+    };
+
+    const validateField = (field: keyof Address, value: string): string => {
+        switch (field) {
+            case 'fullName':
+                return value ? '' : 'Full Name is required';
+            case 'email':
+                return /\S+@\S+\.\S+/.test(value)
+                    ? ''
+                    : 'Email address is invalid';
+            case 'password':
+                return value.length >= 8
+                    ? ''
+                    : 'Password must be at least 8 characters';
+            case 'confirmPassword':
+                return value === formData.password
+                    ? ''
+                    : 'Passwords do not match';
+            case 'phoneNumber':
+                return value ? '' : 'Phone Number is required';
+            case 'address1':
+                return value ? '' : 'Address is required';
+            case 'city':
+                return value ? '' : 'Town/City is required';
+            case 'postalCode':
+                return value ? '' : 'Postal/Zip code is required';
+            default:
+                return '';
+        }
+    };
+
+    const validateDateOfBirthField = (
+        field: keyof DOB,
+        value: string,
+    ): string => {
+        if (!value) return 'Date of Birth is required';
+
+        switch (field) {
+            case 'day':
+                return !isNaN(Number(value)) &&
+                    Number(value) >= 1 &&
+                    Number(value) <= 31
+                    ? ''
+                    : 'Invalid day';
+            case 'month':
+                return !isNaN(Number(value)) &&
+                    Number(value) >= 1 &&
+                    Number(value) <= 12
+                    ? ''
+                    : 'Invalid month';
+            case 'year':
+                const currentYear = new Date().getFullYear();
+                const yearNum = Number(value);
+                return !isNaN(yearNum) &&
+                    yearNum >= currentYear - 120 &&
+                    yearNum <= currentYear - 18
+                    ? ''
+                    : `Year must be between ${currentYear - 120} and ${currentYear - 18}`;
+            default:
+                return '';
         }
     };
 
     const validateForm = () => {
         const newErrors: FormErrors = {
-            address: {
-                fullName: '',
-                email: '',
-                password: '',
-                confirmPassword: '',
-                phoneNumber: '',
-                address1: '',
-                address2: '',
-                city: '',
-                postalCode: '',
-            },
-            dateOfBirth: {
-                day: '',
-                month: '',
-                year: '',
-            },
+            address: {},
+            dateOfBirth: {},
         };
 
-        const { address, dateOfBirth } = formData;
-
-        if (!address.fullName) {
-            newErrors.address.fullName = 'Full Name is required';
-        }
-        if (!address.email) {
-            newErrors.address.email = 'Email address is required';
-        } else if (!/\S+@\S+\.\S+/.test(address.email)) {
-            newErrors.address.email = 'Email address is invalid';
-        }
-        if (!address.password) {
-            newErrors.address.password = 'Password is required';
-        } else if (address.password.length < 8) {
-            newErrors.address.password =
-                'Password must be at least 8 characters';
-        }
-        if (address.password !== address.confirmPassword) {
-            newErrors.address.confirmPassword = 'Passwords do not match';
-        }
-        if (!address.phoneNumber) {
-            newErrors.address.phoneNumber = 'Phone Number is required';
-        }
-        if (!address.address1) {
-            newErrors.address.address1 = 'Address is required';
-        }
-        if (!address.city) {
-            newErrors.address.city = 'Town/City is required';
-        }
-        if (!address.postalCode) {
-            newErrors.address.postalCode = 'Postal/Zip code is required';
-        }
-
-        if (dateOfBirth) {
-            const dobError = validateDateOfBirth(
-                dateOfBirth.day,
-                dateOfBirth?.month,
-                dateOfBirth.year,
-            );
-            if (dobError) {
-                newErrors.dateOfBirth = {
-                    day: dobError,
-                    month: dobError,
-                    year: dobError,
-                };
+        Object.entries(formData).forEach(([key, value]) => {
+            const error = validateField(key as keyof Address, value);
+            if (error) {
+                newErrors.address[key as keyof Address] = error;
             }
-        }
+        });
+
+        Object.entries(dateOfBirth).forEach(([key, value]) => {
+            const error = validateDateOfBirthField(key as keyof DOB, value);
+            if (error) {
+                newErrors.dateOfBirth[key as keyof DOB] = error;
+            }
+        });
 
         setErrors(newErrors);
 
         return (
-            Object.keys(newErrors.address).every(
-                (key) => !newErrors.address[key as keyof Address],
-            ) &&
-            (!newErrors.dateOfBirth ||
-                Object.keys(newErrors.dateOfBirth).every(
-                    (key) => !newErrors.dateOfBirth[key as keyof DOB],
-                ))
+            Object.values(newErrors.address).every((error) => !error) &&
+            Object.values(newErrors.dateOfBirth).every((error) => !error)
         );
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (validateForm()) {
-            const { address, dateOfBirth } = formData;
             try {
                 const user = await handleRegisterUser({
-                    fullname: address.fullName,
-                    email: address.email,
-                    password: address.password,
+                    fullname: formData.fullName,
+                    email: formData.email,
+                    password: formData.password,
                     dob: `${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}`,
-                    phone: address.phoneNumber,
-                    address: address.address1,
-                    city: address.city,
-                    postcode: address.postalCode,
+                    phone: formData.phoneNumber,
+                    address: formData.address1,
+                    city: formData.city,
+                    postcode: formData.postalCode,
                     roles: [],
                 });
 
                 if (user && user.id) {
                     navigate('/account/verify-email');
                 } else {
-                    throw new Error('User registration failed');
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        address: {
+                            ...prevErrors.address,
+                            email: 'Registration failed. Please try again.',
+                        },
+                    }));
                 }
             } catch (error: any) {
                 if (
@@ -243,53 +247,19 @@ export const Register = () => {
                         },
                     }));
                 } else {
-                    console.error('Error registering user:', error);
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        address: {
+                            ...prevErrors.address,
+                            email: 'Registration failed. Please try again.',
+                        },
+                    }));
                 }
             }
         } else {
             console.log('Form validation failed');
         }
     };
-
-    const validateDateOfBirth = (
-        day: string | undefined,
-        month: string | undefined,
-        year: string | undefined,
-    ) => {
-        const currentYear = new Date().getFullYear();
-        const minYear = currentYear - 120;
-        const maxYear = currentYear - 18;
-
-        const dayNum = Number(day);
-        const monthNum = Number(month);
-        const yearNum = Number(year);
-
-        if (!day || !month || !year) return 'Date of Birth is required';
-        if (isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum))
-            return 'Date of Birth must be numbers';
-
-        if (yearNum < minYear || yearNum > maxYear)
-            return `Year must be between ${minYear} and ${maxYear}`;
-
-        if (monthNum < 1 || monthNum > 12)
-            return 'Month must be between 1 and 12';
-
-        const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
-        if (dayNum < 1 || dayNum > daysInMonth)
-            return `Day must be between 1 and ${daysInMonth}`;
-
-        const date = new Date(yearNum, monthNum - 1, dayNum);
-        if (
-            date.getFullYear() !== yearNum ||
-            date.getMonth() !== monthNum - 1 ||
-            date.getDate() !== dayNum
-        )
-            return 'Invalid Date of Birth';
-
-        return null;
-    };
-
-    const { address, dateOfBirth } = formData;
 
     return (
         <>
@@ -307,7 +277,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="fullName"
-                                    value={address.fullName}
+                                    value={formData.fullName}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.fullName && (
@@ -320,7 +290,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="email"
-                                    value={address.email}
+                                    value={formData.email}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.email && (
@@ -334,7 +304,7 @@ export const Register = () => {
                                     variant="secondary"
                                     name="password"
                                     type="password"
-                                    value={address.password}
+                                    value={formData.password}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.password && (
@@ -348,7 +318,7 @@ export const Register = () => {
                                     variant="secondary"
                                     name="confirmPassword"
                                     type="password"
-                                    value={address.confirmPassword}
+                                    value={formData.confirmPassword}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.confirmPassword && (
@@ -399,7 +369,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="phoneNumber"
-                                    value={address.phoneNumber}
+                                    value={formData.phoneNumber}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.phoneNumber && (
@@ -412,7 +382,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="address1"
-                                    value={address.address1}
+                                    value={formData.address1}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.address1 && (
@@ -425,7 +395,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="address2"
-                                    value={address.address2}
+                                    value={formData.address2}
                                     onChange={handleInputChange}
                                 />
 
@@ -433,7 +403,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="city"
-                                    value={address.city}
+                                    value={formData.city}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.city && (
@@ -446,7 +416,7 @@ export const Register = () => {
                                 <Input
                                     variant="secondary"
                                     name="postalCode"
-                                    value={address.postalCode}
+                                    value={formData.postalCode}
                                     onChange={handleInputChange}
                                 />
                                 {errors.address.postalCode && (
@@ -464,8 +434,7 @@ export const Register = () => {
                                 {loading && <p>Loading...</p>}
                                 {error && (
                                     <StyledParagraph>
-                                        Error: Registration failed. Please try
-                                        again.
+                                        Error: {error}
                                     </StyledParagraph>
                                 )}
                             </>

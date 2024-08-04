@@ -9,16 +9,17 @@ import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Input } from '../../components/input';
 import Button from '../../components/button';
+import { Footer } from '../../components/footer';
 
 export const VerifyEmail = () => {
     const [verificationCode, setVerificationCode] = useState('');
-    const [error, setError] = useState('');
-    const { verifyEmail, data, loading } = useVerificationContext();
+    const [localError, setLocalError] = useState('');
+    const { verifyEmail, loading, error } = useVerificationContext();
     const navigate = useNavigate();
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setVerificationCode(e.target.value);
-        setError('');
+        setLocalError('');
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -27,7 +28,9 @@ export const VerifyEmail = () => {
             await verifyEmail(verificationCode);
             navigate('/account/verification-success');
         } catch (err) {
-            setError('Invalid or expired verification code. Please try again.');
+            setLocalError(
+                'Invalid or expired verification code. Please try again.',
+            );
         }
     };
 
@@ -40,7 +43,7 @@ export const VerifyEmail = () => {
             <VerifyEmailMain>
                 <Section>
                     <FancyContainer variant="login" size="login">
-                        <div>
+                        <FancyContainerSubWrapper>
                             <h1>Email Verification</h1>
                             <p>
                                 Please enter the verification code sent to your
@@ -58,26 +61,47 @@ export const VerifyEmail = () => {
                                     value={verificationCode}
                                     onChange={handleInputChange}
                                 />
-                                {error && (
-                                    <ErrorParagraph>{error}</ErrorParagraph>
+                                {localError && (
+                                    <ErrorParagraph>
+                                        {localError}
+                                    </ErrorParagraph>
                                 )}
                                 <Button
                                     label="Verify"
                                     variant="primary"
                                     size="small"
                                     type="submit"
-                                    disabled={!verificationCode}
+                                    disabled={!verificationCode || loading}
                                 />
                             </Form>
                             {loading && <p>Loading...</p>}
-                            {data && <p>Verification successful!</p>}
-                        </div>
+                            {error && <p>Error: {error.message}</p>}
+                        </FancyContainerSubWrapper>
                     </FancyContainer>
                 </Section>
             </VerifyEmailMain>
+            <Footer />
         </>
     );
 };
+
+const FancyContainerSubWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    h1 {
+        margin: 1rem;
+        font-family: Cinzel;
+        font-size: 24px;
+    }
+    p {
+        margin: 1rem;
+        font-family: 'Barlow', sans-serif;
+        font-size: 14px;
+    }
+`;
 
 const VerifyEmailMain = styled.main`
     background-color: #130a30;
@@ -86,6 +110,8 @@ const VerifyEmailMain = styled.main`
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: 100%;
+    padding-bottom: 5.5rem;
 `;
 
 const Section = styled.section`

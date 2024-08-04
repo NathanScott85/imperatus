@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_VERIFICATION_STATUS } from '../../graphql/verification-status';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -7,56 +9,51 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { FancyContainer } from '../../components/fancy-container';
 import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
+import { useAppContext } from '../../context';
 
-export const VerificationSuccess = () => {
-    const navigate = useNavigate();
-    const [autoNavigate, setAutoNavigate] = useState(true);
-    const [countdown, setCountdown] = useState(5);
+export const VerificationStatus = () => {
+    const { user, isAuthenticated } = useAppContext();
 
-    useEffect(() => {
-        if (autoNavigate && countdown > 0) {
-            const timer = setInterval(() => {
-                setCountdown((prevCountdown) => prevCountdown - 1);
-            }, 1000);
+    const userId = user ? user.id : null;
 
-            return () => clearInterval(timer);
-        } else if (autoNavigate && countdown === 0) {
-            navigate('/account/login');
-        }
-    }, [autoNavigate, countdown, navigate]);
+    const { data, loading, error } = useQuery(GET_VERIFICATION_STATUS, {
+        variables: { userId },
+        skip: !userId,
+    });
 
-    const handleCheckboxChange = () => {
-        setAutoNavigate(!autoNavigate);
-    };
+    if (!isAuthenticated) {
+        return <p>You must be logged in to view this page.</p>;
+    }
+
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error.message}</p>;
+
+    const verificationStatus = data?.getVerificationStatus;
+
+    if (!verificationStatus) {
+        return <p>No verification status available.</p>;
+    }
+
+    const { emailVerified, message } = verificationStatus;
 
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            <BreadCrumb label="Verification Success" />
+            <BreadCrumb label="Verification Status" />
             <VerifyEmailMain>
                 <Section>
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
-                            <h1>Email Verification Successful</h1>
-                            <p>Your email has been successfully verified.</p>
-                            {autoNavigate && (
+                            <h1>Verification Status</h1>
+                            <p>{message}</p>
+                            {!emailVerified && (
                                 <p>
-                                    You will be redirected to the login page in{' '}
-                                    {countdown} seconds.
+                                    Please verify your email address to access
+                                    your account.
                                 </p>
                             )}
-                            <CheckboxContainer>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={!autoNavigate}
-                                        onChange={handleCheckboxChange}
-                                    />
-                                    Disable Auto-Navigate
-                                </label>
-                            </CheckboxContainer>
                             <FancyLinkContainer>
                                 <p>Home</p>
                                 <Link to="/" aria-label="Go to Home Page">
@@ -72,12 +69,14 @@ export const VerificationSuccess = () => {
     );
 };
 
+// Styled components
 const FancyLinkContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+
     a {
         display: flex;
         align-items: center;
@@ -87,6 +86,7 @@ const FancyLinkContainer = styled.div`
         font-size: 16px;
         text-decoration: none;
         color: inherit;
+
         &:hover {
             text-decoration: underline;
         }
@@ -112,23 +112,6 @@ const FancyContainerSubWrapper = styled.div`
         font-size: 24px;
     }
     z-index: 50;
-`;
-
-const CheckboxContainer = styled.div`
-    margin: 1rem;
-    font-family: 'Barlow', sans-serif;
-    font-size: 16px;
-    color: white;
-
-    label {
-        display: flex;
-        align-items: center;
-    }
-
-    input {
-        margin-right: 0.5rem;
-        cursor: pointer;
-    }
 `;
 
 const VerifyEmailMain = styled.main`

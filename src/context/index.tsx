@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useQuery, gql } from '@apollo/client';
 
 interface Role {
     id: number;
@@ -11,14 +9,13 @@ interface User {
     id: number;
     email: string;
     fullname: string;
-    password: any;
     roles: Role[];
 }
 
 interface AppContextProps {
     user: User | null;
     isAuthenticated: boolean;
-    login: (token: string) => void;
+    login: (token: string, user: User) => void;
     logout: () => void;
 }
 
@@ -27,23 +24,30 @@ const AppContext = createContext<AppContextProps | null>(null);
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const navigate = useNavigate();
 
     useEffect(() => {
+        // Retrieve the token and user data from local storage
         const token = localStorage.getItem('token');
-        if (token) {
+        const storedUser = localStorage.getItem('userData');
+
+        if (token && storedUser) {
             setIsAuthenticated(true);
+            setUser(JSON.parse(storedUser)); // Parse and set user data
         }
     }, []);
 
-    const login = (token: string) => {
+    const login = (token: string, userData: User) => {
         localStorage.setItem('token', token);
+        localStorage.setItem('userData', JSON.stringify(userData)); // Store user data as string
         setIsAuthenticated(true);
+        setUser(userData); // Set the user data in context
     };
 
     const logout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('userData');
         setIsAuthenticated(false);
+        setUser(null); // Clear user data on logout
     };
 
     return (

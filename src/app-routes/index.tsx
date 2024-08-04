@@ -40,120 +40,125 @@ import { VerifyEmail } from '../pages/verify-email';
 import { VerificationSuccess } from '../pages/verify-success';
 import { RegisterProvider } from '../context/register';
 import { VerificationProvider } from '../context/verification';
-import { AppProvider } from '../context';
+import { AppProvider, useAppContext } from '../context';
+import { VerificationStatus } from '../pages/verify-status';
 
 export const AppRoutes = () => {
     const location = useLocation();
     const [users] = useState(usersArray);
+    const { user } = useAppContext();
+    console.log(user, 'user');
     return (
-        <AppProvider>
-            <Routes location={location}>
-                <Route path="/" element={<Home />} />
-                {users.map((user) =>
-                    user.role.includes('admin') ? (
-                        <Route
-                            key={user.id}
-                            path={`/account/admin`}
-                            element={<Admin user={user} />}
-                        />
-                    ) : null,
-                )}
-                <Route path="/account/user-account" element={<Account />} />
-                <Route path="/account/login" element={<Login />} />
-                <Route
-                    path="/account/verification-success"
-                    element={<VerificationSuccess />}
-                />
-                <Route
-                    path="/account/verify-email"
-                    element={
-                        <VerificationProvider>
-                            <VerifyEmail />
-                        </VerificationProvider>
-                    }
-                />
-                <Route
-                    path="/account/register"
-                    element={
-                        <RegisterProvider>
-                            <Register />
-                        </RegisterProvider>
-                    }
-                />
-                <Route
-                    path="/account/forgot-password"
-                    element={<ForgotPassword />}
-                />
-                <Route path="/account/sign-out" element={<SignOut />} />
-                <Route path="/basket" element={<Basket />} />
-                <Route path="/shop/categories" element={<Categories />} />
-                <Route
-                    path="/shop/categories/category/:id/:name"
-                    element={<Category />}
-                />
-                <Route
-                    path="/shop/categories/category/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                />
-                <Route path="/shop/card-games" element={<CardGames />} />
-                <Route
-                    path="/shop/card-games/cardgame/:id/:name"
-                    element={<CardGame />}
-                />
-                <Route
-                    path="/shop/card-games/cardgame/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                />
-                <Route path="/shop/accessories" element={<Accessories />} />
-                <Route
-                    path="/shop/accessories/accessory/:id/:name"
-                    element={<Accessory />}
-                />
-                <Route
-                    path="/shop/accessories/accessory/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                />
-                <Route path="/shop/coming-soon" element={<Preorders />} />
-                <Route
-                    path="/shop/coming-soon/new/:id/:name"
-                    element={<Orders />}
-                />
-                <Route
-                    path="/shop/coming-soon/new/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                />
-                <Route path="/shop/board-games" element={<BoardGames />} />
-                <Route
-                    path="/shop/board-games/boardgame/:id/:name"
-                    element={<BoardGame />}
-                />
-                <Route
-                    path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                />
-                <Route path="/shop/offers" element={<Offers />} />
-                <Route path="/about-us" element={<AboutUs />} />
-                <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
-                <Route path="/news-&-events" element={<NewsAndEvents />} />
-                <Route path="/careers" element={<Careers />} />
-                <Route path="/featured-brands" element={<FeaturedBrands />} />
-                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                <Route path="/cookie-policy" element={<CookiePolicy />} />
-                <Route path="/site-map" element={<SiteMap />} />
-                <Route
-                    path="/terms-&-conditions"
-                    element={<TermsAndConditions />}
-                />
-                <Route path="/payment-methods" element={<PaymentMethods />} />
-                <Route path="/delivery" element={<Delivery />} />
-                <Route
-                    path="/international-delivery"
-                    element={<InternationalDelivery />}
-                />
-                <Route path="/returns-policy" element={<ReturnsPolicy />} />
-                <Route path="/discount-codes" element={<DiscountCodes />} />
-                <Route path="*" element={<FourOFour />} />
-            </Routes>
-        </AppProvider>
+        <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            {users.map((user) =>
+                user.role.includes('admin') ? (
+                    <Route
+                        key={user.id}
+                        path={`/account/admin`}
+                        element={<Admin user={user} />}
+                    />
+                ) : null,
+            )}
+            <Route path="/account/user-account" element={<Account />} />
+            <Route path="/account/login" element={<Login />} />
+            <Route
+                path="/account/verification-success"
+                element={<VerificationSuccess />}
+            />
+            <Route
+                path="/account/verification-status"
+                element={<VerificationStatus />}
+            />
+            <Route
+                path="/account/verify-email"
+                element={
+                    <VerificationProvider>
+                        <VerifyEmail />
+                    </VerificationProvider>
+                }
+            />
+            <Route
+                path="/account/register"
+                element={
+                    <RegisterProvider>
+                        <Register />
+                    </RegisterProvider>
+                }
+            />
+            <Route
+                path="/account/forgot-password"
+                element={<ForgotPassword />}
+            />
+            <Route path="/account/sign-out" element={<SignOut />} />
+            <Route path="/basket" element={<Basket />} />
+            <Route path="/shop/categories" element={<Categories />} />
+            <Route
+                path="/shop/categories/category/:id/:name"
+                element={<Category />}
+            />
+            <Route
+                path="/shop/categories/category/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
+            <Route path="/shop/card-games" element={<CardGames />} />
+            <Route
+                path="/shop/card-games/cardgame/:id/:name"
+                element={<CardGame />}
+            />
+            <Route
+                path="/shop/card-games/cardgame/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
+            <Route path="/shop/accessories" element={<Accessories />} />
+            <Route
+                path="/shop/accessories/accessory/:id/:name"
+                element={<Accessory />}
+            />
+            <Route
+                path="/shop/accessories/accessory/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
+            <Route path="/shop/coming-soon" element={<Preorders />} />
+            <Route
+                path="/shop/coming-soon/new/:id/:name"
+                element={<Orders />}
+            />
+            <Route
+                path="/shop/coming-soon/new/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
+            <Route path="/shop/board-games" element={<BoardGames />} />
+            <Route
+                path="/shop/board-games/boardgame/:id/:name"
+                element={<BoardGame />}
+            />
+            <Route
+                path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
+                element={<ProductPage />}
+            />
+            <Route path="/shop/offers" element={<Offers />} />
+            <Route path="/about-us" element={<AboutUs />} />
+            <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
+            <Route path="/news-&-events" element={<NewsAndEvents />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/featured-brands" element={<FeaturedBrands />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/site-map" element={<SiteMap />} />
+            <Route
+                path="/terms-&-conditions"
+                element={<TermsAndConditions />}
+            />
+            <Route path="/payment-methods" element={<PaymentMethods />} />
+            <Route path="/delivery" element={<Delivery />} />
+            <Route
+                path="/international-delivery"
+                element={<InternationalDelivery />}
+            />
+            <Route path="/returns-policy" element={<ReturnsPolicy />} />
+            <Route path="/discount-codes" element={<DiscountCodes />} />
+            <Route path="*" element={<FourOFour />} />
+        </Routes>
     );
 };
