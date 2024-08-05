@@ -7,20 +7,13 @@ import { Basket } from '../basket';
 import { AdminIcon } from '../svg';
 import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
-
-// TODO: bring users back from api;
-
 import { useAppContext } from '../../context';
 
 interface HeaderProps {
     background?: boolean;
 }
 export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
-    const { user } = useAppContext();
-    const userRoles = user?.userRoles.map((role) => role.name) || [];
-    // Bug with user roles not being picked up <<
-    const isAdminOrOwner =
-        userRoles.includes('ADMIN') || userRoles.includes('OWNER');
+    const { isAdminOrOwner } = useAppContext();
     return (
         <HeaderContainer background={background}>
             <ImperatusLink />

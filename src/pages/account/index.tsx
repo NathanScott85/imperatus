@@ -19,8 +19,7 @@ import { Input } from '../../components/input';
 import { useAppContext } from '../../context';
 
 export const Account = () => {
-    const { logout, user } = useAppContext();
-    console.log(user, 'user Account page');
+    const { logout } = useAppContext();
     return (
         <>
             <TopHeader />

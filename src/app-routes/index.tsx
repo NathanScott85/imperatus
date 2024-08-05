@@ -45,11 +45,7 @@ import { ProtectedRoute } from './protected-routes';
 
 export const AppRoutes = () => {
     const location = useLocation();
-    const { isAuthenticated, user } = useAppContext();
-    // Bug with user roles not being picked up <<
-    const userRoles = user?.userRoles.map((role) => role.name) || [];
-    const isAdminOrOwner =
-        userRoles.includes('ADMIN') || userRoles.includes('OWNER');
+    const { isAuthenticated, isAdminOrOwner } = useAppContext();
     return (
         <Routes location={location}>
             <Route path="/" element={<Home />} />
@@ -57,10 +53,9 @@ export const AppRoutes = () => {
             {isAdminOrOwner && (
                 <Route
                     path={`/account/admin`}
-                    element={<ProtectedRoute element={<Admin user={user} />} />}
+                    element={<ProtectedRoute element={<Admin />} />}
                 />
             )}
-
             <Route
                 path="/account/user-account"
                 element={

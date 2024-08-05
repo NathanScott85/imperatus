@@ -3,21 +3,28 @@ import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { LOGOUT_MUTATION } from '../graphql/logout'; // Import the mutation
 
+// Define interfaces for roles and users
 interface Role {
     id: number;
     name: string;
+}
+
+interface Roles {
+    role: Role;
 }
 
 interface User {
     id: number;
     email: string;
     fullname: string;
-    userRoles: Role[];
+    userRoles: Roles[];
 }
 
 interface AppContextProps {
     user: User | null;
+    userRoles: string[];
     isAuthenticated: boolean;
+    isAdminOrOwner: boolean;
     login: (accessToken: string, refreshToken: string, user: User) => void;
     logout: () => void;
 }
@@ -29,10 +36,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    // Define the logout mutation
     const [logoutMutation] = useMutation(LOGOUT_MUTATION, {
         onCompleted: () => {
-            // Handle what happens after successful logout
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('userData');
@@ -42,7 +47,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         },
         onError: (error) => {
             console.error('Logout error:', error);
-            // You can add more error handling logic here if needed
         },
     });
 
@@ -51,9 +55,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
         const storedUser = localStorage.getItem('userData');
+
         if (accessToken && refreshToken && storedUser) {
+            const parsedUser: User = JSON.parse(storedUser);
             setIsAuthenticated(true);
-            setUser(JSON.parse(storedUser)); // Parse and set user data
+            setUser(parsedUser);
         }
     }, []);
 
@@ -84,13 +90,28 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const userRoles: string[] =
+        user?.userRoles.map((roles: Roles) => roles.role.name) || [];
+    const isAdminOrOwner =
+        userRoles.includes('ADMIN') || userRoles.includes('OWNER');
+
     return (
-        <AppContext.Provider value={{ user, isAuthenticated, login, logout }}>
+        <AppContext.Provider
+            value={{
+                user,
+                userRoles,
+                isAdminOrOwner,
+                isAuthenticated,
+                login,
+                logout,
+            }}
+        >
             {children}
         </AppContext.Provider>
     );
 };
 
+// Custom hook to use the AppContext
 export const useAppContext = () => {
     const context = useContext(AppContext);
     if (!context) {

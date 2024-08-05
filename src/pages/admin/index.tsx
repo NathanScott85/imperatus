@@ -12,12 +12,9 @@ import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
 
-interface AdminProps {
-    user: any;
-}
+interface AdminProps {}
 
-export const Admin = ({ user }: AdminProps) => {
-    const { role } = user;
+export const Admin = ({}: AdminProps) => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
 
     const renderComponent = () => {
