@@ -13,8 +13,10 @@ import {
 
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../../../context';
 
 export const Sidebar = ({ setSelectedComponent }: any) => {
+    const { logout } = useAppContext();
     return (
         <SidebarAside>
             <Menu>
@@ -50,7 +52,7 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                         <AdminIcon />
                         SETTINGS
                     </MenuItem>
-                    <StyledLink to="/account/sign-out">
+                    <StyledLink onClick={logout} to="/account/sign-out">
                         <SignOut />
                         LOGOUT
                     </StyledLink>

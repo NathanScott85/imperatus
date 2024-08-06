@@ -43,7 +43,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             localStorage.removeItem('userData');
             setIsAuthenticated(false);
             setUser(null);
-            navigate('/account/login'); // Redirect to login page
+            navigate('/account/sign-out');
         },
         onError: (error) => {
             console.error('Logout error:', error);
@@ -86,7 +86,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             localStorage.removeItem('userData');
             setIsAuthenticated(false);
             setUser(null);
-            navigate('/account/login'); // Redirect to login page
+            navigate('/account/sign-out');
         }
     };
 
