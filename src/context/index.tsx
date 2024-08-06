@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
-import { LOGOUT_MUTATION } from '../graphql/logout'; // Import the mutation
+import { LOGOUT_MUTATION } from '../graphql/logout';
+import {
+    REQUEST_PASSWORD_RESET_MUTATION,
+    RESET_PASSWORD_MUTATION,
+} from '../graphql/password-reset';
 
 // Define interfaces for roles and users
 interface Role {
@@ -27,6 +31,12 @@ interface AppContextProps {
     isAdminOrOwner: boolean;
     login: (accessToken: string, refreshToken: string, user: User) => void;
     logout: () => void;
+    requestPasswordReset: (email: string) => Promise<string | null>;
+    resetPassword: (
+        token: string,
+        newPassword: string,
+        email: string,
+    ) => Promise<string | null>;
 }
 
 const AppContext = createContext<AppContextProps | null>(null);
@@ -49,6 +59,46 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             console.error('Logout error:', error);
         },
     });
+
+    // Password reset request mutation
+    const [requestPasswordResetMutation] = useMutation(
+        REQUEST_PASSWORD_RESET_MUTATION,
+    );
+
+    // Reset password mutation
+    const [resetPasswordMutation] = useMutation(RESET_PASSWORD_MUTATION);
+
+    // Function to request a password reset
+    const requestPasswordReset = async (
+        email: string,
+    ): Promise<string | null> => {
+        try {
+            const { data } = await requestPasswordResetMutation({
+                variables: { email },
+            });
+            return data.requestPasswordReset.message;
+        } catch (error) {
+            console.error('Password reset request error:', error);
+            return null;
+        }
+    };
+
+    // Function to reset password
+    const resetPassword = async (
+        token: string,
+        newPassword: string,
+        email: string,
+    ): Promise<string | null> => {
+        try {
+            const { data } = await resetPasswordMutation({
+                variables: { token, newPassword, email },
+            });
+            return data.resetPassword.message;
+        } catch (error) {
+            console.error('Reset password error:', error);
+            return null;
+        }
+    };
 
     useEffect(() => {
         // Retrieve the tokens and user data from local storage
@@ -104,6 +154,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 isAuthenticated,
                 login,
                 logout,
+                requestPasswordReset,
+                resetPassword,
             }}
         >
             {children}

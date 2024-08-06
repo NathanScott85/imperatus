@@ -42,6 +42,7 @@ import { VerificationProvider } from '../context/verification';
 import { useAppContext } from '../context';
 import { VerificationStatus } from '../pages/verify-status';
 import { ProtectedRoute } from './protected-routes';
+import { ResetPassword } from '../pages/reset-password';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -67,7 +68,7 @@ export const AppRoutes = () => {
                     />
                 }
             />
-
+            <Route path="/account/reset-password" element={<ResetPassword />} />
             <Route path="/account/login" element={<Login />} />
             <Route
                 path="/account/verification-success"
