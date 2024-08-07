@@ -22,14 +22,12 @@ export const ForgotPassword = () => {
     const { requestPasswordReset } = useAppContext();
     const navigate = useNavigate(); // Initialize useNavigate
 
-    // Handle input change
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
         setError('');
         setSuccessMessage('');
     };
 
-    // Handle form submission
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 

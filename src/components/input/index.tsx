@@ -16,6 +16,7 @@ interface InputProps {
     radio?: boolean;
     checked?: boolean;
     id?: string;
+    required?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -29,6 +30,7 @@ export const Input: React.FC<InputProps> = ({
     radio,
     checked,
     id,
+    required,
 }) => {
     return (
         <Wrapper>
@@ -43,6 +45,7 @@ export const Input: React.FC<InputProps> = ({
                 checked={checked}
                 radio={radio}
                 id={id}
+                required={required}
             />
         </Wrapper>
     );

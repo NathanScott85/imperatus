@@ -1,5 +1,5 @@
 // src/components/ResetPassword.tsx
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -12,25 +12,24 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../../context';
 
 export const ResetPassword = () => {
-    const [token, setToken] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [tokenSubmitted, setTokenSubmitted] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
     const { resetPassword } = useAppContext();
 
-    // Extract email from location state
-    const email = location.state?.email || '';
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+    const email = queryParams.get('email');
 
-    // Handle input change
-    const handleTokenChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setToken(e.target.value);
-        setError('');
-        setSuccessMessage('');
-    };
+    // Redirect if token or email is missing
+    useEffect(() => {
+        if (!token || !email) {
+            navigate('/account/forgot-password'); // Redirect if token/email is missing
+        }
+    }, [token, email, navigate]);
 
     const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -38,16 +37,6 @@ export const ResetPassword = () => {
         if (name === 'confirmPassword') setConfirmPassword(value);
         setError('');
         setSuccessMessage('');
-    };
-
-    // Handle token form submission
-    const handleTokenSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!token) {
-            setError('Token is required.');
-            return;
-        }
-        setTokenSubmitted(true);
     };
 
     // Handle password form submission
@@ -59,7 +48,11 @@ export const ResetPassword = () => {
         }
 
         try {
-            const message = await resetPassword(token, newPassword, email);
+            const message = await resetPassword(
+                token as string,
+                newPassword,
+                email as string,
+            );
             if (message) {
                 setSuccessMessage(message);
                 setTimeout(() => navigate('/account/login'), 3000); // Redirect after 3 seconds
@@ -82,84 +75,55 @@ export const ResetPassword = () => {
             <BreadCrumb label="Reset Password" />
             <MainContainer>
                 <Section>
-                    {!tokenSubmitted ? (
-                        <FancyContainer variant="login" size="login">
-                            <FancyContainerSubWrapper>
-                                <Form onSubmit={handleTokenSubmit}>
-                                    <Label htmlFor="token">Reset Token</Label>
-                                    <Input
-                                        type="text"
-                                        id="token"
-                                        name="token"
-                                        variant="secondary"
-                                        value={token}
-                                        onChange={handleTokenChange}
-                                        placeholder="Enter your reset token"
-                                    />
-                                    {error && (
-                                        <ErrorMessage>{error}</ErrorMessage>
-                                    )}
-                                    <Button
-                                        label="Submit Token"
-                                        variant="primary"
-                                        size="small"
-                                        type="submit"
-                                        disabled={!token}
-                                    />
-                                </Form>
-                            </FancyContainerSubWrapper>
-                        </FancyContainer>
-                    ) : (
-                        <FancyContainer variant="login" size="login">
-                            <FancyContainerSubWrapper>
-                                <Form onSubmit={handlePasswordSubmit}>
-                                    <Label htmlFor="newPassword">
-                                        New Password
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        id="newPassword"
-                                        name="newPassword"
-                                        variant="secondary"
-                                        value={newPassword}
-                                        onChange={handlePasswordChange}
-                                        placeholder="Enter your new password"
-                                    />
-                                    <Label htmlFor="confirmPassword">
-                                        Confirm Password
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        variant="secondary"
-                                        value={confirmPassword}
-                                        onChange={handlePasswordChange}
-                                        placeholder="Confirm your new password"
-                                    />
-                                    {error && (
-                                        <ErrorMessage>{error}</ErrorMessage>
-                                    )}
-                                    {successMessage && (
-                                        <SuccessMessage>
-                                            {successMessage}
-                                        </SuccessMessage>
-                                    )}
-                                    <Button
-                                        label="Reset Password"
-                                        variant="primary"
-                                        size="small"
-                                        type="submit"
-                                        disabled={
-                                            !newPassword ||
-                                            !confirmPassword ||
-                                            newPassword !== confirmPassword
-                                        }
-                                    />
-                                </Form>
-                            </FancyContainerSubWrapper>
-                        </FancyContainer>
-                    )}
+                    <FancyContainer variant="login" size="login">
+                        <FancyContainerSubWrapper>
+                            <Form onSubmit={handlePasswordSubmit}>
+                                <Label htmlFor="newPassword">
+                                    New Password
+                                </Label>
+                                <Input
+                                    type="password"
+                                    id="newPassword"
+                                    name="newPassword"
+                                    variant="secondary"
+                                    value={newPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Enter your new password"
+                                    required
+                                />
+                                <Label htmlFor="confirmPassword">
+                                    Confirm Password
+                                </Label>
+                                <Input
+                                    type="password"
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    variant="secondary"
+                                    value={confirmPassword}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Confirm your new password"
+                                    required
+                                />
+                                {error && <ErrorMessage>{error}</ErrorMessage>}
+                                {successMessage && (
+                                    <SuccessMessage>
+                                        {successMessage}
+                                    </SuccessMessage>
+                                )}
+                                <Button
+                                    label="Reset Password"
+                                    variant="primary"
+                                    size="small"
+                                    type="submit"
+                                    disabled={
+                                        !newPassword ||
+                                        !confirmPassword ||
+                                        newPassword !== confirmPassword
+                                    }
+                                />
+                            </Form>
+                        </FancyContainerSubWrapper>
+                    </FancyContainer>
                 </Section>
             </MainContainer>
             <Footer />
