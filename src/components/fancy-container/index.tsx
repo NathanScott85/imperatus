@@ -2,8 +2,22 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface Variant {
-    variant?: 'small' | 'medium' | 'filters' | 'login' | 'stock' | 'account';
-    size: 'small' | 'medium' | 'filters' | 'login' | 'stock' | 'account';
+    variant?:
+        | 'small'
+        | 'medium'
+        | 'filters'
+        | 'login'
+        | 'stock'
+        | 'account'
+        | 'modal';
+    size:
+        | 'small'
+        | 'medium'
+        | 'filters'
+        | 'login'
+        | 'stock'
+        | 'account'
+        | 'modal';
 }
 
 export const FancyContainer = ({ children, variant, size }: any) => {
@@ -59,6 +73,8 @@ const StyledContainer = styled.div<Variant>`
                 return '2rem';
             case 'stock':
                 return '2rem 2rem 2rem 2rem';
+            case 'modal':
+                return '2rem';
             default:
                 return '1rem';
         }
@@ -75,11 +91,12 @@ const StyledContainer = styled.div<Variant>`
                 return '2rem';
             case 'stock':
                 return '1rem 0.5rem 0.5rem 0rem';
+            case 'modal':
+                return '0';
             default:
                 return '1rem';
         }
     }};
-
     width: ${({ size }) => {
         switch (size) {
             case 'login':
@@ -93,6 +110,8 @@ const StyledContainer = styled.div<Variant>`
                 return '762px';
             case 'stock':
                 return '225px';
+            case 'modal':
+                return 'auto';
             default:
                 return 'auto';
         }
@@ -100,18 +119,24 @@ const StyledContainer = styled.div<Variant>`
     height: ${({ size }) => {
         switch (size) {
             case 'login':
-                return '350px';
             case 'small':
                 return '350px';
             case 'medium':
                 return '450px';
             case 'stock':
                 return '100px';
+            case 'modal':
+                return 'auto';
             default:
                 return 'auto';
         }
     }};
-    position: relative;
+    position: ${({ variant }) => (variant === 'modal' ? 'fixed' : 'relative')};
+    top: ${({ variant }) => (variant === 'modal' ? '50%' : 'auto')};
+    left: ${({ variant }) => (variant === 'modal' ? '50%' : 'auto')};
+    transform: ${({ variant }) =>
+        variant === 'modal' ? 'translate(-50%, -50%)' : 'none'};
+    z-index: ${({ variant }) => (variant === 'modal' ? 1001 : 'auto')};
     border-radius: ${({ size }) =>
         size === 'filters' || size === 'account' || size === 'stock'
             ? '0px'
@@ -120,9 +145,10 @@ const StyledContainer = styled.div<Variant>`
         switch (variant) {
             case 'filters':
             case 'account':
-                return 'block';
             case 'stock':
                 return 'block';
+            case 'modal':
+                return 'flex';
             default:
                 return 'flex';
         }
@@ -133,22 +159,19 @@ const StyledContainer = styled.div<Variant>`
     background: ${({ variant }) => {
         switch (variant) {
             case 'login':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'small':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'medium':
+            case 'account':
+            case 'modal':
                 return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'filters':
                 return null;
-            case 'account':
-                return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
             case 'stock':
                 return null;
             default:
                 return 'linear-gradient(260.28deg, rgba(5, 3, 15, 0.9) 10.52%, rgba(19, 10, 48, 0.9) 93.33%)';
         }
     }};
-
     &::before {
         content: '';
         position: absolute;
@@ -159,18 +182,18 @@ const StyledContainer = styled.div<Variant>`
         border-radius: ${({ size }) =>
             size === 'filters' || size === 'account' || size === 'stock'
                 ? '0px'
-                : ' 36px'};
+                : '36px'};
         padding: 2px;
         background: ${({ size }) => {
             switch (size) {
                 case 'login':
                 case 'small':
                 case 'medium':
+                case 'modal':
                     return gradient;
                 case 'stock':
                     return stockGradient;
                 case 'filters':
-                    return reversedGradient;
                 case 'account':
                     return reversedGradient;
                 default:
@@ -185,25 +208,7 @@ const StyledContainer = styled.div<Variant>`
             linear-gradient(#fff 0 0);
         -webkit-mask-composite: destination-out;
         mask-composite: exclude;
-
-        z-index: ${({ variant }) => {
-            switch (variant) {
-                case 'login':
-                    return 0;
-                case 'small':
-                    return 0;
-                case 'medium':
-                    return 2;
-                case 'stock':
-                    return 0;
-                case 'filters':
-                    return 0;
-                case 'account':
-                    return 0;
-                default:
-                    return 0;
-            }
-        }};
+        z-index: ${({ variant }) => (variant === 'modal' ? -1 : 0)};
     }
     * > {
         z-index: 5;
@@ -214,14 +219,12 @@ const StyledRectTop = styled.div<Variant>`
     position: absolute;
     width: 15px;
     height: 15px;
-
-    background: ${({ size }: any) => {
+    background: ${({ size }) => {
         switch (size) {
             case 'login':
-                return '#130a30';
             case 'small':
-                return '#130a30';
             case 'medium':
+            case 'modal':
                 return '#130a30';
             case 'stock':
                 return 'white';
@@ -232,21 +235,18 @@ const StyledRectTop = styled.div<Variant>`
                 return '#130a30';
         }
     }};
-
-    border: ${({ size }: any) => {
+    border: ${({ size }) => {
         switch (size) {
             case 'login':
-                return '1px solid #ac8fff';
             case 'small':
-                return '1px solid #ac8fff';
             case 'medium':
+            case 'modal':
                 return '1px solid #ac8fff';
             case 'stock':
                 return '1px solid #C79D0A';
             case 'filters':
-                return '1px solid #ac8fff';
             case 'account':
-                return '1px solid #C79D0A';
+                return '1px solid #ac8fff';
             default:
                 return '2px solid #ac8fff';
         }
@@ -261,32 +261,28 @@ const StyledRectBottom = styled.div<Variant>`
     position: absolute;
     width: 15px;
     height: 15px;
-    background: ${({ size }: any) => {
+    background: ${({ size }) => {
         switch (size) {
             case 'login':
-                return '#130a30';
             case 'small':
-                return '#130a30';
             case 'medium':
+            case 'modal':
                 return '#130a30';
             case 'stock':
                 return 'white';
             case 'filters':
-                return '#130a30';
             case 'account':
                 return '#130a30';
             default:
                 return '#130a30';
         }
     }};
-
-    border: ${({ size }: any) => {
+    border: ${({ size }) => {
         switch (size) {
             case 'login':
-                return '1px solid #ac8fff';
             case 'small':
-                return '1px solid #ac8fff';
             case 'medium':
+            case 'modal':
                 return '1px solid #ac8fff';
             case 'stock':
                 return '1px solid #C79D0A';
