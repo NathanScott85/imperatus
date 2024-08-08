@@ -166,7 +166,10 @@ export const AppRoutes = () => {
             />
             <Route path="/returns-policy" element={<ReturnsPolicy />} />
             <Route path="/discount-codes" element={<DiscountCodes />} />
-            <Route path="*" element={<FourOFour />} />
+            <Route
+                path="*"
+                element={<FourOFour isAuthenticated={!isAuthenticated} />}
+            />
         </Routes>
     );
 };

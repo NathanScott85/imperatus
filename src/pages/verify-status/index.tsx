@@ -10,6 +10,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { useAppContext } from '../../context';
+import { FourOFour } from '../404';
 
 export const VerificationStatus = () => {
     const { user, isAuthenticated } = useAppContext();
@@ -22,7 +23,7 @@ export const VerificationStatus = () => {
     });
 
     if (!isAuthenticated) {
-        return <p>You must be logged in to view this page.</p>;
+        return <FourOFour isAuthenticated={isAuthenticated} />;
     }
 
     if (loading) return <p>Loading...</p>;
@@ -30,11 +31,7 @@ export const VerificationStatus = () => {
 
     const verificationStatus = data?.getVerificationStatus;
 
-    if (!verificationStatus) {
-        return <p>No verification status available.</p>;
-    }
-
-    const { emailVerified, message } = verificationStatus;
+    const { emailVerified, message } = verificationStatus || {};
 
     return (
         <>
@@ -47,7 +44,11 @@ export const VerificationStatus = () => {
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
                             <h1>Verification Status</h1>
-                            <p>{message}</p>
+                            {message ? (
+                                <p>{message}</p>
+                            ) : (
+                                <p>No verification status available.</p>
+                            )}
                             {!emailVerified && (
                                 <p>
                                     Please verify your email address to access
