@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
@@ -32,7 +32,7 @@ export const Login = () => {
     // // Redirect if already authenticated
     // useEffect(() => {
     //     if (isAuthenticated) {
-    //         navigate('/account/user-account', { replace: true }); // Redirect to the account page
+    //         navigate('/account/my-account', { replace: true }); // Redirect to the account page
     //     }
     // }, [isAuthenticated, navigate]);
 
@@ -80,8 +80,8 @@ export const Login = () => {
                     login(accessToken, refreshToken, user); // Call login with accessToken, refreshToken, and user data
 
                     // Navigate to the account page
-                    navigate('/account/user-account');
-                    //   navigate('/account/user-account', { replace: true });
+                    navigate('/account/my-account');
+                    //   navigate('/account/my-account', { replace: true });
                     // decide if I want the login page to be redirected or not
                 }
             } catch (err) {

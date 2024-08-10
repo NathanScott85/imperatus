@@ -12,9 +12,7 @@ import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
 
-interface AdminProps {}
-
-export const Admin = ({}: AdminProps) => {
+export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
 
     const renderComponent = () => {

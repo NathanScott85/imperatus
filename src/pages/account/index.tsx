@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -15,11 +15,55 @@ import {
     UserIcon,
     SignOut,
 } from '../../components/svg';
-import { Input } from '../../components/input';
+
 import { useAppContext } from '../../context';
+import { PersonalDetails } from './personal-details';
+import { PaymentDetails } from './payment-details';
+import { DeliveryInformation } from './delivery-addresses';
+import { OrderHistory } from './order-history';
+import { OrderDetails } from './order-details';
+import { Wishlist } from './wishlist';
+import { AccountManagement } from './account-management';
 
 export const Account = () => {
     const { logout } = useAppContext();
+    const [selectedComponent, setSelectedComponent] =
+        useState('PersonalDetails');
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const handleMenuClick = (componentName: string) => {
+        setSelectedOrder(null);
+        setSelectedComponent(componentName);
+    };
+
+    const renderComponent = () => {
+        if (selectedOrder) {
+            return (
+                <OrderDetails
+                    order={selectedOrder}
+                    onBack={() => setSelectedOrder(null)}
+                />
+            );
+        }
+
+        switch (selectedComponent) {
+            case 'PersonalDetails':
+                return <PersonalDetails />;
+            case 'DeliveryAddresses':
+                return <DeliveryInformation />;
+            case 'PaymentInfo':
+                return <PaymentDetails />;
+            case 'OrderHistory':
+                return <OrderHistory onViewOrder={setSelectedOrder} />;
+            case 'Wishlist':
+                return <Wishlist />;
+            case 'AccountManagement':
+                return <AccountManagement />;
+            default:
+                return <PersonalDetails />;
+        }
+    };
+
     return (
         <>
             <TopHeader />
@@ -27,76 +71,73 @@ export const Account = () => {
             <Navigation background />
             <BreadCrumb label="Account" />
             <AccountMain>
-                <section>
+                <Section>
+                    <h1>My Account</h1>
                     <FancyContainer variant="account" size="account">
                         <AccountLinksContainer>
-                            <StyledLink to="/account/personal-details">
+                            <StyledWrapper
+                                onClick={() =>
+                                    handleMenuClick('PersonalDetails')
+                                }
+                            >
                                 <UserIcon />
-                                Personal details
-                            </StyledLink>
-                            <StyledLink to="/account/delivery-addresses">
+                                Personal Details
+                            </StyledWrapper>
+                            <StyledWrapper
+                                onClick={() =>
+                                    handleMenuClick('DeliveryAddresses')
+                                }
+                            >
                                 <Van />
-                                Delivery addresses
-                            </StyledLink>
-                            <StyledLink to="/account/payment-info">
-                                <CreditCard /> Payment info
-                            </StyledLink>
-                            <StyledLink to="/account/order-history">
+                                Delivery Address
+                            </StyledWrapper>
+                            <StyledWrapper
+                                onClick={() => handleMenuClick('PaymentInfo')}
+                            >
+                                <CreditCard /> Payment Details
+                            </StyledWrapper>
+                            <StyledWrapper
+                                onClick={() => handleMenuClick('OrderHistory')}
+                            >
                                 <ClockThree /> Order history
-                            </StyledLink>
-                            <StyledLink to="/wishlist">
+                            </StyledWrapper>
+                            <StyledWrapper
+                                onClick={() => handleMenuClick('Wishlist')}
+                            >
                                 <Heart /> Wishlist
-                            </StyledLink>
-                            <StyledLink to="/account/account-management">
-                                <AdminIcon /> Account management
-                            </StyledLink>
+                            </StyledWrapper>
+                            <StyledWrapper
+                                onClick={() =>
+                                    handleMenuClick('AccountManagement')
+                                }
+                            >
+                                <AdminIcon /> Account Management
+                            </StyledWrapper>
                             <StyledLink onClick={logout} to="/account/sign-out">
                                 <SignOut /> Sign out
                             </StyledLink>
                         </AccountLinksContainer>
                     </FancyContainer>
-                </section>
-                <AccountContainer>
-                    <AccountDetailsSection>
-                        <h1>My Account</h1>
-                        <h3>Personal Details</h3>
-                        <Form>
-                            <Label>Full Name</Label>
-                            <Input name="fullname" variant="secondary" />
-                            <Label>Email Address</Label>
-                            <Input name="email" variant="secondary" />
-                            <Label>Password</Label>
-                            <Input name="password" variant="secondary" />
-                            <Label>Confirm Password</Label>
-                            <Input name="password" variant="secondary" />
-                            <BirthdayContainer>
-                                <Label>Birthday</Label>
-                                <BirthdayWrapper>
-                                    <Input
-                                        variant="birthday"
-                                        name="day"
-                                        placeholder="DD"
-                                    />
-                                    <Input
-                                        variant="birthday"
-                                        name="month"
-                                        placeholder="MM"
-                                    />
-                                    <Input
-                                        variant="birthday"
-                                        name="year"
-                                        placeholder="YYYY"
-                                    />
-                                </BirthdayWrapper>
-                            </BirthdayContainer>
-                        </Form>
-                    </AccountDetailsSection>
-                </AccountContainer>
+                </Section>
+                <AccountContainer>{renderComponent()}</AccountContainer>
             </AccountMain>
             <Footer />
         </>
     );
 };
+
+const Section = styled.section`
+    h1 {
+        color: white;
+        letter-spacing: 0.02em;
+        font-family: Cinzel;
+        font-size: 34px;
+        font-weight: 400;
+        line-height: 50px;
+        text-align: left;
+        margin-left: 20px;
+    }
+`;
 
 const AccountLinksContainer = styled.div`
     display: flex;
@@ -108,40 +149,29 @@ const AccountLinksContainer = styled.div`
     z-index: 50;
 `;
 
-const Form = styled.form`
+const StyledWrapper = styled.span`
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.02em;
     color: white;
-    display: flex;
-    flex-direction: column;
+    font-family: Barlow;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
     text-align: left;
-    h1 {
-        font-family: Cinzel;
-        font-size: 26px;
-        font-weight: 400;
-        line-height: 35.05px;
-        align-items: center;
-        padding: 2rem 0;
+    margin: 1rem 0;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+        color: #c79d0a;
     }
 
-    label {
-        font-family: Barlow;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
-        text-align: left;
-        margin-bottom: 1rem;
+    svg {
+        margin-right: 1rem;
     }
-`;
 
-const BirthdayContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const BirthdayWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 1.6rem;
-    justify-content: space-evenly;
+    z-index: 50;
 `;
 
 const StyledLink = styled(Link)`
@@ -156,6 +186,7 @@ const StyledLink = styled(Link)`
     text-align: left;
     margin: 1rem 0;
     text-decoration: none;
+    cursor: pointer;
 
     &:hover {
         color: #c79d0a;
@@ -182,39 +213,4 @@ const AccountMain = styled.main`
     background-color: #130a30;
     padding: 2rem;
     min-height: 800px;
-`;
-
-const AccountDetailsSection = styled.div`
-    padding: 0rem 2rem 2rem 2rem;
-    h1 {
-        color: white;
-        letter-spacing: 0.02em;
-        font-family: Cinzel;
-        font-size: 34px;
-        font-weight: 400;
-        line-height: 50px;
-        text-align: left;
-    }
-
-    h3 {
-        text-align: left;
-        padding: 2rem 0;
-        font-family: Cinzel;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 35.05px;
-        text-align: left;
-        color: white;
-    }
-`;
-
-const Label = styled.label`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-    color: white;
-    font-family: Barlow;
-    font-size: 18px;
-    font-weight: 400;
 `;

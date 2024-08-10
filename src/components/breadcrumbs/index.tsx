@@ -7,6 +7,7 @@ interface BreadCrumbProps {
     label?: string;
     text?: string;
     background?: boolean;
+    hidden?: boolean;
 }
 
 const renderText = (text: string | undefined) => {
@@ -16,7 +17,12 @@ const renderText = (text: string | undefined) => {
     return null;
 };
 
-export const BreadCrumb = ({ label, text, background }: BreadCrumbProps) => {
+export const BreadCrumb = ({
+    label,
+    text,
+    background,
+    hidden,
+}: BreadCrumbProps) => {
     const location = useLocation();
     const segments = location.pathname
         .split('/')
@@ -44,14 +50,14 @@ export const BreadCrumb = ({ label, text, background }: BreadCrumbProps) => {
                         </BreadcrumbList>
                     ))}
                 </BreadCrumbWrapper>
-                <Label>{label}</Label>
+                {hidden && <Label>{label}</Label>}
                 {renderText(text)}
             </BreadCrumbNav>
         </>
     );
 };
 
-const Text = styled('p')<{ text: any }>`
+const Text = styled.p<{ text: any }>`
     font-size: 1rem;
     font-weight: 500;
     padding: 1.5rem;
@@ -61,7 +67,7 @@ const Text = styled('p')<{ text: any }>`
     display: ${({ text }) => (!text ? 'none' : 'block')};
 `;
 
-const Label = styled('h1')`
+const Label = styled.h1`
     font-size: 2rem;
     font-weight: 700;
     padding: 1.5rem;
@@ -80,7 +86,7 @@ const BreadCrumbNav = styled.nav<BreadCrumbProps>`
         background ? 'background-color: #130A30' : 'background-color: none'};
 `;
 
-const BreadcrumbList = styled('ul')`
+const BreadcrumbList = styled.ul`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -91,7 +97,7 @@ const BreadcrumbList = styled('ul')`
     }
 `;
 
-const BreadCrumbWrapper = styled('ul')`
+const BreadCrumbWrapper = styled.li`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;

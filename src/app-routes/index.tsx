@@ -58,11 +58,11 @@ export const AppRoutes = () => {
                 />
             )}
             <Route
-                path="/account/user-account"
+                path="/account/my-account"
                 element={
                     <ProtectedRoute
                         redirectPath={
-                            isAuthenticated ? '/account/user-account' : '/'
+                            isAuthenticated ? '/account/my-account' : '/'
                         }
                         element={<Account />}
                     />

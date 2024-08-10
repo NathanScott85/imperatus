@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { LOGOUT_MUTATION } from '../graphql/logout';
 import {

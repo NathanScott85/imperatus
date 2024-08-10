@@ -1,4 +1,3 @@
-import { PaletteOptions } from '@mui/material';
 import { createTheme } from '@mui/system';
 import { createGlobalStyle } from 'styled-components';
 import { Colors, colors } from './colors';
@@ -7,7 +6,7 @@ import { Typography, typography } from './typography';
 import { LineHeights, lineHeights } from './line-heights';
 import { Breakpoints, breakpoints } from './breakpoints';
 
-export interface Palette extends PaletteOptions {
+export interface Palette {
     colors: Colors;
     spacing: Spacing;
     typography: Typography;

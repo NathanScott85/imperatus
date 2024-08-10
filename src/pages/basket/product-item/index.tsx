@@ -6,8 +6,9 @@ import Button from '../../../components/button';
 interface ProductItemProps {
     product: any;
     onRemove: (id: number) => void;
-    onMove: () => void;
-    moveLabel: string;
+    onMove?: () => void;
+    moveLabel?: string;
+    variant?: boolean;
 }
 
 export const ProductItem: React.FC<ProductItemProps> = ({
@@ -15,11 +16,12 @@ export const ProductItem: React.FC<ProductItemProps> = ({
     onRemove,
     onMove,
     moveLabel,
+    variant = false,
 }) => {
     return (
-        <ItemContainer>
+        <ItemContainer variant={variant}>
             <img src={product.img} alt={product.name} />
-            <ProductInfo>
+            <ProductInfo variant={variant}>
                 <div>
                     <p>{product.name}</p>
                     <p>£{product.price}</p>
@@ -27,9 +29,11 @@ export const ProductItem: React.FC<ProductItemProps> = ({
                         {moveLabel}
                     </Button>
                 </div>
-                <StyledInput type="number" defaultValue={1} min={1} />
+                {!variant && (
+                    <StyledInput type="number" defaultValue={1} min={1} />
+                )}
             </ProductInfo>
-            <ProductBasketListButtons>
+            <ProductBasketListButtons variant={variant}>
                 <Button variant="none" onClick={() => onRemove(product.id)}>
                     <Delete stroke="white" />
                 </Button>
@@ -38,18 +42,20 @@ export const ProductItem: React.FC<ProductItemProps> = ({
     );
 };
 
-const ItemContainer = styled.div`
+const ItemContainer = styled.div<{ variant: boolean }>`
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
     color: white;
-    padding: 1rem;
-    margin: 15px;
-    border: 1px solid #4d3c7b;
+    padding: ${(props) => (props.variant ? '1.5rem' : '1rem')};
+    margin: ${(props) => (props.variant ? '4px' : '15px')};
+
+    border: ${(props) =>
+        props.variant ? '1px solid #ac8fff;' : ' 1px solid #4d3c7b;'};
     border-radius: 8px;
     img {
-        width: 75px;
+        width: ${(props) => (props.variant ? '50px' : '75px')};
         height: auto;
         border-radius: 8px;
     }
@@ -59,17 +65,17 @@ const ItemContainer = styled.div`
     }
 `;
 
-const ProductInfo = styled.div`
+const ProductInfo = styled.div<{ variant: boolean }>`
     display: flex;
     flex-direction: row;
     align-items: center;
     p {
-        font-size: 16px;
+        font-size: ${(props) => (props.variant ? '14px' : '16px')};
         word-wrap: break-word;
         max-width: 100%;
         overflow-wrap: break-word;
         font-weight: 400;
-        margin: 5px;
+        margin: ${(props) => (props.variant ? '3px' : '5px')};
     }
     justify-content: space-between;
     margin-left: 10px;
@@ -77,10 +83,13 @@ const ProductInfo = styled.div`
     flex: 1;
 `;
 
-const ProductBasketListButtons = styled.div`
+const ProductBasketListButtons = styled.div<{ variant: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: right;
+    button {
+        padding: ${(props) => (props.variant ? '2px' : '5px')};
+    }
 `;
 
 const StyledInput = styled.input`

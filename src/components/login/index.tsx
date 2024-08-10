@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserIcon } from '../svg';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../context';
 
@@ -9,7 +9,7 @@ export const Login = () => {
     return (
         <LoginContainer>
             {isAuthenticated ? (
-                <Link to="/account/user-account">
+                <Link to="/account/my-account">
                     <UserIcon isAuthenticated={isAuthenticated} />
                 </Link>
             ) : (
