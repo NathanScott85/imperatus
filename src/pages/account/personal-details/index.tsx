@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input } from '../../../components/input';
 import Button from '../../../components/button';
+import { PasswordChange } from '../password-change';
 
 export const PersonalDetails = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -9,9 +10,6 @@ export const PersonalDetails = () => {
     const [formData, setFormData] = useState({
         fullname: 'Nathan Scott',
         email: 'nathan.scott@example.com',
-        currentPassword: '',
-        password: '',
-        confirmPassword: '',
         day: '15',
         month: '08',
         year: '1987',
@@ -51,27 +49,6 @@ export const PersonalDetails = () => {
                         <Input
                             name="email"
                             value={formData.email}
-                            onChange={handleInputChange}
-                            variant="secondary"
-                        />
-                        <Label>Current Password</Label>
-                        <Input
-                            name="password"
-                            value={formData.currentPassword}
-                            onChange={handleInputChange}
-                            variant="secondary"
-                        />
-                        <Label>Password</Label>
-                        <Input
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            variant="secondary"
-                        />
-                        <Label>Confirm Password</Label>
-                        <Input
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
                             onChange={handleInputChange}
                             variant="secondary"
                         />
@@ -119,7 +96,7 @@ export const PersonalDetails = () => {
                         </ButtonWrapper>
                     </Form>
                 ) : (
-                    <PersonalDetailsWraper>
+                    <PersonalDetailsWrapper>
                         <strong>Full Name:</strong>
                         <PersonalDetail>{formData.fullname}</PersonalDetail>
                         <strong>Email Address:</strong>
@@ -127,10 +104,6 @@ export const PersonalDetails = () => {
                         <strong>Birthday:</strong>
                         <PersonalDetail>
                             {`${formData.day}/${formData.month}/${formData.year}`}
-                        </PersonalDetail>
-                        <strong>Password:</strong>
-                        <PersonalDetail>
-                            Click edit to change password
                         </PersonalDetail>
                         <ButtonWrapper>
                             <Button
@@ -141,9 +114,10 @@ export const PersonalDetails = () => {
                                 Edit
                             </Button>
                         </ButtonWrapper>
-                    </PersonalDetailsWraper>
+                    </PersonalDetailsWrapper>
                 )}
             </StyledDeliveryWrapper>
+            <PasswordChange />
         </AccountDetailsSection>
     );
 };
@@ -191,7 +165,7 @@ const Label = styled.label`
     margin-top: 0.5rem;
     color: white;
     font-family: Barlow;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
 `;
 
@@ -208,7 +182,7 @@ const ButtonWrapper = styled.div`
     margin-top: 1rem;
 `;
 
-const PersonalDetailsWraper = styled.div`
+const PersonalDetailsWrapper = styled.div`
     color: white;
     display: flex;
     flex-direction: column;

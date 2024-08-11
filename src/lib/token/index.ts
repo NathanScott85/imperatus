@@ -11,8 +11,6 @@ export const isTokenExpiringSoon = (
         const expiryTime = decoded.exp * 1000;
         const currentTime = Date.now();
         const timeLeft = expiryTime - currentTime;
-
-        console.log(`Time left until token expiry: ${timeLeft / 1000} seconds`);
         return timeLeft <= thresholdInSeconds * 1000;
     } catch (error) {
         console.error('Failed to decode token:', error);

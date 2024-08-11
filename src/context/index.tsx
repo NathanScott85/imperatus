@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 import SessionExpiryPopup from '../context/session-popup';
 import { isTokenExpired, isTokenExpiringSoon } from '../lib/token';
 import { REFRESH_TOKEN_MUTATION } from '../graphql/refresh-token';
+import { CHANGE_PASSWORD_MUTATION } from '../graphql/change-password';
 
 interface Role {
     id: number;
@@ -40,6 +41,11 @@ interface AppContextProps {
         newPassword: string,
         email: string,
     ) => Promise<string | null>;
+    changeUserPassword: (
+        id: number,
+        oldPassword: string,
+        newPassword: string,
+    ) => Promise<{ message: string } | null>;
 }
 
 const AppContext = createContext<AppContextProps | null>(null);
@@ -66,6 +72,10 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         REQUEST_PASSWORD_RESET_MUTATION,
     );
     const [resetPasswordMutation] = useMutation(RESET_PASSWORD_MUTATION);
+
+    const [changePasswordMutation] = useMutation(CHANGE_PASSWORD_MUTATION);
+
+    const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
@@ -136,15 +146,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const currentTime = Date.now();
         const timeLeft = expiryTime - currentTime;
 
-        console.log(
-            `Token expiry time: ${expiryTime}, current time: ${currentTime}, time left: ${timeLeft / 1000} seconds`,
-        );
-
         if (timeLeft <= 60000) {
             setShowExpiryPopup(true);
-            console.log(
-                `Token expiring soon, showing popup and setting logout timer for ${timeLeft / 1000} seconds`,
-            );
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
         } else {
             setTimeout(() => {
@@ -153,9 +156,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             }, timeLeft - 60000);
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
-            console.log(
-                `Setting token expiry check in ${(timeLeft - 60000) / 1000} seconds and logout timer for ${timeLeft / 1000} seconds`,
-            );
         }
     };
 
@@ -185,8 +185,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
-    const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
-
     const refreshAccessToken = async (): Promise<string | null> => {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return null;
@@ -203,6 +201,46 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             return accessToken;
         } catch (error) {
             console.error('Failed to refresh access token:', error);
+            return null;
+        }
+    };
+    const changeUserPassword = async (
+        id: number,
+        oldPassword: string,
+        newPassword: string,
+    ): Promise<{ message: string } | null> => {
+        try {
+            // Retrieve user and token from context
+            const storedUser = localStorage.getItem('userData');
+            const token = localStorage.getItem('accessToken');
+
+            if (!storedUser || !token) {
+                throw new Error('User is not logged in or token is missing');
+            }
+
+            const user = JSON.parse(storedUser);
+
+            // Ensure the user ID matches the one passed in
+            if (user.id !== id) {
+                throw new Error('User ID does not match');
+            }
+
+            // Set the Authorization header
+            const headers = {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json', // Standard for GraphQL requests
+            };
+            console.log(user.id, 'user.id');
+            const { data } = await changePasswordMutation({
+                variables: { id: user.id, oldPassword, newPassword },
+                context: {
+                    headers,
+                },
+            });
+            console.log(data, 'data');
+            return data.changeUserPassword;
+        } catch (error) {
+            console.error('Change password error:', error);
             return null;
         }
     };
@@ -259,6 +297,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 logout,
                 requestPasswordReset,
                 resetPassword,
+
+                changeUserPassword,
             }}
         >
             {children}
