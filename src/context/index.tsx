@@ -53,6 +53,12 @@ const AppContext = createContext<AppContextProps | null>(null);
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [accessToken, setAccessToken] = useState<string | null>(
+        localStorage.getItem('accessToken'),
+    );
+    const [refreshToken, setRefreshToken] = useState<string | null>(
+        sessionStorage.getItem('refreshToken'),
+    );
     const [showExpiryPopup, setShowExpiryPopup] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [logoutTimer, setLogoutTimer] = useState<NodeJS.Timeout | null>(null);
@@ -78,8 +84,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
 
     useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
         const storedUser = localStorage.getItem('userData');
 
         if (accessToken && refreshToken && storedUser) {
@@ -92,10 +96,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 handleTokenExpiry(parsedUser);
             }
         }
-    }, []);
+    }, [accessToken, refreshToken]);
 
     useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken');
+        return () => {
+            if (logoutTimer) {
+                clearTimeout(logoutTimer);
+            }
+        };
+    }, [logoutTimer]);
+
+    useEffect(() => {
         if (accessToken) {
             if (isTokenExpiringSoon(accessToken)) {
                 setShowExpiryPopup(true);
@@ -104,7 +115,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 handleTokenExpiry(user);
             }
         }
-    }, [user]);
+    }, [user, accessToken]);
 
     const login = (
         accessToken: string,
@@ -114,13 +125,14 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('userData', JSON.stringify(userData));
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
         setIsAuthenticated(true);
         setUser(userData);
         checkTokenExpiry(accessToken);
     };
 
     const logout = () => {
-        const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
             logoutMutation({ variables: { refreshToken } });
         } else {
@@ -131,13 +143,14 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     const clearSession = () => {
         localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('refreshToken');
         localStorage.removeItem('userData');
+        setAccessToken(null);
+        setRefreshToken(null);
         setIsAuthenticated(false);
         setUser(null);
         setShowExpiryPopup(false);
         if (logoutTimer) clearTimeout(logoutTimer);
-        console.log('Session cleared');
     };
 
     const checkTokenExpiry = (token: string) => {
@@ -146,8 +159,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const currentTime = Date.now();
         const timeLeft = expiryTime - currentTime;
 
+        console.log(
+            `Token expiry time: ${expiryTime}, current time: ${currentTime}, time left: ${timeLeft / 1000} seconds`,
+        );
+
         if (timeLeft <= 60000) {
             setShowExpiryPopup(true);
+            console.log(
+                `Token expiring soon, showing popup and setting logout timer for ${timeLeft / 1000} seconds`,
+            );
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
         } else {
             setTimeout(() => {
@@ -156,6 +176,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             }, timeLeft - 60000);
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
+            console.log(
+                `Setting token expiry check in ${(timeLeft - 60000) / 1000} seconds and logout timer for ${timeLeft / 1000} seconds`,
+            );
         }
     };
 
@@ -184,9 +207,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false);
         }
     };
-
     const refreshAccessToken = async (): Promise<string | null> => {
-        const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) return null;
 
         try {
@@ -196,7 +217,9 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             const { accessToken, refreshToken: newRefreshToken } =
                 response.data.refreshToken;
             localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', newRefreshToken);
+            sessionStorage.setItem('refreshToken', newRefreshToken);
+            setAccessToken(accessToken);
+            setRefreshToken(newRefreshToken);
             console.log('Access token refreshed successfully');
             return accessToken;
         } catch (error) {
@@ -204,15 +227,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             return null;
         }
     };
+
     const changeUserPassword = async (
         id: number,
         oldPassword: string,
         newPassword: string,
     ): Promise<{ message: string } | null> => {
         try {
-            // Retrieve user and token from context
             const storedUser = localStorage.getItem('userData');
-            const token = localStorage.getItem('accessToken');
+            const token = accessToken;
 
             if (!storedUser || !token) {
                 throw new Error('User is not logged in or token is missing');
@@ -220,24 +243,22 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
             const user = JSON.parse(storedUser);
 
-            // Ensure the user ID matches the one passed in
             if (user.id !== id) {
                 throw new Error('User ID does not match');
             }
 
-            // Set the Authorization header
             const headers = {
                 Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json', // Standard for GraphQL requests
+                'Content-Type': 'application/json',
             };
-            console.log(user.id, 'user.id');
+
             const { data } = await changePasswordMutation({
                 variables: { id: user.id, oldPassword, newPassword },
                 context: {
                     headers,
                 },
             });
-            console.log(data, 'data');
+
             return data.changeUserPassword;
         } catch (error) {
             console.error('Change password error:', error);
@@ -297,17 +318,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 logout,
                 requestPasswordReset,
                 resetPassword,
-
                 changeUserPassword,
             }}
         >
             {children}
-            <SessionExpiryPopup
-                show={showExpiryPopup}
-                loading={loading}
-                onExtendSession={handleExtendSession}
-                onLogout={logout}
-            />
+            {showExpiryPopup && (
+                <SessionExpiryPopup
+                    show={showExpiryPopup}
+                    loading={loading}
+                    onExtendSession={handleExtendSession}
+                    onLogout={logout}
+                />
+            )}
         </AppContext.Provider>
     );
 };
