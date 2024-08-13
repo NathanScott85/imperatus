@@ -36,6 +36,7 @@ interface User {
 
 interface AppContextProps {
     user: User | null;
+    setUser: React.Dispatch<React.SetStateAction<any | null>>;
     userRoles: string[];
     isAuthenticated: boolean;
     isAdminOrOwner: boolean;
@@ -94,7 +95,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const storedUser = localStorage.getItem('userData');
-        console.log(storedUser, 'storedUser');
         if (accessToken && refreshToken && storedUser) {
             const parsedUser: User = JSON.parse(storedUser);
             if (!isTokenExpired(accessToken)) {
@@ -131,7 +131,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         refreshToken: string,
         userData: User,
     ) => {
-        console.log(userData, 'userData Login');
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('userData', JSON.stringify(userData));
@@ -190,9 +189,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (timeLeft <= 60000) {
             setShowExpiryPopup(true);
-            console.log(
-                `Token expiring soon, showing popup and setting logout timer for ${timeLeft / 1000} seconds`,
-            );
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
         } else {
             setTimeout(() => {
@@ -217,10 +213,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 setUser(parsedUser);
                 setShowExpiryPopup(false);
                 checkTokenExpiry(newAccessToken);
-                console.log('Session extended successfully');
             } else {
                 logout();
-                console.log('Failed to extend session, logging out');
             }
         } catch (error) {
             console.error('Token refresh failed:', error);
@@ -323,7 +317,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         userRoles.includes('ADMIN') || userRoles.includes('OWNER');
 
     const handleExtendSession = async () => {
-        console.log('Extending session...');
         await handleTokenExpiry(user);
         if (logoutTimer) clearTimeout(logoutTimer);
     };
@@ -332,6 +325,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         <AppContext.Provider
             value={{
                 user,
+                setUser,
                 userRoles,
                 isAdminOrOwner,
                 isAuthenticated,

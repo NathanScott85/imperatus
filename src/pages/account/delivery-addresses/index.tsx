@@ -3,16 +3,33 @@ import styled from 'styled-components';
 import Button from '../../../components/button';
 import { Input } from '../../../components/input';
 import { useAppContext } from '../../../context';
+import { UPDATE_USER_ADDRESS } from '../../../graphql/update-address';
+import { useMutation } from '@apollo/client';
 
 export const DeliveryInformation = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const { user } = useAppContext();
+    const { user, setUser } = useAppContext();
     const [formData, setFormData] = useState({
-        name: user?.fullname || '',
         address: user?.address || '',
         city: user?.city || '',
         postcode: user?.postcode || '',
         phone: user?.phone || '',
+    });
+
+    const [updateUserAddress] = useMutation(UPDATE_USER_ADDRESS, {
+        onCompleted: (data) => {
+            setIsEditing(false);
+            setUser({
+                ...user,
+                address: data.updateUserAddress.address,
+                city: data.updateUserAddress.city,
+                postcode: data.updateUserAddress.postcode,
+                phone: data.updateUserAddress.phone,
+            });
+        },
+        onError: (error) => {
+            console.error('Error updating address:', error);
+        },
     });
 
     const handleEditClick = () => {
@@ -24,9 +41,22 @@ export const DeliveryInformation = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSaveClick = () => {
-        // Here you would handle form submission, such as calling an API to save the changes
-        setIsEditing(false);
+    const handleSaveClick = async (e: any) => {
+        e.preventDefault();
+        try {
+            const userDetails = await updateUserAddress({
+                variables: {
+                    id: user?.id,
+                    phone: formData.phone,
+                    address: formData.address,
+                    city: formData.city,
+                    postcode: formData.postcode,
+                },
+            });
+            console.log('User address updated successfully:', userDetails);
+        } catch (error) {
+            console.error('Error updating address:', error);
+        }
     };
 
     const handleCancelClick = () => {
@@ -40,15 +70,6 @@ export const DeliveryInformation = () => {
                 <StyledAddressWrapper>
                     {isEditing ? (
                         <>
-                            <InputWrapper>
-                                <Label>Name</Label>
-                                <Input
-                                    variant="secondary"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleInputChange}
-                                />
-                            </InputWrapper>
                             <InputWrapper>
                                 <Label>Address</Label>
                                 <Input
@@ -71,7 +92,7 @@ export const DeliveryInformation = () => {
                                 <Label>Postal Code</Label>
                                 <Input
                                     variant="secondary"
-                                    name="postalcode"
+                                    name="postcode"
                                     value={formData.postcode}
                                     onChange={handleInputChange}
                                 />
@@ -80,7 +101,7 @@ export const DeliveryInformation = () => {
                                 <Label>Phone Number</Label>
                                 <Input
                                     variant="secondary"
-                                    name="phonenumber"
+                                    name="phone"
                                     value={formData.phone}
                                     onChange={handleInputChange}
                                 />
@@ -104,7 +125,7 @@ export const DeliveryInformation = () => {
                     ) : (
                         <DeliveryAddressDetails>
                             <strong>Name</strong>
-                            <StyledAddress>{formData.name}</StyledAddress>
+                            <StyledAddress>{user?.fullname}</StyledAddress>{' '}
                             <strong>Street Number / Name</strong>
                             <StyledAddress>{formData.address}</StyledAddress>
                             <strong>City</strong>

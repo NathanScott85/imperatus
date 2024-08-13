@@ -5,13 +5,13 @@ import Button from '../../../components/button';
 import { PasswordChange } from '../password-change';
 import { useAppContext } from '../../../context';
 import moment from 'moment';
+import { gql, useMutation } from '@apollo/client';
+import { UPDATE_USER } from '../../../graphql/update-user';
 
 export const PersonalDetails = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const { user } = useAppContext();
-    const formattedDate = user?.dob ? moment.unix(user.dob).format('L') : '';
-    const [month, day, invalidyear] = formattedDate.split('/');
-    const year = invalidyear.substring(1);
+    const { user, setUser } = useAppContext();
+    const [year, month, day] = user?.dob ? user.dob.split('-') : ['', '', ''];
 
     const [formData, setFormData] = useState({
         fullname: user?.fullname || '',
@@ -19,6 +19,21 @@ export const PersonalDetails = () => {
         day: day || '',
         month: month || '',
         year: year || '',
+    });
+
+    const [updateUser] = useMutation(UPDATE_USER, {
+        onCompleted: (data) => {
+            setIsEditing(false);
+            setUser({
+                ...user,
+                fullname: data.updateUser.fullname,
+                email: data.updateUser.email,
+                dob: data.updateUser.dob,
+            });
+        },
+        onError: (error) => {
+            console.error('Error updating user:', error);
+        },
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,19 +45,39 @@ export const PersonalDetails = () => {
         setIsEditing(true);
     };
 
-    const handleSaveClick = () => {
-        // Here you would call the API to save the data, then...
-        setIsEditing(false);
+    const handleSaveClick = async (e: any) => {
+        e.preventDefault();
+        const dob = `${formData.year}-${formData.month}-${formData.day}`;
+        const dobUnix = moment(dob, 'YYYY-MM-DD').unix();
+        console.log(
+            'Formatted DOB to send (Unix Timestamp in seconds):',
+            dobUnix,
+        );
+
+        try {
+            const userDetails = await updateUser({
+                variables: {
+                    id: user?.id,
+                    fullname: formData.fullname,
+                    email: formData.email,
+                    dob: dobUnix.toString(), // Send as a string
+                },
+            });
+
+            console.log('User updated successfully:', userDetails);
+            return userDetails;
+        } catch (error) {
+            console.error('Error updating user:', error);
+        }
     };
 
     const handleCancelClick = () => {
-        // Reset the form to the initial context values if cancelled
         setFormData({
             fullname: user?.fullname || '',
             email: user?.email || '',
-            day: user?.dob ? moment(user.dob).format('DD') : '',
-            month: user?.dob ? moment(user.dob).format('MM') : '',
-            year: user?.dob ? moment(user.dob).format('YYYY') : '',
+            day: day || '',
+            month: month || '',
+            year: year || '',
         });
         setIsEditing(false);
     };
