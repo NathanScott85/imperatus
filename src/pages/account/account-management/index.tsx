@@ -2,21 +2,49 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Input } from '../../../components/input';
-import Button from '../../../components/button'; // Assuming you have a Button component
+import Button from '../../../components/button';
 import { useAppContext } from '../../../context';
 
 export const AccountManagement = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { userRoles } = useAppContext();
+    const [confirmationText, setConfirmationText] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const { user, userRoles, deleteUserAccount } = useAppContext();
 
     const isOwner = userRoles.includes('OWNER');
 
     const handleOpenModal = () => {
         setIsModalVisible(true);
+        setErrorMessage('');
+        setSuccessMessage('');
     };
 
     const handleCloseModal = () => {
         setIsModalVisible(false);
+        setConfirmationText('');
+        setErrorMessage('');
+        setSuccessMessage('');
+    };
+
+    const handleDeleteAccount = async () => {
+        if (confirmationText !== 'DELETE') {
+            setErrorMessage('Please type "DELETE" to confirm');
+            return;
+        }
+
+        if (!user) {
+            setErrorMessage('User is not logged in or user data is missing.');
+            return;
+        }
+
+        try {
+            await deleteUserAccount(user.id);
+            setSuccessMessage('Account deleted successfully.');
+            handleCloseModal();
+        } catch (error) {
+            setErrorMessage('An error occurred while deleting the account.');
+        }
     };
 
     return (
@@ -39,11 +67,26 @@ export const AccountManagement = () => {
                             information from our database. This cannot be
                             undone.
                         </p>
-                        <label htmlFor="">To confirm this, type "DELETE"</label>
-                        <Input variant="secondary" size="medium" />
+                        {errorMessage && (
+                            <ErrorMessage>{errorMessage}</ErrorMessage>
+                        )}
+                        {successMessage && (
+                            <SuccessMessage>{successMessage}</SuccessMessage>
+                        )}
+                        <label htmlFor="confirmation">
+                            To confirm this, type "DELETE"
+                        </label>
+                        <Input
+                            variant="secondary"
+                            size="medium"
+                            value={confirmationText}
+                            onChange={(e) =>
+                                setConfirmationText(e.target.value)
+                            }
+                        />
                         <ButtonWrapper>
                             <Button
-                                onClick={handleCloseModal}
+                                onClick={handleDeleteAccount}
                                 variant="primary"
                                 size="small"
                                 label="Confirm"
@@ -52,7 +95,7 @@ export const AccountManagement = () => {
                                 onClick={handleCloseModal}
                                 variant="secondary"
                                 size="small"
-                                label="      Cancel"
+                                label="Cancel"
                             />
                         </ButtonWrapper>
                     </ModalContent>
@@ -62,17 +105,24 @@ export const AccountManagement = () => {
     );
 };
 
+const ErrorMessage = styled.div`
+    color: red;
+    font-size: 14px;
+    margin-bottom: 1rem;
+    text-align: center;
+`;
+
+const SuccessMessage = styled.div`
+    color: green;
+    font-size: 14px;
+    margin-bottom: 1rem;
+    text-align: center;
+`;
+
 const ButtonWrapper = styled.div`
     display: flex;
     gap: 1rem;
     margin-top: 1rem;
-`;
-
-export const ProductList = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 3;
 `;
 
 const ModalContent = styled.div`
@@ -94,13 +144,10 @@ const ModalContent = styled.div`
     }
     p {
         color: white;
-
         font-size: 16px;
         list-style-type: none;
         padding-bottom: 1rem;
-        color: white;
         margin-right: 0.5rem;
-        font-size: 16px;
         flex: 1;
         margin-bottom: 1rem;
         text-align: center;

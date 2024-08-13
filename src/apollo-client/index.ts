@@ -18,20 +18,20 @@ const httpLink = new HttpLink({
 });
 
 const authLink = new ApolloLink((operation, forward) => {
+    const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
-    // Set the authorization headers with the refresh token
     operation.setContext({
         headers: {
-            'x-refresh-token': refreshToken || '', // Add refresh token to headers
+            Authorization: accessToken ? `Bearer ${accessToken}` : '',
+            'x-refresh-token': refreshToken || '',
         },
     });
 
-    // Call the next link in the middleware chain
     return forward(operation);
 });
 
 export const client = new ApolloClient({
-    link: authLink.concat(httpLink), // Combine authLink with httpLink
+    link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
 });

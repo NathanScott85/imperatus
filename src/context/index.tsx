@@ -11,6 +11,7 @@ import SessionExpiryPopup from '../context/session-popup';
 import { isTokenExpired, isTokenExpiringSoon } from '../lib/token';
 import { REFRESH_TOKEN_MUTATION } from '../graphql/refresh-token';
 import { CHANGE_PASSWORD_MUTATION } from '../graphql/change-password';
+import { DELETE_USER_MUTATION } from '../graphql/delete-user';
 
 interface Role {
     id: number;
@@ -46,6 +47,7 @@ interface AppContextProps {
         oldPassword: string,
         newPassword: string,
     ) => Promise<{ message: string } | null>;
+    deleteUserAccount: (id: number) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextProps | null>(null);
@@ -82,6 +84,8 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [changePasswordMutation] = useMutation(CHANGE_PASSWORD_MUTATION);
 
     const [refreshTokenMutation] = useMutation(REFRESH_TOKEN_MUTATION);
+
+    const [deleteUserMutation] = useMutation(DELETE_USER_MUTATION);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('userData');
@@ -141,6 +145,25 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const deleteUserAccount = async (id: number) => {
+        try {
+            const { data } = await deleteUserMutation({
+                variables: { id },
+            });
+
+            if (
+                data.deleteUser.message === 'User account deleted successfully'
+            ) {
+                clearSession();
+                navigate('/account/login');
+            } else {
+                throw new Error('Failed to delete account');
+            }
+        } catch (error) {
+            console.error('Delete user account error:', error);
+            throw new Error('An error occurred during account deletion.');
+        }
+    };
     const clearSession = () => {
         localStorage.removeItem('accessToken');
         sessionStorage.removeItem('refreshToken');
@@ -159,10 +182,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         const currentTime = Date.now();
         const timeLeft = expiryTime - currentTime;
 
-        console.log(
-            `Token expiry time: ${expiryTime}, current time: ${currentTime}, time left: ${timeLeft / 1000} seconds`,
-        );
-
         if (timeLeft <= 60000) {
             setShowExpiryPopup(true);
             console.log(
@@ -176,9 +195,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 }
             }, timeLeft - 60000);
             setLogoutTimer(setTimeout(() => logout(), timeLeft));
-            console.log(
-                `Setting token expiry check in ${(timeLeft - 60000) / 1000} seconds and logout timer for ${timeLeft / 1000} seconds`,
-            );
         }
     };
 
@@ -220,7 +236,6 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             sessionStorage.setItem('refreshToken', newRefreshToken);
             setAccessToken(accessToken);
             setRefreshToken(newRefreshToken);
-            console.log('Access token refreshed successfully');
             return accessToken;
         } catch (error) {
             console.error('Failed to refresh access token:', error);
@@ -319,6 +334,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
                 requestPasswordReset,
                 resetPassword,
                 changeUserPassword,
+                deleteUserAccount,
             }}
         >
             {children}
