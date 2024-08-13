@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/button';
 import { Input } from '../../../components/input';
+import { useAppContext } from '../../../context';
 
 export const DeliveryInformation = () => {
     const [isEditing, setIsEditing] = useState(false);
+    const { user } = useAppContext();
     const [formData, setFormData] = useState({
-        name: 'Bob Doe',
-        addressLine1: '1 Anystreet',
-        city: 'Anytown',
-        postalCode: 'AT1 3AT',
-        phoneNumber: '01234567890',
+        name: user?.fullname || '',
+        address: user?.address || '',
+        city: user?.city || '',
+        postcode: user?.postcode || '',
+        phone: user?.phone || '',
     });
 
     const handleEditClick = () => {
@@ -51,8 +53,8 @@ export const DeliveryInformation = () => {
                                 <Label>Address</Label>
                                 <Input
                                     variant="secondary"
-                                    name="addressLine1"
-                                    value={formData.addressLine1}
+                                    name="address"
+                                    value={formData.address}
                                     onChange={handleInputChange}
                                 />
                             </InputWrapper>
@@ -70,7 +72,7 @@ export const DeliveryInformation = () => {
                                 <Input
                                     variant="secondary"
                                     name="postalcode"
-                                    value={formData.postalCode}
+                                    value={formData.postcode}
                                     onChange={handleInputChange}
                                 />
                             </InputWrapper>
@@ -79,7 +81,7 @@ export const DeliveryInformation = () => {
                                 <Input
                                     variant="secondary"
                                     name="phonenumber"
-                                    value={formData.phoneNumber}
+                                    value={formData.phone}
                                     onChange={handleInputChange}
                                 />
                             </InputWrapper>
@@ -104,17 +106,13 @@ export const DeliveryInformation = () => {
                             <strong>Name</strong>
                             <StyledAddress>{formData.name}</StyledAddress>
                             <strong>Street Number / Name</strong>
-                            <StyledAddress>
-                                {formData.addressLine1}
-                            </StyledAddress>
+                            <StyledAddress>{formData.address}</StyledAddress>
                             <strong>City</strong>
                             <StyledAddress>{formData.city}</StyledAddress>
                             <strong>Postcode</strong>
-                            <StyledAddress>{formData.postalCode}</StyledAddress>
+                            <StyledAddress>{formData.postcode}</StyledAddress>
                             <strong>Phone number</strong>
-                            <StyledAddress>
-                                {formData.phoneNumber}
-                            </StyledAddress>
+                            <StyledAddress>{formData.phone}</StyledAddress>
                             <Button
                                 variant="primary"
                                 size="small"

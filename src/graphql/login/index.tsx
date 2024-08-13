@@ -11,6 +11,8 @@ export const LOGIN_MUTATION = gql`
                 fullname
                 address
                 postcode
+                city
+                dob
                 phone
                 userRoles {
                     role {

@@ -3,16 +3,22 @@ import styled from 'styled-components';
 import { Input } from '../../../components/input';
 import Button from '../../../components/button';
 import { PasswordChange } from '../password-change';
+import { useAppContext } from '../../../context';
+import moment from 'moment';
 
 export const PersonalDetails = () => {
     const [isEditing, setIsEditing] = useState(false);
-    // Hard coded for now till API is connected up
+    const { user } = useAppContext();
+    const formattedDate = user?.dob ? moment.unix(user.dob).format('L') : '';
+    const [month, day, invalidyear] = formattedDate.split('/');
+    const year = invalidyear.substring(1);
+
     const [formData, setFormData] = useState({
-        fullname: 'Nathan Scott',
-        email: 'nathan.scott@example.com',
-        day: '15',
-        month: '08',
-        year: '1987',
+        fullname: user?.fullname || '',
+        email: user?.email || '',
+        day: day || '',
+        month: month || '',
+        year: year || '',
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,10 +31,19 @@ export const PersonalDetails = () => {
     };
 
     const handleSaveClick = () => {
+        // Here you would call the API to save the data, then...
         setIsEditing(false);
     };
 
     const handleCancelClick = () => {
+        // Reset the form to the initial context values if cancelled
+        setFormData({
+            fullname: user?.fullname || '',
+            email: user?.email || '',
+            day: user?.dob ? moment(user.dob).format('DD') : '',
+            month: user?.dob ? moment(user.dob).format('MM') : '',
+            year: user?.dob ? moment(user.dob).format('YYYY') : '',
+        });
         setIsEditing(false);
     };
 

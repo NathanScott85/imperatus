@@ -26,6 +26,11 @@ interface User {
     id: number;
     email: string;
     fullname: string;
+    dob: any;
+    address: string;
+    city: string;
+    postcode: string;
+    phone: string;
     userRoles: Roles[];
 }
 
@@ -59,7 +64,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.getItem('accessToken'),
     );
     const [refreshToken, setRefreshToken] = useState<string | null>(
-        sessionStorage.getItem('refreshToken'),
+        localStorage.getItem('refreshToken'),
     );
     const [showExpiryPopup, setShowExpiryPopup] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -89,7 +94,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const storedUser = localStorage.getItem('userData');
-
+        console.log(storedUser, 'storedUser');
         if (accessToken && refreshToken && storedUser) {
             const parsedUser: User = JSON.parse(storedUser);
             if (!isTokenExpired(accessToken)) {
@@ -126,6 +131,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         refreshToken: string,
         userData: User,
     ) => {
+        console.log(userData, 'userData Login');
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('userData', JSON.stringify(userData));
@@ -166,7 +172,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     };
     const clearSession = () => {
         localStorage.removeItem('accessToken');
-        sessionStorage.removeItem('refreshToken');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('userData');
         setAccessToken(null);
         setRefreshToken(null);
@@ -233,7 +239,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             const { accessToken, refreshToken: newRefreshToken } =
                 response.data.refreshToken;
             localStorage.setItem('accessToken', accessToken);
-            sessionStorage.setItem('refreshToken', newRefreshToken);
+            localStorage.setItem('refreshToken', newRefreshToken);
             setAccessToken(accessToken);
             setRefreshToken(newRefreshToken);
             return accessToken;
