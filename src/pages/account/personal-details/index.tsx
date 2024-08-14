@@ -5,7 +5,7 @@ import Button from '../../../components/button';
 import { PasswordChange } from '../password-change';
 import { useAppContext } from '../../../context';
 import moment from 'moment';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { UPDATE_USER } from '../../../graphql/update-user';
 
 export const PersonalDetails = () => {

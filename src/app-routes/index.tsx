@@ -43,6 +43,7 @@ import { useAppContext } from '../context';
 import { VerificationStatus } from '../pages/verify-status';
 import { ProtectedRoute } from './protected-routes';
 import { ResetPassword } from '../pages/reset-password';
+import { AdminProvider } from '../context/admin';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -54,7 +55,15 @@ export const AppRoutes = () => {
             {isAdminOrOwner && (
                 <Route
                     path={`/account/admin`}
-                    element={<ProtectedRoute element={<Admin />} />}
+                    element={
+                        <ProtectedRoute
+                            element={
+                                <AdminProvider>
+                                    <Admin />
+                                </AdminProvider>
+                            }
+                        />
+                    }
                 />
             )}
             <Route
