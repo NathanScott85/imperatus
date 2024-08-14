@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
 import moment from 'moment';
 import { Search } from '../../../components/search';
+import { Customer } from './customer';
 
 export const Customers: React.FC = () => {
     const {
@@ -15,7 +16,11 @@ export const Customers: React.FC = () => {
         totalPages,
         currentPage,
     } = useAdminContext();
-    const [search, setSearchTerm] = useState(''); // Local state for search input
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [search, setSearchTerm] = useState('');
+    const [visibleDetails, setVisibleDetails] = useState<{
+        [key: string]: boolean;
+    }>({});
 
     const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const searchTerm = e.target.value;
@@ -24,6 +29,10 @@ export const Customers: React.FC = () => {
         if (searchTerm === '') {
             setSearch('');
         }
+    };
+
+    const handleViewCustomer = (customer: any) => {
+        setSelectedCustomer(customer);
     };
 
     const triggerSearch = () => {
@@ -40,12 +49,29 @@ export const Customers: React.FC = () => {
         setPage(newPage);
     };
 
+    const toggleVisibility = (userId: string) => {
+        setVisibleDetails((prev) => ({
+            ...prev,
+            [userId]: !prev[userId],
+        }));
+    };
+
+    const handleBackToList = () => {
+        setSelectedCustomer(null);
+    };
+
     if (!isAdminOrOwner) {
         return <p>You do not have permission to view this content.</p>;
     }
 
     if (loading) return <p>Loading...</p>;
     if (error) return <Span>Error loading users: {error.message}</Span>;
+
+    if (selectedCustomer) {
+        return (
+            <Customer customer={selectedCustomer} onBack={handleBackToList} />
+        );
+    }
 
     return (
         <CustomersMain>
@@ -61,28 +87,94 @@ export const Customers: React.FC = () => {
                     <thead>
                         <tr>
                             <th>Full Name</th>
+                            <th>Display</th>
                             <th>Email</th>
                             <th>Date of Birth</th>
                             <th>Phone</th>
                             <th>Address</th>
-                            <th>Email Verified</th>
+                            <th>View</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users?.map((user) => (
                             <tr key={user.id}>
                                 <td>{user.fullname}</td>
-                                <td>{user.email}</td>
                                 <td>
-                                    {user.dob
-                                        ? moment(user.dob).format('MM/DD/YYYY')
-                                        : 'N/A'}
+                                    <EyeIcon
+                                        onClick={() =>
+                                            toggleVisibility(user.id.toString())
+                                        }
+                                    >
+                                        <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M2.0355 12.3248C1.96642 12.1176 1.96635 11.8932 2.03531 11.6859C3.42368 7.51216 7.36074 4.50244 12.0008 4.50244C16.6386 4.50244 20.5742 7.50937 21.9643 11.68C22.0334 11.8873 22.0334 12.1117 21.9645 12.319C20.5761 16.4927 16.639 19.5024 11.999 19.5024C7.36115 19.5024 3.42559 16.4955 2.0355 12.3248Z"
+                                                stroke="white"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                            <path
+                                                d="M15 12.0024C15 13.6593 13.6568 15.0024 12 15.0024C10.3431 15.0024 8.99995 13.6593 8.99995 12.0024C8.99995 10.3456 10.3431 9.00244 12 9.00244C13.6568 9.00244 15 10.3456 15 12.0024Z"
+                                                stroke="white"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            />
+                                        </svg>
+                                    </EyeIcon>
                                 </td>
-                                <td>{user.phone}</td>
                                 <td>
-                                    {user.address}, {user.city}, {user.postcode}
+                                    {visibleDetails[user.id] ? (
+                                        <span>{user.email}</span>
+                                    ) : (
+                                        <span>...</span>
+                                    )}
                                 </td>
-                                <td>{user.emailVerified ? 'Yes' : 'No'}</td>
+                                <td>
+                                    {visibleDetails[user.id] ? (
+                                        user.dob ? (
+                                            <span>
+                                                {moment(user.dob).format(
+                                                    'MM/DD/YYYY',
+                                                )}
+                                            </span>
+                                        ) : (
+                                            <span>N/A</span>
+                                        )
+                                    ) : (
+                                        <span>...</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {visibleDetails[user.id] ? (
+                                        <span>{user.phone}</span>
+                                    ) : (
+                                        <span>...</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {visibleDetails[user.id] ? (
+                                        <span>
+                                            {user.address}, <br />
+                                            {user.city},{user.postcode}
+                                        </span>
+                                    ) : (
+                                        <span>...</span>
+                                    )}
+                                </td>
+                                <td>
+                                    <ViewButton
+                                        onClick={() => handleViewCustomer(user)}
+                                    >
+                                        View
+                                    </ViewButton>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -106,6 +198,44 @@ export const Customers: React.FC = () => {
     );
 };
 
+const EyeIcon = styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: #0f172a;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    &:hover svg {
+        stroke: #c79d0a;
+    }
+`;
+
+const ViewButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #2a1f51;
+    }
+`;
+
 const Span = styled.span`
     color: #fff;
     font-family: Cinzel;
@@ -113,6 +243,7 @@ const Span = styled.span`
     font-style: normal;
     font-weight: bold;
 `;
+
 const CustomersMain = styled.main`
     flex-direction: column;
     p {
@@ -159,6 +290,13 @@ const Table = styled.table`
         font-family: Barlow;
         font-size: 14px;
         font-style: normal;
+
+        span {
+            color: white;
+            font-family: Barlow;
+            font-size: 14px;
+            font-style: normal;
+        }
     }
     td:hover {
         background-color: #2a1f51;
@@ -185,7 +323,7 @@ const PageButton = styled.button<{ disabled?: boolean }>`
     cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
-
+    border-radius: 4px;
     &:hover {
         background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }

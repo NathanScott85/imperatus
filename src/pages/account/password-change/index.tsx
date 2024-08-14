@@ -255,7 +255,6 @@ const PersonalDetail = styled.div`
     padding-bottom: 1rem;
     color: white;
     margin-right: 0.5rem;
-    font-size: 16px;
     flex: 1;
     margin-bottom: 1rem;
     font-family: Barlow, serif;
