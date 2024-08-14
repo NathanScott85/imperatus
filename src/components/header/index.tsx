@@ -14,10 +14,17 @@ interface HeaderProps {
 }
 export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
     const { isAdminOrOwner } = useAppContext();
+    //TODO:  add values to search so that it does not error.
     return (
         <HeaderContainer background={background}>
             <ImperatusLink />
-            <Search />
+            <Search
+                search=""
+                handleReset={() => ''}
+                onChange={() => ''}
+                onSearch={() => ''}
+                type="text"
+            />
             <HeaderWrapper>
                 <Login />
                 <Basket />

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useMutation } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 import { LOGOUT_MUTATION } from '../graphql/logout';
 import {
@@ -59,6 +59,7 @@ interface AppContextProps {
 const AppContext = createContext<AppContextProps | null>(null);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+    const client = useApolloClient();
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [accessToken, setAccessToken] = useState<string | null>(
@@ -67,14 +68,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [refreshToken, setRefreshToken] = useState<string | null>(
         localStorage.getItem('refreshToken'),
     );
+
     const [showExpiryPopup, setShowExpiryPopup] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [logoutTimer, setLogoutTimer] = useState<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
-
     const [logoutMutation] = useMutation(LOGOUT_MUTATION, {
         onCompleted: () => {
             clearSession();
+            client.resetStore();
             navigate('/account/sign-out');
         },
         onError: (error) => {

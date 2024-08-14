@@ -1,19 +1,42 @@
-import React, { ChangeEvent } from 'react';
-import { SearchIcon } from '../svg';
-import { styled } from 'styled-components';
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { SearchIcon } from '../svg'; // Assuming you have a SearchIcon component
+import styled from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
 import { Input } from '../input';
 
-export const Search = () => {
-    const [search, setSearch] = React.useState('');
+interface SearchProps {
+    search: string;
+    onSearch: (searchTerm: string) => void;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    type: string;
+    handleReset: any;
+}
 
-    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
+export const Search: React.FC<SearchProps> = ({
+    search,
+    onSearch,
+    onChange,
+    handleReset,
+}) => {
+    const [isSearching, setIsSearching] = useState(false);
+
+    const handleSearchClick = () => {
+        if (search) {
+            onSearch(search);
+            setIsSearching(true);
+        }
     };
 
-    const onSubmit = () => {
-        console.log('Search submitted:', search);
-        setSearch(''); // Clear the search input
+    const buttonReset = () => {
+        onSearch(''); // Clear the search
+        handleReset();
+        setIsSearching(false);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && search) {
+            handleSearchClick();
+        }
     };
 
     return (
@@ -25,10 +48,15 @@ export const Search = () => {
                 className="search-input"
                 type="text"
                 onChange={onChange}
-                placeholder={search ? '' : 'Search'}
+                onKeyDown={handleKeyDown}
+                placeholder="Search"
             />
-            <SearchButton className="search-button" onClick={onSubmit}>
-                <SearchIcon />
+            <SearchButton
+                type="button"
+                onClick={isSearching ? buttonReset : handleSearchClick}
+                className="search-button"
+            >
+                {isSearching ? <span>X</span> : <SearchIcon />}
             </SearchButton>
         </SearchContainer>
     );
@@ -39,7 +67,6 @@ const SearchContainer = styled.div`
     align-items: center;
     color: #c79d0a;
     margin: 0 3.5rem;
-    padding: 1.2rem 0.75rem;
     ${mediaQueries('md')`
         width: 100%;
     `};
@@ -86,4 +113,8 @@ export const SearchButton = styled.button`
     ${mediaQueries('md')`
          padding: 1rem;
     `};
+    span {
+        padding: 0.25rem;
+        font-size: 15px;
+    }
 `;

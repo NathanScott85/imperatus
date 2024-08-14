@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { KeyboardEvent } from 'react';
 import styled, { css } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
 
@@ -17,6 +17,7 @@ interface InputProps {
     checked?: boolean;
     id?: string;
     required?: boolean;
+    onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -31,6 +32,7 @@ export const Input: React.FC<InputProps> = ({
     checked,
     id,
     required,
+    onKeyDown,
 }) => {
     return (
         <Wrapper>
@@ -46,6 +48,7 @@ export const Input: React.FC<InputProps> = ({
                 radio={radio}
                 id={id}
                 required={required}
+                onKeyDown={onKeyDown}
             />
         </Wrapper>
     );
@@ -72,9 +75,11 @@ const StyledInput = styled.input<InputProps>`
         border: 1.5px solid #c79d0a;
         border-right: none;
     }
+
     &::placeholder {
         color: white;
         font-size: 12px;
+        padding-left: 5px;
     }
 
     &:focus::placeholder {
@@ -85,13 +90,12 @@ const StyledInput = styled.input<InputProps>`
     ${({ variant }) =>
         variant === 'search' &&
         css`
-            padding: 1.45rem 1rem;
             margin-right: 0.5rem;
             margin-top: 0.75rem;
             margin-bottom: 0.75rem;
             font-size: 16px;
             width: 320px;
-            height: 35px;
+            height: 36px;
             background: #130a30;
             border: 1px solid rgba(172, 143, 255, 0.5);
             border-top-left-radius: 5px;
@@ -99,10 +103,12 @@ const StyledInput = styled.input<InputProps>`
             color: white;
             font-family: Barlow, serif;
             width: 320px;
-            height: 33px;
+
             border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             border-right: none;
+
+            padding-left: 5px;
 
             &:focus::placeholder,
             &:active::placeholder {
@@ -141,6 +147,8 @@ const StyledInput = styled.input<InputProps>`
             &::placeholder {
                 color: white;
                 font-size: 12px;
+                padding-left: 5px;
+                font-family: Barlow, serif;
             }
             &:focus::placeholder {
                 color: transparent;
@@ -157,6 +165,7 @@ const StyledInput = styled.input<InputProps>`
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
+                font-family: Barlow, serif;
             }
 
             text-indent: 5px;
@@ -181,6 +190,7 @@ const StyledInput = styled.input<InputProps>`
             &::placeholder {
                 color: white;
                 font-size: 12px;
+                padding-left: 5px;
             }
             text-indent: 5px;
             width: 90px;
@@ -204,6 +214,7 @@ const StyledInput = styled.input<InputProps>`
             &::placeholder {
                 color: white;
                 font-size: 12px;
+                padding-left: 5px;
             }
             text-indent: 5px;
             width: 325px;
