@@ -5,7 +5,6 @@ import React, {
     ReactNode,
     useMemo,
 } from 'react';
-import { useAppContext } from '..';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ALL_USERS } from '../../graphql/get-users';
 
@@ -21,7 +20,6 @@ interface User {
     emailVerified?: boolean;
 }
 interface AdminContextProps {
-    isAdminOrOwner: boolean;
     users: User[] | null;
     loading: boolean;
     error: any;
@@ -38,7 +36,6 @@ const AdminContext = createContext<AdminContextProps | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const { isAdminOrOwner } = useAppContext();
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
 
@@ -60,7 +57,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     return (
         <AdminContext.Provider
             value={{
-                isAdminOrOwner,
                 users,
                 loading,
                 error,

@@ -12,11 +12,7 @@ import { isTokenExpired, isTokenExpiringSoon } from '../lib/token';
 import { REFRESH_TOKEN_MUTATION } from '../graphql/refresh-token';
 import { CHANGE_PASSWORD_MUTATION } from '../graphql/change-password';
 import { DELETE_USER_MUTATION } from '../graphql/delete-user';
-
-interface Role {
-    id: number;
-    name: string;
-}
+import { Role } from '../types';
 
 interface Roles {
     role: Role;

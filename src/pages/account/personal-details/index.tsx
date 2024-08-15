@@ -49,10 +49,6 @@ export const PersonalDetails = () => {
         e.preventDefault();
         const dob = `${formData.year}-${formData.month}-${formData.day}`;
         const dobUnix = moment(dob, 'YYYY-MM-DD').unix();
-        console.log(
-            'Formatted DOB to send (Unix Timestamp in seconds):',
-            dobUnix,
-        );
 
         try {
             const userDetails = await updateUser({
@@ -63,8 +59,6 @@ export const PersonalDetails = () => {
                     dob: dobUnix.toString(), // Send as a string
                 },
             });
-
-            console.log('User updated successfully:', userDetails);
             return userDetails;
         } catch (error) {
             console.error('Error updating user:', error);

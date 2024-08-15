@@ -4,10 +4,24 @@ import { useAdminContext } from '../../../context/admin';
 import moment from 'moment';
 import { Search } from '../../../components/search';
 import { Customer } from './customer';
+import { useAppContext } from '../../../context';
+import { Loading } from '../../loading';
+import { Roles } from '../../../types';
+
+interface CustomerType {
+    id: number;
+    fullname: string;
+    email: string;
+    dob: Date;
+    phone: string;
+    address: string;
+    city: string;
+    postcode: string;
+    userRoles: Roles[];
+}
 
 export const Customers: React.FC = () => {
     const {
-        isAdminOrOwner,
         users,
         loading,
         error,
@@ -15,17 +29,18 @@ export const Customers: React.FC = () => {
         setSearch,
         totalPages,
         currentPage,
-        fetchUsers, // Fetch users when the component mounts
+        fetchUsers,
     } = useAdminContext();
-
-    const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const { isAdminOrOwner } = useAppContext();
+    const [selectedCustomer, setSelectedCustomer] =
+        useState<CustomerType | null>(null);
     const [search, setSearchTerm] = useState('');
     const [visibleDetails, setVisibleDetails] = useState<{
         [key: string]: boolean;
     }>({});
 
     useEffect(() => {
-        fetchUsers(); // Trigger data fetching when the component is rendered
+        fetchUsers();
     }, [fetchUsers]);
 
     const handleSearchInputChange = (e: any) => {
@@ -70,12 +85,16 @@ export const Customers: React.FC = () => {
         return <p>You do not have permission to view this content.</p>;
     }
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <Loading />;
     if (error) return <Span>Error loading users: {error.message}</Span>;
 
     if (selectedCustomer) {
         return (
-            <Customer customer={selectedCustomer} onBack={handleBackToList} />
+            <Customer
+                customer={selectedCustomer}
+                onBack={handleBackToList}
+                userRoles={selectedCustomer.userRoles}
+            />
         );
     }
 

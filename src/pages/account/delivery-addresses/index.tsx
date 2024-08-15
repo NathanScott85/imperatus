@@ -177,12 +177,6 @@ const ButtonWrapper = styled.div`
     margin-top: 1rem;
 `;
 
-const Name = styled.span`
-    font-weight: 700;
-    font-size: 16px;
-    padding-bottom: 1rem;
-`;
-
 const StyledAddressWrapper = styled.ul`
     display: flex;
     flex-direction: column;

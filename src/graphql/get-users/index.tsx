@@ -13,6 +13,11 @@ export const GET_ALL_USERS = gql`
                 city
                 postcode
                 emailVerified
+                userRoles {
+                    role {
+                        name
+                    }
+                }
             }
             totalCount
             totalPages

@@ -1,7 +1,10 @@
-import moment from 'moment';
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 import { Input } from '../../../../components/input';
+import Button from '../../../../components/button';
+import { useAppContext } from '../../../../context';
+import { Modal } from '../../../../components/modal';
 
 interface Transaction {
     id: number;
@@ -11,15 +14,25 @@ interface Transaction {
     timestamp: Date;
 }
 
-export const Customer: React.FC<{ customer: any; onBack: () => void }> = ({
-    customer,
-    onBack,
-}) => {
-    const [storeCredit, setStoreCredit] = useState(0); // Initial store credit
-    const [amount, setAmount] = useState<number>(0); // State for input amount
-    const [operation, setOperation] = useState<'+' | '-'>('+'); // State for selected operation
-    const [history, setHistory] = useState<Transaction[]>([]); // State for store credit history
-    const [error, setError] = useState<string | null>(null); // State for error messages
+export const Customer: React.FC<{
+    customer: any;
+    onBack: () => void;
+    userRoles: any[];
+}> = ({ customer, onBack, userRoles }) => {
+    const [storeCredit, setStoreCredit] = useState(0);
+    const [amount, setAmount] = useState<number>(0);
+    const [operation, setOperation] = useState<'+' | '-'>('+');
+    const [history, setHistory] = useState<Transaction[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const { deleteUserAccount } = useAppContext();
+
+    const isCustomerAdminOrOwner = userRoles.some(
+        (role: any) => role.role.name === 'ADMIN' || role.role.name === 'OWNER',
+    );
 
     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAmount(parseFloat(e.target.value) || 0);
@@ -67,28 +80,66 @@ export const Customer: React.FC<{ customer: any; onBack: () => void }> = ({
         setAmount(0);
     };
 
+    const handleOpenModal = () => {
+        setIsModalVisible(true);
+        setErrorMessage('');
+        setSuccessMessage('');
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setConfirmationText('');
+        setErrorMessage('');
+        setSuccessMessage('');
+    };
+
+    const handleDeleteAccount = async () => {
+        if (confirmationText !== 'DELETE') {
+            setErrorMessage('Please type "DELETE" to confirm');
+            return;
+        }
+
+        try {
+            await deleteUserAccount(customer.id);
+            setSuccessMessage('Account deleted successfully.');
+            handleCloseModal();
+            onBack();
+        } catch (error) {
+            setErrorMessage('An error occurred while deleting the account.');
+        }
+    };
+
     return (
         <CustomerMain>
             <BackButton onClick={onBack}>Back to Customers</BackButton>
             <CustomerContainer>
                 <CustomerDetails>
-                    <strong> Full Name </strong>
+                    <strong>Full Name</strong>
                     <CustomerDetail>{customer.fullname}</CustomerDetail>
-                    <strong> Email: </strong>
-                    <CustomerDetail> {customer.email}</CustomerDetail>
-                    <strong>Date of Birth: </strong>
+                    <strong>Email</strong>
+                    <CustomerDetail>{customer.email}</CustomerDetail>
+                    <strong>Date of Birth</strong>
                     <CustomerDetail>
-                        {' '}
                         {moment(customer.dob).format('MM/DD/YYYY')}
                     </CustomerDetail>
-                    <strong>Phone: </strong>
-                    <CustomerDetail> {customer.phone}</CustomerDetail>
+                    <strong>Phone</strong>
+                    <CustomerDetail>{customer.phone}</CustomerDetail>
                     <strong>Street Number / Name</strong>
                     <CustomerDetail>{customer.address}</CustomerDetail>
                     <strong>City</strong>
-                    <CustomerDetail>{customer.city} </CustomerDetail>
-                    <strong>postcode</strong>
-                    <CustomerDetail> {customer.postcode} </CustomerDetail>
+                    <CustomerDetail>{customer.city}</CustomerDetail>
+                    <strong>Postcode</strong>
+                    <CustomerDetail>{customer.postcode}</CustomerDetail>
+                    {isCustomerAdminOrOwner && (
+                        <h5>Account Deletion Disabled for Owner</h5>
+                    )}
+                    <Button
+                        variant="primary"
+                        size="small"
+                        label="Delete Account"
+                        onClick={handleOpenModal}
+                        disabled={isCustomerAdminOrOwner}
+                    />
                 </CustomerDetails>
 
                 <StoreCreditContainer>
@@ -117,7 +168,9 @@ export const Customer: React.FC<{ customer: any; onBack: () => void }> = ({
                                 onChange={handleAmountChange}
                             />
                         </InputGroup>
-                        <SubmitButton type="submit">Submit</SubmitButton>
+                        <Button variant="primary" size="small" type="submit">
+                            Submit
+                        </Button>
                     </Form>
                 </StoreCreditContainer>
                 <StoreCreditHistory>
@@ -155,6 +208,21 @@ export const Customer: React.FC<{ customer: any; onBack: () => void }> = ({
                         ))}
                     </ul>
                 </StoreCreditHistory>
+
+                {isModalVisible && (
+                    <Modal
+                        title="Delete Account"
+                        content=" Deleting this account will remove all of the customer's
+                    information from our database. This cannot be undone."
+                        label='To confirm this, type "DELETE"'
+                        confirmationText={confirmationText}
+                        errorMessage={errorMessage}
+                        successMessage={successMessage}
+                        setConfirmationText={setConfirmationText}
+                        handleDeleteAccount={handleDeleteAccount}
+                        handleCloseModal={handleCloseModal}
+                    />
+                )}
             </CustomerContainer>
         </CustomerMain>
     );
@@ -175,6 +243,7 @@ const CustomerContainer = styled.div`
     height: 550px;
     align-items: flex-start;
 `;
+
 const CustomerDetails = styled.div`
     font-family: Barlow;
     font-size: 16px;
@@ -255,29 +324,6 @@ const OperationButton = styled.button<{ selected: boolean }>`
     }
 `;
 
-// const Input = styled.input`
-//     padding: 0.5rem;
-//     border: 1px solid #4d3c7b;
-//     border-radius: 4px;
-//     font-family: Barlow, sans-serif;
-//     font-size: 14px;
-// `;
-
-const SubmitButton = styled.button`
-    background-color: #c79d0a;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-
-    &:hover {
-        background-color: #a17c00;
-    }
-`;
-
 const StoreCreditHistory = styled.div`
     width: 250px;
     h2 {
@@ -317,14 +363,4 @@ const StoreCreditHistory = styled.div`
         display: flex;
         justify-content: space-between;
     }
-`;
-
-const ErrorMessage = styled.div`
-    color: #ff4d4f;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    margin-top: 1rem;
-    background-color: #2a1f51;
-    padding: 0.5rem;
-    border-radius: 4px;
 `;
