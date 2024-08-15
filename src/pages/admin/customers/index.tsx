@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
 import moment from 'moment';
@@ -15,14 +15,20 @@ export const Customers: React.FC = () => {
         setSearch,
         totalPages,
         currentPage,
+        fetchUsers, // Fetch users when the component mounts
     } = useAdminContext();
+
     const [selectedCustomer, setSelectedCustomer] = useState(null);
     const [search, setSearchTerm] = useState('');
     const [visibleDetails, setVisibleDetails] = useState<{
         [key: string]: boolean;
     }>({});
 
-    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    useEffect(() => {
+        fetchUsers(); // Trigger data fetching when the component is rendered
+    }, [fetchUsers]);
+
+    const handleSearchInputChange = (e: any) => {
         const searchTerm = e.target.value;
         setSearchTerm(searchTerm);
         setPage(1);

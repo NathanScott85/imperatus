@@ -6,7 +6,7 @@ import React, {
     useMemo,
 } from 'react';
 import { useAppContext } from '..';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_ALL_USERS } from '../../graphql/get-users';
 
 interface User {
@@ -20,7 +20,6 @@ interface User {
     postcode?: string;
     emailVerified?: boolean;
 }
-
 interface AdminContextProps {
     isAdminOrOwner: boolean;
     users: User[] | null;
@@ -31,6 +30,7 @@ interface AdminContextProps {
     currentPage: number;
     setPage: (page: number) => void;
     setSearch: (search: string) => void;
+    fetchUsers: () => void;
 }
 
 const AdminContext = createContext<AdminContextProps | undefined>(undefined);
@@ -41,19 +41,17 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     const { isAdminOrOwner } = useAppContext();
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
+
     const queryVariables = useMemo(
         () => ({ page, limit: 10, search }),
         [page, search],
     );
 
-    const { loading, error, data } = useQuery(GET_ALL_USERS, {
-        skip: !isAdminOrOwner,
+    const [fetchUsers, { loading, error, data }] = useLazyQuery(GET_ALL_USERS, {
         variables: queryVariables,
-        fetchPolicy: 'cache-and-network', // Optimized fetching strategy
-        onError: (error) => {
-            console.error('Error fetching users:', error.message); // Improved error logging
-        },
+        fetchPolicy: 'cache-and-network',
     });
+
     const users = data ? data.users.users : null;
     const totalCount = data ? data.users.totalCount : 0;
     const totalPages = data ? data.users.totalPages : 0;
@@ -71,6 +69,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
                 currentPage,
                 setPage,
                 setSearch,
+                fetchUsers, // Pass the fetchUsers function through context
             }}
         >
             {children}
