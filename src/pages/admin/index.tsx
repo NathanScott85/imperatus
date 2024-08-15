@@ -11,6 +11,7 @@ import { AdminProducts } from './products';
 import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
+import { Discount } from './discount';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -23,6 +24,8 @@ export const Admin = () => {
                 return <Analytics />;
             case 'Orders':
                 return <Orders />;
+            case 'Discount':
+                return <Discount />;
             case 'Products':
                 return <AdminProducts />;
             case 'Shipping':

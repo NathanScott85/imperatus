@@ -9,6 +9,7 @@ import {
     UserIcon,
     Van,
     SignOut,
+    Percent,
 } from '../../../components/svg';
 
 import { HomeIcon } from '../../../components/svg/home';
@@ -31,6 +32,10 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                 <MenuItem onClick={() => setSelectedComponent('Orders')}>
                     <Cart />
                     ORDERS
+                </MenuItem>
+                <MenuItem onClick={() => setSelectedComponent('Discount')}>
+                    <Percent />
+                    DISCOUNT
                 </MenuItem>
                 <MenuItem onClick={() => setSelectedComponent('Products')}>
                     <SquareShapes />

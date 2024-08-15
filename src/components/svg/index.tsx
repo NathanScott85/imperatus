@@ -14,3 +14,4 @@ export { Icon as SignOut } from './sign-out';
 export { Icon as Pie } from './pie';
 export { Icon as SquareShapes } from './square-shapes';
 export { Icon as AdminDivider } from './admin-divider';
+export { Icon as Percent } from './percent';
