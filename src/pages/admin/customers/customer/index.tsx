@@ -129,7 +129,7 @@ const CustomerContainer = styled.div`
     padding: 1.5rem;
     display: flex;
     justify-content: space-between;
-    height: 550px;
+    height: 600px;
     align-items: flex-start;
 `;
 
@@ -142,6 +142,16 @@ const CustomerDetails = styled.div`
         font-family: Barlow;
         color: #c79d0a;
         font-size: 16px;
+    }
+
+    h5 {
+        padding-bottom: 1rem;
+        font-family: Barlow;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 35.05px;
+        text-align: left;
+        color: white;
     }
 `;
 

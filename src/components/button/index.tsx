@@ -46,7 +46,11 @@ const getFontWeight = (variant?: string) => {
 };
 
 const getBackgroundColor = (variant?: string, disabled?: boolean) => {
-    if (disabled) return '#D3D3D3';
+    if (disabled) {
+        return variant === 'text' || variant === 'none'
+            ? 'transparent'
+            : '#D3D3D3';
+    }
     switch (variant) {
         case 'primary':
             return '#D4B05F';
@@ -115,7 +119,7 @@ const Button: React.FC<ButtonProps> = ({
 export default Button;
 
 const StyledLink = styled(Link)<ButtonProps>`
-    color: white;
+    color: ${({ disabled }) => (disabled ? '#A9A9A9' : 'white')};
     font-size: 14px;
     line-height: 19.2px;
     text-align: left;
@@ -142,7 +146,8 @@ const StyledButton = styled.button<{
     text-align: center;
     border: none;
     border-radius: 3px;
-    color: white;
+    padding: 0.75rem;
+    color: ${({ disabled }) => (disabled ? '#A9A9A9' : 'white')};
     z-index: 50;
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
@@ -154,17 +159,19 @@ const StyledButton = styled.button<{
     background-color: ${({ variant, disabled }) =>
         getBackgroundColor(variant, disabled)};
 
-    width: ${({ size }) => {
-        switch (size) {
-            case 'xsmall':
-                return '100px';
-            case 'small':
-                return '150px';
-            case 'medium':
-                return '250px';
-            default:
-                return 'auto';
-        }
+     width: ${({ size, disabled }) => {
+         if (disabled) return 'auto'; // Set width to auto when disabled
+         switch (size) {
+             case 'xsmall':
+                 return '100px';
+             case 'small':
+                 return '150px';
+             case 'medium':
+                 return '250px';
+             default:
+                 return 'auto';
+         }
+     }};
     }};
 
     height: ${({ size }) => {

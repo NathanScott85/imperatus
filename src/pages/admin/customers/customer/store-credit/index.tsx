@@ -118,13 +118,12 @@ export const StoreCredit = ({
                     />
                 </InputGroup>
                 <Button
+                    label=" Submit"
                     variant="primary"
-                    size="small"
                     type="submit"
                     disabled={loading}
-                >
-                    Submit
-                </Button>
+                />
+
                 {error && <p>{error}</p>}
                 {mutationError && <p>{mutationError.message}</p>}
             </Form>
