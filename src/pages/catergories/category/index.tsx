@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
@@ -6,15 +6,23 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-
-// TODO: bring back categories from api
-import { categories } from '../../../lib/category-mocks';
+import { useCategoriesContext } from '../../../context/categories';
 import { mediaQueries } from '../../../styled/breakpoints';
 
 export const Category = () => {
     const { id } = useParams();
+    const {
+        currentCategory,
+        fetchCategoryById,
+        categoryLoading,
+        categoryError,
+    } = useCategoriesContext();
 
-    const category = categories.find((category) => category.id === id);
+    useEffect(() => {
+        if (id) {
+            fetchCategoryById({ variables: { id: parseInt(id) } });
+        }
+    }, [id, fetchCategoryById]);
 
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
@@ -22,22 +30,24 @@ export const Category = () => {
     });
 
     const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => {
-            const newState = {
-                ...prevState,
-                [type]: !prevState[type],
-            };
-            return newState;
-        });
+        setCheckedStatus((prevState) => ({
+            ...prevState,
+            [type]: !prevState[type],
+        }));
     };
+
+    if (categoryLoading) return <p>Loading category...</p>;
+    if (categoryError)
+        return <p>Error loading category: {categoryError.message}</p>;
+
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            {category && (
+            {currentCategory && (
                 <ImageWrapper>
-                    <p>{category.name}</p>
+                    <p>{currentCategory.name}</p>
                 </ImageWrapper>
             )}
             <CategoriesMain>
@@ -50,7 +60,9 @@ export const Category = () => {
                         />
                     </CategoriesFilterContainer>
                     <CategoriesListContainer>
-                        {category && <Products products={category?.products} />}
+                        {currentCategory && (
+                            <Products products={currentCategory?.products} />
+                        )}
                     </CategoriesListContainer>
                 </CategoriesContainer>
             </CategoriesMain>

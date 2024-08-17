@@ -44,6 +44,7 @@ import { VerificationStatus } from '../pages/verify-status';
 import { ProtectedRoute } from './protected-routes';
 import { ResetPassword } from '../pages/reset-password';
 import { AdminProvider } from '../context/admin';
+import { CategoriesProvider } from '../context/categories';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -109,15 +110,26 @@ export const AppRoutes = () => {
             />
             <Route path="/account/sign-out" element={<SignOut />} />
             <Route path="/basket" element={<Basket />} />
-            <Route path="/shop/categories" element={<Categories />} />
+
             <Route
-                path="/shop/categories/category/:id/:name"
-                element={<Category />}
+                path="/shop/categories/*"
+                element={
+                    <CategoriesProvider>
+                        <Routes>
+                            <Route path="" element={<Categories />} />
+                            <Route
+                                path="category/:id/:name"
+                                element={<Category />}
+                            />
+                            <Route
+                                path="category/:id/:name/:productid/:productname"
+                                element={<ProductPage />}
+                            />
+                        </Routes>
+                    </CategoriesProvider>
+                }
             />
-            <Route
-                path="/shop/categories/category/:id/:name/:productid/:productname"
-                element={<ProductPage />}
-            />
+
             <Route path="/shop/card-games" element={<CardGames />} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
@@ -155,6 +167,7 @@ export const AppRoutes = () => {
                 element={<ProductPage />}
             />
             <Route path="/shop/offers" element={<Offers />} />
+
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
             <Route path="/news-&-events" element={<NewsAndEvents />} />

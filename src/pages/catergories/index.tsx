@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -8,9 +9,7 @@ import { generatePath, Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
-
-// TODO: bring back categories from api
-import { categories } from '../../lib/category-mocks';
+import { useCategoriesContext } from '../../context/categories';
 
 const getCategoriesPath = (category: any) => {
     const categoryPath = category
@@ -23,7 +22,16 @@ const getCategoriesPath = (category: any) => {
         categoryPath,
     };
 };
+
 export const Categories = () => {
+    const { categories, loading, error } = useCategoriesContext();
+
+    if (error) return <p>Error loading categories: {error.message}</p>;
+
+    const sortedCategories = categories
+        ? [...categories].sort((a, b) => a.name.localeCompare(b.name))
+        : [];
+
     return (
         <>
             <TopHeader />
@@ -31,16 +39,21 @@ export const Categories = () => {
             <Navigation background />
             <BreadCrumb label="Categories" />
             <CategoriesMain>
-                <CategoriesContainer>
-                    <CategoriesFilterContainer>
-                        <h1>Categories</h1>
-                        <FancyContainer variant="filters" size="filters">
-                            <CategoriesFilter>
-                                {categories
-                                    .sort((a, b) =>
-                                        a.name.localeCompare(b.name),
-                                    )
-                                    .map((category) => {
+                {loading ? (
+                    <CategoriesContainer>
+                        Loading categories...
+                    </CategoriesContainer>
+                ) : sortedCategories.length === 0 ? (
+                    <CategoriesContainer>
+                        No categories available at the moment.
+                    </CategoriesContainer>
+                ) : (
+                    <CategoriesContainer>
+                        <CategoriesFilterContainer>
+                            <h1>Categories</h1>
+                            <FancyContainer variant="filters" size="filters">
+                                <CategoriesFilter>
+                                    {sortedCategories.map((category) => {
                                         const { categoryPath } =
                                             getCategoriesPath(category);
                                         return (
@@ -53,32 +66,30 @@ export const Categories = () => {
                                             </CatergoriesWrapper>
                                         );
                                     })}
-                            </CategoriesFilter>
-                        </FancyContainer>
-                    </CategoriesFilterContainer>
-                    <CategoriesListContainer>
-                        {categories.map((category) => {
-                            const { categoryPath } =
-                                getCategoriesPath(category);
-                            return (
-                                <>
-                                    <Link to={categoryPath}>
-                                        <CategoryItem key={category.id}>
+                                </CategoriesFilter>
+                            </FancyContainer>
+                        </CategoriesFilterContainer>
+                        <CategoriesListContainer>
+                            {sortedCategories.map((category) => {
+                                const { categoryPath } =
+                                    getCategoriesPath(category);
+                                return (
+                                    <Link to={categoryPath} key={category.id}>
+                                        <CategoryItem>
                                             <ImageWrapper>
                                                 <CategoryImage
                                                     src={category?.img}
                                                     alt={category?.name}
                                                 />
                                             </ImageWrapper>
-                                            <p> {category?.name}</p>
+                                            <p>{category?.name}</p>
                                         </CategoryItem>
                                     </Link>
-                                </>
-                            );
-                        })}
-                    </CategoriesListContainer>
-                </CategoriesContainer>
-
+                                );
+                            })}
+                        </CategoriesListContainer>
+                    </CategoriesContainer>
+                )}
                 <Reviews />
             </CategoriesMain>
             <Footer />
@@ -118,10 +129,7 @@ const ImageWrapper = styled.div`
     justify-content: center;
     align-items: center;
     width: 260px;
-    height: 298px;
-    top: 630px;
-    left: 584px;
-    gap: 0px;
+    height: 200px;
 `;
 
 const CategoryImage = styled.img`

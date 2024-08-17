@@ -1,24 +1,44 @@
-import React, { createContext, useEffect, useContext } from 'react';
-import { useAppContext } from '../';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useQuery, gql, useLazyQuery } from '@apollo/client';
+import { GET_CATEGORIES, GET_CATEGORY_BY_ID } from '../../graphql/categories';
 
-// Categories Context
-// const CategoriesContext = createContext();
+const CategoriesContext = createContext<any>(null);
 
 export const CategoriesProvider = ({ children }: any) => {
-    // const { categories, fetchCategories } = useAppContext();
+    const { loading, error, data, refetch } = useQuery(GET_CATEGORIES);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [currentCategory, setCurrentCategory] = useState<any>(null);
 
-    // useEffect(() => {
-    //   fetchCategories();
-    // }, [fetchCategories]);
+    const [
+        fetchCategoryById,
+        { loading: categoryLoading, error: categoryError },
+    ] = useLazyQuery(GET_CATEGORY_BY_ID, {
+        onCompleted: (data) => setCurrentCategory(data.category),
+    });
+
+    useEffect(() => {
+        if (data) {
+            setCategories(data.categories);
+        }
+    }, [data]);
 
     return (
-        <div />
-        // <CategoriesContext.Provider value={{ categories }}>
-        //   {children}
-        // </CategoriesContext.Provider>
+        <CategoriesContext.Provider
+            value={{
+                categories,
+                loading,
+                error,
+                refetch,
+                currentCategory,
+                fetchCategoryById,
+                categoryLoading,
+                categoryError,
+            }}
+        >
+            {children}
+        </CategoriesContext.Provider>
     );
 };
 
-// export const useCategoriesContext = () => useContext(CategoriesContext);
-
-// Repeat similar structure for CardGames, Brands, Accessories
+// Custom hook to use the CategoriesContext
+export const useCategoriesContext = () => useContext(CategoriesContext);
