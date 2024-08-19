@@ -99,8 +99,8 @@ export const Customers: React.FC = () => {
     }
 
     return (
-        <CustomersMain>
-            <CustomersSection>
+        <CustomersContainer>
+            <CustomersWrapper>
                 <Search
                     type="text"
                     onSearch={triggerSearch}
@@ -218,8 +218,8 @@ export const Customers: React.FC = () => {
                         Next
                     </PageButton>
                 </Pagination>
-            </CustomersSection>
-        </CustomersMain>
+            </CustomersWrapper>
+        </CustomersContainer>
     );
 };
 
@@ -269,7 +269,7 @@ const Span = styled.span`
     font-weight: bold;
 `;
 
-const CustomersMain = styled.main`
+const CustomersContainer = styled.div`
     flex-direction: column;
     p {
         font-size: 16px;
@@ -277,7 +277,7 @@ const CustomersMain = styled.main`
     }
 `;
 
-const CustomersSection = styled.section`
+const CustomersWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;

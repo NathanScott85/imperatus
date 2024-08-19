@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
     AdminDivider,
@@ -18,34 +18,64 @@ import { useAppContext } from '../../../context';
 
 export const Sidebar = ({ setSelectedComponent }: any) => {
     const { logout } = useAppContext();
+    const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+
+    const toggleMenu = (menu: string) => {
+        setSelectedComponent(menu);
+        setExpandedMenu((prev) => (prev === menu ? null : menu));
+    };
+
     return (
         <SidebarAside>
             <Menu>
-                <MenuItem onClick={() => setSelectedComponent('Overview')}>
+                <MenuItem onClick={() => toggleMenu('Overview')}>
                     <HomeIcon />
                     OVERVIEW
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Analytics')}>
+                <MenuItem onClick={() => toggleMenu('Analytics')}>
                     <Pie />
                     ANALYTICS
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Orders')}>
+                {expandedMenu === 'Analytics' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('Temp')}
+                        >
+                            Temp
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem onClick={() => toggleMenu('Orders')}>
                     <Cart />
                     ORDERS
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Discount')}>
+                <MenuItem onClick={() => toggleMenu('Discount')}>
                     <Percent />
                     DISCOUNT
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Products')}>
+                <MenuItem onClick={() => toggleMenu('Products')}>
                     <SquareShapes />
                     PRODUCTS
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Shipping')}>
+                {expandedMenu === 'Products' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddProduct')}
+                        >
+                            Add New Product
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCategory')}
+                        >
+                            Add New Category
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem onClick={() => toggleMenu('Shipping')}>
                     <Van />
                     SHIPPING
                 </MenuItem>
-                <MenuItem onClick={() => setSelectedComponent('Customers')}>
+                <MenuItem onClick={() => toggleMenu('Customers')}>
                     <UserIcon />
                     CUSTOMERS
                 </MenuItem>
@@ -139,6 +169,23 @@ const MenuItem = styled.div`
     svg {
         margin-right: 0.5rem;
     }
+
+    &:hover {
+        color: #c79d0a;
+    }
+`;
+
+const SubMenu = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding-left: 1.5rem;
+    gap: 0.5rem;
+`;
+
+const SubMenuItem = styled.div`
+    color: white;
+    font-size: 0.875rem;
+    cursor: pointer;
 
     &:hover {
         color: #c79d0a;
