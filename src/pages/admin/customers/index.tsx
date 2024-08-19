@@ -85,7 +85,7 @@ export const Customers: React.FC = () => {
         return <p>You do not have permission to view this content.</p>;
     }
 
-    if (loading) return <Loading />;
+    if (loading) return <p>loading....</p>;
     if (error) return <Span>Error loading users: {error.message}</Span>;
 
     if (selectedCustomer) {

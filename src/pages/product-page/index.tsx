@@ -9,6 +9,7 @@ import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { Footer } from '../../components/footer';
 import { ProductDescription } from './product-page-description';
+import { getMimeType } from '../../lib/getMimeType';
 
 interface Product {
     name: string;
@@ -35,6 +36,10 @@ export const ProductPage: React.FC = () => {
         return <Loading />;
     }
 
+    // Determine the MIME type dynamically for the images
+    const mimeType = getMimeType(product.img);
+    const imageSrc = `data:${mimeType};base64,${product.img}`;
+
     return (
         <>
             <TopHeader />
@@ -44,22 +49,19 @@ export const ProductPage: React.FC = () => {
                 <ProductContentSection>
                     <div>
                         <ProductImageWrapper>
-                            <ProductImage
-                                src={product!.img}
-                                alt={product!.name}
-                            />
+                            <ProductImage src={imageSrc} alt={product!.name} />
                         </ProductImageWrapper>
                         <ProductImageSmallWrapper>
                             <ProductImageSmall
-                                src={product!.img}
+                                src={imageSrc}
                                 alt={product!.name}
                             />
                             <ProductImageSmall
-                                src={product!.img}
+                                src={imageSrc}
                                 alt={product!.name}
                             />
                             <ProductImageSmall
-                                src={product!.img}
+                                src={imageSrc}
                                 alt={product!.name}
                             />
                         </ProductImageSmallWrapper>
@@ -96,6 +98,8 @@ export const ProductPage: React.FC = () => {
         </>
     );
 };
+
+// Styled Components (unchanged)
 
 const TitleAndStockContainer = styled.div`
     display: flex;

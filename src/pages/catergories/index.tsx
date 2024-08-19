@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -10,6 +10,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
+import { getMimeType } from '../../lib/getMimeType';
 
 const getCategoriesPath = (category: any) => {
     const categoryPath = category
@@ -24,8 +25,12 @@ const getCategoriesPath = (category: any) => {
 };
 
 export const Categories = () => {
-    const { categories, loading, error } = useCategoriesContext();
+    const { categories, loading, error, fetchCategories } =
+        useCategoriesContext();
 
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
     if (error) return <p>Error loading categories: {error.message}</p>;
 
     const sortedCategories = categories
@@ -41,11 +46,19 @@ export const Categories = () => {
             <CategoriesMain>
                 {loading ? (
                     <CategoriesContainer>
-                        Loading categories...
+                        <FancyContainer variant="medium" size="medium">
+                            <NoProductsMessage>
+                                <p>Loading categories...</p>
+                            </NoProductsMessage>
+                        </FancyContainer>
                     </CategoriesContainer>
                 ) : sortedCategories.length === 0 ? (
                     <CategoriesContainer>
-                        No categories available at the moment.
+                        <FancyContainer>
+                            <NoProductsMessage>
+                                <p> No categories available at the moment.</p>
+                            </NoProductsMessage>
+                        </FancyContainer>
                     </CategoriesContainer>
                 ) : (
                     <CategoriesContainer>
@@ -73,12 +86,16 @@ export const Categories = () => {
                             {sortedCategories.map((category) => {
                                 const { categoryPath } =
                                     getCategoriesPath(category);
+
+                                const mimeType = getMimeType(category.img);
+                                const imageSrc = `data:${mimeType};base64,${category.img}`;
+
                                 return (
                                     <Link to={categoryPath} key={category.id}>
                                         <CategoryItem>
                                             <ImageWrapper>
                                                 <CategoryImage
-                                                    src={category?.img}
+                                                    src={imageSrc}
                                                     alt={category?.name}
                                                 />
                                             </ImageWrapper>
@@ -96,6 +113,31 @@ export const Categories = () => {
         </>
     );
 };
+
+const NoProductsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
 
 const StyledLink = styled(Link)`
     font-family: Cinzel;
