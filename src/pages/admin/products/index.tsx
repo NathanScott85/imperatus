@@ -3,14 +3,25 @@ import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
 
 export const AdminProducts = () => {
-    const { products, loading, error, fetchProducts } = useAdminContext();
+    const {
+        products,
+        loading,
+        error,
+        fetchProducts,
+        currentPage,
+        totalPages,
+        setPage,
+    } = useAdminContext();
 
     useEffect(() => {
         fetchProducts();
-    }, [fetchProducts]);
+    }, [fetchProducts, currentPage]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    };
 
     return (
         <ProductsContainer>
@@ -26,23 +37,52 @@ export const AdminProducts = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {products?.map((product, index) => (
-                            <TableRow key={product.id} isOdd={index % 2 === 1}>
-                                <td>{product.name}</td>
-                                <td>{product.category.name}</td>
-                                <td>{product.price}</td>
-                                <td>{product.stock.amount}</td>
-                                <td>
-                                    {product.stock.amount > 0 ? (
-                                        <span>{product.stock.instock}</span>
-                                    ) : (
-                                        <span>{product.stock.soldout}</span>
-                                    )}
-                                </td>
-                            </TableRow>
-                        ))}
+                        {loading ? (
+                            <tr>
+                                <CenteredCell>Loading...</CenteredCell>
+                            </tr>
+                        ) : error ? (
+                            <tr>
+                                <CenteredCell>
+                                    Error: {error.message}
+                                </CenteredCell>
+                            </tr>
+                        ) : (
+                            products?.map((product, index) => (
+                                <TableRow
+                                    key={product.id}
+                                    isOdd={index % 2 === 1}
+                                >
+                                    <td>{product.name}</td>
+                                    <td>{product.category.name}</td>
+                                    <td>£{product.price}</td>
+                                    <td>{product.stock.amount}</td>
+                                    <td>
+                                        {product.stock.amount > 0 ? (
+                                            <span>{product.stock.instock}</span>
+                                        ) : (
+                                            <span>{product.stock.soldout}</span>
+                                        )}
+                                    </td>
+                                </TableRow>
+                            ))
+                        )}
                     </tbody>
                 </Table>
+                <Pagination>
+                    <PageButton
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </PageButton>
+                    <PageButton
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </PageButton>
+                </Pagination>
             </ProductsWrapper>
         </ProductsContainer>
     );
@@ -111,4 +151,32 @@ const Table = styled.table`
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
     background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
+`;
+
+const CenteredCell = styled.td`
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 2rem 0;
+`;
+
+const Pagination = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+`;
+
+const PageButton = styled.button<{ disabled?: boolean }>`
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    &:hover {
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
+    }
 `;

@@ -11,18 +11,20 @@ import {
     SignOut,
     Percent,
 } from '../../../components/svg';
-
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../../context';
+import { useAdminContext } from '../../../context/admin';
 
 export const Sidebar = ({ setSelectedComponent }: any) => {
     const { logout } = useAppContext();
+    const { resetPagination } = useAdminContext();
     const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
     const toggleMenu = (menu: string) => {
         setSelectedComponent(menu);
         setExpandedMenu((prev) => (prev === menu ? null : menu));
+        resetPagination();
     };
 
     return (
@@ -83,7 +85,7 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
             <BottomContainer>
                 <AdminDivider />
                 <BottomMenu>
-                    <MenuItem onClick={() => setSelectedComponent('Settings')}>
+                    <MenuItem onClick={() => toggleMenu('Settings')}>
                         <AdminIcon />
                         SETTINGS
                     </MenuItem>

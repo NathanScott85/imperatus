@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ALL_USERS } from '../../graphql/get-users';
-import { GET_ALL_PRODUCTS } from '../../graphql/products'; // Import the products query
+import { GET_ALL_PRODUCTS } from '../../graphql/products';
 
 interface User {
     id: number;
@@ -46,7 +46,8 @@ interface AdminContextProps {
     setPage: (page: number) => void;
     setSearch: (search: string) => void;
     fetchUsers: () => void;
-    fetchProducts: () => void; // Add fetchProducts to the context
+    fetchProducts: () => void;
+    resetPagination: () => void;
 }
 
 const AdminContext = createContext<AdminContextProps | undefined>(undefined);
@@ -54,13 +55,19 @@ const AdminContext = createContext<AdminContextProps | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
-    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
 
     const queryVariables = useMemo(
-        () => ({ page, limit: 10, search }),
-        [page, search],
+        () => ({ page: currentPage, limit: 10, search }),
+        [currentPage, search],
     );
+
+    const resetPagination = () => {
+        setCurrentPage(1);
+    };
 
     const [
         fetchUsers,
@@ -68,36 +75,44 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     ] = useLazyQuery(GET_ALL_USERS, {
         variables: queryVariables,
         fetchPolicy: 'cache-and-network',
+        onCompleted: (data) => {
+            setTotalCount(data.users.totalCount);
+            setTotalPages(data.users.totalPages);
+        },
     });
 
     const [
         fetchProducts,
-        { loading: productsLoading, error: productsError, data },
+        { loading: productsLoading, error: productsError, data: productsData },
     ] = useLazyQuery(GET_ALL_PRODUCTS, {
-        variables: { page: 1, limit: 10 },
+        variables: queryVariables,
         fetchPolicy: 'cache-and-network',
+        onCompleted: (data) => {
+            setTotalCount(data.products.totalCount);
+            setTotalPages(data.products.totalPages);
+        },
     });
 
-    const users = usersData ? usersData.users.users : null;
-    const products = data ? data.products.products : [];
-    const totalCount = usersData ? usersData.users.totalCount : 0;
-    const totalPages = usersData ? usersData.users.totalPages : 0;
-    const currentPage = usersData ? usersData.users.currentPage : 1;
+    const users = usersData ? usersData.users.users : [];
+    const products = productsData ? productsData.products.products : [];
+    const loading = usersLoading || productsLoading;
+    const error = usersError || productsError;
 
     return (
         <AdminContext.Provider
             value={{
                 users,
                 products,
-                loading: usersLoading || productsLoading,
-                error: usersError || productsError,
+                loading,
+                error,
                 totalCount,
                 totalPages,
                 currentPage,
-                setPage,
+                setPage: setCurrentPage,
                 setSearch,
                 fetchUsers,
-                fetchProducts, // Pass fetchProducts through the context
+                fetchProducts,
+                resetPagination,
             }}
         >
             {children}
