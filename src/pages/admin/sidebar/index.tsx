@@ -64,12 +64,12 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                         <SubMenuItem
                             onClick={() => setSelectedComponent('AddProduct')}
                         >
-                            Add New Product
+                            ADD NEW PRODUCT
                         </SubMenuItem>
                         <SubMenuItem
                             onClick={() => setSelectedComponent('AddCategory')}
                         >
-                            Add New Category
+                            CATEGORIES
                         </SubMenuItem>
                     </SubMenu>
                 )}

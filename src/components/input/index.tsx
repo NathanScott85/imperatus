@@ -9,7 +9,15 @@ interface InputProps {
     type?: string | number;
     placeholder?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    variant?: 'search' | 'primary' | 'text' | 'none' | 'secondary' | 'birthday';
+    variant?:
+        | 'search'
+        | 'primary'
+        | 'text'
+        | 'none'
+        | 'secondary'
+        | 'birthday'
+        | 'description'
+        | 'upload';
     className?: string;
     name?: string;
     value?: string | undefined;
@@ -33,23 +41,52 @@ export const Input: React.FC<InputProps> = ({
     id,
     required,
     onKeyDown,
+    onClick,
 }) => {
     return (
         <Wrapper>
-            <StyledInput
-                type={radio ? 'radio' : type}
-                value={value}
-                name={name}
-                className={className}
-                variant={variant}
-                placeholder={placeholder}
-                onChange={onChange}
-                checked={checked}
-                radio={radio}
-                id={id}
-                required={required}
-                onKeyDown={onKeyDown}
-            />
+            {variant === 'upload' ? (
+                <ImageUploadWrapper>
+                    <StyledInput
+                        type="file"
+                        name={name}
+                        className={className}
+                        variant={variant}
+                        onChange={onChange}
+                        id={id}
+                        required={required}
+                        onKeyDown={onKeyDown}
+                    />
+                    <UploadButton onClick={onClick}>Upload Image</UploadButton>
+                </ImageUploadWrapper>
+            ) : variant === 'description' ? (
+                <StyledTextArea
+                    name={name}
+                    className={className}
+                    variant={variant}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    value={value}
+                    id={id}
+                    required={required}
+                    onKeyDown={onKeyDown}
+                />
+            ) : (
+                <StyledInput
+                    type={radio ? 'radio' : type}
+                    value={value}
+                    name={name}
+                    className={className}
+                    variant={variant}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    checked={checked}
+                    radio={radio}
+                    id={id}
+                    required={required}
+                    onKeyDown={onKeyDown}
+                />
+            )}
         </Wrapper>
     );
 };
@@ -57,6 +94,27 @@ export const Input: React.FC<InputProps> = ({
 const Wrapper = styled.div`
     position: relative;
     display: inline-block;
+`;
+
+const ImageUploadWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
+
+const UploadButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.75rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+
+    &:hover {
+        background-color: #2a1f51;
+    }
 `;
 
 const StyledInput = styled.input<InputProps>`
@@ -103,11 +161,8 @@ const StyledInput = styled.input<InputProps>`
             color: white;
             font-family: Barlow, serif;
             width: 320px;
-
-            border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             border-right: none;
-
             padding-left: 5px;
 
             &:focus::placeholder,
@@ -136,14 +191,15 @@ const StyledInput = styled.input<InputProps>`
             flex: 1;
             margin-left: 0;
             border: none;
-
             background-color: transparent;
             color: white;
+
             &:focus {
                 outline: none;
                 border: none;
             }
             font-family: Barlow, serif;
+
             &::placeholder {
                 color: white;
                 font-size: 12px;
@@ -182,19 +238,23 @@ const StyledInput = styled.input<InputProps>`
             border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             color: white;
+
             &:focus {
                 outline: none;
                 border: 1px solid #c79d0a;
             }
             font-family: Barlow, serif;
+
             &::placeholder {
                 color: white;
                 font-size: 12px;
                 padding-left: 5px;
             }
+
             text-indent: 5px;
             width: 90px;
         `}
+
     ${({ variant }) =>
         variant === 'secondary' &&
         css`
@@ -206,17 +266,53 @@ const StyledInput = styled.input<InputProps>`
             border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             color: white;
+
             &:focus {
                 outline: none;
                 border: 1px solid #c79d0a;
             }
             font-family: Barlow, serif;
+
             &::placeholder {
                 color: white;
                 font-size: 12px;
                 padding-left: 5px;
             }
+
             text-indent: 5px;
             width: 325px;
         `}
+
+    ${({ variant }) =>
+        variant === 'upload' &&
+        css`
+            display: none;
+        `}
+`;
+
+const StyledTextArea = styled.textarea<InputProps>`
+    margin-right: 0.5rem;
+    font-size: 16px;
+    flex: 1;
+    margin-left: 0;
+    padding: 1rem;
+    border: 1px solid rgba(172, 143, 255, 0.5);
+    background-color: transparent;
+    color: white;
+    resize: none;
+    height: 225px;
+    width: 325px;
+
+    &:focus {
+        outline: none;
+        border: 1px solid #c79d0a;
+    }
+
+    font-family: Barlow, serif;
+
+    &::placeholder {
+        color: white;
+        font-size: 14px;
+        padding-left: 5px;
+    }
 `;

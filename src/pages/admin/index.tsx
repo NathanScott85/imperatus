@@ -4,6 +4,8 @@ import { Header } from '../../components/header';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { Sidebar } from './sidebar';
+import { AddCategory } from './products/add-category';
+import { AddProduct } from './products/add-product';
 import { Overview } from './overview';
 import { Analytics } from './analytics';
 import { Orders } from './orders';
@@ -28,6 +30,10 @@ export const Admin = () => {
                 return <Discount />;
             case 'Products':
                 return <AdminProducts />;
+            case 'AddProduct':
+                return <AddProduct />;
+            case 'AddCategory':
+                return <AddCategory />;
             case 'Shipping':
                 return <Shipping />;
             case 'Customers':
