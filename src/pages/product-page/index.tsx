@@ -9,7 +9,6 @@ import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { Footer } from '../../components/footer';
 import { ProductDescription } from './product-page-description';
-import { getMimeType } from '../../lib/getMimeType';
 
 interface Product {
     name: string;
@@ -36,10 +35,6 @@ export const ProductPage: React.FC = () => {
         return <Loading />;
     }
 
-    // Determine the MIME type dynamically for the images
-    const mimeType = getMimeType(product.img);
-    const imageSrc = `data:${mimeType};base64,${product.img}`;
-
     return (
         <>
             <TopHeader />
@@ -49,19 +44,22 @@ export const ProductPage: React.FC = () => {
                 <ProductContentSection>
                     <div>
                         <ProductImageWrapper>
-                            <ProductImage src={imageSrc} alt={product!.name} />
+                            <ProductImage
+                                src={product.img}
+                                alt={product!.name}
+                            />
                         </ProductImageWrapper>
                         <ProductImageSmallWrapper>
                             <ProductImageSmall
-                                src={imageSrc}
+                                src={product.img}
                                 alt={product!.name}
                             />
                             <ProductImageSmall
-                                src={imageSrc}
+                                src={product.img}
                                 alt={product!.name}
                             />
                             <ProductImageSmall
-                                src={imageSrc}
+                                src={product.img}
                                 alt={product!.name}
                             />
                         </ProductImageSmallWrapper>

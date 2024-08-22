@@ -2,22 +2,27 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
+import { useAdminContext } from '../../../../context/admin';
 
 export const AddCategory = () => {
     const [categoryName, setCategoryName] = useState('');
     const [description, setDescription] = useState('');
-    const [image, setImage] = useState<File | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [isFormValid, setIsFormValid] = useState(false);
 
+    const { createCategory, categoryLoading, categoryError, categorySuccess } =
+        useAdminContext();
     useEffect(() => {
-        if (categoryName && description && image) {
-            setIsFormValid(true);
-        } else {
-            setIsFormValid(false);
+        if (categoryError) {
+            setError(categoryError);
+        } else if (categorySuccess) {
+            setSuccess('Category created successfully!');
+            setCategoryName('');
+            setDescription('');
+            setSelectedFile(null);
         }
-    }, [categoryName, description, image]);
+    }, [categoryError, categorySuccess]);
 
     const handleCategoryNameChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -32,8 +37,8 @@ export const AddCategory = () => {
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setImage(e.target.files[0]);
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
         }
     };
 
@@ -42,19 +47,27 @@ export const AddCategory = () => {
         setError('');
         setSuccess('');
 
-        // Add logic to send the data to your backend API
-        try {
-            const formData = new FormData();
-            formData.append('name', categoryName);
-            formData.append('description', description);
-            if (image) {
-                formData.append('img', image);
-            }
+        if (!categoryName || !description || !selectedFile) {
+            setError('All fields are required, including an image.');
+            return;
+        }
 
-            // Assuming the API call is successful
-            setSuccess('Category created successfully!');
+        try {
+            await createCategory({
+                name: categoryName,
+                description,
+                img: selectedFile, // File object passed directly here
+            });
         } catch (error) {
-            setError('Failed to create category.');
+            // Check if the error message contains specific keywords
+            const errorMessage = (error as Error).message;
+            if (errorMessage.includes('contentType')) {
+                setError(
+                    'Failed to upload the image. The content type is missing or incorrect.',
+                );
+            } else {
+                setError('Failed to create category. Please try again later.');
+            }
         }
     };
 
@@ -73,11 +86,6 @@ export const AddCategory = () => {
                             onChange={handleCategoryNameChange}
                             required
                         />
-                        {!categoryName && (
-                            <ErrorMessage>
-                                Category name is required.
-                            </ErrorMessage>
-                        )}
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="description">
@@ -91,35 +99,38 @@ export const AddCategory = () => {
                             onChange={handleDescriptionChange}
                             required
                         />
-                        {!description && (
-                            <ErrorMessage>
-                                Category description is required.
-                            </ErrorMessage>
-                        )}
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="image">Upload Image</Label>
                         <Input
-                            variant="upload"
+                            variant="secondary"
                             type="file"
                             id="image"
                             onChange={handleImageChange}
                             required
                         />
-                        {!image && (
-                            <ErrorMessage>Image is required.</ErrorMessage>
-                        )}
                     </FormGroup>
                     <Button
                         variant="primary"
                         type="submit"
-                        disabled={!isFormValid}
+                        disabled={
+                            !categoryName ||
+                            !description ||
+                            !selectedFile ||
+                            categoryLoading
+                        }
                     >
-                        Create Category
+                        {categoryLoading ? 'Creating...' : 'Create Category'}
                     </Button>
                 </Form>
-                {error && <ErrorMessage>{error}</ErrorMessage>}
-                {success && <SuccessMessage>{success}</SuccessMessage>}
+                {error ||
+                    (categoryError && (
+                        <ErrorMessage>{error || categoryError}</ErrorMessage>
+                    ))}
+                {success ||
+                    (categorySuccess && (
+                        <SuccessMessage>{success}</SuccessMessage>
+                    ))}
             </div>
         </AddCategoryContainer>
     );
@@ -166,7 +177,7 @@ const ErrorMessage = styled.p`
     color: red;
     font-family: Barlow, sans-serif;
     font-size: 14px;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 `;
 
 const SuccessMessage = styled.p`

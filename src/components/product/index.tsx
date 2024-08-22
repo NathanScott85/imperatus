@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '../button';
 import { NavLink, useLocation } from 'react-router-dom';
-import { getMimeType } from '../../lib/getMimeType';
 
 type ProductType = {
     id: any;
@@ -21,9 +20,6 @@ interface ProductProps {
 export const Product = ({ product }: ProductProps) => {
     const location = useLocation();
 
-    const mimeType = getMimeType(product.img);
-    const imageSrc = `data:${mimeType};base64,${product.img}`;
-
     return (
         <ProductContainer>
             <ProductWrapper>
@@ -32,7 +28,7 @@ export const Product = ({ product }: ProductProps) => {
                     state={{ product }}
                 >
                     <ImageWrapper>
-                        <ProductImage src={imageSrc} alt={product?.name} />
+                        <ProductImage src={product.img} alt={product?.name} />
                     </ImageWrapper>
                     <ProductName>{product?.name}</ProductName>
                     <ProductPriceWrapper>

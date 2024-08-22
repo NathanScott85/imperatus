@@ -5,9 +5,10 @@ import React, {
     ReactNode,
     useMemo,
 } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ALL_USERS } from '../../graphql/get-users';
 import { GET_ALL_PRODUCTS } from '../../graphql/products';
+import { CREATE_CATEGORY } from '../../graphql/categories';
 
 interface User {
     id: number;
@@ -48,6 +49,14 @@ interface AdminContextProps {
     fetchUsers: () => void;
     fetchProducts: () => void;
     resetPagination: () => void;
+    createCategory: (variables: {
+        name: string;
+        description: string;
+        img: File;
+    }) => Promise<void>;
+    categoryLoading: boolean;
+    categoryError: string | null;
+    categorySuccess: string | null;
 }
 
 const AdminContext = createContext<AdminContextProps | undefined>(undefined);
@@ -59,6 +68,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
+
+    // State for category creation
+    const [categoryError, setCategoryError] = useState<string | null>(null);
+    const [categorySuccess, setCategorySuccess] = useState<string | null>(null);
 
     const queryVariables = useMemo(
         () => ({ page: currentPage, limit: 10, search }),
@@ -93,6 +106,34 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
         },
     });
 
+    // Mutation for creating a category
+    const [createCategoryMutation, { loading: categoryLoading }] = useMutation(
+        CREATE_CATEGORY,
+        {
+            onCompleted: () => {
+                setCategorySuccess('Category created successfully!');
+                setCategoryError(null);
+            },
+            onError: (error) => {
+                setCategoryError(error.message);
+                setCategorySuccess(null);
+            },
+        },
+    );
+
+    const createCategory = async (variables: {
+        name: string;
+        description: string;
+        img: File;
+    }) => {
+        try {
+            await createCategoryMutation({ variables });
+        } catch (error) {
+            console.error('Failed to create category:', error);
+            throw error;
+        }
+    };
+
     const users = usersData ? usersData.users.users : [];
     const products = productsData ? productsData.products.products : [];
     const loading = usersLoading || productsLoading;
@@ -113,6 +154,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
                 fetchUsers,
                 fetchProducts,
                 resetPagination,
+                createCategory,
+                categoryLoading,
+                categoryError,
+                categorySuccess,
             }}
         >
             {children}

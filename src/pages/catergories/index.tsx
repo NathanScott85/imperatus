@@ -10,7 +10,6 @@ import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
-import { getMimeType } from '../../lib/getMimeType';
 
 const getCategoriesPath = (category: any) => {
     const categoryPath = category
@@ -87,15 +86,12 @@ export const Categories = () => {
                                 const { categoryPath } =
                                     getCategoriesPath(category);
 
-                                const mimeType = getMimeType(category.img);
-                                const imageSrc = `data:${mimeType};base64,${category.img}`;
-
                                 return (
                                     <Link to={categoryPath} key={category.id}>
                                         <CategoryItem>
                                             <ImageWrapper>
                                                 <CategoryImage
-                                                    src={imageSrc}
+                                                    src={category.img}
                                                     alt={category?.name}
                                                 />
                                             </ImageWrapper>

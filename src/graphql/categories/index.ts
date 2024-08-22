@@ -5,7 +5,13 @@ export const GET_CATEGORIES = gql`
         categories {
             id
             name
-            img
+            description
+            img {
+                id
+                filename
+                url
+                contentType
+            }
         }
     }
 `;
@@ -22,6 +28,28 @@ export const GET_CATEGORY_BY_ID = gql`
                 price
                 img
                 description
+            }
+        }
+    }
+`;
+
+export const CREATE_CATEGORY = gql`
+    mutation CreateCategory(
+        $name: String!
+        $description: String!
+        $img: Upload!
+    ) {
+        createCategory(name: $name, description: $description, img: $img) {
+            id
+            name
+            description
+            img {
+                id
+                url
+                key
+                filename
+                contentType
+                createdAt
             }
         }
     }
