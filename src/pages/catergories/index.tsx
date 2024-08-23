@@ -91,7 +91,10 @@ export const Categories = () => {
                                         <CategoryItem>
                                             <ImageWrapper>
                                                 <CategoryImage
-                                                    src={category.img}
+                                                    src={
+                                                        category.img?.url ||
+                                                        'default-image-url'
+                                                    } // Use a default image if img is null
                                                     alt={category?.name}
                                                 />
                                             </ImageWrapper>

@@ -53,7 +53,7 @@ interface AdminContextProps {
         name: string;
         description: string;
         img: File;
-    }) => Promise<void>;
+    }) => Promise<{ success: boolean; message: string; category: any }>;
     categoryLoading: boolean;
     categoryError: string | null;
     categorySuccess: string | null;
@@ -69,7 +69,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
 
-    // State for category creation
     const [categoryError, setCategoryError] = useState<string | null>(null);
     const [categorySuccess, setCategorySuccess] = useState<string | null>(null);
 
@@ -106,31 +105,38 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({
         },
     });
 
-    // Mutation for creating a category
-    const [createCategoryMutation, { loading: categoryLoading }] = useMutation(
-        CREATE_CATEGORY,
-        {
-            onCompleted: () => {
-                setCategorySuccess('Category created successfully!');
-                setCategoryError(null);
-            },
-            onError: (error) => {
-                setCategoryError(error.message);
-                setCategorySuccess(null);
-            },
-        },
-    );
+    const [createCategoryMutation, { loading: categoryLoading }] =
+        useMutation(CREATE_CATEGORY);
 
     const createCategory = async (variables: {
         name: string;
         description: string;
         img: File;
-    }) => {
+    }): Promise<{ success: boolean; message: string; category: any }> => {
         try {
-            await createCategoryMutation({ variables });
+            const { data } = await createCategoryMutation({ variables });
+
+            if (data?.createCategory) {
+                setCategorySuccess('Category created successfully!');
+                setCategoryError(null);
+                return {
+                    success: true,
+                    message: 'Category created successfully!',
+                    category: data.createCategory,
+                };
+            } else {
+                throw new Error('Failed to create category.');
+            }
         } catch (error) {
-            console.error('Failed to create category:', error);
-            throw error;
+            const errorMessage =
+                error instanceof Error ? error.message : 'Unknown error';
+            setCategoryError(errorMessage);
+            setCategorySuccess(null);
+            return {
+                success: false,
+                message: errorMessage,
+                category: null,
+            };
         }
     };
 

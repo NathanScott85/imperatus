@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Search } from '../../../components/search';
 import { Customer } from './customer';
 import { useAppContext } from '../../../context';
-import { Loading } from '../../loading';
+
 import { Roles } from '../../../types';
 
 interface CustomerType {

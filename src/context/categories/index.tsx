@@ -8,13 +8,10 @@ export const CategoriesProvider = ({ children }: any) => {
     const [categories, setCategories] = useState<any[]>([]);
     const [currentCategory, setCurrentCategory] = useState<any>(null);
 
-    const [fetchCategories, { loading, data, error }] = useLazyQuery(
-        GET_CATEGORIES,
-        {
-            fetchPolicy: 'cache-first',
-            onCompleted: (data) => setCategories(data.categories),
-        },
-    );
+    const [fetchCategories, { loading, error }] = useLazyQuery(GET_CATEGORIES, {
+        fetchPolicy: 'cache-first',
+        onCompleted: (data) => setCategories(data.categories),
+    });
 
     const [
         fetchCategoryById,

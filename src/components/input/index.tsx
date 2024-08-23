@@ -1,4 +1,4 @@
-import React, { KeyboardEvent } from 'react';
+import React, { KeyboardEvent, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
 
@@ -28,68 +28,83 @@ interface InputProps {
     onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export const Input: React.FC<InputProps> = ({
-    placeholder,
-    variant,
-    className,
-    name,
-    value,
-    onChange,
-    type,
-    radio,
-    checked,
-    id,
-    required,
-    onKeyDown,
-    onClick,
-}) => {
-    return (
-        <Wrapper>
-            {variant === 'upload' ? (
-                <ImageUploadWrapper>
-                    <StyledInput
-                        type="file"
+export const Input = forwardRef<
+    HTMLInputElement | HTMLTextAreaElement,
+    InputProps
+>(
+    (
+        {
+            placeholder,
+            variant,
+            className,
+            name,
+            value,
+            onChange,
+            type,
+            radio,
+            checked,
+            id,
+            required,
+            onKeyDown,
+            onClick,
+        },
+        ref,
+    ) => {
+        return (
+            <Wrapper>
+                {variant === 'upload' ? (
+                    <ImageUploadWrapper>
+                        <StyledInput
+                            ref={ref as React.Ref<HTMLInputElement>} // Explicitly cast ref type
+                            type="file"
+                            name={name}
+                            className={className}
+                            variant={variant}
+                            onChange={onChange}
+                            id={id}
+                            required={required}
+                            onKeyDown={onKeyDown}
+                        />
+                        <UploadButton onClick={onClick}>
+                            Upload Image
+                        </UploadButton>
+                    </ImageUploadWrapper>
+                ) : variant === 'description' ? (
+                    <StyledTextArea
+                        ref={ref as React.Ref<HTMLTextAreaElement>}
                         name={name}
                         className={className}
                         variant={variant}
+                        placeholder={placeholder}
                         onChange={onChange}
+                        value={value}
                         id={id}
                         required={required}
                         onKeyDown={onKeyDown}
                     />
-                    <UploadButton onClick={onClick}>Upload Image</UploadButton>
-                </ImageUploadWrapper>
-            ) : variant === 'description' ? (
-                <StyledTextArea
-                    name={name}
-                    className={className}
-                    variant={variant}
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    value={value}
-                    id={id}
-                    required={required}
-                    onKeyDown={onKeyDown}
-                />
-            ) : (
-                <StyledInput
-                    type={radio ? 'radio' : type}
-                    value={value}
-                    name={name}
-                    className={className}
-                    variant={variant}
-                    placeholder={placeholder}
-                    onChange={onChange}
-                    checked={checked}
-                    radio={radio}
-                    id={id}
-                    required={required}
-                    onKeyDown={onKeyDown}
-                />
-            )}
-        </Wrapper>
-    );
-};
+                ) : (
+                    <StyledInput
+                        ref={ref as React.Ref<HTMLInputElement>}
+                        type={radio ? 'radio' : type}
+                        value={value}
+                        name={name}
+                        className={className}
+                        variant={variant}
+                        placeholder={placeholder}
+                        onChange={onChange}
+                        checked={checked}
+                        radio={radio}
+                        id={id}
+                        required={required}
+                        onKeyDown={onKeyDown}
+                    />
+                )}
+            </Wrapper>
+        );
+    },
+);
+
+Input.displayName = 'Input';
 
 const Wrapper = styled.div`
     position: relative;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
@@ -7,48 +7,77 @@ import { useAdminContext } from '../../../../context/admin';
 export const AddCategory = () => {
     const [categoryName, setCategoryName] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null); // Track the selected file
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const { createCategory, categoryLoading, categoryError, categorySuccess } =
         useAdminContext();
+
     useEffect(() => {
         if (categoryError) {
             setError(categoryError);
-        } else if (categorySuccess) {
+            setSuccess('');
+            setIsButtonDisabled(false);
+            return;
+        }
+
+        if (categorySuccess) {
             setSuccess('Category created successfully!');
+            setError('');
             setCategoryName('');
             setDescription('');
             setSelectedFile(null);
+            clearFileInput();
         }
+
+        setIsButtonDisabled(false);
     }, [categoryError, categorySuccess]);
 
     const handleCategoryNameChange = (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         setCategoryName(e.target.value);
+        setIsButtonDisabled(false);
     };
 
     const handleDescriptionChange = (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         setDescription(e.target.value);
+        setIsButtonDisabled(false);
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
             setSelectedFile(e.target.files[0]);
         }
+        setIsButtonDisabled(false);
+    };
+
+    const clearFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.value = ''; // Clears the file input
+        }
+        setSelectedFile(null); // Clear the selected file in state
+    };
+
+    const handleClearFile = () => {
+        clearFileInput();
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setIsButtonDisabled(true);
 
         if (!categoryName || !description || !selectedFile) {
             setError('All fields are required, including an image.');
+            setIsButtonDisabled(false);
             return;
         }
 
@@ -56,18 +85,31 @@ export const AddCategory = () => {
             await createCategory({
                 name: categoryName,
                 description,
-                img: selectedFile, // File object passed directly here
+                img: selectedFile,
             });
+
+            setSuccess('Category created successfully!');
+            setError('');
+            setCategoryName('');
+            setDescription('');
+            clearFileInput();
         } catch (error) {
-            // Check if the error message contains specific keywords
             const errorMessage = (error as Error).message;
-            if (errorMessage.includes('contentType')) {
-                setError(
-                    'Failed to upload the image. The content type is missing or incorrect.',
-                );
-            } else {
-                setError('Failed to create category. Please try again later.');
-            }
+
+            const errorMessages: Record<string, string> = {
+                'A file with this name already exists':
+                    'A file with this name already exists. Please choose a different file or rename it.',
+                'Unique constraint failed on the fields':
+                    'A category with this name already exists. Please choose a different name.',
+            };
+
+            setError(
+                errorMessages[errorMessage] ||
+                    'Failed to create category. Please try again later.',
+            );
+            setSuccess('');
+        } finally {
+            setIsButtonDisabled(false);
         }
     };
 
@@ -106,31 +148,40 @@ export const AddCategory = () => {
                             variant="secondary"
                             type="file"
                             id="image"
+                            ref={fileInputRef}
                             onChange={handleImageChange}
                             required
                         />
                     </FormGroup>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        disabled={
-                            !categoryName ||
-                            !description ||
-                            !selectedFile ||
-                            categoryLoading
-                        }
-                    >
-                        {categoryLoading ? 'Creating...' : 'Create Category'}
-                    </Button>
+                    <ButtonContainer>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            disabled={
+                                !categoryName ||
+                                !description ||
+                                isButtonDisabled ||
+                                categoryLoading
+                            }
+                        >
+                            {categoryLoading
+                                ? 'Creating...'
+                                : 'Create Category'}
+                        </Button>
+
+                        {selectedFile && (
+                            <Button
+                                variant="secondary"
+                                size="xsmall"
+                                onClick={handleClearFile}
+                            >
+                                Clear File
+                            </Button>
+                        )}
+                    </ButtonContainer>
                 </Form>
-                {error ||
-                    (categoryError && (
-                        <ErrorMessage>{error || categoryError}</ErrorMessage>
-                    ))}
-                {success ||
-                    (categorySuccess && (
-                        <SuccessMessage>{success}</SuccessMessage>
-                    ))}
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                {success && <SuccessMessage>{success}</SuccessMessage>}
             </div>
         </AddCategoryContainer>
     );
@@ -159,11 +210,17 @@ const FormTitle = styled.h2`
 const Form = styled.form`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: fit-content;
 `;
 
 const FormGroup = styled.div`
     margin-bottom: 1rem;
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 `;
 
 const Label = styled.label`
@@ -178,6 +235,8 @@ const ErrorMessage = styled.p`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     margin-top: 1rem;
+
+    max-width: 75%;
 `;
 
 const SuccessMessage = styled.p`

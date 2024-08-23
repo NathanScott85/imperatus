@@ -8,9 +8,11 @@ export const GET_CATEGORIES = gql`
             description
             img {
                 id
-                filename
+                fileName
                 url
+                key
                 contentType
+                createdAt
             }
         }
     }
@@ -47,7 +49,7 @@ export const CREATE_CATEGORY = gql`
                 id
                 url
                 key
-                filename
+                fileName
                 contentType
                 createdAt
             }
