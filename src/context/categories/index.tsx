@@ -9,7 +9,7 @@ export const CategoriesProvider = ({ children }: any) => {
     const [currentCategory, setCurrentCategory] = useState<any>(null);
 
     const [fetchCategories, { loading, error }] = useLazyQuery(GET_CATEGORIES, {
-        fetchPolicy: 'cache-first',
+        fetchPolicy: 'cache-and-network',
         onCompleted: (data) => setCategories(data.categories),
     });
 
@@ -18,7 +18,7 @@ export const CategoriesProvider = ({ children }: any) => {
         { loading: categoryLoading, error: categoryError },
     ] = useLazyQuery(GET_CATEGORY_BY_ID, {
         onCompleted: (data) => setCurrentCategory(data.category),
-        fetchPolicy: 'cache-first',
+        fetchPolicy: 'cache-and-network',
     });
 
     useEffect(() => {
