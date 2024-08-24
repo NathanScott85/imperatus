@@ -23,7 +23,7 @@ export const CategoriesProvider = ({ children }: any) => {
 
     useEffect(() => {
         fetchCategories();
-    }, [fetchCategories, categories]);
+    }, [fetchCategories]);
 
     return (
         <CategoriesContext.Provider
@@ -43,5 +43,4 @@ export const CategoriesProvider = ({ children }: any) => {
     );
 };
 
-// Custom hook to use the CategoriesContext
 export const useCategoriesContext = () => useContext(CategoriesContext);

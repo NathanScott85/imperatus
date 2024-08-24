@@ -19,16 +19,25 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_CATEGORY_BY_ID = gql`
-    query GetCategoryById($id: Int!) {
+    query GetCategory($id: ID!) {
         category(id: $id) {
             id
             name
-            img
+            description
+            img {
+                url
+                fileName
+                contentType
+            }
             products {
                 id
                 name
                 price
-                img
+                img {
+                    url
+                    fileName
+                    contentType
+                }
                 description
             }
         }
