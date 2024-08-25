@@ -33,11 +33,7 @@ export const CardGame = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            {cardgame && (
-                <ImageWrapper>
-                    <ImageContainer img={cardgame.banner} />
-                </ImageWrapper>
-            )}
+            {cardgame && <ImageContainer img={cardgame.banner} />}
             <CardGameMain>
                 <CardGameContainer>
                     <FiltersContainer>
@@ -103,9 +99,7 @@ const ImageContainer = styled.div<{ img?: any }>`
     background-image: url(${(props) => props.img});
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
     width: 100%;
-    z-index: -1;
     ${mediaQueries('sm')`
          height: calc(100vh - 1450px); 
     `};
@@ -116,6 +110,6 @@ const ImageContainer = styled.div<{ img?: any }>`
         height: calc(100vh - 1250px);
     `};
     ${mediaQueries('xl')`
-           height: calc(100vh - 300px);
+           height: calc(100vh - 500px);
    `};
 `;

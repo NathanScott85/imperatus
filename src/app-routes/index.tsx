@@ -60,7 +60,9 @@ export const AppRoutes = () => {
                         <ProtectedRoute
                             element={
                                 <AdminProvider>
-                                    <Admin />
+                                    <CategoriesProvider>
+                                        <Admin />
+                                    </CategoriesProvider>
                                 </AdminProvider>
                             }
                         />

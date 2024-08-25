@@ -10,6 +10,7 @@ import {
     Van,
     SignOut,
     Percent,
+    Carousel,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
@@ -21,8 +22,8 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
     const { resetPagination } = useAdminContext();
     const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
-    const toggleMenu = (menu: string) => {
-        setSelectedComponent(menu);
+    const toggleMenu = (menu: string, defaultComponent?: string) => {
+        setSelectedComponent(defaultComponent || menu);
         setExpandedMenu((prev) => (prev === menu ? null : menu));
         resetPagination();
     };
@@ -55,7 +56,29 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                     <Percent />
                     DISCOUNT
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu('Products')}>
+                <MenuItem
+                    onClick={() => toggleMenu('Categories', 'AddCategory')}
+                >
+                    <SquareShapes rotate={90} />
+                    CATEGORIES
+                </MenuItem>
+                {expandedMenu === 'Categories' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCategory')}
+                        >
+                            ADD CATEGORY
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminCategories')
+                            }
+                        >
+                            MANAGE CATEGORIES
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem onClick={() => toggleMenu('Products', 'AddProduct')}>
                     <SquareShapes />
                     PRODUCTS
                 </MenuItem>
@@ -67,10 +90,34 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                             ADD NEW PRODUCT
                         </SubMenuItem>
                         <SubMenuItem
-                            onClick={() => setSelectedComponent('AddCategory')}
+                            onClick={() =>
+                                setSelectedComponent('AdminProducts')
+                            }
                         >
-                            CATEGORIES
+                            MANAGE PRODUCTS
                         </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem
+                    onClick={() => toggleMenu('Carousel', 'AdminCarousel')}
+                >
+                    <Carousel />
+                    CAROUSEL
+                </MenuItem>
+                {expandedMenu === 'Carousel' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCarousel')}
+                        >
+                            ADD CAROUSEL PAGE
+                        </SubMenuItem>
+                        {/* <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminCarousel')
+                            }
+                        >
+                            MANAGE CAROUSEL
+                        </SubMenuItem> */}
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu('Shipping')}>
@@ -98,6 +145,8 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
         </SidebarAside>
     );
 };
+
+// Same styled components as before...
 
 const StyledLink = styled(Link)`
     display: flex;
@@ -129,7 +178,7 @@ const SidebarAside = styled.aside`
     align-items: center;
     padding: 0.75rem;
     width: 250px;
-    height: 600px;
+    height: fit-content;
 `;
 
 const Menu = styled.div`
@@ -144,6 +193,7 @@ const BottomContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    margin-top: 0.5rem;
 `;
 
 const BottomMenu = styled.div`

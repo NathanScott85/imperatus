@@ -6,7 +6,7 @@ import { orders } from '../orders-mocks';
 import { OrderList } from '../../../components/orders-per-month';
 import { AccountStats } from '../../../components/account-stats';
 import SalesGrowthChart from '../../../components/line';
-import { LatestOrders } from '../orders';
+import { LatestOrders } from '../orders/latest-orders';
 
 const currentMonth = 'December';
 
@@ -20,6 +20,7 @@ const lastMonthsCreatedAccounts = 450;
 
 export const Overview = () => (
     <OverviewContainer>
+        <OverviewTitle>Overview</OverviewTitle>
         <OverviewWrapper>
             <GrowthRateContainer>
                 <GrowthRate
@@ -45,17 +46,30 @@ export const Overview = () => (
     </OverviewContainer>
 );
 
+const OverviewTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 24px;
+    padding: 1rem 2rem 1rem 2rem;
+    color: white;
+`;
+
 const OverviewContainer = styled.div`
-    display: flex;
+    color: white;
+    display: grid;
     flex-direction: column;
-    height: 100%;
+    padding: 2rem;
+
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
 `;
 
 const OverviewSubWrapper = styled.div`
     display: flex;
-    padding: 1rem;
+    margin: 1rem 1rem 2rem 1rem;
     background-color: #130a30;
-    flex-wrap: wrap;
+
     justify-content: space-between;
     align-items: center;
 `;

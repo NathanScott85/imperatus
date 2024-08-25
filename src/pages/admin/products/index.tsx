@@ -25,6 +25,7 @@ export const AdminProducts = () => {
 
     return (
         <ProductsContainer>
+            <ProductsTitle>Products</ProductsTitle>
             <ProductsWrapper>
                 <Table>
                     <thead>
@@ -87,6 +88,13 @@ export const AdminProducts = () => {
         </ProductsContainer>
     );
 };
+
+const ProductsTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: white;
+`;
 
 const ProductsContainer = styled.div`
     flex-direction: column;

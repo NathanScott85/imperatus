@@ -1,160 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
-import { products } from '../../../lib/product-mocks'; // Ensure the path is correct
 
-export const Orders = () => <div>Here</div>;
+export const Orders = () => (
+    <OrdersContainer>
+        <OrdersTitle>Orders</OrdersTitle>
+    </OrdersContainer>
+);
 
-interface Stock {
-    amount: number;
-    sold: number;
-    instock: string;
-    soldout: string;
-    preorder: string;
-}
-
-interface Product {
-    id: number;
-    category: string;
-    game: string;
-    name: string;
-    img: string;
-    price: string;
-    type: string;
-    rrp: string;
-    stock: Stock;
-}
-
-export const LatestOrders = () => {
-    const latestProducts: Product[] = products.reduce(
-        (acc: Product[], product: Product, index: number, arr: Product[]) => {
-            if (arr.length - index <= 4) {
-                acc.push(product);
-            }
-            return acc;
-        },
-        [],
-    );
-
-    return (
-        <LatestOrdersContainer>
-            <Title>Latest Orders</Title>
-            <Header>
-                <ProductHeader>Product Name</ProductHeader>
-                <ProductHeaders>Stock</ProductHeaders>
-                <ProductHeaders>Sold</ProductHeaders>
-                <ProductHeaders>Price</ProductHeaders>
-            </Header>
-            <OrderList>
-                {latestProducts.map((product) => (
-                    <OrderItem key={product.id}>
-                        <ProductInfo>
-                            <ProductImage
-                                src={product.img}
-                                alt={product.name}
-                            />
-                            <ProductName>{product.name}</ProductName>
-                        </ProductInfo>
-                        <ProductContent>{product.stock.amount}</ProductContent>
-                        <ProductContent>{product.stock.sold}</ProductContent>
-                        <ProductContent>£{product.price}</ProductContent>
-                    </OrderItem>
-                ))}
-            </OrderList>
-        </LatestOrdersContainer>
-    );
-};
-
-const LatestOrdersContainer = styled.div`
-    padding: 2rem;
+const OrdersContainer = styled.div`
     color: white;
-    flex: 1;
-    border-radius: 8px;
-    background: #160d35;
-    border: 1px solid #ac8fff80;
-    margin-left: 1.5rem;
-    display: flex;
+    display: grid;
     flex-direction: column;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
 `;
 
-const Title = styled.h1`
-    text-align: left;
+const OrdersTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 24px;
+    margin-bottom: 1rem;
     color: white;
-    font-family: Cinzel;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #ac8fff80;
-`;
-
-const OrderList = styled.div`
-    flex: 1;
-    overflow-y: auto;
-`;
-
-const OrderItem = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-
-    border-bottom: 1px solid #ac8fff80;
-`;
-
-const ProductInfo = styled.div`
-    display: flex;
-    align-items: center;
-    flex: 2;
-    padding: 0.5rem;
-`;
-
-const ProductImage = styled.img`
-    margin-right: 1rem;
-    width: 25px;
-    height: 100%;
-`;
-
-const ProductName = styled.span`
-    text-align: left;
-    flex: 2;
-    color: white;
-    font-family: Barlow;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-`;
-
-const ProductHeaders = styled.span`
-    text-align: right;
-    flex: 1;
-    color: white;
-    font-family: Barlow;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-`;
-
-const ProductHeader = styled.span`
-    text-align: left;
-    flex: 2;
-    color: white;
-    font-family: Barlow;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-`;
-
-const ProductContent = styled.span`
-    text-align: right;
-    flex: 1;
-    font-size: 14px;
 `;

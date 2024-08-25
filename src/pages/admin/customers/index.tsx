@@ -7,6 +7,7 @@ import { Customer } from './customer';
 import { useAppContext } from '../../../context';
 
 import { Roles } from '../../../types';
+import { Eye } from '../../../components/svg';
 
 interface CustomerType {
     id: number;
@@ -103,13 +104,17 @@ export const Customers: React.FC = () => {
     return (
         <CustomersContainer>
             <CustomersWrapper>
-                <Search
-                    type="text"
-                    onSearch={triggerSearch}
-                    search={search}
-                    onChange={handleSearchInputChange}
-                    handleReset={handleReset}
-                />
+                <CustomersHeader>
+                    <CustomersTitle>Customers</CustomersTitle>
+                    <Search
+                        type="text"
+                        onSearch={triggerSearch}
+                        search={search}
+                        onChange={handleSearchInputChange}
+                        handleReset={handleReset}
+                    />
+                </CustomersHeader>
+
                 <Table>
                     <thead>
                         <tr>
@@ -147,7 +152,7 @@ export const Customers: React.FC = () => {
                                                 )
                                             }
                                         >
-                                            {/* SVG Icon */}
+                                            <Eye />
                                         </EyeIcon>
                                     </td>
                                     <td>
@@ -224,6 +229,19 @@ export const Customers: React.FC = () => {
     );
 };
 
+const CustomersHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CustomersTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: white;
+`;
+
 const EyeIcon = styled.button`
     background: none;
     border: none;
@@ -271,7 +289,15 @@ const Span = styled.span`
 `;
 
 const CustomersContainer = styled.div`
+    color: white;
+    display: grid;
     flex-direction: column;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
     p {
         font-size: 16px;
         color: white;
@@ -281,11 +307,9 @@ const CustomersContainer = styled.div`
 const CustomersWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    padding: 1rem;
     border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
+    border: 2px solid red;
 `;
 
 const Table = styled.table`

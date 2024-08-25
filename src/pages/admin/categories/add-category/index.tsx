@@ -60,9 +60,9 @@ export const AddCategory = () => {
 
     const clearFileInput = () => {
         if (fileInputRef.current) {
-            fileInputRef.current.value = ''; // Clears the file input
+            fileInputRef.current.value = '';
         }
-        setSelectedFile(null); // Clear the selected file in state
+        setSelectedFile(null);
     };
 
     const handleClearFile = () => {
@@ -114,7 +114,7 @@ export const AddCategory = () => {
     };
 
     return (
-        <AddCategoryContainer>
+        <CategoryContainer>
             <div>
                 <FormTitle>Add New Category</FormTitle>
                 <Form onSubmit={handleSubmit}>
@@ -183,14 +183,14 @@ export const AddCategory = () => {
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 {success && <SuccessMessage>{success}</SuccessMessage>}
             </div>
-        </AddCategoryContainer>
+        </CategoryContainer>
     );
 };
 
-const AddCategoryContainer = styled.div`
+const CategoryContainer = styled.div`
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     padding: 2rem;
     background-color: #160d35;
     color: white;
@@ -204,7 +204,7 @@ const FormTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;
-    color: #c79d0a;
+    color: white;
 `;
 
 const Form = styled.form`

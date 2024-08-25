@@ -15,3 +15,5 @@ export { Icon as Pie } from './pie';
 export { Icon as SquareShapes } from './square-shapes';
 export { Icon as AdminDivider } from './admin-divider';
 export { Icon as Percent } from './percent';
+export { Icon as Carousel } from './carousel';
+export { Icon as Eye } from './eye';

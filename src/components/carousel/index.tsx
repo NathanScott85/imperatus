@@ -19,9 +19,13 @@ interface CarouselItem {
 
 interface CarouselProps {
     items: CarouselItem[];
+    small?: boolean;
 }
 
-export const Carousel: React.FC<CarouselProps> = ({ items }: CarouselProps) => {
+export const Carousel: React.FC<CarouselProps> = ({
+    items,
+    small = false,
+}: CarouselProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const nextSlide = () => {
@@ -41,57 +45,78 @@ export const Carousel: React.FC<CarouselProps> = ({ items }: CarouselProps) => {
     };
 
     return (
-        <CarouselContainer>
-            {items.map((item, index) => (
-                <CarouselSlide key={item.id} index={index - currentIndex}>
-                    <CarouselContentContainer>
-                        <CarouselImage src={item.img} alt={item.name} />
-                        <CarouselContentWrapper>
-                            <GameImage src={item.cardgame} />
-                            <CarouselContent>
-                                <p>{item.description}</p>
-                                <Button
-                                    link
-                                    pathname={`/shop/card-games/${item.name}`}
-                                    label={item?.buttontext}
-                                    size="small"
-                                    variant="secondary"
-                                />
-                            </CarouselContent>
-                        </CarouselContentWrapper>
-                    </CarouselContentContainer>
-                </CarouselSlide>
-            ))}
-            <ArrowContainer>
-                <StyledChevronLeft onClick={prevSlide} />
-                <Dots
-                    variant="carousel"
-                    carousel
-                    items={items}
-                    currentIndex={currentIndex}
-                    handleDotClick={handleDotClick}
-                />
-                <StyledChevronRight stroke="#ac8fff" onClick={nextSlide} />
-            </ArrowContainer>
-        </CarouselContainer>
+        <Container>
+            <CarouselContainer small={small}>
+                {items.map((item, index) => (
+                    <CarouselSlide key={item.id} index={index - currentIndex}>
+                        <CarouselContentContainer>
+                            <CarouselImage
+                                src={item.img}
+                                alt={item.name}
+                                small={small}
+                            />
+                            <CarouselContentWrapper small={small}>
+                                <GameImage src={item.cardgame} small={small} />
+                                <CarouselContent small={small}>
+                                    <p>{item.description}</p>
+                                    <Button
+                                        link
+                                        pathname={`/shop/card-games/${item.name}`}
+                                        label={item?.buttontext}
+                                        size="small"
+                                        variant="secondary"
+                                    />
+                                </CarouselContent>
+                            </CarouselContentWrapper>
+                        </CarouselContentContainer>
+                    </CarouselSlide>
+                ))}
+                <ArrowContainer>
+                    <StyledChevronLeft onClick={prevSlide} small={small} />
+                    <Dots
+                        variant="carousel"
+                        carousel
+                        items={items}
+                        currentIndex={currentIndex}
+                        handleDotClick={handleDotClick}
+                    />
+                    <StyledChevronRight
+                        stroke="#ac8fff"
+                        onClick={nextSlide}
+                        small={small}
+                    />
+                </ArrowContainer>
+            </CarouselContainer>
+        </Container>
     );
 };
 
-const GameImage = styled.img`
+const Container = styled.div`
+    color: #10000e;
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+`;
+
+const GameImage = styled.img<{ small: boolean }>`
     margin: 0 auto;
-    max-width: 100%;
+    max-width: ${({ small }) => (small ? '80%' : '100%')};
     height: auto;
     &:hover {
         transform: scale(1.1);
     }
 `;
 
-const CarouselContainer = styled.div`
+const CarouselContainer = styled.div<{ small: boolean }>`
     position: relative;
-    width: 100%;
-    height: 550px;
+    width: ${({ small }) => (small ? '50%' : '100%')};
+    height: ${({ small }) => (small ? '300px' : '550px')};
     overflow: hidden;
     background: #130a30;
+    border-radius: ${({ small }) => (small ? '5px' : '0px')};
 `;
 
 const CarouselSlide = styled.div<{ index: number }>`
@@ -113,35 +138,36 @@ const CarouselContentContainer = styled.div`
     height: 100%;
 `;
 
-const CarouselImage = styled.img`
+const CarouselImage = styled.img<{ small: boolean }>`
     width: 100%;
     background-size: contain;
     background-repeat: no-repeat;
+    height: ${({ small }) => (small ? '100%' : 'auto')};
 `;
 
-const CarouselContentWrapper = styled.div`
+const CarouselContentWrapper = styled.div<{ small: boolean }>`
     position: absolute;
     top: 0;
     left: 0;
-    width: 260px;
-    height: 298px;
-    margin: 2rem;
+    width: ${({ small }) => (small ? '180px' : '260px')};
+    height: ${({ small }) => (small ? '200px' : '298px')};
+    margin: ${({ small }) => (small ? '1rem' : '2rem')};
     display: flex;
     align-items: center;
 `;
 
-const CarouselContent = styled.div`
+const CarouselContent = styled.div<{ small: boolean }>`
     font-family: Barlow, sans-serif;
-    font-size: 14px;
+    font-size: ${({ small }) => (small ? '10px' : '14px')};
     font-weight: 600;
-    line-height: 50px;
+    line-height: ${({ small }) => (small ? '30px' : '50px')};
     p {
-        font-size: 40px;
+        font-size: ${({ small }) => (small ? '20px' : '40px')};
         font-weight: 800;
         padding: 0.5rem;
         color: #c79d0a;
         filter: drop-shadow(-2px -3px 2px #4444dd);
-        font-size: 4em;
+        font-size: ${({ small }) => (small ? '2.5em' : '4em')};
     }
 `;
 
@@ -155,9 +181,9 @@ const ArrowContainer = styled.div`
     right: 45%;
 `;
 
-const StyledChevronLeft = styled(ChevronLeft)`
-    width: 35px;
-    height: 35px;
+const StyledChevronLeft = styled(ChevronLeft)<{ small: boolean }>`
+    width: ${({ small }) => (small ? '25px' : '35px')};
+    height: ${({ small }) => (small ? '25px' : '35px')};
     border: 2px solid #ac8fff;
     border-radius: 50%;
     padding: 5px;
@@ -166,9 +192,9 @@ const StyledChevronLeft = styled(ChevronLeft)`
     margin-right: 10px;
 `;
 
-const StyledChevronRight = styled(ChevronRight)`
-    width: 35px;
-    height: 35px;
+const StyledChevronRight = styled(ChevronRight)<{ small: boolean }>`
+    width: ${({ small }) => (small ? '25px' : '35px')};
+    height: ${({ small }) => (small ? '25px' : '35px')};
     border: 2px solid #ac8fff;
     border-radius: 50%;
     padding: 5px;

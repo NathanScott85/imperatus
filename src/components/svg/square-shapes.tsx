@@ -1,9 +1,17 @@
-export const Icon = () => (
-    <svg
+import React from 'react';
+import styled from 'styled-components';
+
+interface IconProps {
+    rotate?: number; // Optional prop for rotation in degrees
+}
+
+export const Icon: React.FC<IconProps> = ({ rotate = 0 }) => (
+    <StyledSvg
         width="24"
         height="24"
         viewBox="0 0 24 24"
         fill="none"
+        rotate={rotate}
         xmlns="http://www.w3.org/2000/svg"
     >
         <path
@@ -13,5 +21,12 @@ export const Icon = () => (
             strokeLinecap="round"
             strokeLinejoin="round"
         />
-    </svg>
+    </StyledSvg>
 );
+
+const StyledSvg = styled.svg<{ rotate: number }>`
+    width: 24px;
+    height: 24px;
+    transform: ${({ rotate }) => `rotate(${rotate}deg)`};
+    transition: transform 0.3s ease;
+`;

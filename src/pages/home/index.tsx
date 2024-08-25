@@ -9,7 +9,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import { Reviews } from '../../components/reviews';
 import { Carousel } from '../../components/carousel'; // Renamed to avoid conflict with Carousel interface
 import ArenaImage from '../../components/svg/website-images/0_71.png';
-import { MainContainer, Container } from '../../components/styled';
+import { MainContainer } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
 import { sampleItems } from '../../lib/carousel-mocks';
 
@@ -18,9 +18,7 @@ export const Home: React.FC = () => (
         <TopHeader />
         <Header background />
         <Navigation background />
-        <Container>
-            <Carousel items={sampleItems} />
-        </Container>
+        <Carousel items={sampleItems} />
         <MainContainer>
             <Products label="Latest Products" products={latestproducts} />
             <Products

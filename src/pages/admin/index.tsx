@@ -4,7 +4,7 @@ import { Header } from '../../components/header';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { Sidebar } from './sidebar';
-import { AddCategory } from './products/add-category';
+import { AddCategory } from './categories/add-category';
 import { AddProduct } from './products/add-product';
 import { Overview } from './overview';
 import { Analytics } from './analytics';
@@ -14,6 +14,9 @@ import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
 import { Discount } from './discount';
+import { AdminCategories } from './categories';
+import { AdminCarousel } from './carousel';
+import { AddCarousel } from './carousel/add-carousel';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -28,12 +31,18 @@ export const Admin = () => {
                 return <Orders />;
             case 'Discount':
                 return <Discount />;
-            case 'Products':
-                return <AdminProducts />;
             case 'AddProduct':
                 return <AddProduct />;
             case 'AddCategory':
                 return <AddCategory />;
+            case 'AdminProducts':
+                return <AdminProducts />;
+            case 'AdminCategories':
+                return <AdminCategories />;
+            case 'AdminCarousel':
+                return <AdminCarousel />;
+            case 'AddCarousel':
+                return <AddCarousel />;
             case 'Shipping':
                 return <Shipping />;
             case 'Customers':
