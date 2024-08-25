@@ -88,13 +88,6 @@ const FiltersContainer = styled.div`
     }
 `;
 
-const ImageWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
 const ImageContainer = styled.div<{ img?: any }>`
     background-image: url(${(props) => props.img});
     background-repeat: no-repeat;

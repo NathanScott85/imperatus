@@ -309,7 +309,6 @@ const CustomersWrapper = styled.div`
     flex-direction: column;
     border-radius: 8px;
     width: 100%;
-    border: 2px solid red;
 `;
 
 const Table = styled.table`

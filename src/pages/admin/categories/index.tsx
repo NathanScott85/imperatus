@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../context/admin';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 
@@ -165,12 +164,5 @@ const LoadingCell = styled.td`
     text-align: center;
     padding: 2rem;
     color: #999;
-    font-size: 14px;
-`;
-
-const ErrorCell = styled.td`
-    text-align: center;
-    padding: 2rem;
-    color: red;
     font-size: 14px;
 `;

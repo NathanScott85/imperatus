@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
-import { GET_CATEGORIES, GET_CATEGORY_BY_ID } from '../../graphql/categories';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import {
+    GET_CATEGORIES,
+    GET_CATEGORY_BY_ID,
+    UPDATE_CATEGORY,
+} from '../../graphql/categories';
 
 const CategoriesContext = createContext<any>(null);
 
@@ -21,9 +25,47 @@ export const CategoriesProvider = ({ children }: any) => {
         fetchPolicy: 'cache-and-network',
     });
 
+    const [
+        updateCategoryMutation,
+        { loading: updating, error: updateError, data: updatedCategoryData },
+    ] = useMutation(UPDATE_CATEGORY);
+
     useEffect(() => {
         fetchCategories();
     }, [fetchCategories]);
+
+    const updateCategory = async ({
+        id,
+        name,
+        description,
+        img,
+    }: {
+        id: string;
+        name: string;
+        description: string;
+        img: any;
+    }) => {
+        try {
+            const { data } = await updateCategoryMutation({
+                variables: {
+                    id,
+                    name,
+                    description,
+                    img,
+                },
+            });
+
+            if (data && data.updateCategory) {
+                setCategories((prevCategories) =>
+                    prevCategories.map((category) =>
+                        category.id === id ? data.updateCategory : category,
+                    ),
+                );
+            }
+        } catch (error) {
+            console.error('Error updating category:', error);
+        }
+    };
 
     return (
         <CategoriesContext.Provider
@@ -31,11 +73,15 @@ export const CategoriesProvider = ({ children }: any) => {
                 categories,
                 loading,
                 error,
+                updateCategory,
                 fetchCategories,
                 currentCategory,
                 fetchCategoryById,
                 categoryLoading,
                 categoryError,
+                updating,
+                updateError,
+                categorySuccess: !!updatedCategoryData,
             }}
         >
             {children}

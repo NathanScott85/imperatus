@@ -8,6 +8,7 @@ export const AddCategory = () => {
     const [categoryName, setCategoryName] = useState('');
     const [description, setDescription] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null); // Track the selected file
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -18,6 +19,11 @@ export const AddCategory = () => {
         useAdminContext();
 
     useEffect(() => {
+        if (selectedFile) {
+            const objectUrl = URL.createObjectURL(selectedFile);
+            setPreviewUrl(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
         if (categoryError) {
             setError(categoryError);
             setSuccess('');
@@ -35,7 +41,7 @@ export const AddCategory = () => {
         }
 
         setIsButtonDisabled(false);
-    }, [categoryError, categorySuccess]);
+    }, [categoryError, categorySuccess, selectedFile]);
 
     const handleCategoryNameChange = (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -183,6 +189,12 @@ export const AddCategory = () => {
                 {error && <ErrorMessage>{error}</ErrorMessage>}
                 {success && <SuccessMessage>{success}</SuccessMessage>}
             </div>
+            <ImagePreviewContainer>
+                <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
+                {previewUrl && (
+                    <ImagePreview src={previewUrl} alt="Image preview" />
+                )}
+            </ImagePreviewContainer>
         </CategoryContainer>
     );
 };
@@ -244,4 +256,23 @@ const SuccessMessage = styled.p`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     margin-top: 1rem;
+`;
+
+const ImagePreviewContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+`;
+const ImagePreviewTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 18px;
+    margin-bottom: 1rem;
+    color: white;
+`;
+
+const ImagePreview = styled.img`
+    max-width: 200px;
+    max-height: 200px;
+    border: 1px solid #ac8fff;
+    border-radius: 4px;
 `;

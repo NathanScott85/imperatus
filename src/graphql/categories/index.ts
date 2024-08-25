@@ -65,3 +65,28 @@ export const CREATE_CATEGORY = gql`
         }
     }
 `;
+
+export const UPDATE_CATEGORY = gql`
+    mutation UpdateCategory(
+        $id: String!
+        $name: String!
+        $description: String!
+        $img: Upload
+    ) {
+        updateCategory(
+            id: $id
+            name: $name
+            description: $description
+            img: $img
+        ) {
+            id
+            name
+            description
+            img {
+                id
+                url
+                fileName
+            }
+        }
+    }
+`;
