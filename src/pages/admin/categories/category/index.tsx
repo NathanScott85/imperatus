@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCategoriesContext } from '../../../../context/categories';
+import { Modal } from '../../../../components/modal'; // Import the Modal component
 
 export interface CategoryDetailProps {
     category: any;
@@ -13,7 +14,7 @@ export const Category: React.FC<CategoryDetailProps> = ({
     category,
     onBack,
 }) => {
-    const { updateCategory } = useCategoriesContext();
+    const { updateCategory, deleteCategory } = useCategoriesContext();
     const [name, setName] = useState(category.name);
     const [description, setDescription] = useState(category.description);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -21,6 +22,9 @@ export const Category: React.FC<CategoryDetailProps> = ({
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -84,6 +88,37 @@ export const Category: React.FC<CategoryDetailProps> = ({
         }
     };
 
+    const handleOpenModal = () => {
+        setIsModalVisible(true);
+        setError('');
+        setSuccess('');
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setConfirmationText('');
+        setError('');
+        setSuccess('');
+    };
+
+    const handleDelete = async () => {
+        if (confirmationText !== 'DELETE') {
+            setError('Please type "DELETE" to confirm');
+            return;
+        }
+
+        try {
+            await deleteCategory(category.id);
+            setSuccess('Category deleted successfully!');
+            handleCloseModal();
+            onBack();
+        } catch (err) {
+            setError('Failed to delete category.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
     return (
         <CategoryContainer>
             <FormTitle>Edit Category</FormTitle>
@@ -137,6 +172,14 @@ export const Category: React.FC<CategoryDetailProps> = ({
                     </ButtonContainer>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                     {success && <SuccessMessage>{success}</SuccessMessage>}
+
+                    <Button
+                        variant="primary"
+                        onClick={handleOpenModal}
+                        disabled={isDeleting}
+                    >
+                        Delete Category
+                    </Button>
                 </CategoryDetailsWrapper>
                 <ImagePreviewContainer>
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
@@ -145,6 +188,19 @@ export const Category: React.FC<CategoryDetailProps> = ({
                     )}
                 </ImagePreviewContainer>
             </CategoryWrapper>
+            {isModalVisible && (
+                <Modal
+                    title="Delete Category"
+                    content="Are you sure you want to delete this category? This action cannot be undone."
+                    label='To confirm this, type "DELETE"'
+                    confirmationText={confirmationText}
+                    errorMessage={error}
+                    successMessage={success}
+                    setConfirmationText={setConfirmationText}
+                    handleDeleteAccount={handleDelete}
+                    handleCloseModal={handleCloseModal}
+                />
+            )}
         </CategoryContainer>
     );
 };

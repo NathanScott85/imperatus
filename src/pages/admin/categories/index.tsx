@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 
 export const AdminCategories = () => {
-    const { categories, loading, error } = useCategoriesContext();
+    const { categories, loading, error, fetchCategories } =
+        useCategoriesContext();
     const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
 
     const handleViewCategory = (category: any) => {
         setSelectedCategory(category);

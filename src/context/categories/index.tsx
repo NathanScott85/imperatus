@@ -4,6 +4,7 @@ import {
     GET_CATEGORIES,
     GET_CATEGORY_BY_ID,
     UPDATE_CATEGORY,
+    DELETE_CATEGORY,
 } from '../../graphql/categories';
 
 const CategoriesContext = createContext<any>(null);
@@ -29,6 +30,11 @@ export const CategoriesProvider = ({ children }: any) => {
         updateCategoryMutation,
         { loading: updating, error: updateError, data: updatedCategoryData },
     ] = useMutation(UPDATE_CATEGORY);
+
+    const [
+        deleteCategoryMutation,
+        { loading: deleteloading, error: deleteError },
+    ] = useMutation(DELETE_CATEGORY);
 
     useEffect(() => {
         fetchCategories();
@@ -67,6 +73,22 @@ export const CategoriesProvider = ({ children }: any) => {
         }
     };
 
+    const deleteCategory = async (id: string) => {
+        try {
+            const { data } = await deleteCategoryMutation({
+                variables: { id },
+            });
+
+            if (data && data.deleteCategory) {
+                setCategories((prevCategories) =>
+                    prevCategories.filter((category) => category.id !== id),
+                );
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+        }
+    };
+
     return (
         <CategoriesContext.Provider
             value={{
@@ -74,6 +96,7 @@ export const CategoriesProvider = ({ children }: any) => {
                 loading,
                 error,
                 updateCategory,
+                deleteCategory,
                 fetchCategories,
                 currentCategory,
                 fetchCategoryById,
@@ -81,6 +104,8 @@ export const CategoriesProvider = ({ children }: any) => {
                 categoryError,
                 updating,
                 updateError,
+                deleteloading,
+                deleteError,
                 categorySuccess: !!updatedCategoryData,
             }}
         >
