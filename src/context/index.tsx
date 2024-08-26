@@ -27,6 +27,7 @@ interface User {
     city: string;
     postcode: string;
     phone: string;
+    password: string;
     userRoles: Roles[];
 }
 
@@ -92,15 +93,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [deleteUserMutation] = useMutation(DELETE_USER_MUTATION);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('userData');
+        const storedUser = JSON.parse(
+            sessionStorage.getItem('userData') || 'null',
+        );
         if (accessToken && refreshToken && storedUser) {
-            const parsedUser: User = JSON.parse(storedUser);
             if (!isTokenExpired(accessToken)) {
                 setIsAuthenticated(true);
-                setUser(parsedUser);
+                setUser(storedUser);
                 checkTokenExpiry(accessToken);
             } else {
-                handleTokenExpiry(parsedUser);
+                handleTokenExpiry(storedUser);
             }
         }
     }, [accessToken, refreshToken]);
@@ -131,7 +133,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     ) => {
         localStorage.setItem('accessToken', accessToken);
         localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('userData', JSON.stringify(userData));
+        sessionStorage.setItem('userData', JSON.stringify(userData));
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
         setIsAuthenticated(true);
@@ -167,10 +169,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             throw new Error('An error occurred during account deletion.');
         }
     };
+
     const clearSession = () => {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userData');
+        sessionStorage.removeItem('userData'); // Clear user data from sessionStorage
         setAccessToken(null);
         setRefreshToken(null);
         setIsAuthenticated(false);
@@ -203,12 +206,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const newAccessToken = await refreshAccessToken();
             if (newAccessToken) {
-                const storedUser = localStorage.getItem('userData');
-                const parsedUser = storedUser
-                    ? JSON.parse(storedUser)
-                    : currentUser;
+                const storedUser = JSON.parse(
+                    sessionStorage.getItem('userData') || 'null',
+                );
                 setIsAuthenticated(true);
-                setUser(parsedUser);
+                setUser(storedUser || currentUser);
                 setShowExpiryPopup(false);
                 checkTokenExpiry(newAccessToken);
             } else {
@@ -221,6 +223,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false);
         }
     };
+
     const refreshAccessToken = async (): Promise<string | null> => {
         if (!refreshToken) return null;
 
@@ -247,16 +250,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
         newPassword: string,
     ): Promise<{ message: string } | null> => {
         try {
-            const storedUser = localStorage.getItem('userData');
+            const storedUser = JSON.parse(
+                sessionStorage.getItem('userData') || 'null',
+            );
             const token = accessToken;
 
             if (!storedUser || !token) {
                 throw new Error('User is not logged in or token is missing');
             }
 
-            const user = JSON.parse(storedUser);
-
-            if (user.id !== id) {
+            if (storedUser.id !== id) {
                 throw new Error('User ID does not match');
             }
 
@@ -266,7 +269,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             };
 
             const { data } = await changePasswordMutation({
-                variables: { id: user.id, oldPassword, newPassword },
+                variables: { id: storedUser.id, oldPassword, newPassword },
                 context: {
                     headers,
                 },
@@ -310,7 +313,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const userRoles: string[] =
-        user?.userRoles.map((roles: Roles) => roles.role.name) || [];
+        user?.userRoles.map((role) => role.role.name) || [];
     const isAdminOrOwner =
         userRoles.includes('ADMIN') || userRoles.includes('OWNER');
 
