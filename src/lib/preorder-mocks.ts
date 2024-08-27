@@ -31,11 +31,11 @@ import DisneyLorcanaFirst from '../lib/mock-images/lorcana-first-chapter.png';
 import ObsidianFlames from '../lib/mock-images/pokemon-obsidian.jpg';
 import Chakrabarthi from '../lib/mock-images/flight-of-chakrabarthi.jpg';
 
-export const preorders = [
+export const preorders: any[] = [
     {
-        id: '1',
+        id: 1,
         name: 'Pokemon',
-        img: PokemonLogo,
+        img: { url: PokemonLogo },
         banner: PokemonBanner,
         products: [
             {
@@ -43,10 +43,11 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'pokemon',
                 name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-                img: ObsidianFlames,
-                price: '3.99',
+                img: { url: ObsidianFlames },
+
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -62,10 +63,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'pokemon',
                 name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-                img: ObsidianFlames,
-                price: '3.99',
+                img: { url: ObsidianFlames },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -79,9 +80,9 @@ export const preorders = [
         ],
     },
     {
-        id: '2',
+        id: 2,
         name: 'Yugioh',
-        img: YugiohLogo,
+        img: { url: YugiohLogo },
         banner: YugiohBanner,
         products: [
             {
@@ -89,10 +90,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
-                img: InfiniteForbidden,
-                price: '3.99',
+                img: { url: ObsidianFlames },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -108,10 +109,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
-                img: InfiniteForbidden,
-                price: '3.99',
+                img: { url: ObsidianFlames },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -127,7 +128,7 @@ export const preorders = [
     {
         id: '4',
         name: 'Cardfight!! Vanguard',
-        img: CardFight,
+        img: { url: CardFight },
         banner: CardFightBanner,
         products: [
             {
@@ -135,10 +136,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Cardfight!! Vanguard Booster 13: Flight of Chakrabarthi Booster Pack',
-                img: Chakrabarthi,
-                price: '3.99',
+                img: { url: Chakrabarthi },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -154,10 +155,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Cardfight!! Vanguard Booster 13: Flight of Chakrabarthi Booster Pack',
-                img: Chakrabarthi,
-                price: '3.99',
+                img: { url: Chakrabarthi },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -173,7 +174,7 @@ export const preorders = [
     {
         id: '5',
         name: 'One Piece',
-        img: OnePiece,
+        img: { url: OnePiece },
         banner: OnePieceBanner,
         products: [
             {
@@ -181,10 +182,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
-                img: InfiniteForbidden,
-                price: '3.99',
+                img: { url: ObsidianFlames },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -200,10 +201,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Yugioh',
                 name: 'Yu-Gi-Oh! TCG - The Infinite Forbidden Booster Pack',
-                img: InfiniteForbidden,
-                price: '3.99',
+                img: { url: InfiniteForbidden },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -219,7 +220,8 @@ export const preorders = [
     {
         id: '6',
         name: 'Disney Lorcana',
-        img: DisneyLorcana,
+
+        img: { url: DisneyLorcana },
         banner: DisneyLorcanaBanner,
         products: [
             {
@@ -227,10 +229,11 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -246,10 +249,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -265,7 +268,7 @@ export const preorders = [
     {
         id: '7',
         name: 'Digimon',
-        img: DigimonLogo,
+        img: { url: DigimonLogo },
         banner: DigimonBanner,
         products: [
             {
@@ -273,10 +276,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -292,10 +295,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -312,17 +315,18 @@ export const preorders = [
         id: '8',
         name: 'Magic the Gathering',
         banner: MagicTheGatheringBanner,
-        img: MagicTheGathering,
+        img: { url: MagicTheGathering },
         products: [
             {
                 id: 1,
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -338,10 +342,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -358,17 +362,17 @@ export const preorders = [
         id: '9',
         name: 'Flesh and Blood',
         banner: FleshAndBloodBanner,
-        img: FleshAndBlood,
+        img: { url: FleshAndBlood },
         products: [
             {
                 id: 1,
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -384,10 +388,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -404,17 +408,17 @@ export const preorders = [
         id: '10',
         name: 'Dragonball Super',
         banner: DragonBallSuperBanner,
-        img: DragonBallSuper,
+        img: { url: DragonBallSuper },
         products: [
             {
                 id: 1,
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -430,10 +434,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -450,17 +454,17 @@ export const preorders = [
         id: '11',
         name: 'Altered',
         banner: AlteredBanner,
-        img: Altered,
+        img: { url: Altered },
         products: [
             {
                 id: 1,
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -476,10 +480,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -495,7 +499,7 @@ export const preorders = [
     {
         id: '12',
         name: 'Star Wars',
-        img: StarWars,
+        img: { url: StarWars },
         banner: StarWarsBanner,
         products: [
             {
@@ -503,10 +507,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -522,10 +526,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -541,7 +545,7 @@ export const preorders = [
     {
         id: '13',
         name: 'Weiss Schwarz',
-        img: Weiss,
+        img: { url: Weiss },
         banner: WeissSchwarzBanner,
         products: [
             {
@@ -549,10 +553,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {
@@ -568,10 +572,10 @@ export const preorders = [
                 category: 'cardgames',
                 cardgame: 'Disney Lorcana',
                 name: 'Disney Lorcana: The First Chapter - Booster Pack',
-                img: DisneyLorcanaFirst,
-                price: '3.99',
+                img: { url: DisneyLorcanaFirst },
+                price: 3.99,
                 type: 'pack',
-                rrp: '4.29',
+                rrp: 4.29,
                 description: `Each The Infinite Forbidden booster pack contains 9 cards. Return to where it all began with a new strategy featuring the unstoppable Exodia! “EXODIA, OBLITERATE!” The two words that cemented Yu-Gi-Oh! as a global sensation!
                 The Infinite Forbidden was recently announced at the Yu-Gi-Oh! DUEL MONSTERS The Legend of Duelist QUARTER CENTURY Event held at the Tokyo Dome in Japan, returning the game to where it all began with a new strategy featuring the unstoppable Exodia!`,
                 stock: {

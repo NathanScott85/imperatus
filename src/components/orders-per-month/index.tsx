@@ -3,19 +3,19 @@ import styled from 'styled-components';
 
 interface Product {
     id: number;
-    category: string;
+    category: { name: string };
     game: string;
     name: string;
     img: string;
-    price: string;
+    price: number;
     type: string;
-    rrp: string;
+    rrp: number;
     stock: {
         amount: number;
         sold: number;
         instock: string;
         soldout: string;
-        preorder: string;
+        preorder?: boolean;
     };
 }
 
@@ -43,7 +43,7 @@ const Order: React.FC<OrderProps> = ({ order, previousOrder }: OrderProps) => {
             // Calculate the total value for the previous month
             const previousTotalPrice = previousOrder.products.reduce(
                 (acc, product) => {
-                    return acc + parseFloat(product.price);
+                    return acc + product.price;
                 },
                 0,
             );
@@ -52,7 +52,7 @@ const Order: React.FC<OrderProps> = ({ order, previousOrder }: OrderProps) => {
 
         // Calculate the total value for the current month
         const totalPrice = order.products.reduce((acc, product) => {
-            return acc + parseFloat(product.price);
+            return acc + product.price;
         }, 0);
         setTotalValue(totalPrice);
     }, [order, previousOrder]);

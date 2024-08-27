@@ -67,7 +67,7 @@ export const CardGames = () => (
                                 <CategoryItem>
                                     <ImageWrapper>
                                         <CategoryImage
-                                            src={cardgame?.img}
+                                            src={cardgame?.img.url}
                                             alt={cardgame?.name}
                                         />
                                     </ImageWrapper>

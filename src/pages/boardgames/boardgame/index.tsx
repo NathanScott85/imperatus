@@ -12,7 +12,7 @@ export const BoardGame = () => {
     const { id } = useParams();
 
     const boardgame = boardgames.find((boardgame) => boardgame.id === id);
-
+    console.log(boardgames, 'boardgames');
     const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,
@@ -98,4 +98,17 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 200px;
+    background-color: #130a30;
+    p {
+        color: #c79d0a;
+        font-family: Cinzel;
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 57px;
+        letter-spacing: 0.02em;
+        text-align: left;
+        padding-bottom: 2rem;
+        margin-left: 2rem;
+    }
 `;

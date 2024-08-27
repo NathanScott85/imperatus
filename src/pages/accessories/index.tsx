@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, generatePath } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
@@ -9,58 +9,79 @@ import { Footer } from '../../components/footer';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
-import { accessories } from '../../lib//accessories-mocks';
+import { accessories } from '../../lib/accessories-mocks';
 
-export const Accessories = () => (
-    <>
-        <TopHeader />
-        <Header background />
-        <Navigation background />
-        <BreadCrumb label="Accessories" />
-        <CardGamesMain>
-            <CategoriesContainer>
-                <CategoriesFilterContainer>
-                    <h1>Accessories</h1>
-                    <FancyContainer variant="filters" size="filters">
-                        <CategoriesFilter>
-                            {accessories
-                                .sort((a, b) => a.name.localeCompare(b.name))
-                                .map((accessory) => (
-                                    <CatergoriesWrapper key={accessory.id}>
-                                        <StyledLink
-                                            to={`/shop/accessories/accessory/${accessory.id}/${accessory.name}`}
-                                        >
-                                            {accessory.name}
-                                        </StyledLink>
-                                    </CatergoriesWrapper>
-                                ))}
-                        </CategoriesFilter>
-                    </FancyContainer>
-                </CategoriesFilterContainer>
-                <CategoriesListContainer>
-                    {accessories.map((accessory) => (
-                        <Link
-                            key={accessory.id}
-                            to={`/shop/accessories/accessory/${accessory.id}/${accessory.name}`}
-                        >
-                            <CategoryItem>
-                                <ImageWrapper>
-                                    <CategoryImage
-                                        src={accessory?.img}
-                                        alt={accessory?.name}
-                                    />
-                                </ImageWrapper>
-                                <p>{accessory?.name}</p>
-                            </CategoryItem>
-                        </Link>
-                    ))}
-                </CategoriesListContainer>
-            </CategoriesContainer>
-            <Reviews />
-        </CardGamesMain>
-        <Footer />
-    </>
-);
+const getAccessoryPath = (accessory: any) => {
+    const accessoryPath = accessory
+        ? generatePath('/shop/accessories/accessory/:id/:name', {
+              id: accessory.id,
+              name: accessory.name.replace(/\s+/g, '-').toLowerCase(),
+          })
+        : '';
+    return {
+        accessoryPath,
+    };
+};
+
+export const Accessories = () => {
+    return (
+        <>
+            <TopHeader />
+            <Header background />
+            <Navigation background />
+            <BreadCrumb label="Accessories" />
+            <AccessoriesMain>
+                <AccessoriesContainer>
+                    <AccessoriesFiltersContainer>
+                        <h1>Accessories</h1>
+                        <FancyContainer variant="filters" size="filters">
+                            <AccessoryFilter>
+                                {accessories
+                                    .sort((a, b) =>
+                                        a.name.localeCompare(b.name),
+                                    )
+                                    .map((accessory) => {
+                                        const { accessoryPath } =
+                                            getAccessoryPath(accessory);
+                                        return (
+                                            <AccessoriesWrapper
+                                                key={accessory.id}
+                                            >
+                                                <StyledLink to={accessoryPath}>
+                                                    {accessory.name}
+                                                </StyledLink>
+                                            </AccessoriesWrapper>
+                                        );
+                                    })}
+                            </AccessoryFilter>
+                        </FancyContainer>
+                    </AccessoriesFiltersContainer>
+                    <AccessoriesListContainer>
+                        {accessories.map((accessory) => {
+                            const { accessoryPath } =
+                                getAccessoryPath(accessory);
+                            return (
+                                <Link to={accessoryPath} key={accessory.id}>
+                                    <AccessoryItem>
+                                        <ImageWrapper>
+                                            <AccessoryImage
+                                                src={accessory?.img?.url}
+                                                alt={accessory?.name}
+                                            />
+                                        </ImageWrapper>
+                                        <p>{accessory?.name}</p>
+                                    </AccessoryItem>
+                                </Link>
+                            );
+                        })}
+                    </AccessoriesListContainer>
+                </AccessoriesContainer>
+                <Reviews />
+            </AccessoriesMain>
+            <Footer />
+        </>
+    );
+};
 
 const StyledLink = styled(Link)`
     font-family: Cinzel;
@@ -72,9 +93,12 @@ const StyledLink = styled(Link)`
     &:hover {
         color: #c79d0a;
     }
+    p {
+        margin: 1rem;
+    }
 `;
 
-const CategoriesContainer = styled.section`
+const AccessoriesContainer = styled.section`
     display: flex;
     flex-direction: row;
     margin-bottom: 2.5rem;
@@ -91,12 +115,10 @@ const ImageWrapper = styled.div`
     align-items: center;
     width: 260px;
     height: 298px;
-    top: 630px;
-    left: 584px;
     gap: 0px;
 `;
 
-const CategoryImage = styled.img`
+const AccessoryImage = styled.img`
     max-width: 100%;
     max-height: 100%;
     width: auto;
@@ -107,11 +129,11 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CardGamesMain = styled(MainContainer)`
+const AccessoriesMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
-const CategoriesFilterContainer = styled.div`
+const AccessoriesFiltersContainer = styled.div`
     h1 {
         color: white;
         font-family: Cinzel;
@@ -125,7 +147,7 @@ const CategoriesFilterContainer = styled.div`
     }
 `;
 
-const CategoriesFilter = styled.div`
+const AccessoryFilter = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -133,7 +155,7 @@ const CategoriesFilter = styled.div`
     text-align: center;
 `;
 
-const CatergoriesWrapper = styled.div`
+const AccessoriesWrapper = styled.div`
     &:not(:last-child) {
         border-bottom: 1px solid #4d3c7b;
     }
@@ -141,7 +163,7 @@ const CatergoriesWrapper = styled.div`
     z-index: 50;
 `;
 
-const CategoriesListContainer = styled.div`
+const AccessoriesListContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
@@ -157,13 +179,10 @@ const CategoriesListContainer = styled.div`
     }
 `;
 
-const CategoryItem = styled.div`
+const AccessoryItem = styled.div`
     border-radius: 12px;
     background: #160d35;
     padding: 1rem;
-
-    text-align: left;
-    padding: 0.4rem;
     text-align: center;
     border: 1px solid #ac8fff;
     &:hover {

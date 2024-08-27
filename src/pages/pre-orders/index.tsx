@@ -66,7 +66,7 @@ export const Preorders = () => {
                                         <PreOrderItem key={orders.id}>
                                             <ImageWrapper>
                                                 <PreOrdersImage
-                                                    src={orders?.img}
+                                                    src={orders?.img.url}
                                                     alt={orders?.name}
                                                 />
                                             </ImageWrapper>

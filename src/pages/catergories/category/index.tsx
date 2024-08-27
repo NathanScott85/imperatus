@@ -7,7 +7,6 @@ import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
-import { mediaQueries } from '../../../styled/breakpoints';
 import { FancyContainer } from '../../../components/fancy-container';
 
 export const Category = () => {
@@ -52,9 +51,8 @@ export const Category = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-
             <ImageWrapper>
-                <p>{categoryName || categoryName}</p>
+                <p>{categoryName}</p>
             </ImageWrapper>
             <CategoriesMain>
                 {categoryLoading ? (
@@ -168,7 +166,7 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 650px);
+    height: 200px;
     background-color: #130a30;
     p {
         color: #c79d0a;
@@ -181,18 +179,6 @@ const ImageWrapper = styled.div`
         padding-bottom: 2rem;
         margin-left: 2rem;
     }
-    ${mediaQueries('sm')`
-         height: calc(100vh - 1450px); 
-    `};
-    ${mediaQueries('md')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('lg')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('xl')`
-           height: calc(100vh - 450px);
-   `};
 `;
 
 const CategoriesListContainer = styled.div`

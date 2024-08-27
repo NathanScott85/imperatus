@@ -3,22 +3,14 @@ import styled from 'styled-components';
 import { Product } from '../product';
 import { mediaQueries } from '../../styled/breakpoints';
 import { FancyContainer } from '../fancy-container';
-
-type ProductType = {
-    id: number;
-    img: string;
-    name: string;
-    price: string;
-    rrp: string;
-    category: string;
-    cardgame: string;
-};
+import { ProductType } from '../../types';
 
 interface ProductsProps {
     products: ProductType[];
     label?: string;
 }
 export const Products = ({ products, label }: ProductsProps) => {
+    console.log(products, 'products');
     return (
         <>
             {(label === 'Latest Products' ||
@@ -30,7 +22,7 @@ export const Products = ({ products, label }: ProductsProps) => {
                             {products?.length !== 0 ? (
                                 products.map((product: ProductType) => (
                                     <Product
-                                        key={product.img}
+                                        key={product.id}
                                         product={product}
                                     />
                                 ))

@@ -84,11 +84,13 @@ export const Basket = () => {
         }
         return null;
     };
+    const calculateSubtotal = (): string => {
+        const subtotal = basketProducts.reduce(
+            (acc, product) => acc + product.price,
+            0,
+        );
 
-    const calculateSubtotal = () => {
-        return basketProducts
-            .reduce((acc, product) => acc + parseFloat(product.price), 0)
-            .toFixed(2);
+        return subtotal.toFixed(2);
     };
 
     const calculateTotal = () => {

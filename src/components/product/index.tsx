@@ -2,16 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Button from '../button';
 import { NavLink, useLocation } from 'react-router-dom';
-
-type ProductType = {
-    id: any;
-    img: string;
-    name: string;
-    price: string;
-    rrp: string;
-    category: string;
-    cardgame: string;
-};
+import { ProductType } from '../../types';
 
 interface ProductProps {
     product: ProductType;
@@ -28,7 +19,10 @@ export const Product = ({ product }: ProductProps) => {
                     state={{ product }}
                 >
                     <ImageWrapper>
-                        <ProductImage src={product.img} alt={product?.name} />
+                        <ProductImage
+                            src={product?.img?.url}
+                            alt={product?.name}
+                        />
                     </ImageWrapper>
                     <ProductName>{product?.name}</ProductName>
                     <ProductPriceWrapper>

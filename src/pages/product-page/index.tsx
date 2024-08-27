@@ -12,7 +12,7 @@ import { ProductDescription } from './product-page-description';
 
 interface Product {
     name: string;
-    img: string;
+    img: { url: string };
     price: number;
     rrp: number;
     description: string;
@@ -45,30 +45,30 @@ export const ProductPage: React.FC = () => {
                     <div>
                         <ProductImageWrapper>
                             <ProductImage
-                                src={product.img}
-                                alt={product!.name}
+                                src={product?.img?.url}
+                                alt={product.name}
                             />
                         </ProductImageWrapper>
                         <ProductImageSmallWrapper>
                             <ProductImageSmall
-                                src={product.img}
-                                alt={product!.name}
+                                src={product?.img?.url}
+                                alt={product.name}
                             />
                             <ProductImageSmall
-                                src={product.img}
-                                alt={product!.name}
+                                src={product?.img?.url}
+                                alt={product.name}
                             />
                             <ProductImageSmall
-                                src={product.img}
-                                alt={product!.name}
+                                src={product?.img?.url}
+                                alt={product.name}
                             />
                         </ProductImageSmallWrapper>
                     </div>
                     <ProductContent>
-                        <h1>{product!.name}</h1>
+                        <h1>{product.name}</h1>
                         <ProductPriceWrapper>
-                            <ProductPrice>£{product!.price}</ProductPrice>
-                            <StyledRRP>RRP {product!.rrp}</StyledRRP>
+                            <ProductPrice>£{product.price}</ProductPrice>
+                            <StyledRRP>RRP £{product.rrp}</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
                             <CartWrapper>
@@ -258,7 +258,6 @@ const ProductImage = styled.img`
     width: 95%;
     height: 95%;
     object-fit: contain;
-
     padding: 0 !important;
     &:hover {
         transform: scale(0.9);

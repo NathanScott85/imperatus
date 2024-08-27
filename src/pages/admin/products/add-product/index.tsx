@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { ChevronUp } from '../../../../components/svg/chevron-up';
-import { Input } from '../../../../components/input';
-import Button from '../../../../components/button';
+import { useAdminContext } from '../../../../context/admin';
 import { useCategoriesContext } from '../../../../context/categories';
+import Button from '../../../../components/button';
+import { Input } from '../../../../components/input';
+import { ChevronUp } from '../../../../components/svg/chevron-up';
 
 export const AddProduct = () => {
     const [productName, setProductName] = useState('');
@@ -11,12 +12,15 @@ export const AddProduct = () => {
     const [price, setPrice] = useState('');
     const [stockAmount, setStockAmount] = useState('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [preorder, setPreorder] = useState(false);
+    const [rrp, setRrp] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const { categories, fetchCategories } = useCategoriesContext();
+    const { createProduct } = useAdminContext(); // Get createProduct from context
 
     useEffect(() => {
         fetchCategories();
@@ -84,17 +88,36 @@ export const AddProduct = () => {
             return;
         }
 
-        // Simulate a successful submission
-        setTimeout(() => {
-            setSuccess('Product added successfully!');
-            setError('');
-            setProductName('');
-            setCategory('');
-            setPrice('');
-            setStockAmount('');
-            clearFileInput();
+        try {
+            const { success, message } = await createProduct({
+                name: productName,
+                price: parseFloat(price),
+                type: 'Standard', // Default type, can be adjusted or made dynamic
+                description: '', // Add description if needed
+                img: selectedFile,
+                categoryId: parseInt(category),
+                stockAmount: parseInt(stockAmount),
+                preorder, // Include preorder state
+                rrp: rrp ? parseFloat(rrp) : undefined, // Include rrp state
+            });
+
+            if (success) {
+                setSuccess(message);
+                clearFileInput();
+                setProductName('');
+                setCategory('');
+                setPrice('');
+                setStockAmount('');
+                setRrp('');
+                setPreorder(false); // Reset preorder
+            } else {
+                setError(message);
+            }
+        } catch (err) {
+            setError('An unexpected error occurred.');
+        } finally {
             setIsButtonDisabled(false);
-        }, 1000);
+        }
     };
 
     return (
@@ -168,6 +191,26 @@ export const AddProduct = () => {
                         />
                     </FormGroup>
                     <FormGroup>
+                        <Label htmlFor="preorder">Preorder</Label>
+                        <Input
+                            variant="secondary"
+                            type="checkbox"
+                            id="preorder"
+                            checked={preorder}
+                            onChange={(e) => setPreorder(e.target.checked)}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="rrp">RRP</Label>
+                        <Input
+                            variant="secondary"
+                            type="text"
+                            id="rrp"
+                            value={rrp}
+                            onChange={(e) => setRrp(e.target.value)}
+                        />
+                    </FormGroup>
+                    <FormGroup>
                         <Label htmlFor="image">Upload Image</Label>
                         <Input
                             variant="secondary"
@@ -201,6 +244,7 @@ export const AddProduct = () => {
     );
 };
 
+// Styled Components
 const ProductContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -254,7 +298,6 @@ const DropdownHeader = styled.div`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     padding: 0.5rem;
-
     border: 1px solid #4d3c7b;
     background-color: #160d35;
     color: white;
@@ -272,7 +315,6 @@ const DropdownList = styled.ul`
     width: 100%;
     background-color: #160d35;
     border: 1px solid #4d3c7b;
-
     max-height: 150px;
     overflow-y: auto;
     z-index: 10;
@@ -317,3 +359,5 @@ const SuccessMessage = styled.p`
     font-size: 14px;
     margin-top: 1rem;
 `;
+
+export default AddProduct;

@@ -33,12 +33,19 @@ export const GET_CATEGORY_BY_ID = gql`
                 id
                 name
                 price
+                rrp
                 img {
                     url
                     fileName
                     contentType
                 }
                 description
+                stock {
+                    amount
+                    sold
+                    instock
+                    soldout
+                }
             }
         }
     }

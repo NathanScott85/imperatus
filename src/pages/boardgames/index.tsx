@@ -66,7 +66,7 @@ export const BoardGames = () => {
                                         <CategoryItem key={boardgame.id}>
                                             <ImageWrapper>
                                                 <CategoryImage
-                                                    src={boardgame?.img}
+                                                    src={boardgame?.img.url}
                                                     alt={boardgame?.name}
                                                 />
                                             </ImageWrapper>
@@ -78,7 +78,6 @@ export const BoardGames = () => {
                         })}
                     </BoardGamesListContainer>
                 </BoardGamesContainer>
-
                 <Reviews />
             </BoardgamesMain>
             <Footer />

@@ -4,64 +4,106 @@ import MtgCore from '../lib/mock-images/mtg-core-2021.jpg';
 import GenesisImpact from '../lib/mock-images/genesis-impact.jpg';
 import Theros from '../lib/mock-images/theros.jpg';
 import Zendikar from './mock-images/zendikar-rising.jpg';
+import { ProductType } from '../types';
 
-export const latestproducts = [
+export const latestproducts: ProductType[] = [
     {
         id: 1,
-        category: 'card games',
-        cardgame: 'pokemon',
+        category: { name: 'card games' },
         name: 'Pokemon Scarlet & Violet Obsidian Flames: Booster Pack (10 Cards)',
-        img: ObsidianFlames,
-        price: '3.99',
+        img: { url: ObsidianFlames },
+        price: 3.99,
         type: 'pack',
-        rrp: '4.29',
+        rrp: 4.29,
+        stock: {
+            amount: 500,
+            sold: 200,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
     {
         id: 2,
-        category: 'card games',
-        cardgame: 'magic the gathering',
+        category: { name: 'card games' },
+
         name: 'Magic The Gathering Core Set 2021: Booster Box (36 Packs)',
-        img: MtgCore,
+        img: { url: MtgCore },
         type: 'booster',
-        price: '89.99',
-        rrp: '99.99',
+        price: 89.99, // Ensure this is a number
+        rrp: 99.99, // Ensure this is a number
+        stock: {
+            amount: 100,
+            sold: 50,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
     {
         id: 3,
-        category: 'card games',
-        cardgame: 'yu-gi-oh',
+        category: { name: 'card games' },
         name: 'Yu-Gi-Oh! Legendary Duelists: Synchro Storm Booster Box (36 Packs)',
-        img: SynchroStorm,
+        img: { url: SynchroStorm },
         type: 'booster',
-        price: '59.99',
-        rrp: '64.99',
+        price: 59.99, // Ensure this is a number
+        rrp: 64.99, // Ensure this is a number
+        stock: {
+            amount: 150,
+            sold: 75,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
     {
         id: 4,
-        category: 'card games',
-        cardgame: 'magic the gathering',
+        category: { name: 'card games' },
         name: 'Magic The Gathering: Zendikar Rising Draft Booster Box (36 Packs)',
-        img: Zendikar,
-        price: '94.99',
-        rrp: '109.99',
+        type: 'booster',
+        img: { url: Zendikar },
+        price: 94.99, // Ensure this is a number
+        rrp: 109.99, // Ensure this is a number
+        stock: {
+            amount: 80,
+            sold: 40,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
     {
         id: 5,
-        category: 'card games',
-        cardgame: 'yu-gi-oh',
+        category: { name: 'card games' },
         name: 'Yu-Gi-Oh! Genesis Impact Booster Box (24 Packs)',
-        img: GenesisImpact,
-        price: '49.99',
-        rrp: '54.99',
+        type: 'booster',
+        img: { url: GenesisImpact },
+        price: 49.99, // Ensure this is a number
+        rrp: 54.99, // Ensure this is a number
+        stock: {
+            amount: 120,
+            sold: 60,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
     {
         id: 6,
-        category: 'card games',
-        cardgame: 'magic the gathering',
+        category: { name: 'card games' },
+
         name: 'Magic: The Gathering Theros Beyond Death Booster Box (36 Packs)',
-        img: Theros,
-        price: '89.99',
-        rrp: '104.99',
+        type: 'booster',
+        img: { url: Theros },
+        price: 89.99, // Ensure this is a number
+        rrp: 104.99, // Ensure this is a number
+        stock: {
+            amount: 110,
+            sold: 55,
+            instock: 'In Stock',
+            soldout: 'Out of Stock',
+            preorder: 'Preorder Available',
+        },
     },
 ];
 

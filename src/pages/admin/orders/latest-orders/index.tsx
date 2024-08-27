@@ -9,18 +9,22 @@ interface Stock {
     preorder: string;
 }
 
+interface File {
+    url: string;
+}
+
 interface Product {
     id: number;
     category: string;
-    game: string;
     name: string;
-    img: string;
-    price: string;
+    img: File | null;
+    price: number;
     type: string;
-    rrp: string;
+    rrp: number;
+    description?: string;
     stock: Stock;
+    preorder?: boolean;
 }
-
 export const LatestOrders = () => {
     const latestProducts: Product[] = products.reduce(
         (acc: Product[], product: Product, index: number, arr: Product[]) => {
@@ -46,14 +50,16 @@ export const LatestOrders = () => {
                     <OrderItem key={product.id}>
                         <ProductInfo>
                             <ProductImage
-                                src={product.img}
+                                src={product.img?.url}
                                 alt={product.name}
                             />
                             <ProductName>{product.name}</ProductName>
                         </ProductInfo>
                         <ProductContent>{product.stock.amount}</ProductContent>
                         <ProductContent>{product.stock.sold}</ProductContent>
-                        <ProductContent>£{product.price}</ProductContent>
+                        <ProductContent>
+                            £{product.price.toFixed(2)}
+                        </ProductContent>
                     </OrderItem>
                 ))}
             </OrderList>
