@@ -67,8 +67,10 @@ export const ProductPage: React.FC = () => {
                     <ProductContent>
                         <h1>{product.name}</h1>
                         <ProductPriceWrapper>
-                            <ProductPrice>£{product.price}</ProductPrice>
-                            <StyledRRP>RRP £{product.rrp}</StyledRRP>
+                            <ProductPrice>
+                                £{product.price.toFixed(2)}
+                            </ProductPrice>
+                            <StyledRRP>RRP £{product.rrp.toFixed(2)}</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
                             <CartWrapper>

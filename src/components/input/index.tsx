@@ -51,24 +51,26 @@ export const Input = forwardRef<
         ref,
     ) => {
         return (
-            <Wrapper>
+            <>
                 {variant === 'upload' ? (
-                    <ImageUploadWrapper>
-                        <StyledInput
-                            ref={ref as React.Ref<HTMLInputElement>} // Explicitly cast ref type
-                            type="file"
-                            name={name}
-                            className={className}
-                            variant={variant}
-                            onChange={onChange}
-                            id={id}
-                            required={required}
-                            onKeyDown={onKeyDown}
-                        />
-                        <UploadButton onClick={onClick}>
-                            Upload Image
-                        </UploadButton>
-                    </ImageUploadWrapper>
+                    <Wrapper>
+                        <ImageUploadWrapper>
+                            <StyledInput
+                                ref={ref as React.Ref<HTMLInputElement>} // Explicitly cast ref type
+                                type="file"
+                                name={name}
+                                className={className}
+                                variant={variant}
+                                onChange={onChange}
+                                id={id}
+                                required={required}
+                                onKeyDown={onKeyDown}
+                            />
+                            <UploadButton onClick={onClick}>
+                                Upload Image
+                            </UploadButton>
+                        </ImageUploadWrapper>
+                    </Wrapper>
                 ) : variant === 'description' ? (
                     <StyledTextArea
                         ref={ref as React.Ref<HTMLTextAreaElement>}
@@ -99,7 +101,7 @@ export const Input = forwardRef<
                         onKeyDown={onKeyDown}
                     />
                 )}
-            </Wrapper>
+            </>
         );
     },
 );

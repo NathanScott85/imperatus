@@ -20,11 +20,11 @@ export const ProductItem: React.FC<ProductItemProps> = ({
 }) => {
     return (
         <ItemContainer variant={variant}>
-            <img src={product.img} alt={product.name} />
+            <img src={product.img.url} alt={product.name} />
             <ProductInfo variant={variant}>
                 <div>
                     <p>{product.name}</p>
-                    <p>£{product.price}</p>
+                    <p>£{product.price.toFixed(2)}</p>
                     <Button size="small" variant="none" onClick={onMove}>
                         {moveLabel}
                     </Button>

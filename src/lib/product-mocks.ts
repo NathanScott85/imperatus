@@ -4,7 +4,7 @@ export const products = [
     {
         id: 1,
         category: 'Card Games',
-        name: 'Catan',
+        name: 'Pokémon TCG: Scarlet & Violet—Obsidian Flames',
         img: { url: ObsidianFlames },
         price: 29.99,
         type: 'Strategy',
@@ -22,7 +22,7 @@ export const products = [
     {
         id: 2,
         category: 'Card Games',
-        name: 'Uno',
+        name: 'Pokémon TCG: Scarlet & Violet—Obsidian Flames',
         img: { url: ObsidianFlames },
         price: 9.99,
         type: 'Family',
@@ -40,7 +40,7 @@ export const products = [
     {
         id: 3,
         category: 'Miniatures',
-        name: 'Warhammer 40k',
+        name: 'Pokémon TCG: Scarlet & Violet—Obsidian Flames',
         img: { url: ObsidianFlames },
         price: 99.99,
         type: 'Wargame',
@@ -58,7 +58,7 @@ export const products = [
     {
         id: 4,
         category: 'RPG',
-        name: 'Dungeons & Dragons',
+        name: 'Pokémon TCG: Scarlet & Violet—Obsidian Flames',
         img: { url: ObsidianFlames },
         price: 49.99,
         type: 'Role-Playing',

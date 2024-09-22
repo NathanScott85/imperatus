@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
+import { Product } from './product';
 
 export const AdminProducts = () => {
     const {
@@ -13,6 +14,8 @@ export const AdminProducts = () => {
         setPage,
     } = useAdminContext();
 
+    const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts, currentPage]);
@@ -22,6 +25,18 @@ export const AdminProducts = () => {
             setPage(newPage);
         }
     };
+
+    const handleViewProduct = (product: any) => {
+        setSelectedProduct(product);
+    };
+
+    const handleBackToList = () => {
+        setSelectedProduct(null);
+    };
+
+    if (selectedProduct) {
+        return <Product product={selectedProduct} onBack={handleBackToList} />;
+    }
 
     return (
         <ProductsContainer>
@@ -35,6 +50,7 @@ export const AdminProducts = () => {
                             <th>Price</th>
                             <th>Stock Amount</th>
                             <th>Stock Status</th>
+                            <th>View</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,6 +80,15 @@ export const AdminProducts = () => {
                                         ) : (
                                             <span>{product.stock.soldout}</span>
                                         )}
+                                    </td>
+                                    <td>
+                                        <ViewButton
+                                            onClick={() =>
+                                                handleViewProduct(product)
+                                            }
+                                        >
+                                            View
+                                        </ViewButton>
                                     </td>
                                 </TableRow>
                             ))
@@ -186,5 +211,19 @@ const PageButton = styled.button<{ disabled?: boolean }>`
     border-radius: 4px;
     &:hover {
         background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
+    }
+`;
+
+const ViewButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #2a1f51;
     }
 `;

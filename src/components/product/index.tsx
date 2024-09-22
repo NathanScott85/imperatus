@@ -26,8 +26,10 @@ export const Product = ({ product }: ProductProps) => {
                     </ImageWrapper>
                     <ProductName>{product?.name}</ProductName>
                     <ProductPriceWrapper>
-                        <ProductPrice>£{product?.price}</ProductPrice>
-                        <StyledRRP>RRP {product?.rrp}</StyledRRP>
+                        <ProductPrice>
+                            £{product?.price.toFixed(2)}
+                        </ProductPrice>
+                        <StyledRRP>RRP {product?.rrp.toFixed(2)}</StyledRRP>
                     </ProductPriceWrapper>
                 </NavLink>
                 <Button label="Add to cart" variant="primary" size="small" />

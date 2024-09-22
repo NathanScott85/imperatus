@@ -41,7 +41,7 @@ export const Category: React.FC<CategoryDetailProps> = ({
     };
 
     const handleDescriptionChange = (
-        e: React.ChangeEvent<HTMLTextAreaElement>,
+        e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         setDescription(e.target.value);
     };
@@ -127,7 +127,8 @@ export const Category: React.FC<CategoryDetailProps> = ({
                 <CategoryDetailsWrapper>
                     <FormGroup>
                         <Label htmlFor="name">Category Name</Label>
-                        <CategoryInput
+                        <Input
+                            variant="secondary"
                             id="name"
                             value={name}
                             onChange={handleNameChange}
@@ -135,7 +136,8 @@ export const Category: React.FC<CategoryDetailProps> = ({
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="description">Description</Label>
-                        <CategoryTextarea
+                        <Input
+                            variant="description"
                             id="description"
                             value={description}
                             onChange={handleDescriptionChange}
@@ -240,29 +242,6 @@ const Label = styled.label`
     font-size: 14px;
     margin-bottom: 0.5rem;
     display: block;
-`;
-
-const CategoryInput = styled.input`
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    font-family: Barlow;
-    font-size: 14px;
-    color: #000;
-    border-radius: 4px;
-    border: 1px solid #ac8fff;
-`;
-
-const CategoryTextarea = styled.textarea`
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    font-family: Barlow;
-    font-size: 14px;
-    color: #000;
-    border-radius: 4px;
-    border: 1px solid #ac8fff;
-    height: 100px;
 `;
 
 const ImagePreviewContainer = styled.div`
