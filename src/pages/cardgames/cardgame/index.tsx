@@ -1,108 +1,63 @@
-import React, { useState } from 'react';
+// components/CardGame.tsx
+import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useCategoriesContext } from '../../../context/categories';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
-import { Filters } from '../../../components/filters';
-import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { cardgames } from '../../../lib/card-games';
-import { mediaQueries } from '../../../styled/breakpoints';
+import { Products } from '../../../components/products';
 
 export const CardGame = () => {
-    const { id } = useParams();
+  const { id } = useParams();
+  const { currentCategory } = useCategoriesContext();
 
-    const cardgame = cardgames.find((cardgame) => cardgame.id === id);
+  const cardgame = currentCategory?.products.find((game: any) => game.id === id);
 
-    const [checkedStatus, setCheckedStatus] = useState({
-        inStock: false,
-        outOfStock: false,
-    });
-
-    const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => {
-            const newState = {
-                ...prevState,
-                [type]: !prevState[type],
-            };
-            return newState;
-        });
-    };
-    return (
-        <>
-            <TopHeader />
-            <Header background />
-            <Navigation background />
-            {cardgame && <ImageContainer img={cardgame.banner} />}
-            <CardGameMain>
-                <CardGameContainer>
-                    <FiltersContainer>
-                        <Filters
-                            filters
-                            checkedStatus={checkedStatus}
-                            handleChecked={handleChecked}
-                        />
-                    </FiltersContainer>
-                    <CardGameListContainer>
-                        {cardgame && <Products products={cardgame?.products} />}
-                    </CardGameListContainer>
-                </CardGameContainer>
-            </CardGameMain>
-            <Footer />
-        </>
-    );
+  return (
+    <>
+      <TopHeader />
+      <Header background />
+      <Navigation background />
+      {cardgame && <ImageContainer img={cardgame.img.url} />}
+      <CardGameMain>
+        <CardGameContainer>
+          <FiltersContainer>
+            {/* Filters Component */}
+          </FiltersContainer>
+          <CardGameListContainer>
+            {/* Display products related to this cardgame */}
+            {cardgame && <Products products={[cardgame]} />}
+          </CardGameListContainer>
+        </CardGameContainer>
+      </CardGameMain>
+      <Footer />
+    </>
+  );
 };
 
-const CardGameListContainer = styled.div`
-    display: flex;
-    gap: 1rem;
-    padding: 2rem;
+const CardGameMain = styled.main`
+  display: flex;
+  flex-direction: row;
+  background-color: white;
 `;
 
 const CardGameContainer = styled.section`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items; center;
-    margin-bottom: 2.5rem;
-`;
-
-const CardGameMain = styled.main`
-    flex-direction: row;
-    background-color: white;
-    justify-content: center;
-    align-items; center;
-    margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
 `;
 
 const FiltersContainer = styled.div`
-    h1 {
-        color: black;
-        font-family: Cinzel;
-        font-size: 30px;
-        font-weight: 700;
-        line-height: 57px;
-        letter-spacing: 0.02em;
-        text-align: left;
-        padding-bottom: 2rem;
-    }
+  flex: 1;
 `;
 
-const ImageContainer = styled.div<{ img?: any }>`
-    background-image: url(${(props) => props.img});
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    ${mediaQueries('sm')`
-         height: calc(100vh - 1450px); 
-    `};
-    ${mediaQueries('md')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('lg')`
-        height: calc(100vh - 1250px);
-    `};
-    ${mediaQueries('xl')`
-           height: calc(100vh - 500px);
-   `};
+const CardGameListContainer = styled.div`
+  flex: 3;
+`;
+
+const ImageContainer = styled.div<{ img?: string }>`
+  background-image: url(${(props) => props.img});
+  background-size: cover;
+  height: 400px;
+  width: 100%;
 `;
