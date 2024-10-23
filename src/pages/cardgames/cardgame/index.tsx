@@ -1,39 +1,48 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useQuery } from '@apollo/client'; // Apollo Client hook for data fetching
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { cardgames } from '../../../lib/card-games';
 import { mediaQueries } from '../../../styled/breakpoints';
+import { GET_CATEGORY_BY_ID } from '../../../graphql/categories'; // Import your GraphQL query
 
 export const CardGame = () => {
-    const { id } = useParams();
+    const { id } = useParams(); // Get the category ID from the URL
 
-    const cardgame = cardgames.find((cardgame) => cardgame.id === id);
+    // Fetch category by ID using Apollo Client's useQuery hook
+    const { loading, error, data } = useQuery( GET_CATEGORY_BY_ID, {
+        variables: { id },
+    } );
 
-    const [checkedStatus, setCheckedStatus] = useState({
+    const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,
-    });
+    } );
 
-    const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => {
-            const newState = {
-                ...prevState,
-                [type]: !prevState[type],
-            };
-            return newState;
-        });
+    const handleChecked = ( type: keyof typeof checkedStatus ) => {
+        setCheckedStatus( ( prevState ) => ( {
+            ...prevState,
+            [type]: !prevState[type],
+        } ) );
     };
+
+    // Display loading state
+    if ( loading ) return <p>Loading...</p>;
+    // Display error state
+    if ( error ) return <p>Error: {error.message}</p>;
+
+    const category = data?.category;
+
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            {cardgame && <ImageContainer img={cardgame.banner} />}
+            {category && <ImageContainer img={category.img.url} />}
             <CardGameMain>
                 <CardGameContainer>
                     <FiltersContainer>
@@ -44,7 +53,7 @@ export const CardGame = () => {
                         />
                     </FiltersContainer>
                     <CardGameListContainer>
-                        {cardgame && <Products products={cardgame?.products} />}
+                        {category && <Products products={category.products} />}
                     </CardGameListContainer>
                 </CardGameContainer>
             </CardGameMain>
@@ -63,7 +72,7 @@ const CardGameContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items; center;
+    align-items: center;
     margin-bottom: 2.5rem;
 `;
 
@@ -71,7 +80,7 @@ const CardGameMain = styled.main`
     flex-direction: row;
     background-color: white;
     justify-content: center;
-    align-items; center;
+    align-items: center;
     margin-bottom: 2.5rem;
 `;
 
@@ -89,20 +98,20 @@ const FiltersContainer = styled.div`
 `;
 
 const ImageContainer = styled.div<{ img?: any }>`
-    background-image: url(${(props) => props.img});
+    background-image: url(${( props ) => props.img});
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
-    ${mediaQueries('sm')`
+    ${mediaQueries( 'sm' )`
          height: calc(100vh - 1450px); 
     `};
-    ${mediaQueries('md')`
+    ${mediaQueries( 'md' )`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries('lg')`
+    ${mediaQueries( 'lg' )`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries('xl')`
+    ${mediaQueries( 'xl' )`
            height: calc(100vh - 500px);
    `};
 `;

@@ -45,6 +45,7 @@ import { ProtectedRoute } from './protected-routes';
 import { ResetPassword } from '../pages/reset-password';
 import { AdminProvider } from '../context/admin';
 import { CategoriesProvider } from '../context/categories';
+import { CardGamesProvider } from '../context/cardgames';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -61,7 +62,9 @@ export const AppRoutes = () => {
                             element={
                                 <AdminProvider>
                                     <CategoriesProvider>
-                                        <Admin />
+                                        <CardGamesProvider>
+                                            <Admin />
+                                        </CardGamesProvider>
                                     </CategoriesProvider>
                                 </AdminProvider>
                             }
@@ -132,7 +135,7 @@ export const AppRoutes = () => {
                 }
             />
 
-            <Route path="/shop/card-games" element={<CardGames />} />
+            <Route path="/shop/card-games" element={<CategoriesProvider><CardGames /></CategoriesProvider>} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
                 element={<CardGame />}

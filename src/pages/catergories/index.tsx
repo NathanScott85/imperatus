@@ -11,12 +11,12 @@ import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
 
-const getCategoriesPath = (category: any) => {
+const getCategoriesPath = ( category: any ) => {
     const categoryPath = category
-        ? generatePath('/shop/categories/category/:id/:name', {
-              id: category.id,
-              name: category.name.replace(/\s+/g, '-').toLowerCase(),
-          })
+        ? generatePath( '/shop/categories/category/:id/:name', {
+            id: category.id,
+            name: category.name.replace( /\s+/g, '-' ).toLowerCase(),
+        } )
         : '';
     return {
         categoryPath,
@@ -27,13 +27,13 @@ export const Categories = () => {
     const { categories, loading, error, fetchCategories } =
         useCategoriesContext();
 
-    useEffect(() => {
+    useEffect( () => {
         fetchCategories();
-    }, [fetchCategories]);
-    if (error) return <p>Error loading categories: {error.message}</p>;
+    }, [fetchCategories] );
+    if ( error ) return <p>Error loading categories: {error.message}</p>;
 
     const sortedCategories = categories
-        ? [...categories].sort((a, b) => a.name.localeCompare(b.name))
+        ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) )
         : [];
 
     return (
@@ -65,9 +65,9 @@ export const Categories = () => {
                             <h1>Categories</h1>
                             <FancyContainer variant="filters" size="filters">
                                 <CategoriesFilter>
-                                    {sortedCategories.map((category) => {
+                                    {sortedCategories.map( ( category ) => {
                                         const { categoryPath } =
-                                            getCategoriesPath(category);
+                                            getCategoriesPath( category );
                                         return (
                                             <CatergoriesWrapper
                                                 key={category.id}
@@ -77,14 +77,14 @@ export const Categories = () => {
                                                 </StyledLink>
                                             </CatergoriesWrapper>
                                         );
-                                    })}
+                                    } )}
                                 </CategoriesFilter>
                             </FancyContainer>
                         </CategoriesFilterContainer>
                         <CategoriesListContainer>
-                            {sortedCategories.map((category) => {
+                            {sortedCategories.map( ( category ) => {
                                 const { categoryPath } =
-                                    getCategoriesPath(category);
+                                    getCategoriesPath( category );
 
                                 return (
                                     <Link to={categoryPath} key={category.id}>
@@ -99,7 +99,7 @@ export const Categories = () => {
                                         </CategoryItem>
                                     </Link>
                                 );
-                            })}
+                            } )}
                         </CategoriesListContainer>
                     </CategoriesContainer>
                 )}
@@ -135,7 +135,7 @@ const NoProductsMessage = styled.div`
     }
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled( Link )`
     font-family: Cinzel;
     font-size: 18px;
     font-weight: 500;
@@ -181,7 +181,7 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CategoriesMain = styled(MainContainer)`
+const CategoriesMain = styled( MainContainer )`
     flex-direction: column;
 `;
 
@@ -222,10 +222,10 @@ const CategoriesListContainer = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding: 2rem;
-    ${mediaQueries('sm')`
+    ${mediaQueries( 'sm' )`
         grid-template-columns: repeat(2, 1fr);
     `};
-    ${mediaQueries('xl')`
+    ${mediaQueries( 'xl' )`
         grid-template-columns: repeat(3, 1fr);
     `};
     p {

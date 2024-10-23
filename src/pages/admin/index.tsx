@@ -17,12 +17,14 @@ import { Discount } from './discount';
 import { AdminCategories } from './categories';
 import { AdminCarousel } from './carousel';
 import { AddCarousel } from './carousel/add-carousel';
+import { AddCardGame } from './cardgames/add-cardgame'; // Add this import
+import { AdminCardGames } from './cardgames'; // Add this import
 
 export const Admin = () => {
-    const [selectedComponent, setSelectedComponent] = useState('Overview');
+    const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
 
     const renderComponent = () => {
-        switch (selectedComponent) {
+        switch ( selectedComponent ) {
             case 'Overview':
                 return <Overview />;
             case 'Analytics':
@@ -49,6 +51,10 @@ export const Admin = () => {
                 return <Customers />;
             case 'Settings':
                 return <Settings />;
+            case 'AddCardGame': // New case for adding card games
+                return <AddCardGame />;
+            case 'AdminCardGames': // New case for managing card games
+                return <AdminCardGames />;
             default:
                 return <Overview />;
         }
