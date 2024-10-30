@@ -12,7 +12,6 @@ import { useCardGamesContext } from '../../../context/cardgames';
 export const CardGame = () => {
     const { id } = useParams();
     const { fetchCardGameById, currentCardGame, cardGameLoading, cardGameError } = useCardGamesContext();
-    console.log( currentCardGame, 'currentCardGame' )
     const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,

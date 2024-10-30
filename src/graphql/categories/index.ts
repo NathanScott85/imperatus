@@ -6,6 +6,30 @@ export const GET_CATEGORIES = gql`
         id
         name
         description
+        products {
+            id
+            name
+            price
+            rrp
+            description
+            preorder
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
+            stock {
+                id
+                amount
+                sold
+                instock
+                soldout
+                preorder
+            }
+        }
         img {
             id
             url
