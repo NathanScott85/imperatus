@@ -5,139 +5,172 @@ import { useCategoriesContext } from '../../../../context/categories';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { ChevronUp } from '../../../../components/svg/chevron-up';
-import { Info } from '../../../../components/svg'; // Adjusted to match the correct path
 
 export const AddProduct = () => {
-    const [addProduct, setAddProduct] = useState({
+    const [addProduct, setAddProduct] = useState( {
         productName: '',
+        productTypeId: null as number | null,
         description: '',
-        type: '',
         category: '',
         price: '',
-        stockAmount: '',
-        preorder: false,
+        stock: {
+            amount: 0,
+            sold: 0,
+            instock: 'In Stock',
+            soldout: 'Sold Out',
+            preorder: false,
+        },
         rrp: '',
         selectedFile: null as File | null,
-    });
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    } );
+
+    const [previewUrl, setPreviewUrl] = useState<string | null>( null );
+    const [error, setError] = useState( '' );
+    const [success, setSuccess] = useState( '' );
+    const [isButtonDisabled, setIsButtonDisabled] = useState( false );
+    const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState( false );
+    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState( false );
 
     const { categories, fetchCategories } = useCategoriesContext();
-    const { createProduct } = useAdminContext();
+    const { productTypes, fetchProductTypes, createProduct } = useAdminContext();
 
-    useEffect(() => {
+    useEffect( () => {
         fetchCategories();
-    }, [fetchCategories]);
+        fetchProductTypes();
+    }, [fetchCategories, fetchProductTypes] );
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>( null );
 
     const clearFileInput = () => {
-        if (fileInputRef.current) {
+        if ( fileInputRef.current ) {
             fileInputRef.current.value = '';
         }
-        setAddProduct({ ...addProduct, selectedFile: null });
-        setPreviewUrl(null);
+        setAddProduct( { ...addProduct, selectedFile: null } );
+        setPreviewUrl( null );
     };
 
-    const handleInputChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
+    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
         const { id, value, type } = e.target;
-        if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
-            setAddProduct({ ...addProduct, [id]: e.target.checked });
+
+        if ( id.startsWith( 'stock.' ) ) {
+            const stockKey = id.split( '.' )[1];
+            setAddProduct( prev => ( {
+                ...prev,
+                stock: {
+                    ...prev.stock,
+                    [stockKey]: type === 'checkbox' ? ( e.target as HTMLInputElement ).checked : value,
+                },
+            } ) );
         } else {
-            setAddProduct({ ...addProduct, [id]: value });
+            if ( type === 'checkbox' && e.target instanceof HTMLInputElement ) {
+                setAddProduct( { ...addProduct, [id]: e.target.checked } );
+            } else {
+                setAddProduct( { ...addProduct, [id]: value } );
+            }
         }
-        setIsButtonDisabled(false);
+        setIsButtonDisabled( false );
     };
 
-    const handleCategoryChange = (catId: string) => {
-        setAddProduct({ ...addProduct, category: catId });
-        setIsDropdownOpen(false);
+    const handleCategoryChange = ( catId: string ) => {
+        setAddProduct( { ...addProduct, category: catId } );
+        setIsCategoryDropdownOpen( false );
     };
 
-    const handleDropdownToggle = () => {
-        setIsDropdownOpen((prev) => !prev);
+    const handleTypeChange = ( typeId: number ) => {
+        setAddProduct( prev => ( {
+            ...prev,
+            productTypeId: typeId
+        } ) );
+        setIsTypeDropdownOpen( false );
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
+    const handleCategoryDropdownToggle = () => {
+        setIsCategoryDropdownOpen( prev => !prev );
+        setIsTypeDropdownOpen( false );
+    };
+
+    const handleTypeDropdownToggle = () => {
+        setIsTypeDropdownOpen( prev => !prev );
+        setIsCategoryDropdownOpen( false );
+    };
+
+    const handleImageChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
+        if ( e.target.files && e.target.files.length > 0 ) {
             const file = e.target.files[0];
-            setAddProduct({ ...addProduct, selectedFile: file });
-            const objectUrl = URL.createObjectURL(file);
-            setPreviewUrl(objectUrl);
+            setAddProduct( { ...addProduct, selectedFile: file } );
+            const objectUrl = URL.createObjectURL( file );
+            setPreviewUrl( objectUrl );
         }
-        setIsButtonDisabled(false);
+        setIsButtonDisabled( false );
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async ( e: React.FormEvent ) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
-        setIsButtonDisabled(true);
+        setError( '' );
+        setSuccess( '' );
+        setIsButtonDisabled( true );
 
         const {
             productName,
+            productTypeId,
             description,
-            type,
-            category, // This is likely coming as a string
+            category,
             price,
-            stockAmount,
+            stock,
             selectedFile,
-            preorder,
             rrp,
         } = addProduct;
-
-        if (
-            !productName ||
-            !type ||
-            !category || // Make sure this is parsed to an integer
-            !price ||
-            !stockAmount ||
-            !selectedFile
-        ) {
-            setError('All fields are required, including an image.');
-            setIsButtonDisabled(false);
+        if ( !productName || !productTypeId || !category || !price || !selectedFile ) {
+            setError( 'All fields are required, including an image.' );
+            setIsButtonDisabled( false );
             return;
         }
 
         try {
-            const { success, message } = await createProduct({
+            const { success, message } = await createProduct( {
                 name: productName,
-                price: parseFloat(price),
-                type,
-                description,
+                price: parseFloat( price ),
+                productTypeId: Number( productTypeId ),
                 img: selectedFile,
-                categoryId: parseInt(category), // Convert category to Int
-                stockAmount: parseInt(stockAmount),
-                preorder,
-                rrp: rrp ? parseFloat(rrp) : undefined,
-            });
+                categoryId: parseInt( category ),
+                stock: {
+                    amount: Number( stock.amount ),
+                    sold: 0,
+                    instock: stock.instock,
+                    soldout: stock.soldout,
+                    preorder: stock.preorder,
+                },
+                preorder: stock.preorder,
+                description,
+                rrp: rrp ? parseFloat( rrp ) : undefined,
+            } );
 
-            if (success) {
-                setSuccess(message);
+            if ( success ) {
+                setSuccess( message );
                 clearFileInput();
-                setAddProduct({
+                setAddProduct( {
                     productName: '',
                     description: '',
-                    type: '',
+                    productTypeId: 0,
                     category: '',
                     price: '',
-                    stockAmount: '',
-                    preorder: false,
+                    stock: {
+                        amount: 0,
+                        sold: 0,
+                        instock: 'In Stock',
+                        soldout: 'Sold Out',
+                        preorder: false,
+                    },
                     rrp: '',
                     selectedFile: null,
-                });
+                } );
             } else {
-                setError(message);
+                setError( message );
             }
-        } catch (err) {
-            setError('An unexpected error occurred.');
+        } catch ( err ) {
+            setError( 'An unexpected error occurred.' );
         } finally {
-            setIsButtonDisabled(false);
+            setIsButtonDisabled( false );
         }
     };
 
@@ -169,56 +202,58 @@ export const AddProduct = () => {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="type">
-                                Type
-                                <InfoTooltip>
-                                    <Info />
-                                    <TooltipText>
-                                        Types: Booster, Binders, etc.
-                                    </TooltipText>
-                                </InfoTooltip>
-                            </Label>
-                            <Input
-                                variant="secondary"
-                                type="text"
-                                id="type"
-                                value={addProduct.type}
-                                onChange={handleInputChange}
-                                required
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="category">Category</Label>
-                            <Select onClick={handleDropdownToggle}>
+                            <Label htmlFor="type">Type</Label>
+                            <Select onClick={handleTypeDropdownToggle}>
                                 <DropdownHeader>
-                                    {addProduct.category
-                                        ? categories.find(
-                                              (cat: any) =>
-                                                  cat.id ===
-                                                  addProduct.category,
-                                          )?.name
-                                        : 'Select Category'}
-                                    <ChevronContainer
-                                        isDropdownOpen={isDropdownOpen}
-                                    >
+                                    {addProduct.productTypeId
+                                        ? productTypes?.find( pt => pt.id === addProduct.productTypeId )?.name
+                                        : 'Select Product Type'}
+                                    <ChevronContainer isDropdownOpen={isTypeDropdownOpen}>
                                         <ChevronUp stroke="#C79D0A" />
                                     </ChevronContainer>
                                 </DropdownHeader>
-                                {isDropdownOpen && (
-                                    <DropdownList>
-                                        {categories.map((cat: any) => (
+                                {isTypeDropdownOpen && (
+                                    <DropdownList onClick={( e ) => e.stopPropagation()}>
+                                        {productTypes?.map( pt => (
                                             <DropDownOption
-                                                key={cat.id}
-                                                onClick={(e) => {
+                                                key={pt.id}
+                                                onClick={( e ) => {
                                                     e.stopPropagation();
-                                                    handleCategoryChange(
-                                                        cat.id,
-                                                    );
+                                                    handleTypeChange( pt.id );
                                                 }}
                                             >
-                                                {cat.name}
+                                                {pt.name}
                                             </DropDownOption>
-                                        ))}
+                                        ) )}
+                                    </DropdownList>
+                                )}
+                            </Select>
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label htmlFor="category">Category</Label>
+                            <Select onClick={handleCategoryDropdownToggle}>
+                                <DropdownHeader>
+                                    {addProduct.category
+                                        ? categories.find( ( category: any ) => category.id.toString() === addProduct.category )?.name
+                                        : 'Select Category'}
+                                    <ChevronContainer isDropdownOpen={isCategoryDropdownOpen}>
+                                        <ChevronUp stroke="#C79D0A" />
+                                    </ChevronContainer>
+                                </DropdownHeader>
+                                {isCategoryDropdownOpen && (
+                                    <DropdownList>
+                                        {categories.map( ( category: any ) => (
+                                            <DropDownOption
+                                                key={category.id}
+                                                onClick={( e ) => {
+                                                    e.stopPropagation();
+                                                    handleCategoryChange( category.id.toString() );
+                                                }}
+                                            >
+                                                {category.name}
+                                            </DropDownOption>
+                                        ) )}
                                     </DropdownList>
                                 )}
                             </Select>
@@ -229,10 +264,10 @@ export const AddProduct = () => {
                                 type="submit"
                                 disabled={
                                     !addProduct.productName ||
-                                    !addProduct.type ||
+                                    !addProduct.productTypeId ||
                                     !addProduct.category ||
                                     !addProduct.price ||
-                                    !addProduct.stockAmount ||
+                                    !addProduct.stock.amount ||
                                     isButtonDisabled
                                 }
                             >
@@ -253,23 +288,23 @@ export const AddProduct = () => {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="stockAmount">Stock Amount</Label>
+                            <Label htmlFor="stock.amount">Stock Amount</Label>
                             <Input
                                 variant="secondary"
                                 type="number"
-                                id="stockAmount"
-                                value={addProduct.stockAmount}
+                                id="stock.amount"
+                                value={addProduct.stock.amount}
                                 onChange={handleInputChange}
                                 required
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="preorder">Preorder</Label>
+                            <Label htmlFor="stock.preorder">Preorder</Label>
                             <Input
                                 variant="secondary"
                                 type="checkbox"
-                                id="preorder"
-                                checked={addProduct.preorder}
+                                id="stock.preorder"
+                                checked={addProduct.stock.preorder}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
@@ -429,38 +464,8 @@ const DropDownOption = styled.li`
 
 const ChevronContainer = styled.div<{ isDropdownOpen: boolean }>`
     transition: transform 0.3s ease;
-    transform: ${({ isDropdownOpen }) =>
+    transform: ${( { isDropdownOpen } ) =>
         isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
-`;
-
-const InfoTooltip = styled.div`
-    display: inline-block;
-    position: relative;
-    margin-left: 0.5rem;
-    cursor: pointer;
-`;
-
-const TooltipText = styled.span`
-    visibility: hidden;
-    width: 160px;
-    background-color: #2a1f51;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 0.5rem 0;
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    border: 1px solid #ac8fff80;
-    left: 105%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: opacity 0.3s;
-
-    ${InfoTooltip}:hover & {
-        visibility: visible;
-        opacity: 1;
-    }
 `;
 
 const ImagePreviewContainer = styled.div`

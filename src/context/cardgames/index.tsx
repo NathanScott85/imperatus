@@ -1,31 +1,19 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import {
-    GET_CARDGAMES,
+    GET_CARDGAMES, // Renamed to better reflect usage
     GET_CARDGAME_BY_ID,
     CREATE_CARDGAME,
     UPDATE_CARDGAME,
     DELETE_CARDGAME,
 } from '../../graphql/cardgames';
 
-interface StockInput {
-    amount: number;
-    sold: number;
-    instock: string;
-    soldout: string;
-    preorder: string;
-}
-
 interface CardGame {
     id: string;
     name: string;
-    price: number;
     description: string;
     categoryId: number;
-    stock: StockInput;
     img: File | null;
-    preorder: boolean;
-    rrp: number;
 }
 
 interface CardGamesContextType {
@@ -52,13 +40,9 @@ interface CardGamesContextType {
 interface CardGameInput {
     id?: string;
     name: string;
-    price: number;
     description: string;
     img: File | null;
     categoryId: number;
-    stock: StockInput;
-    preorder: boolean;
-    rrp: number;
 }
 
 const CardGamesContext = createContext<CardGamesContextType | null>( null );
@@ -73,13 +57,13 @@ export const CardGamesProvider = ( { children }: { children: ReactNode } ) => {
         variables: { page: currentPage },
         fetchPolicy: 'cache-and-network',
         onCompleted: ( data ) => {
-            setCardGames( data.cardGames );
+            setCardGames( data.getAllCardGames );
             setTotalPages( data.totalPages || 1 ); // Assuming your backend provides totalPages
         },
     } );
 
     const [fetchCardGameByIdLazyQuery, { loading: cardGameLoading, error: cardGameError }] = useLazyQuery( GET_CARDGAME_BY_ID, {
-        onCompleted: ( data ) => setCurrentCardGame( data.cardGame ),
+        onCompleted: ( data ) => setCurrentCardGame( data.getCardGameById ),
         fetchPolicy: 'cache-and-network',
     } );
 
@@ -174,4 +158,10 @@ export const CardGamesProvider = ( { children }: { children: ReactNode } ) => {
     );
 };
 
-export const useCardGamesContext = () => useContext( CardGamesContext );
+export const useCardGamesContext = () => {
+    const context = useContext( CardGamesContext );
+    if ( !context ) {
+        throw new Error( "useCardGamesContext must be used within a CardGamesProvider" );
+    }
+    return context;
+};

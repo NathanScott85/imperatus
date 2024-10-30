@@ -9,7 +9,7 @@ import { Footer } from '../../components/footer';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
-import { useCategoriesContext } from '../../context/categories';
+import { useCardGamesContext } from '../../context/cardgames';
 
 const getCardGamePath = ( cardgame: any ) => {
     const cardgamePath = cardgame
@@ -22,20 +22,14 @@ const getCardGamePath = ( cardgame: any ) => {
 };
 
 export const CardGames = () => {
-    const { fetchCategories, categories, loading, error } = useCategoriesContext();
+    const { fetchCardGames, cardGames, loading, error } = useCardGamesContext();
 
     useEffect( () => {
-        fetchCategories();
-    }, [fetchCategories] );
+        fetchCardGames();
+    }, [fetchCardGames] );
 
     if ( error ) return <p>Error loading card games: {error.message}</p>;
 
-    const cardGames = categories
-        ? categories.flatMap( ( category: any ) =>
-            category.products
-        )
-        : [];
-    console.log( cardGames, 'cardGames' );
     const sortedCardGames = cardGames.sort( ( a: any, b: any ) => a.name.localeCompare( b.name ) );
 
     return (
@@ -107,6 +101,8 @@ export const CardGames = () => {
         </>
     );
 };
+
+// Styled Components
 
 const NoProductsMessage = styled.div`
     display: flex;

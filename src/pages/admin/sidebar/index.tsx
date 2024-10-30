@@ -81,6 +81,14 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminProducts' )}>
                             MANAGE PRODUCTS
                         </SubMenuItem>
+                        {/* New section for Product Types */}
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddProductType' )}>
+                            ADD PRODUCT TYPE
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminProductTypes' )}>
+                            MANAGE PRODUCT TYPES
+                        </SubMenuItem>
+
                     </SubMenu>
                 )}
 

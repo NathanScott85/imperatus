@@ -4,28 +4,28 @@ import { mediaQueries } from '../../styled/breakpoints';
 
 interface InputProps {
     label?: string;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    onClick?: ( event: React.MouseEvent<HTMLButtonElement> ) => void;
     size?: 'small' | 'medium';
     type?: string | number;
     placeholder?: string;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: ( event: React.ChangeEvent<HTMLInputElement> ) => void;
     variant?:
-        | 'search'
-        | 'primary'
-        | 'text'
-        | 'none'
-        | 'secondary'
-        | 'birthday'
-        | 'description'
-        | 'upload';
+    | 'search'
+    | 'primary'
+    | 'text'
+    | 'none'
+    | 'secondary'
+    | 'birthday'
+    | 'description'
+    | 'upload';
     className?: string;
     name?: string;
-    value?: string | undefined;
+    value?: number | undefined | string;
     radio?: boolean;
     checked?: boolean;
     id?: string;
     required?: boolean;
-    onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+    onKeyDown?: ( event: KeyboardEvent<HTMLInputElement> ) => void;
 }
 
 export const Input = forwardRef<
@@ -56,7 +56,7 @@ export const Input = forwardRef<
                     <Wrapper>
                         <ImageUploadWrapper>
                             <StyledInput
-                                ref={ref as React.Ref<HTMLInputElement>} // Explicitly cast ref type
+                                ref={ref as React.Ref<HTMLInputElement>}
                                 type="file"
                                 name={name}
                                 className={className}
@@ -135,7 +135,7 @@ const UploadButton = styled.button`
 `;
 
 const StyledInput = styled.input<InputProps>`
-    ${({ radio }) =>
+    ${( { radio } ) =>
         radio &&
         css`
             position: absolute;
@@ -162,7 +162,7 @@ const StyledInput = styled.input<InputProps>`
     }
     z-index: 50;
 
-    ${({ variant }) =>
+    ${( { variant } ) =>
         variant === 'search' &&
         css`
             margin-right: 0.5rem;
@@ -187,20 +187,20 @@ const StyledInput = styled.input<InputProps>`
                 color: transparent;
             }
 
-            ${mediaQueries('md')`
+            ${mediaQueries( 'md' )`
                 width: 280px;
             `}
 
-            ${mediaQueries('lg')`
+            ${mediaQueries( 'lg' )`
                 width: 320px;
             `}
 
-            ${mediaQueries('xl')`
+            ${mediaQueries( 'xl' )`
                 width: 550px;
             `}
         `}
 
-    ${({ variant }) =>
+    ${( { variant } ) =>
         variant === 'primary' &&
         css`
             margin-right: 0.5rem;
@@ -244,7 +244,7 @@ const StyledInput = styled.input<InputProps>`
             text-indent: 5px;
         `}
 
-    ${({ variant }) =>
+    ${( { variant } ) =>
         variant === 'birthday' &&
         css`
             margin-right: 0.5rem;
@@ -272,7 +272,7 @@ const StyledInput = styled.input<InputProps>`
             width: 90px;
         `}
 
-    ${({ variant }) =>
+    ${( { variant } ) =>
         variant === 'secondary' &&
         css`
             margin-right: 0.5rem;
@@ -300,7 +300,7 @@ const StyledInput = styled.input<InputProps>`
             width: 325px;
         `}
 
-    ${({ variant }) =>
+    ${( { variant } ) =>
         variant === 'upload' &&
         css`
             display: none;

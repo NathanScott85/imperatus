@@ -135,7 +135,7 @@ export const AppRoutes = () => {
                 }
             />
 
-            <Route path="/shop/card-games" element={<CategoriesProvider><CardGames /></CategoriesProvider>} />
+            <Route path="/shop/card-games" element={<CardGamesProvider><CardGames /></CardGamesProvider>} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
                 element={<CardGame />}

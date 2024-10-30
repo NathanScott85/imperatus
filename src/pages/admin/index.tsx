@@ -17,8 +17,10 @@ import { Discount } from './discount';
 import { AdminCategories } from './categories';
 import { AdminCarousel } from './carousel';
 import { AddCarousel } from './carousel/add-carousel';
-import { AddCardGame } from './cardgames/add-cardgame'; // Add this import
-import { AdminCardGames } from './cardgames'; // Add this import
+import { AddCardGame } from './cardgames/add-cardgame';
+import { AdminCardGames } from './cardgames';
+import { AdminProductTypes } from './products/product-type'; // Import your new component
+import { AddProductType } from './products/add-type';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
@@ -51,10 +53,14 @@ export const Admin = () => {
                 return <Customers />;
             case 'Settings':
                 return <Settings />;
-            case 'AddCardGame': // New case for adding card games
+            case 'AddCardGame':
                 return <AddCardGame />;
-            case 'AdminCardGames': // New case for managing card games
+            case 'AdminCardGames':
                 return <AdminCardGames />;
+            case 'AddProductType':
+                return <AddProductType />;
+            case 'AdminProductTypes':
+                return <AdminProductTypes />;
             default:
                 return <Overview />;
         }

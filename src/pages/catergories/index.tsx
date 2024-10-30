@@ -26,7 +26,7 @@ const getCategoriesPath = ( category: any ) => {
 export const Categories = () => {
     const { categories, loading, error, fetchCategories } =
         useCategoriesContext();
-
+    console.log( categories, 'categories' );
     useEffect( () => {
         fetchCategories();
     }, [fetchCategories] );
