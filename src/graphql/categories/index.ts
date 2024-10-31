@@ -1,46 +1,52 @@
 import { gql } from '@apollo/client';
 
 export const GET_CATEGORIES = gql`
-  query GetAllCategories {
-    getAllCategories {
+  query GetAllCategories($page: Int, $limit: Int) {
+    getAllCategories(page: $page, limit: $limit) {
+      categories {
         id
         name
         description
         products {
-            id
-            name
-            price
-            rrp
-            description
-            preorder
-            img {
-                id
-                url
-                key
-                fileName
-                contentType
-                createdAt
-            }
-            stock {
-                id
-                amount
-                sold
-                instock
-                soldout
-                preorder
-            }
-        }
-        img {
+          id
+          name
+          price
+          rrp
+          description
+          preorder
+          img {
             id
             url
             key
             fileName
             contentType
             createdAt
+          }
+          stock {
+            id
+            amount
+            sold
+            instock
+            soldout
+            preorder
+          }
         }
+        img {
+          id
+          url
+          key
+          fileName
+          contentType
+          createdAt
+        }
+      }
+      totalCount
+      totalPages
+      currentPage
     }
-}
+  }
 `;
+
 
 export const GET_CATEGORY_BY_ID = gql`
   query GetCategoryById ($id: ID!) {

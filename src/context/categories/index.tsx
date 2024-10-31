@@ -7,8 +7,6 @@ import {
     DELETE_CATEGORY,
 } from '../../graphql/categories';
 
-// Define TypeScript interfaces for Category and Context State
-
 interface File {
     id: string;
     url: string;
@@ -25,11 +23,12 @@ interface Category {
     img?: File | null;
 }
 
-interface Categories {
-    id: string;
+interface CategoriesResponse {
     categories: Category[];
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
 }
-
 
 interface UpdateCategoryInput {
     id: string;
@@ -41,12 +40,19 @@ interface UpdateCategoryInput {
 const CategoriesContext = createContext<any | null>( null );
 
 export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
-    const [categories, setCategories] = useState<Categories[]>( [] );
+    const [categories, setCategories] = useState<Category[]>( [] );
     const [currentCategory, setCurrentCategory] = useState<Category | null>( null );
+    const [page, setPage] = useState( 1 );
+    const [limit, setLimit] = useState( 9 );
+    const [totalCount, setTotalCount] = useState( 0 );
 
     const [fetchCategories, { loading, error }] = useLazyQuery( GET_CATEGORIES, {
         fetchPolicy: 'cache-and-network',
-        onCompleted: ( data ) => setCategories( data.getAllCategories ),
+        variables: { page, limit },
+        onCompleted: ( data ) => {
+            setCategories( data.getAllCategories.categories );
+            setTotalCount( data.getAllCategories.totalCount );
+        },
     } );
 
     const [
@@ -69,7 +75,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
 
     useEffect( () => {
         fetchCategories();
-    }, [fetchCategories] );
+    }, [fetchCategories, page, limit] );
 
     const updateCategory = async ( { id, name, description, img }: UpdateCategoryInput ) => {
         try {
@@ -110,6 +116,19 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
         }
     };
 
+    // Methods for pagination
+    const nextPage = () => {
+        if ( page < Math.ceil( totalCount / limit ) ) {
+            setPage( ( prevPage ) => prevPage + 1 );
+        }
+    };
+
+    const previousPage = () => {
+        if ( page > 1 ) {
+            setPage( ( prevPage ) => prevPage - 1 );
+        }
+    };
+
     return (
         <CategoriesContext.Provider
             value={{
@@ -128,6 +147,11 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 deleteloading,
                 deleteError,
                 categorySuccess: !!updatedCategoryData,
+                page,
+                limit,
+                totalCount,
+                nextPage,
+                previousPage,
             }}
         >
             {children}

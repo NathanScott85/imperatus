@@ -24,13 +24,23 @@ const getCategoriesPath = ( category: any ) => {
 };
 
 export const Categories = () => {
-    const { categories, loading, error, fetchCategories } =
-        useCategoriesContext();
-    console.log( categories, 'categories' );
+    const {
+        categories,
+        loading,
+        error,
+        fetchCategories,
+        page,
+        nextPage,
+        previousPage,
+        totalCount,
+        limit
+    } = useCategoriesContext();
+
     useEffect( () => {
         fetchCategories();
-    }, [fetchCategories] );
-    if ( error ) return <p>Error loading categories: {error.message}</p>;
+    }, [fetchCategories, page, limit] ); // Include page in dependency
+
+    if ( error ) return <ErrorMessage>Error loading categories: {error.message}</ErrorMessage>;
 
     const sortedCategories = categories
         ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) )
@@ -55,52 +65,60 @@ export const Categories = () => {
                     <CategoriesContainer>
                         <FancyContainer>
                             <NoProductsMessage>
-                                <p> No categories available at the moment.</p>
+                                <p>No categories available at the moment.</p>
                             </NoProductsMessage>
                         </FancyContainer>
                     </CategoriesContainer>
                 ) : (
                     <CategoriesContainer>
-                        <CategoriesFilterContainer>
-                            <h1>Categories</h1>
-                            <FancyContainer variant="filters" size="filters">
-                                <CategoriesFilter>
-                                    {sortedCategories.map( ( category ) => {
-                                        const { categoryPath } =
-                                            getCategoriesPath( category );
-                                        return (
-                                            <CatergoriesWrapper
-                                                key={category.id}
-                                            >
-                                                <StyledLink to={categoryPath}>
-                                                    {category.name}
-                                                </StyledLink>
-                                            </CatergoriesWrapper>
-                                        );
-                                    } )}
-                                </CategoriesFilter>
-                            </FancyContainer>
-                        </CategoriesFilterContainer>
-                        <CategoriesListContainer>
-                            {sortedCategories.map( ( category ) => {
-                                const { categoryPath } =
-                                    getCategoriesPath( category );
-
-                                return (
-                                    <Link to={categoryPath} key={category.id}>
-                                        <CategoryItem>
-                                            <ImageWrapper>
-                                                <CategoryImage
-                                                    src={category.img?.url}
-                                                    alt={category?.name}
-                                                />
-                                            </ImageWrapper>
-                                            <p>{category?.name}</p>
-                                        </CategoryItem>
-                                    </Link>
-                                );
-                            } )}
-                        </CategoriesListContainer>
+                        <FiltersAndCategoriesContainer>
+                            <CategoriesFilterContainer>
+                                <h1>Categories</h1>
+                                <FancyContainer variant="filters" size="filters">
+                                    <CategoriesFilter>
+                                        {sortedCategories.map( ( category ) => {
+                                            const { categoryPath } = getCategoriesPath( category );
+                                            return (
+                                                <CatergoriesWrapper key={category.id}>
+                                                    <StyledLink to={categoryPath}>
+                                                        {category.name}
+                                                    </StyledLink>
+                                                </CatergoriesWrapper>
+                                            );
+                                        } )}
+                                    </CategoriesFilter>
+                                </FancyContainer>
+                            </CategoriesFilterContainer>
+                            <CategoriesListContainer>
+                                {sortedCategories.map( ( category ) => {
+                                    const { categoryPath } = getCategoriesPath( category );
+                                    return (
+                                        <Link to={categoryPath} key={category.id}>
+                                            <CategoryItem>
+                                                <ImageWrapper>
+                                                    <CategoryImage
+                                                        src={category.img?.url}
+                                                        alt={category?.name}
+                                                    />
+                                                </ImageWrapper>
+                                                <p>{category?.name}</p>
+                                            </CategoryItem>
+                                        </Link>
+                                    );
+                                } )}
+                            </CategoriesListContainer>
+                        </FiltersAndCategoriesContainer>
+                        <PaginationContainer>
+                            <PaginationControls>
+                                <PageButton onClick={previousPage} disabled={page === 1}>
+                                    Previous
+                                </PageButton>
+                                <span>Page {page} of {Math.ceil( totalCount / limit )}</span>
+                                <PageButton onClick={nextPage} disabled={page >= Math.ceil( totalCount / limit )}>
+                                    Next
+                                </PageButton>
+                            </PaginationControls>
+                        </PaginationContainer>
                     </CategoriesContainer>
                 )}
                 <Reviews />
@@ -109,6 +127,48 @@ export const Categories = () => {
         </>
     );
 };
+
+
+const FiltersAndCategoriesContainer = styled.div`
+    display: flex;
+    margin-bottom: 1rem;
+`;
+
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+        align-items: center;
+    padding: 1rem;
+    margin-left: 26rem;
+`;
+
+const PaginationControls = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+    
+    span {
+        color: white;
+        text-align: center;
+        margin: 0 1rem;
+    }
+`;
+
+const PageButton = styled.button<{ disabled?: boolean }>`
+    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    &:hover {
+        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+    }
+`;
 
 const NoProductsMessage = styled.div`
     display: flex;
@@ -153,8 +213,9 @@ const StyledLink = styled( Link )`
 
 const CategoriesContainer = styled.section`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-bottom: 2.5rem;
+    margin-right: 10.5rem;
 `;
 
 const ImageWrapper = styled.div`
@@ -253,3 +314,13 @@ const CategoryItem = styled.div`
         margin: 1rem;
     }
 `;
+
+const ErrorMessage = styled.span`
+    color: #fff;
+    font-family: Cinzel;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: bold;
+`;
+
+export default Categories;
