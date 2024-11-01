@@ -11,120 +11,119 @@ import {
     SignOut,
     Percent,
     Carousel,
+    CardGameIcon,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../../context';
 import { useAdminContext } from '../../../context/admin';
 
-export const Sidebar = ({ setSelectedComponent }: any) => {
+export const Sidebar = ( { setSelectedComponent }: any ) => {
     const { logout } = useAppContext();
     const { resetPagination } = useAdminContext();
-    const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
+    const [expandedMenu, setExpandedMenu] = useState<string | null>( null );
 
-    const toggleMenu = (menu: string, defaultComponent?: string) => {
-        setSelectedComponent(defaultComponent || menu);
-        setExpandedMenu((prev) => (prev === menu ? null : menu));
+    const toggleMenu = ( menu: string, defaultComponent?: string ) => {
+        setSelectedComponent( defaultComponent || menu );
+        setExpandedMenu( ( prev ) => ( prev === menu ? null : menu ) );
         resetPagination();
     };
 
     return (
         <SidebarAside>
             <Menu>
-                <MenuItem onClick={() => toggleMenu('Overview')}>
+                <MenuItem onClick={() => toggleMenu( 'Overview' )}>
                     <HomeIcon />
                     OVERVIEW
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu('Analytics')}>
+                <MenuItem onClick={() => toggleMenu( 'Analytics' )}>
                     <Pie />
                     ANALYTICS
                 </MenuItem>
                 {expandedMenu === 'Analytics' && (
                     <SubMenu>
-                        <SubMenuItem
-                            onClick={() => setSelectedComponent('Temp')}
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'Temp' )}>
                             Temp
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu('Orders')}>
+                <MenuItem onClick={() => toggleMenu( 'Orders' )}>
                     <Cart />
                     ORDERS
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu('Discount')}>
+                <MenuItem onClick={() => toggleMenu( 'Discount' )}>
                     <Percent />
                     DISCOUNT
                 </MenuItem>
-                <MenuItem
-                    onClick={() => toggleMenu('Categories', 'AddCategory')}
-                >
+                <MenuItem onClick={() => toggleMenu( 'Categories', 'AddCategory' )}>
                     <SquareShapes rotate={90} />
                     CATEGORIES
                 </MenuItem>
                 {expandedMenu === 'Categories' && (
                     <SubMenu>
-                        <SubMenuItem
-                            onClick={() => setSelectedComponent('AddCategory')}
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCategory' )}>
                             ADD CATEGORY
                         </SubMenuItem>
-                        <SubMenuItem
-                            onClick={() =>
-                                setSelectedComponent('AdminCategories')
-                            }
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCategories' )}>
                             MANAGE CATEGORIES
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu('Products', 'AddProduct')}>
+                <MenuItem onClick={() => toggleMenu( 'Products', 'AddProduct' )}>
                     <SquareShapes />
                     PRODUCTS
                 </MenuItem>
                 {expandedMenu === 'Products' && (
                     <SubMenu>
-                        <SubMenuItem
-                            onClick={() => setSelectedComponent('AddProduct')}
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddProduct' )}>
                             ADD NEW PRODUCT
                         </SubMenuItem>
-                        <SubMenuItem
-                            onClick={() =>
-                                setSelectedComponent('AdminProducts')
-                            }
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminProducts' )}>
                             MANAGE PRODUCTS
+                        </SubMenuItem>
+                        {/* New section for Product Types */}
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddProductType' )}>
+                            ADD PRODUCT TYPE
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminProductTypes' )}>
+                            MANAGE PRODUCT TYPES
+                        </SubMenuItem>
+
+                    </SubMenu>
+                )}
+
+                {/* New Section for Card Games */}
+                <MenuItem onClick={() => toggleMenu( 'CardGames', 'AddCardGame' )}>
+                    <CardGameIcon />
+                    CARD GAMES
+                </MenuItem>
+                {expandedMenu === 'CardGames' && (
+                    <SubMenu>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCardGame' )}>
+                            ADD CARD GAME
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCardGames' )}>
+                            MANAGE CARD GAMES
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem
-                    onClick={() => toggleMenu('Carousel', 'AdminCarousel')}
-                >
+
+                <MenuItem onClick={() => toggleMenu( 'Carousel', 'AdminCarousel' )}>
                     <Carousel />
                     CAROUSEL
                 </MenuItem>
                 {expandedMenu === 'Carousel' && (
                     <SubMenu>
-                        <SubMenuItem
-                            onClick={() => setSelectedComponent('AddCarousel')}
-                        >
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCarousel' )}>
                             ADD CAROUSEL PAGE
                         </SubMenuItem>
-                        {/* <SubMenuItem
-                            onClick={() =>
-                                setSelectedComponent('AdminCarousel')
-                            }
-                        >
-                            MANAGE CAROUSEL
-                        </SubMenuItem> */}
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu('Shipping')}>
+                <MenuItem onClick={() => toggleMenu( 'Shipping' )}>
                     <Van />
                     SHIPPING
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu('Customers')}>
+                <MenuItem onClick={() => toggleMenu( 'Customers' )}>
                     <UserIcon />
                     CUSTOMERS
                 </MenuItem>
@@ -132,7 +131,7 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
             <BottomContainer>
                 <AdminDivider />
                 <BottomMenu>
-                    <MenuItem onClick={() => toggleMenu('Settings')}>
+                    <MenuItem onClick={() => toggleMenu( 'Settings' )}>
                         <AdminIcon />
                         SETTINGS
                     </MenuItem>
@@ -148,7 +147,7 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
 
 // Same styled components as before...
 
-const StyledLink = styled(Link)`
+const StyledLink = styled( Link )`
     display: flex;
     align-items: center;
     color: white;

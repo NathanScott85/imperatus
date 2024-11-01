@@ -10,11 +10,11 @@ export interface ProductDetailProps {
     onBack: () => void;
 }
 
-export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
+export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
     const { updateProduct, deleteProduct } = useAdminContext();
 
     // Combined state management
-    const [updateProductData, setUpdateProductData] = useState({
+    const [updateProductData, setUpdateProductData] = useState( {
         name: product.name,
         description: product.description,
         price: product.price,
@@ -26,62 +26,62 @@ export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
         stockInstock: product.stock.instock === 'In Stock',
         stockSoldout: product.stock.soldout === 'Sold Out',
         selectedFile: null as File | null,
-    });
+    } );
 
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isUpdating, setIsUpdating] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [confirmationText, setConfirmationText] = useState('');
+    const [previewUrl, setPreviewUrl] = useState<string | null>( null );
+    const [error, setError] = useState( '' );
+    const [success, setSuccess] = useState( '' );
+    const [isUpdating, setIsUpdating] = useState( false );
+    const [isDeleting, setIsDeleting] = useState( false );
+    const [isModalVisible, setIsModalVisible] = useState( false );
+    const [confirmationText, setConfirmationText] = useState( '' );
 
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>( null );
 
-    useEffect(() => {
-        if (updateProductData.selectedFile) {
+    useEffect( () => {
+        if ( updateProductData.selectedFile ) {
             const objectUrl = URL.createObjectURL(
                 updateProductData.selectedFile,
             );
-            setPreviewUrl(objectUrl);
-            return () => URL.revokeObjectURL(objectUrl); // Cleanup
+            setPreviewUrl( objectUrl );
+            return () => URL.revokeObjectURL( objectUrl ); // Cleanup
         }
-    }, [updateProductData.selectedFile]);
+    }, [updateProductData.selectedFile] );
 
     // Unified input change handler
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const { id, value, type, checked } = e.target;
-        setUpdateProductData((prevState) => ({
+        setUpdateProductData( ( prevState ) => ( {
             ...prevState,
             [id]: type === 'checkbox' ? checked : value,
-        }));
+        } ) );
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const file = e.target?.files?.[0]; // Safely access the file with optional chaining
-        if (file) {
-            setUpdateProductData((prevState) => ({
+        if ( file ) {
+            setUpdateProductData( ( prevState ) => ( {
                 ...prevState,
                 selectedFile: file,
-            }));
+            } ) );
         }
     };
 
     const clearFileInput = () => {
-        if (fileInputRef.current) {
+        if ( fileInputRef.current ) {
             fileInputRef.current.value = '';
         }
-        setUpdateProductData((prevState) => ({
+        setUpdateProductData( ( prevState ) => ( {
             ...prevState,
             selectedFile: null,
-        }));
-        setPreviewUrl(null);
+        } ) );
+        setPreviewUrl( null );
     };
 
     const handleUpdate = async () => {
-        setError('');
-        setSuccess('');
-        setIsUpdating(true);
+        setError( '' );
+        setSuccess( '' );
+        setIsUpdating( true );
 
         const {
             name,
@@ -97,68 +97,68 @@ export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
             stockSoldout,
         } = updateProductData;
 
-        if (!name || !description || price == null || !type) {
-            setError('Name, description, price, and type are required.');
-            setIsUpdating(false);
+        if ( !name || !description || price == null || !type ) {
+            setError( 'Name, description, price, and type are required.' );
+            setIsUpdating( false );
             return;
         }
 
         try {
-            const categoryId = parseInt(product.category.id, 10); // Convert to number if necessary
+            const categoryId = parseInt( product.category.id, 10 ); // Convert to number if necessary
 
-            await updateProduct({
+            await updateProduct( {
                 id: product.id,
                 name,
                 description,
-                price: parseFloat(price),
-                type,
-                rrp: rrp ? parseFloat(rrp) : undefined,
+                price: parseFloat( price ),
+                productTypeId: parseInt( type ),
+                rrp: rrp ? parseFloat( rrp ) : undefined,
                 preorder,
                 img: selectedFile || undefined,
                 categoryId,
-                stockAmount: parseInt(stockAmount),
-                stockSold: parseInt(stockSold),
+                stockAmount: parseInt( stockAmount ),
+                stockSold: parseInt( stockSold ),
                 stockInstock: stockInstock ? 'In Stock' : 'Not In Stock',
                 stockSoldout: stockSoldout ? 'Sold Out' : 'Not Sold Out',
-            });
+            } );
 
-            setSuccess('Product updated successfully!');
+            setSuccess( 'Product updated successfully!' );
             clearFileInput();
-        } catch (err) {
-            setError('Failed to update product.');
+        } catch ( err ) {
+            setError( 'Failed to update product.' );
         } finally {
-            setIsUpdating(false);
+            setIsUpdating( false );
         }
     };
 
     const handleOpenModal = () => {
-        setIsModalVisible(true);
-        setError('');
-        setSuccess('');
+        setIsModalVisible( true );
+        setError( '' );
+        setSuccess( '' );
     };
 
     const handleCloseModal = () => {
-        setIsModalVisible(false);
-        setConfirmationText('');
-        setError('');
-        setSuccess('');
+        setIsModalVisible( false );
+        setConfirmationText( '' );
+        setError( '' );
+        setSuccess( '' );
     };
 
     const handleDelete = async () => {
-        if (confirmationText !== 'DELETE') {
-            setError('Please type "DELETE" to confirm');
+        if ( confirmationText !== 'DELETE' ) {
+            setError( 'Please type "DELETE" to confirm' );
             return;
         }
 
         try {
-            await deleteProduct(product.id);
-            setSuccess('Product deleted successfully!');
+            await deleteProduct( product.id );
+            setSuccess( 'Product deleted successfully!' );
             handleCloseModal();
             onBack();
-        } catch (err) {
-            setError('Failed to delete product.');
+        } catch ( err ) {
+            setError( 'Failed to delete product.' );
         } finally {
-            setIsDeleting(false);
+            setIsDeleting( false );
         }
     };
 
@@ -175,9 +175,9 @@ export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
                     <strong>Type:</strong>
                     <ProductDetail>{product.type}</ProductDetail>
                     <strong>Price:</strong>
-                    <ProductDetail>£{product.price.toFixed(2)}</ProductDetail>
+                    <ProductDetail>£{product.price.toFixed( 2 )}</ProductDetail>
                     <strong>RRP:</strong>
-                    <ProductDetail>£{product.rrp.toFixed(2)}</ProductDetail>
+                    <ProductDetail>£{product.rrp.toFixed( 2 )}</ProductDetail>
                     <strong>Stock Amount:</strong>
                     <ProductDetail>{product.stock.amount}</ProductDetail>
                     <strong>Stock Sold:</strong>
@@ -229,7 +229,7 @@ export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
                                 variant="birthday"
                                 id="price"
                                 type="number"
-                                value={updateProductData.price.toFixed(2)}
+                                value={updateProductData.price.toFixed( 2 )}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
@@ -239,7 +239,7 @@ export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
                                 variant="birthday"
                                 id="rrp"
                                 type="number"
-                                value={updateProductData.rrp?.toFixed(2) || ''}
+                                value={updateProductData.rrp?.toFixed( 2 ) || ''}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>

@@ -18,32 +18,28 @@ export const Category = () => {
         categoryError,
     } = useCategoriesContext();
 
-    const [categoryName, setCategoryName] = useState<string | null>(null);
+    const [categoryName, setCategoryName] = useState<string | null>( null );
 
-    useEffect(() => {
-        if (id) {
-            fetchCategoryById({ variables: { id: parseInt(id) } })
-                .then((response: any) => {
-                    if (response?.data?.category) {
-                        setCategoryName(response.data.category.name);
-                    }
-                })
-                .catch((error: any) =>
-                    console.error('Error fetching category:', error),
-                );
+    useEffect( () => {
+        if ( id ) {
+            fetchCategoryById( { variables: { id: parseInt( id ) } } );
         }
-    }, [id, fetchCategoryById]);
+        if ( currentCategory ) {
+            setCategoryName( currentCategory.name );
+        }
+    }, [id, fetchCategoryById, currentCategory] );
 
-    const [checkedStatus, setCheckedStatus] = useState({
+
+    const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,
-    });
+    } );
 
-    const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => ({
+    const handleChecked = ( type: keyof typeof checkedStatus ) => {
+        setCheckedStatus( ( prevState ) => ( {
             ...prevState,
             [type]: !prevState[type],
-        }));
+        } ) );
     };
 
     return (
@@ -59,7 +55,7 @@ export const Category = () => {
                     <CategoriesContainer>
                         <FancyContainer variant="filters" size="filters">
                             <NoProductsMessage>
-                                <p> Loading category details...</p>
+                                <p>Loading category details...</p>
                             </NoProductsMessage>
                         </FancyContainer>
                     </CategoriesContainer>
@@ -70,20 +66,18 @@ export const Category = () => {
                         </ErrorMessage>
                     </CategoriesContainer>
                 ) : currentCategory ? (
-                    <>
-                        <CategoriesContainer>
-                            <CategoriesFilterContainer>
-                                <Filters
-                                    filters
-                                    checkedStatus={checkedStatus}
-                                    handleChecked={handleChecked}
-                                />
-                            </CategoriesFilterContainer>
-                            <CategoriesListContainer>
-                                <Products products={currentCategory.products} />
-                            </CategoriesListContainer>
-                        </CategoriesContainer>
-                    </>
+                    <CategoriesContainer>
+                        <CategoriesFilterContainer>
+                            <Filters
+                                filters
+                                checkedStatus={checkedStatus}
+                                handleChecked={handleChecked}
+                            />
+                        </CategoriesFilterContainer>
+                        <CategoriesListContainer>
+                            <Products products={currentCategory.products} />
+                        </CategoriesListContainer>
+                    </CategoriesContainer>
                 ) : (
                     <CategoriesContainer>
                         <p>No category found.</p>
@@ -185,3 +179,5 @@ const CategoriesListContainer = styled.div`
     display: flex;
     padding: 2rem;
 `;
+
+export default Category;

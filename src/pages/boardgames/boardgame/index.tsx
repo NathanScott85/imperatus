@@ -11,21 +11,20 @@ import { boardgames } from '../../../lib/boardgame-mocks';
 export const BoardGame = () => {
     const { id } = useParams();
 
-    const boardgame = boardgames.find((boardgame) => boardgame.id === id);
-    console.log(boardgames, 'boardgames');
-    const [checkedStatus, setCheckedStatus] = useState({
+    const boardgame = boardgames.find( ( boardgame ) => boardgame.id === id );
+    const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,
-    });
+    } );
 
-    const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => {
+    const handleChecked = ( type: keyof typeof checkedStatus ) => {
+        setCheckedStatus( ( prevState ) => {
             const newState = {
                 ...prevState,
                 [type]: !prevState[type],
             };
             return newState;
-        });
+        } );
     };
     return (
         <>

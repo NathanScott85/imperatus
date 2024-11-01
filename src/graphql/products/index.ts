@@ -1,61 +1,65 @@
 import { gql } from '@apollo/client';
 
 export const GET_ALL_PRODUCTS = gql`
-    query Products {
+    query GetAllProducts {
+    getAllProducts {
+        totalCount
+        totalPages
+        currentPage
         products {
-            totalCount
-            totalPages
-            currentPage
-            products {
+            id
+            name
+            price
+             type {
                 id
                 name
-                price
-                type
-                rrp
+            }
+            rrp
+            description
+            preorder
+             category {
+                id
+                name
                 description
+            }
+             img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
+            stock {
+                id
+                amount
+                sold
+                instock
+                soldout
                 preorder
-                category {
-                    id
-                    name
-                    description
-                }
-                img {
-                    id
-                    url
-                    key
-                    fileName
-                    contentType
-                    createdAt
-                }
-                stock {
-                    id
-                    amount
-                    sold
-                    instock
-                    soldout
-                    preorder
-                }
             }
         }
     }
+}
+
 `;
 
 export const CREATE_PRODUCT = gql`
     mutation CreateProduct(
         $name: String!
         $price: Float!
-        $type: String!
+        $productTypeId: Int!
         $description: String
         $img: Upload
         $categoryId: Int!
-        $stock: StockInput!
+        $stock: StockInput! 
         $preorder: Boolean!
         $rrp: Float
     ) {
         createProduct(
             name: $name
             price: $price
-            type: $type
+            productTypeId: $productTypeId
             description: $description
             img: $img
             categoryId: $categoryId
@@ -65,17 +69,26 @@ export const CREATE_PRODUCT = gql`
         ) {
             id
             name
-            img {
+            price
+            rrp
+            description
+            preorder
+            type {
                 id
-                url
-                key
-                fileName
-                contentType
-                createdAt
+                name
+            }
+            stock {
+                id
+                amount
+                sold
+                instock
+                soldout
+                preorder
             }
         }
     }
 `;
+
 
 export const UPDATE_PRODUCT = gql`
     mutation UpdateProduct(
@@ -144,4 +157,23 @@ export const DELETE_PRODUCT = gql`
             message
         }
     }
+`;
+
+export const GET_ALL_PRODUCT_TYPES = gql`
+ query GetAllProductTypes {
+    getAllProductTypes {
+        id
+        name
+    }
+}
+
+`;
+
+export const CREATE_PRODUCT_TYPE = gql`
+  mutation CreateProductType($input: ProductTypeInput!) {
+    createProductType(input: $input) {
+      id
+      name
+    }
+  }
 `;

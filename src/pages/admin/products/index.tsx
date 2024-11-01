@@ -14,27 +14,27 @@ export const AdminProducts = () => {
         setPage,
     } = useAdminContext();
 
-    const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+    const [selectedProduct, setSelectedProduct] = useState<any | null>( null );
 
-    useEffect(() => {
+    useEffect( () => {
         fetchProducts();
-    }, [fetchProducts, currentPage]);
+    }, [fetchProducts, currentPage] );
 
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setPage(newPage);
+    const handlePageChange = ( newPage: number ) => {
+        if ( newPage >= 1 && newPage <= totalPages ) {
+            setPage( newPage );
         }
     };
 
-    const handleViewProduct = (product: any) => {
-        setSelectedProduct(product);
+    const handleViewProduct = ( product: any ) => {
+        setSelectedProduct( product );
     };
 
     const handleBackToList = () => {
-        setSelectedProduct(null);
+        setSelectedProduct( null );
     };
 
-    if (selectedProduct) {
+    if ( selectedProduct ) {
         return <Product product={selectedProduct} onBack={handleBackToList} />;
     }
 
@@ -65,13 +65,13 @@ export const AdminProducts = () => {
                                 </CenteredCell>
                             </tr>
                         ) : (
-                            products?.map((product, index) => (
+                            products?.map( ( product, index ) => (
                                 <TableRow
                                     key={product.id}
                                     isOdd={index % 2 === 1}
                                 >
                                     <td>{product.name}</td>
-                                    <td>{product.category.name}</td>
+                                    <td>{product.category?.name}</td>
                                     <td>£{product.price}</td>
                                     <td>{product.stock.amount}</td>
                                     <td>
@@ -84,26 +84,26 @@ export const AdminProducts = () => {
                                     <td>
                                         <ViewButton
                                             onClick={() =>
-                                                handleViewProduct(product)
+                                                handleViewProduct( product )
                                             }
                                         >
                                             View
                                         </ViewButton>
                                     </td>
                                 </TableRow>
-                            ))
+                            ) )
                         )}
                     </tbody>
                 </Table>
                 <Pagination>
                     <PageButton
-                        onClick={() => handlePageChange(currentPage - 1)}
+                        onClick={() => handlePageChange( currentPage - 1 )}
                         disabled={currentPage === 1}
                     >
                         Previous
                     </PageButton>
                     <PageButton
-                        onClick={() => handlePageChange(currentPage + 1)}
+                        onClick={() => handlePageChange( currentPage + 1 )}
                         disabled={currentPage === totalPages}
                     >
                         Next
@@ -183,7 +183,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
+    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
 `;
 
 const CenteredCell = styled.td`
@@ -200,17 +200,17 @@ const Pagination = styled.div`
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
+    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
+        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
     }
 `;
 

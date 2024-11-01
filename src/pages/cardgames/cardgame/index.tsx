@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
@@ -6,34 +6,42 @@ import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { cardgames } from '../../../lib/card-games';
 import { mediaQueries } from '../../../styled/breakpoints';
+import { useCardGamesContext } from '../../../context/cardgames';
 
 export const CardGame = () => {
     const { id } = useParams();
-
-    const cardgame = cardgames.find((cardgame) => cardgame.id === id);
-
-    const [checkedStatus, setCheckedStatus] = useState({
+    const { fetchCardGameById, currentCardGame, cardGameLoading, cardGameError } = useCardGamesContext();
+    const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,
-    });
+    } );
 
-    const handleChecked = (type: keyof typeof checkedStatus) => {
-        setCheckedStatus((prevState) => {
-            const newState = {
-                ...prevState,
-                [type]: !prevState[type],
-            };
-            return newState;
-        });
+    useEffect( () => {
+        if ( id ) {
+            fetchCardGameById( id );
+        }
+    }, [id, fetchCardGameById] );
+
+    const handleChecked = ( type: keyof typeof checkedStatus ) => {
+        setCheckedStatus( ( prevState ) => ( {
+            ...prevState,
+            [type]: !prevState[type],
+        } ) );
     };
+
+    if ( cardGameLoading ) return <p>Loading...</p>;
+
+    if ( cardGameError ) return <p>Error: {cardGameError.message}</p>;
+
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            {cardgame && <ImageContainer img={cardgame.banner} />}
+            {currentCardGame && <ImageContainer
+            // img={currentCardGame.img?.url} 
+            />}
             <CardGameMain>
                 <CardGameContainer>
                     <FiltersContainer>
@@ -44,7 +52,11 @@ export const CardGame = () => {
                         />
                     </FiltersContainer>
                     <CardGameListContainer>
-                        {cardgame && <Products products={cardgame?.products} />}
+                        {currentCardGame && <Products
+
+                            // products={[currentCardGame]} 
+                            products={[]}
+                        />}
                     </CardGameListContainer>
                 </CardGameContainer>
             </CardGameMain>
@@ -63,7 +75,7 @@ const CardGameContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items; center;
+    align-items: center;
     margin-bottom: 2.5rem;
 `;
 
@@ -71,7 +83,7 @@ const CardGameMain = styled.main`
     flex-direction: row;
     background-color: white;
     justify-content: center;
-    align-items; center;
+    align-items: center;
     margin-bottom: 2.5rem;
 `;
 
@@ -89,20 +101,20 @@ const FiltersContainer = styled.div`
 `;
 
 const ImageContainer = styled.div<{ img?: any }>`
-    background-image: url(${(props) => props.img});
+    background-image: url(${( props ) => props.img});
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
-    ${mediaQueries('sm')`
+    ${mediaQueries( 'sm' )`
          height: calc(100vh - 1450px); 
     `};
-    ${mediaQueries('md')`
+    ${mediaQueries( 'md' )`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries('lg')`
+    ${mediaQueries( 'lg' )`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries('xl')`
+    ${mediaQueries( 'xl' )`
            height: calc(100vh - 500px);
    `};
 `;
