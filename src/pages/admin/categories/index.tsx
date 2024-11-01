@@ -4,26 +4,35 @@ import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 
 export const AdminCategories = () => {
-    const { categories, loading, error, fetchCategories } =
-        useCategoriesContext();
-    const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+    const {
+        categories,
+        loading,
+        error,
+        fetchCategories,
+        page,
+        nextPage,
+        previousPage,
+        totalCount,
+        limit
+    } = useCategoriesContext();
+    const [selectedCategory, setSelectedCategory] = useState<any | null>( null );
 
-    useEffect(() => {
+    useEffect( () => {
         fetchCategories();
-    }, [fetchCategories]);
+    }, [fetchCategories] );
 
-    const handleViewCategory = (category: any) => {
-        setSelectedCategory(category);
+    const handleViewCategory = ( category: any ) => {
+        setSelectedCategory( category );
     };
 
     const handleBackToList = () => {
-        setSelectedCategory(null);
+        setSelectedCategory( null );
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <Span>Error loading categories: {error.message}</Span>;
+    if ( loading ) return <p>Loading...</p>;
+    if ( error ) return <Span>Error loading categories: {error.message}</Span>;
 
-    if (selectedCategory) {
+    if ( selectedCategory ) {
         return (
             <Category category={selectedCategory} onBack={handleBackToList} />
         );
@@ -43,21 +52,21 @@ export const AdminCategories = () => {
                     </thead>
                     <tbody>
                         {categories.length > 0 ? (
-                            categories.map((category: any) => (
+                            categories.map( ( category: any ) => (
                                 <tr key={category.id}>
                                     <td>{category.name}</td>
                                     <td>{category.description}</td>
                                     <td>
                                         <ViewButton
                                             onClick={() =>
-                                                handleViewCategory(category)
+                                                handleViewCategory( category )
                                             }
                                         >
                                             View
                                         </ViewButton>
                                     </td>
                                 </tr>
-                            ))
+                            ) )
                         ) : (
                             <tr>
                                 <LoadingCell colSpan={3}>
@@ -67,10 +76,57 @@ export const AdminCategories = () => {
                         )}
                     </tbody>
                 </Table>
+                <PaginationContainer>
+                    <PaginationControls>
+                        <PageButton onClick={previousPage} disabled={page === 1}>
+                            Previous
+                        </PageButton>
+                        <span>Page {page} of {Math.ceil( totalCount / limit )}</span>
+                        <PageButton onClick={nextPage} disabled={page >= Math.ceil( totalCount / limit )}>
+                            Next
+                        </PageButton>
+                    </PaginationControls>
+                </PaginationContainer>
             </CategoriesWrapper>
         </CategoriesContainer>
     );
 };
+
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+        align-items: center;
+    padding: 1rem;
+    margin-left: 26rem;
+`;
+
+const PaginationControls = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+    
+    span {
+        color: white;
+        text-align: center;
+        margin: 0 1rem;
+    }
+`;
+
+const PageButton = styled.button<{ disabled?: boolean }>`
+    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    &:hover {
+        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+    }
+`;
 
 const CategoriesTitle = styled.h2`
     font-family: Cinzel, serif;
