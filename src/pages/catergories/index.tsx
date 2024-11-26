@@ -108,7 +108,7 @@ export const Categories = () => {
                                 } )}
                             </CategoriesListContainer>
                         </FiltersAndCategoriesContainer>
-                        <PaginationContainer>
+                        {categories.length >= 10 ? <PaginationContainer>
                             <PaginationControls>
                                 <PageButton onClick={previousPage} disabled={page === 1}>
                                     Previous
@@ -119,6 +119,9 @@ export const Categories = () => {
                                 </PageButton>
                             </PaginationControls>
                         </PaginationContainer>
+                            :
+                            null
+                        }
                     </CategoriesContainer>
                 )}
                 <Reviews />

@@ -11,7 +11,6 @@ import {
     SignOut,
     Percent,
     Carousel,
-    CardGameIcon,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
@@ -81,7 +80,6 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminProducts' )}>
                             MANAGE PRODUCTS
                         </SubMenuItem>
-                        {/* New section for Product Types */}
                         <SubMenuItem onClick={() => setSelectedComponent( 'AddProductType' )}>
                             ADD PRODUCT TYPE
                         </SubMenuItem>
@@ -91,23 +89,6 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
 
                     </SubMenu>
                 )}
-
-                {/* New Section for Card Games */}
-                <MenuItem onClick={() => toggleMenu( 'CardGames', 'AddCardGame' )}>
-                    <CardGameIcon />
-                    CARD GAMES
-                </MenuItem>
-                {expandedMenu === 'CardGames' && (
-                    <SubMenu>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCardGame' )}>
-                            ADD CARD GAME
-                        </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCardGames' )}>
-                            MANAGE CARD GAMES
-                        </SubMenuItem>
-                    </SubMenu>
-                )}
-
                 <MenuItem onClick={() => toggleMenu( 'Carousel', 'AdminCarousel' )}>
                     <Carousel />
                     CAROUSEL
@@ -144,8 +125,6 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
         </SidebarAside>
     );
 };
-
-// Same styled components as before...
 
 const StyledLink = styled( Link )`
     display: flex;

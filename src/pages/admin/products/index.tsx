@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
 import { Product } from './product';
+import { FancyContainer } from '../../../components/fancy-container';
 
 export const AdminProducts = () => {
     const {
@@ -41,7 +42,7 @@ export const AdminProducts = () => {
     return (
         <ProductsContainer>
             <ProductsTitle>Products</ProductsTitle>
-            <ProductsWrapper>
+            {products?.length !== 0 ? <ProductsWrapper>
                 <Table>
                     <thead>
                         <tr>
@@ -95,7 +96,7 @@ export const AdminProducts = () => {
                         )}
                     </tbody>
                 </Table>
-                <Pagination>
+                {products!.length !== 0 && <Pagination>
                     <PageButton
                         onClick={() => handlePageChange( currentPage - 1 )}
                         disabled={currentPage === 1}
@@ -109,10 +110,43 @@ export const AdminProducts = () => {
                         Next
                     </PageButton>
                 </Pagination>
-            </ProductsWrapper>
+                }
+            </ProductsWrapper> : <ProductsContainer>
+                <FancyContainer>
+                    <NoProductsMessage>
+                        <p>No products available at the moment.</p>
+                    </NoProductsMessage>
+                </FancyContainer>
+            </ProductsContainer>
+            }
         </ProductsContainer>
     );
 };
+
+const NoProductsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
 
 const ProductsTitle = styled.h2`
     font-family: Cinzel, serif;

@@ -77,7 +77,7 @@ export const AddProduct = () => {
     };
 
     const handleTypeChange = ( typeId: number ) => {
-        setAddProduct( prev => ( {
+        setAddProduct( ( prev ) => ( {
             ...prev,
             productTypeId: typeId
         } ) );
@@ -214,12 +214,12 @@ export const AddProduct = () => {
                                 </DropdownHeader>
                                 {isTypeDropdownOpen && (
                                     <DropdownList onClick={( e ) => e.stopPropagation()}>
-                                        {productTypes?.map( pt => (
+                                        {productTypes?.map( ( pt ) => (
                                             <DropDownOption
                                                 key={pt.id}
                                                 onClick={( e ) => {
                                                     e.stopPropagation();
-                                                    handleTypeChange( pt.id );
+                                                    handleTypeChange( pt.id ); // Pass the name
                                                 }}
                                             >
                                                 {pt.name}

@@ -41,7 +41,7 @@ interface Product {
     id: number;
     name: string;
     price: number;
-    productTypeId: number;
+    productTypeId: string;
     rrp: number;
     description?: string;
     img: {
@@ -177,7 +177,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
     const createProduct = async ( variables: {
         name: string;
         price: string | number;
-        productTypeId: number;
+        productTypeId: number; // Pass ID instead of name
         img: File;
         categoryId: number;
         stock: {
@@ -196,17 +196,18 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
                 variables: {
                     name: variables.name,
                     price: variables.price,
-                    productTypeId: variables.productTypeId,
-                    img: variables.img,
+                    productTypeId: variables.productTypeId, // Pass the ID
                     categoryId: variables.categoryId,
+                    img: variables.img,
                     stock: variables.stock,
                     preorder: variables.preorder,
                     description: variables.description,
                     rrp: variables.rrp,
                 },
             } );
-
+            console.log( data, 'data' )
             if ( data?.createProduct ) {
+                console.log( data?.createProduct, 'data?.createProduct ' );
                 return {
                     success: true,
                     message: 'Product created successfully!',
