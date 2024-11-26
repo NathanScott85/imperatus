@@ -52,7 +52,7 @@ export const CREATE_PRODUCT = gql`
         $description: String
         $img: Upload
         $categoryId: Int!
-        $stock: StockInput! 
+        $stock: StockInput!
         $preorder: Boolean!
         $rrp: Float
     ) {
@@ -85,6 +85,9 @@ export const CREATE_PRODUCT = gql`
                 soldout
                 preorder
             }
+            category {
+                name
+            }
         }
     }
 `;
@@ -98,7 +101,6 @@ export const UPDATE_PRODUCT = gql`
         $type: String
         $description: String
         $img: Upload
-        $categoryId: Int # Changed from String to Int
         $stockAmount: Int
         $stockSold: Int
         $stockInstock: String
@@ -114,7 +116,6 @@ export const UPDATE_PRODUCT = gql`
             type: $type
             description: $description
             img: $img
-            categoryId: $categoryId
             stockAmount: $stockAmount
             stockSold: $stockSold
             stockInstock: $stockInstock

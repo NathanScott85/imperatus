@@ -13,13 +13,13 @@ export interface ProductDetailProps {
 export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
     const { updateProduct, deleteProduct } = useAdminContext();
 
-    // Combined state management
     const [updateProductData, setUpdateProductData] = useState( {
         name: product.name,
         description: product.description,
         price: product.price,
         type: product.type,
         rrp: product.rrp,
+        categoryId: product.categoryId,
         preorder: product.preorder,
         stockAmount: product.stock.amount,
         stockSold: product.stock.sold,
@@ -44,11 +44,10 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                 updateProductData.selectedFile,
             );
             setPreviewUrl( objectUrl );
-            return () => URL.revokeObjectURL( objectUrl ); // Cleanup
+            return () => URL.revokeObjectURL( objectUrl );
         }
     }, [updateProductData.selectedFile] );
 
-    // Unified input change handler
     const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
         const { id, value, type, checked } = e.target;
         setUpdateProductData( ( prevState ) => ( {
@@ -58,7 +57,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
     };
 
     const handleImageChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
-        const file = e.target?.files?.[0]; // Safely access the file with optional chaining
+        const file = e.target?.files?.[0];
         if ( file ) {
             setUpdateProductData( ( prevState ) => ( {
                 ...prevState,
@@ -104,7 +103,6 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
         }
 
         try {
-            const categoryId = parseInt( product.category.id, 10 ); // Convert to number if necessary
 
             await updateProduct( {
                 id: product.id,
@@ -112,10 +110,11 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                 description,
                 price: parseFloat( price ),
                 productTypeId: parseInt( type ),
+
                 rrp: rrp ? parseFloat( rrp ) : undefined,
                 preorder,
                 img: selectedFile || undefined,
-                categoryId,
+                categoryId: parseInt( type ),
                 stockAmount: parseInt( stockAmount ),
                 stockSold: parseInt( stockSold ),
                 stockInstock: stockInstock ? 'In Stock' : 'Not In Stock',

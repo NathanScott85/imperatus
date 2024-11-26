@@ -9,30 +9,30 @@ const apiUri = isProduction
 
 const credentialsPolicy = isProduction ? 'include' : 'same-origin';
 
-const httpLink = createUploadLink({
+const httpLink = createUploadLink( {
     uri: apiUri,
     credentials: credentialsPolicy,
     headers: {
         'x-apollo-operation-name': 'upload',
         'apollo-require-preflight': 'true',
     },
-});
+} );
 
-const authLink = new ApolloLink((operation, forward) => {
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+const authLink = new ApolloLink( ( operation, forward ) => {
+    const accessToken = sessionStorage.getItem( 'accessToken' );
+    const refreshToken = sessionStorage.getItem( 'refreshToken' );
 
-    operation.setContext({
+    operation.setContext( {
         headers: {
             Authorization: accessToken ? `Bearer ${accessToken}` : '',
             'x-refresh-token': refreshToken || '',
         },
-    });
+    } );
 
-    return forward(operation);
-});
+    return forward( operation );
+} );
 
-export const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+export const client = new ApolloClient( {
+    link: authLink.concat( httpLink ),
     cache: new InMemoryCache(),
-});
+} );

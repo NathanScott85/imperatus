@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
+import { FancyContainer } from '../../../components/fancy-container';
 
 export const AdminCategories = () => {
     const {
@@ -41,7 +42,7 @@ export const AdminCategories = () => {
     return (
         <CategoriesContainer>
             <CategoriesTitle>Categories</CategoriesTitle>
-            <CategoriesWrapper>
+            {categories?.length !== 0 ? <CategoriesWrapper>
                 <Table>
                     <thead>
                         <tr>
@@ -76,7 +77,7 @@ export const AdminCategories = () => {
                         )}
                     </tbody>
                 </Table>
-                <PaginationContainer>
+                {categories.length >= 10 ? <PaginationContainer>
                     <PaginationControls>
                         <PageButton onClick={previousPage} disabled={page === 1}>
                             Previous
@@ -86,11 +87,44 @@ export const AdminCategories = () => {
                             Next
                         </PageButton>
                     </PaginationControls>
-                </PaginationContainer>
-            </CategoriesWrapper>
+                </PaginationContainer> : null
+                }
+            </CategoriesWrapper> : <CategoriesContainer>
+                <FancyContainer>
+                    <NoProductsMessage>
+                        <p>No products available at the moment.</p>
+                    </NoProductsMessage>
+                </FancyContainer>
+            </CategoriesContainer>}
         </CategoriesContainer>
     );
 };
+
+
+const NoProductsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
 
 const PaginationContainer = styled.div`
     display: flex;
