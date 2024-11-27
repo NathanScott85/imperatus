@@ -62,9 +62,7 @@ export const AppRoutes = () => {
                             element={
                                 <AdminProvider>
                                     <CategoriesProvider>
-                                        <CardGamesProvider>
-                                            <Admin />
-                                        </CardGamesProvider>
+                                        <Admin />
                                     </CategoriesProvider>
                                 </AdminProvider>
                             }
@@ -135,7 +133,7 @@ export const AppRoutes = () => {
                 }
             />
 
-            <Route path="/shop/card-games" element={<CardGamesProvider><CardGames /></CardGamesProvider>} />
+            <Route path="/shop/card-games" element={<CardGames />} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
                 element={<CardGame />}

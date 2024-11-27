@@ -22,15 +22,15 @@ const getCardGamePath = ( cardgame: any ) => {
 };
 
 export const CardGames = () => {
-    const { fetchCardGames, cardGames, loading, error } = useCardGamesContext();
+    // const { fetchCardGames, cardGames, loading, error } = useCardGamesContext();
 
-    useEffect( () => {
-        fetchCardGames();
-    }, [fetchCardGames] );
+    // useEffect( () => {
+    //     fetchCardGames();
+    // }, [fetchCardGames] );
 
-    if ( error ) return <p>Error loading card games: {error.message}</p>;
+    // if ( error ) return <p>Error loading card games: {error.message}</p>;
 
-    const sortedCardGames = cardGames.sort( ( a: any, b: any ) => a.name.localeCompare( b.name ) );
+    // const sortedCardGames = cardGames.sort( ( a: any, b: any ) => a.name.localeCompare( b.name ) );
 
     return (
         <>
@@ -39,7 +39,7 @@ export const CardGames = () => {
             <Navigation background />
             <BreadCrumb label="Card Games" />
             <CardGamesMain>
-                {loading ? (
+                {/* {loading ? (
                     <CategoriesContainer>
                         <FancyContainer variant="medium" size="medium">
                             <NoProductsMessage>
@@ -94,7 +94,7 @@ export const CardGames = () => {
                             } )}
                         </CategoriesListContainer>
                     </CategoriesContainer>
-                )}
+                )} */}
                 <Reviews />
             </CardGamesMain>
             <Footer />
