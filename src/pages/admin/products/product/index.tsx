@@ -4,6 +4,7 @@ import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { Modal } from '../../../../components/modal';
 import { useAdminContext } from '../../../../context/admin';
+import { useCategoriesContext } from '../../../../context/categories';
 
 export interface ProductDetailProps {
     product: any;
@@ -11,20 +12,21 @@ export interface ProductDetailProps {
 }
 
 export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
-    const { updateProduct, deleteProduct } = useAdminContext();
+    const { updateProduct, deleteProduct, productTypes, fetchProductTypes } = useAdminContext();
+    const { categories, fetchCategories } = useCategoriesContext();
 
     const [updateProductData, setUpdateProductData] = useState( {
         name: product.name,
         description: product.description,
         price: product.price,
-        type: product.type,
+        type: product.type?.id,
         rrp: product.rrp,
         categoryId: product.categoryId,
         preorder: product.preorder,
-        stockAmount: product.stock.amount,
-        stockSold: product.stock.sold,
-        stockInstock: product.stock.instock === 'In Stock',
-        stockSoldout: product.stock.soldout === 'Sold Out',
+        stockAmount: product.stock?.amount,
+        stockSold: product.stock?.sold,
+        stockInstock: product.stock?.instock === 'In Stock',
+        stockSoldout: product.stock?.soldout === 'Sold Out',
         selectedFile: null as File | null,
     } );
 
@@ -39,17 +41,22 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
     const fileInputRef = useRef<HTMLInputElement | null>( null );
 
     useEffect( () => {
+        fetchProductTypes();
+        fetchCategories();
+    }, [fetchProductTypes, fetchCategories] );
+
+    useEffect( () => {
         if ( updateProductData.selectedFile ) {
-            const objectUrl = URL.createObjectURL(
-                updateProductData.selectedFile,
-            );
+            const objectUrl = URL.createObjectURL( updateProductData.selectedFile );
             setPreviewUrl( objectUrl );
             return () => URL.revokeObjectURL( objectUrl );
         }
     }, [updateProductData.selectedFile] );
 
-    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
-        const { id, value, type, checked } = e.target;
+    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
+        const { id, value, type } = e.target;
+        const checked = type === 'checkbox' ? ( e.target as HTMLInputElement ).checked : undefined;
+
         setUpdateProductData( ( prevState ) => ( {
             ...prevState,
             [id]: type === 'checkbox' ? checked : value,
@@ -92,29 +99,28 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
             selectedFile,
             stockAmount,
             stockSold,
+            categoryId,
             stockInstock,
             stockSoldout,
         } = updateProductData;
 
-        if ( !name || !description || price == null || !type ) {
-            setError( 'Name, description, price, and type are required.' );
+        if ( !name || !description || price == null || !type || !categoryId ) {
+            setError( 'Name, description, price, type, and category are required.' );
             setIsUpdating( false );
             return;
         }
 
         try {
-
             await updateProduct( {
                 id: product.id,
                 name,
                 description,
                 price: parseFloat( price ),
                 productTypeId: parseInt( type ),
-
+                categoryId: parseInt( categoryId ),
                 rrp: rrp ? parseFloat( rrp ) : undefined,
                 preorder,
                 img: selectedFile || undefined,
-                categoryId: parseInt( type ),
                 stockAmount: parseInt( stockAmount ),
                 stockSold: parseInt( stockSold ),
                 stockInstock: stockInstock ? 'In Stock' : 'Not In Stock',
@@ -172,18 +178,18 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                     <strong>Description:</strong>
                     <ProductDetail>{product.description}</ProductDetail>
                     <strong>Type:</strong>
-                    <ProductDetail>{product.type}</ProductDetail>
+                    <ProductDetail>{product.type.name}</ProductDetail>
                     <strong>Price:</strong>
                     <ProductDetail>£{product.price.toFixed( 2 )}</ProductDetail>
                     <strong>RRP:</strong>
                     <ProductDetail>£{product.rrp.toFixed( 2 )}</ProductDetail>
                     <strong>Stock Amount:</strong>
-                    <ProductDetail>{product.stock.amount}</ProductDetail>
+                    <ProductDetail>{product.stock?.amount}</ProductDetail>
                     <strong>Stock Sold:</strong>
-                    <ProductDetail>{product.stock.sold}</ProductDetail>
+                    <ProductDetail>{product.stock?.sold}</ProductDetail>
                     <strong>Status:</strong>
                     <ProductDetail>
-                        {product.stock.amount > 0 ? 'In Stock' : 'Sold Out'}
+                        {product.stock?.amount > 0 ? 'In Stock' : 'Sold Out'}
                     </ProductDetail>
                     <strong>Preorder:</strong>
                     <ProductDetail>
@@ -198,27 +204,6 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 variant="secondary"
                                 id="name"
                                 value={updateProductData.name}
-                                onChange={handleInputChange}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="type">Type</Label>
-                            <Input
-                                variant="secondary"
-                                id="type"
-                                value={updateProductData.type}
-                                onChange={handleInputChange}
-                            />
-                        </FormGroup>
-                    </FormRow>
-
-                    <FormRow>
-                        <FormGroup>
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                variant="description"
-                                id="description"
-                                value={updateProductData.description}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
@@ -252,17 +237,89 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
+                        <FormGroup>
+                            <Label htmlFor="stockAmount">Sold Stock</Label>
+                            <Input
+                                variant="description"
+                                id="description"
+                                value={updateProductData.description}
+                                onChange={handleInputChange}
+                            />
+                            <div>
+                                <Label htmlFor="categoryId">Category</Label>
+                                <Select
+                                    id="categoryId"
+                                    value={updateProductData.categoryId}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Category</option>
+                                    {categories.map( ( category: any ) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+
+                            </div>
+
+                            <div>
+                                <Label htmlFor="type">Product Type</Label>
+                                <Select
+                                    id="type"
+                                    value={updateProductData.type}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Type</option>
+                                    {productTypes!.map( ( type ) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+                            </div>
+                        </FormGroup>
                     </FormRow>
                     <FormRow>
                         <FormGroup>
-                            <Label htmlFor="stockSold">Stock Sold</Label>
+                            <Label htmlFor="description">Description</Label>
                             <Input
-                                variant="birthday"
-                                id="stockSold"
-                                type="number"
-                                value={updateProductData.stockSold}
+                                variant="description"
+                                id="description"
+                                value={updateProductData.description}
                                 onChange={handleInputChange}
                             />
+                            <div>
+                                <Label htmlFor="categoryId">Category</Label>
+                                <Select
+                                    id="categoryId"
+                                    value={updateProductData.categoryId}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Category</option>
+                                    {categories.map( ( category: any ) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+
+                            </div>
+
+                            <div>
+                                <Label htmlFor="type">Product Type</Label>
+                                <Select
+                                    id="type"
+                                    value={updateProductData.type}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Type</option>
+                                    {productTypes!.map( ( type ) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+                            </div>
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="stockInstock">In Stock</Label>
@@ -412,18 +469,6 @@ const Label = styled.label`
     display: block;
 `;
 
-const ProductTextarea = styled.textarea`
-    min-width: 327px;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    font-family: Barlow;
-    font-size: 14px;
-    color: #000;
-    border-radius: 4px;
-    border: 1px solid #ac8fff;
-    height: 100px;
-`;
-
 const ImagePreviewContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -442,6 +487,17 @@ const ImagePreview = styled.img`
     max-height: 200px;
     border: 1px solid #ac8fff;
     border-radius: 4px;
+`;
+
+const Select = styled.select`
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ac8fff;
+    border-radius: 4px;
+    background-color: #160d35;
+    color: white;
+        font-family: Barlow, sans-serif;
+        font-size: 14px;
 `;
 
 const ButtonContainer = styled.div`

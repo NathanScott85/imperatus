@@ -59,11 +59,6 @@ export const GET_CATEGORY_BY_ID = gql`
         fileName
         contentType
       }
-      subCategories {
-        id
-        name
-        description
-      }
       products {
         id
         name
@@ -123,10 +118,6 @@ export const UPDATE_CATEGORY = gql`
         id
         url
         fileName
-      }
-      subCategories {
-        id
-        name
       }
     }
   }

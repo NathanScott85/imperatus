@@ -205,9 +205,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
                     rrp: variables.rrp,
                 },
             } );
-            console.log( data, 'data' )
+
             if ( data?.createProduct ) {
-                console.log( data?.createProduct, 'data?.createProduct ' );
                 return {
                     success: true,
                     message: 'Product created successfully!',
@@ -284,7 +283,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
                     stock, // Pass the stock input
                 },
             } );
-
+            console.log( data?.updateProduct, ' data?.updateProduct' );
             if ( data?.updateProduct ) {
                 return {
                     success: true,

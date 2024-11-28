@@ -98,14 +98,15 @@ export const UPDATE_PRODUCT = gql`
         $id: ID!
         $name: String
         $price: Float
-        $type: String
+        $productTypeId: Int!
+        $categoryId: Int
         $description: String
         $img: Upload
         $stockAmount: Int
         $stockSold: Int
         $stockInstock: String
         $stockSoldout: String
-        $stockPreorder: String
+        $stockPreorder: Boolean
         $preorder: Boolean
         $rrp: Float
     ) {
@@ -113,7 +114,8 @@ export const UPDATE_PRODUCT = gql`
             id: $id
             name: $name
             price: $price
-            type: $type
+            productTypeId: $productTypeId
+            categoryId: $categoryId
             description: $description
             img: $img
             stockAmount: $stockAmount
@@ -127,7 +129,10 @@ export const UPDATE_PRODUCT = gql`
             id
             name
             price
-            type
+            type {
+                id
+                name
+            }
             description
             preorder
             rrp

@@ -96,7 +96,7 @@ export const AdminProducts = () => {
                         )}
                     </tbody>
                 </Table>
-                {products!.length !== 0 && <Pagination>
+                {products!.length >= 10 && <Pagination>
                     <PageButton
                         onClick={() => handlePageChange( currentPage - 1 )}
                         disabled={currentPage === 1}
