@@ -208,50 +208,6 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                             />
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="type">Product Type</Label>
-                            <Select
-                                id="type"
-                                value={updateProductData.type}
-                                onChange={handleInputChange}
-                            >
-                                <option value="">Select a Type</option>
-                                {productTypes!.map( ( type ) => (
-                                    <option key={type.id} value={type.id}>
-                                        {type.name}
-                                    </option>
-                                ) )}
-                            </Select>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="categoryId">Category</Label>
-                            <Select
-                                id="categoryId"
-                                value={updateProductData.categoryId}
-                                onChange={handleInputChange}
-                            >
-                                <option value="">Select a Category</option>
-                                {categories.map( ( category: any ) => (
-                                    <option key={category.id} value={category.id}>
-                                        {category.name}
-                                    </option>
-                                ) )}
-                            </Select>
-                        </FormGroup>
-                    </FormRow>
-                    <FormRow>
-
-                    </FormRow>
-                    <FormRow>
-                        <FormGroup>
-                            <Label htmlFor="description">Description</Label>
-                            <Input
-                                variant="description"
-                                id="description"
-                                value={updateProductData.description}
-                                onChange={handleInputChange}
-                            />
-                        </FormGroup>
-                        <FormGroup>
                             <Label htmlFor="price">Price (£)</Label>
                             <Input
                                 variant="birthday"
@@ -281,10 +237,8 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
-                    </FormRow>
-                    <FormRow>
                         <FormGroup>
-                            <Label htmlFor="stockSold">Stock Sold</Label>
+                            <Label htmlFor="stockAmount">Sold Stock</Label>
                             <Input
                                 variant="birthday"
                                 id="stockSold"
@@ -292,6 +246,49 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 value={updateProductData.stockSold}
                                 onChange={handleInputChange}
                             />
+                        </FormGroup>
+                    </FormRow>
+                    <FormRow>
+                        <FormGroup>
+                            <Label htmlFor="description">Description</Label>
+                            <Input
+                                variant="description"
+                                id="description"
+                                value={updateProductData.description}
+                                onChange={handleInputChange}
+                            />
+                            <div>
+                                <Label htmlFor="categoryId">Category</Label>
+                                <Select
+                                    id="categoryId"
+                                    value={updateProductData.categoryId}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Category</option>
+                                    {categories.map( ( category: any ) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+
+                            </div>
+
+                            <div>
+                                <Label htmlFor="type">Product Type</Label>
+                                <Select
+                                    id="type"
+                                    value={updateProductData.type}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="">Select a Type</option>
+                                    {productTypes!.map( ( type ) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ) )}
+                                </Select>
+                            </div>
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="stockInstock">In Stock</Label>
