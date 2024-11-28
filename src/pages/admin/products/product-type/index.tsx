@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAdminContext } from '../../../../context/admin';
+import { FancyContainer } from '../../../../components/fancy-container';
 
 export const AdminProductTypes = () => {
   const {
@@ -11,12 +12,12 @@ export const AdminProductTypes = () => {
     currentPage,
     totalPages,
     setPage,
-  } = useAdminContext(); // Ensure this method is defined in your context
+  } = useAdminContext();
 
   const [selectedType, setSelectedType] = useState<any | null>( null );
 
   useEffect( () => {
-    fetchProductTypes(); // Fetch product types when component mounts
+    fetchProductTypes();
   }, [fetchProductTypes] );
 
   const handlePageChange = ( newPage: number ) => {
@@ -47,7 +48,7 @@ export const AdminProductTypes = () => {
   return (
     <TypesContainer>
       <TypesTitle>Product Types</TypesTitle>
-      <TypesWrapper>
+      {productTypes?.length !== 0 ? <TypesWrapper>
         <Table>
           <thead>
             <tr>
@@ -78,7 +79,7 @@ export const AdminProductTypes = () => {
             )}
           </tbody>
         </Table>
-        <Pagination>
+        {productTypes && productTypes?.length >= 10 ? <Pagination>
           <PageButton
             onClick={() => handlePageChange( currentPage - 1 )}
             disabled={currentPage === 1}
@@ -91,11 +92,52 @@ export const AdminProductTypes = () => {
           >
             Next
           </PageButton>
-        </Pagination>
-      </TypesWrapper>
+        </Pagination> : null
+        }
+      </TypesWrapper> : <ProductsContainer>
+        <FancyContainer>
+          <NoTypesMessage>
+            <p>No Types added at the moment.</p>
+          </NoTypesMessage>
+        </FancyContainer>
+      </ProductsContainer>
+      }
     </TypesContainer>
   );
 };
+
+const NoTypesMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
+
+const ProductsContainer = styled.div`
+    flex-direction: column;
+    p {
+        font-size: 16px;
+        color: white;
+    }
+`;
 
 const TypesContainer = styled.div`
     flex-direction: column;
