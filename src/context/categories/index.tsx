@@ -23,13 +23,6 @@ interface Category {
     img?: File | null;
 }
 
-interface CategoriesResponse {
-    categories: Category[];
-    totalCount: number;
-    totalPages: number;
-    currentPage: number;
-}
-
 interface UpdateCategoryInput {
     id: string;
     name: string;
@@ -149,6 +142,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 categorySuccess: !!updatedCategoryData,
                 page,
                 limit,
+                setLimit,
                 totalCount,
                 nextPage,
                 previousPage,

@@ -9,42 +9,42 @@ interface ProductsProps {
     products: ProductType[];
     label?: string;
 }
-export const Products = ({ products, label }: ProductsProps) => {
-    console.log(products, 'products');
+export const Products = ( { products, label }: ProductsProps ) => {
+
     return (
         <>
-            {(label === 'Latest Products' ||
-                label === 'Product Recommendations') && (
-                <Section>
-                    <ProductsWrapper>
-                        <ProductsHeader>{label}</ProductsHeader>
-                        <ProductsContainer>
-                            {products?.length !== 0 ? (
-                                products.map((product: ProductType) => (
-                                    <Product
-                                        key={product.id}
-                                        product={product}
-                                    />
-                                ))
-                            ) : (
-                                <NoProductsMessage>
-                                    <FancyContainer variant="medium">
-                                        No products available, please check back
-                                        later
-                                    </FancyContainer>
-                                </NoProductsMessage>
-                            )}
-                        </ProductsContainer>
-                    </ProductsWrapper>
-                </Section>
-            )}
+            {( label === 'Latest Products' ||
+                label === 'Product Recommendations' ) && (
+                    <Section>
+                        <ProductsWrapper>
+                            <ProductsHeader>{label}</ProductsHeader>
+                            <ProductsContainer>
+                                {products?.length !== 0 ? (
+                                    products.map( ( product: ProductType ) => (
+                                        <Product
+                                            key={product.id}
+                                            product={product}
+                                        />
+                                    ) )
+                                ) : (
+                                    <NoProductsMessage>
+                                        <FancyContainer variant="medium">
+                                            No products available, please check back
+                                            later
+                                        </FancyContainer>
+                                    </NoProductsMessage>
+                                )}
+                            </ProductsContainer>
+                        </ProductsWrapper>
+                    </Section>
+                )}
             {label === undefined && (
                 <ProductsSection>
                     {products.length !== 0 ? (
                         <ProductsGrid>
-                            {products.map((product: ProductType) => (
+                            {products.map( ( product: ProductType ) => (
                                 <Product key={product.id} product={product} />
-                            ))}
+                            ) )}
                         </ProductsGrid>
                     ) : (
                         <NoProductsMessage>
@@ -106,11 +106,11 @@ const ProductsHeader = styled.h1`
     text-align: left;
     color: #130a30;
 
-    ${mediaQueries('md')`
+    ${mediaQueries( 'md' )`
         padding-left: 3rem;
         width: 100%;
     `};
-    ${mediaQueries('xl')`
+    ${mediaQueries( 'xl' )`
         padding-left: 0rem;
         width: 100%;
     `};
@@ -121,10 +121,10 @@ const ProductsWrapper = styled.div`
     flex-direction: column;
     height: 100%;
     padding: 2rem 0;
-    ${mediaQueries('sm')`
+    ${mediaQueries( 'sm' )`
         height: 25vh;
     `};
-    ${mediaQueries('md')`
+    ${mediaQueries( 'md' )`
         height: 100%;
     `};
 `;

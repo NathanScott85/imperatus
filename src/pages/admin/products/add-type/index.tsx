@@ -65,16 +65,16 @@ export const AddProductType = () => {
               onChange={handleInputChange}
               required
             />
+            <ButtonContainer>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!productType.name || isButtonDisabled}
+              >
+                {isButtonDisabled ? 'Adding...' : 'Add Product Type'}
+              </Button>
+            </ButtonContainer>
           </FormGroup>
-          <ButtonContainer>
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={!productType.name || isButtonDisabled}
-            >
-              {isButtonDisabled ? 'Adding...' : 'Add Product Type'}
-            </Button>
-          </ButtonContainer>
         </Form>
       </FormContainer>
       {error && <ErrorMessage>{error}</ErrorMessage>}
