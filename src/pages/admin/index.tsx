@@ -17,8 +17,8 @@ import { Discount } from './discount';
 import { AdminCategories } from './categories';
 import { AdminCarousel } from './carousel';
 import { AddCarousel } from './carousel/add-carousel';
-// import { AddCardGame } from './cardgames/add-cardgame';
-// import { AdminCardGames } from './cardgames';
+import { AddBrand } from './products/add-brand';
+import { AdminBrands } from './products/brands';
 import { AdminProductTypes } from './products/product-type'; // Import your new component
 import { AddProductType } from './products/add-type';
 
@@ -53,10 +53,10 @@ export const Admin = () => {
                 return <Customers />;
             case 'Settings':
                 return <Settings />;
-            // case 'AddCardGame':
-            //     return <AddCardGame />;
-            // case 'AdminCardGames':
-            //     return <AdminCardGames />;
+            case 'AddBrand':
+                return <AddBrand />;
+            case 'AdminBrands':
+                return <AdminBrands />;
             case 'AddProductType':
                 return <AddProductType />;
             case 'AdminProductTypes':

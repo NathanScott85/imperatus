@@ -283,7 +283,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
                     stock, // Pass the stock input
                 },
             } );
-            console.log( data?.updateProduct, ' data?.updateProduct' );
             if ( data?.updateProduct ) {
                 return {
                     success: true,

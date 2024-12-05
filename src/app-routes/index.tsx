@@ -45,7 +45,7 @@ import { ProtectedRoute } from './protected-routes';
 import { ResetPassword } from '../pages/reset-password';
 import { AdminProvider } from '../context/admin';
 import { CategoriesProvider } from '../context/categories';
-import { CardGamesProvider } from '../context/cardgames';
+import { BrandsProvider } from '../context/brands';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -62,7 +62,9 @@ export const AppRoutes = () => {
                             element={
                                 <AdminProvider>
                                     <CategoriesProvider>
-                                        <Admin />
+                                        <BrandsProvider>
+                                            <Admin />
+                                        </BrandsProvider>
                                     </CategoriesProvider>
                                 </AdminProvider>
                             }

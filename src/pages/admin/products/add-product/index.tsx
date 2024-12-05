@@ -207,7 +207,7 @@ export const AddProduct = () => {
                                 <DropdownHeader>
                                     {addProduct.productTypeId
                                         ? productTypes?.find( pt => pt.id === addProduct.productTypeId )?.name
-                                        : 'Select Product Type'}
+                                        : 'Select Type'}
                                     <ChevronContainer isDropdownOpen={isTypeDropdownOpen}>
                                         <ChevronUp stroke="#C79D0A" />
                                     </ChevronContainer>

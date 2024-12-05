@@ -1,131 +1,114 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
 import { FancyContainer } from '../../../../components/fancy-container';
-import { TypeDetail } from './type-detail';
+import { useBrandsContext } from '../../../../context/brands';
+import { Brand } from './brand';
 
-export const AdminProductTypes = () => {
+export const AdminBrands = () => {
+  const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
   const {
-    productTypes,
+    brands,
+    fetchBrands,
     loading,
     error,
-    fetchProductTypes,
-    currentPage,
     totalPages,
     setPage,
-  } = useAdminContext();
-
-  const [selectedType, setSelectedType] = useState<any | null>( null );
+    currentPage,
+    setCurrentPage } = useBrandsContext();
 
   useEffect( () => {
-    fetchProductTypes();
-  }, [fetchProductTypes] );
+    fetchBrands();
+  }, [fetchBrands] );
+
+  const handleViewBrand = ( brand: any ) => {
+    setSelectedBrand( brand );
+  };
 
   const handlePageChange = ( newPage: number ) => {
     if ( newPage >= 1 && newPage <= totalPages ) {
+      setCurrentPage( newPage );
       setPage( newPage );
     }
   };
 
-  const handleViewType = ( type: any ) => {
-    setSelectedType( type );
-  };
-
   const handleBackToList = () => {
-    setSelectedType( null );
+    setSelectedBrand( null );
   };
 
-  if ( selectedType ) {
-    return <TypeDetail type={selectedType} onBack={handleBackToList} />;
-  }
+  if ( loading ) return <p>Loading...</p>;
+  if ( error ) return <Span>Error loading categories: {error.message}</Span>;
 
+  if ( selectedBrand ) {
+    return (
+      <Brand brand={selectedBrand} onBack={handleBackToList} />
+    )
+  }
   return (
-    <TypesContainer>
-      <TypesTitle>Product Types</TypesTitle>
-      {productTypes?.length !== 0 ? <TypesWrapper>
+    <BrandsContainer>
+      <BrandsTitle>Product Brands</BrandsTitle>
+      {brands?.length !== 0 ? <BrandsWrapper>
         <Table>
           <thead>
             <tr>
               <th>Name</th>
+              <th>Description</th>
               <th>View</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr>
-                <CenteredCell>Loading...</CenteredCell>
-              </tr>
-            ) : error ? (
-              <tr>
-                <CenteredCell>Error: {error.message}</CenteredCell>
-              </tr>
-            ) : (
-              productTypes?.map( ( type, index ) => (
-                <TableRow key={type.id} isOdd={index % 2 === 1}>
-                  <td>{type.name}</td>
+            {brands?.map( ( brand: any, index: any ) => {
+              return (
+                <TableRow key={brand.id} isOdd={index % 2 === 1}>
+                  <td>{brand.name}</td>
+                  <td>{brand.description}</td>
                   <td>
-                    <ViewButton onClick={() => handleViewType( type )}>
+                    <ViewButton onClick={() => handleViewBrand( brand )}>
                       View
                     </ViewButton>
                   </td>
                 </TableRow>
-              ) )
-            )}
+              )
+            } )}
+
           </tbody>
         </Table>
-        {productTypes && productTypes?.length >= 10 ? <Pagination>
-          <PageButton
-            onClick={() => handlePageChange( currentPage - 1 )}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </PageButton>
-          <PageButton
-            onClick={() => handlePageChange( currentPage + 1 )}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </PageButton>
-        </Pagination> : null
-        }
-      </TypesWrapper> : <ProductsContainer>
+        {totalPages > 1 && (
+          <Pagination>
+            <PageButton
+              onClick={() => handlePageChange( currentPage - 1 )}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </PageButton>
+            <PageButton
+              onClick={() => handlePageChange( currentPage + 1 )}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </PageButton>
+          </Pagination>
+        )}
+      </BrandsWrapper> : <ProductsContainer>
         <FancyContainer>
           <NoTypesMessage>
-            <p>No Types added at the moment.</p>
+            <p>No Brands added at the moment.</p>
           </NoTypesMessage>
         </FancyContainer>
       </ProductsContainer>
       }
-    </TypesContainer>
-  );
-};
+    </BrandsContainer>
+  )
+}
 
-const NoTypesMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #777;
-    text-align: center;
-    width: 100%;
-    p {
-        height: 100%;
-        color: white;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-        font-family: Cinzel, serif;
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 1.5;
-        letter-spacing: 0.02em;
-        padding: 6rem;
-    }
+const Span = styled.span`
+    color: #fff;
+    font-family: Cinzel;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: bold;
 `;
 
-const ProductsContainer = styled.div`
+const BrandsContainer = styled.div`
     flex-direction: column;
     p {
         font-size: 16px;
@@ -133,22 +116,15 @@ const ProductsContainer = styled.div`
     }
 `;
 
-const TypesContainer = styled.div`
-    flex-direction: column;
-    p {
-        font-size: 16px;
-        color: white;
-    }
-`;
-
-const TypesTitle = styled.h2`
+const BrandsTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
 `;
 
-const TypesWrapper = styled.div`
+
+const BrandsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -226,6 +202,40 @@ const PageButton = styled.button<{ disabled?: boolean }>`
     }
 `;
 
+
+const NoTypesMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
+
+const ProductsContainer = styled.div`
+    flex-direction: column;
+    p {
+        font-size: 16px;
+        color: white;
+    }
+`;
+
 const ViewButton = styled.button`
     background-color: #4d3c7b;
     color: #fff;
@@ -240,7 +250,8 @@ const ViewButton = styled.button`
     }
 `;
 
-const TypeDetailContainer = styled.div`
-    // Add your styling for the product type detail view here
+
+
+const BrandDetailContainer = styled.div`
     color: white;
 `;
