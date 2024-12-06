@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useDeferredValue, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 import { FancyContainer } from '../../../components/fancy-container';
+import { Input } from '../../../components/input';
 
 export const AdminCategories = () => {
     const {
@@ -10,96 +11,191 @@ export const AdminCategories = () => {
         loading,
         error,
         fetchCategories,
-        page,
-        nextPage,
-        previousPage,
-        totalCount,
-        limit
+        currentPage,
+        totalPages,
+        setSearch,
+        setPage,
     } = useCategoriesContext();
+
     const [selectedCategory, setSelectedCategory] = useState<any | null>( null );
+    const [searchQuery, setSearchQuery] = useState<string>( '' );
+
+    const deferredSearchQuery = useDeferredValue( searchQuery );
 
     useEffect( () => {
+        setSearch( deferredSearchQuery );
         fetchCategories();
-    }, [fetchCategories] );
+
+    }, [deferredSearchQuery, setSearch, fetchCategories,] )
 
     const handleViewCategory = ( category: any ) => {
         setSelectedCategory( category );
+    };
+
+    const handlePageChange = ( newPage: number ) => {
+        if ( newPage >= 1 && newPage <= totalPages ) {
+            setPage( newPage );
+        }
     };
 
     const handleBackToList = () => {
         setSelectedCategory( null );
     };
 
-    if ( loading ) return <p>Loading...</p>;
-    if ( error ) return <Span>Error loading categories: {error.message}</Span>;
-
     if ( selectedCategory ) {
-        return (
-            <Category category={selectedCategory} onBack={handleBackToList} />
-        );
+        return <Category category={selectedCategory} onBack={handleBackToList} />;
     }
 
     return (
         <CategoriesContainer>
-            <CategoriesTitle>Categories</CategoriesTitle>
-            {categories?.length !== 0 ? <CategoriesWrapper>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Category Name</th>
-                            <th>Description</th>
-                            <th>View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {categories.length > 0 ? (
-                            categories.map( ( category: any ) => (
-                                <tr key={category.id}>
-                                    <td>{category.name}</td>
-                                    <td>{category.description}</td>
-                                    <td>
-                                        <ViewButton
-                                            onClick={() =>
-                                                handleViewCategory( category )
-                                            }
-                                        >
-                                            View
-                                        </ViewButton>
-                                    </td>
-                                </tr>
-                            ) )
-                        ) : (
+            <TitleRow>
+                <CategoriesTitle>Categories</CategoriesTitle>
+                <SearchContainer>
+                    <StyledInput
+                        variant="secondary"
+                        size="small"
+                        placeholder="Search categories..."
+                        value={searchQuery}
+                        onChange={( e ) => setSearchQuery( e.target.value )}
+                    />
+                    {searchQuery && (
+                        <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
+                    )}
+                </SearchContainer>
+            </TitleRow>
+            {categories?.length !== 0 ? (
+                <CategoriesWrapper>
+                    <Table>
+                        <thead>
                             <tr>
-                                <LoadingCell colSpan={3}>
-                                    No categories available
-                                </LoadingCell>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>View</th>
                             </tr>
-                        )}
-                    </tbody>
-                </Table>
-                {categories.length >= 10 ? <PaginationContainer>
-                    <PaginationControls>
-                        <PageButton onClick={previousPage} disabled={page === 1}>
-                            Previous
-                        </PageButton>
-                        <span>Page {page} of {Math.ceil( totalCount / limit )}</span>
-                        <PageButton onClick={nextPage} disabled={page >= Math.ceil( totalCount / limit )}>
-                            Next
-                        </PageButton>
-                    </PaginationControls>
-                </PaginationContainer> : null
-                }
-            </CategoriesWrapper> : <CategoriesContainer>
-                <FancyContainer>
-                    <NoProductsMessage>
-                        <p>No products available at the moment.</p>
-                    </NoProductsMessage>
-                </FancyContainer>
-            </CategoriesContainer>}
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell>Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell>Error: {error.message}</CenteredCell>
+                                </tr>
+                            ) : (
+                                categories?.map( ( category: any, index: number ) => (
+                                    <TableRow key={category.id} isOdd={index % 2 === 1}>
+                                        <td>{category.name}</td>
+                                        <td>{category.description}</td>
+                                        <td>
+                                            <ViewButton onClick={() => handleViewCategory( category )}>
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ) )
+                            )}
+                        </tbody>
+                    </Table>
+                    {totalPages > 1 && (
+                        <PaginationContainer>
+                            <PaginationControls>
+                                <PageButton
+                                    onClick={() => handlePageChange( currentPage - 1 )}
+                                    disabled={currentPage === 1}
+                                >
+                                    Previous
+                                </PageButton>
+                                <span>
+                                    Page {currentPage} of {totalPages}
+                                </span>
+                                <PageButton
+                                    onClick={() => handlePageChange( currentPage + 1 )}
+                                    disabled={currentPage >= totalPages}
+                                >
+                                    Next
+                                </PageButton>
+                            </PaginationControls>
+                        </PaginationContainer>
+                    )}
+                </CategoriesWrapper>
+            ) : (
+                <ProductsContainer>
+                    <FancyContainer>
+                        <NoProductsMessage>
+                            {searchQuery ? (
+                                <p>No results found for "{searchQuery}"</p>
+                            ) : (
+                                <p>No categories added at the moment.</p>
+                            )}
+                        </NoProductsMessage>
+                    </FancyContainer>
+                </ProductsContainer>
+            )}
         </CategoriesContainer>
     );
+
 };
 
+
+const SearchContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Push the search input and button to the right */
+    max-width: 325px;
+    width: 100%;
+
+`;
+
+const ClearButton = styled.button`
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: white;
+    z-index: 999;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+        color: #c79d0a;
+    }
+`;
+
+const TableRow = styled.tr<{ isOdd: boolean }>`
+    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
+`;
+
+
+const CenteredCell = styled.td`
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 2rem 0;
+`;
+
+const ProductsContainer = styled.div`
+    flex-direction: column;
+    p {
+        font-size: 16px;
+        color: white;
+    }
+`;
+
+const TitleRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+`;
+
+
+const StyledInput = styled( Input )`
+    flex: 1;
+    padding-right: 2rem; /* Space for the clear button */
+        border-radius: 3px;
+`;
 
 const NoProductsMessage = styled.div`
     display: flex;
@@ -129,7 +225,7 @@ const NoProductsMessage = styled.div`
 const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
-        align-items: center;
+    align-items: center;
     padding: 1rem;
     margin-left: 26rem;
 `;

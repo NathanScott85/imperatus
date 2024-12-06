@@ -24,11 +24,12 @@ export const BrandsProvider = ( { children }: { children: ReactNode } ) => {
   const [brands, setBrands] = useState<Brands[]>( [] );
   const [page, setPage] = useState( 1 );
   const [limit, setLimit] = useState( 10 );
+  const [search, setSearch] = useState( '' );
   const [totalCount, setTotalCount] = useState( 0 );
   const [totalPages, setTotalPages] = useState( 1 );
   const [currentPage, setCurrentPage] = useState( 1 );
 
-  const queryVariables = useMemo( () => ( { page: currentPage, limit: 10 } ), [currentPage] );
+  const queryVariables = useMemo( () => ( { page: currentPage, limit: 10, search } ), [currentPage, search] );
 
   const resetPagination = () => {
     setCurrentPage( 1 );
@@ -40,7 +41,7 @@ export const BrandsProvider = ( { children }: { children: ReactNode } ) => {
     onCompleted: ( data ) => {
       if ( data?.getAllBrands ) {
         setBrands( data.getAllBrands.brands || [] );
-        setTotalPages( data.getAllBrands.totalPages )
+        setTotalPages( data.getAllBrands.totalPages || 1 )
         setTotalCount( data.getAllBrands.totalCount || 0 );
         setCurrentPage( data.getAllBrands.currentPage || 1 );
       }
@@ -125,6 +126,7 @@ export const BrandsProvider = ( { children }: { children: ReactNode } ) => {
       error,
       page,
       setPage,
+      setSearch,
       limit,
       setLimit,
       totalCount,

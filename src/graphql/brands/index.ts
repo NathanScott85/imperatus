@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_BRANDS = gql`
- query GetAllBrands($page: Int!, $limit: Int!) {
-    getAllBrands(page: $page, limit: $limit) {
+ query GetAllBrands($page: Int!, $limit: Int!, $search: String) {
+    getAllBrands(page: $page, limit: $limit, search: $search) {
         totalCount
         totalPages
         currentPage
