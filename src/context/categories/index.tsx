@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import {
     GET_CATEGORIES,
@@ -21,6 +21,7 @@ interface Category {
     name: string;
     description: string;
     img?: File | null;
+    products: any
 }
 
 interface UpdateCategoryInput {
@@ -30,21 +31,57 @@ interface UpdateCategoryInput {
     img: any;
 }
 
-const CategoriesContext = createContext<any | null>( null );
+interface CategoriesContextProps {
+    categories: Category[] | null;
+    loading: boolean;
+    error: any;
+    updateCategory: ( variables: UpdateCategoryInput ) => Promise<void>;
+    deleteCategory: ( id: string ) => Promise<void>;
+    fetchCategories: () => void;
+    currentCategory: Category | null;
+    fetchCategoryById: ( options: { variables: { id: number } } ) => void;
+    categoryLoading: boolean;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    categoryError: any;
+    updating: boolean;
+    updateError: any;
+    deleteloading: boolean;
+    deleteError: any;
+    setPage: ( page: number ) => void;
+    categorySuccess: boolean;
+    limit: number;
+    setLimit: ( limit: number ) => void;
+    search: string;
+    setSearch: ( search: string ) => void;
+    resetPagination: () => void;
+}
+
+const CategoriesContext = createContext<CategoriesContextProps | null>( null );
 
 export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     const [categories, setCategories] = useState<Category[]>( [] );
     const [currentCategory, setCurrentCategory] = useState<Category | null>( null );
-    const [page, setPage] = useState( 1 );
     const [limit, setLimit] = useState( 9 );
     const [totalCount, setTotalCount] = useState( 0 );
+    const [totalPages, setTotalPages] = useState( 1 );
+    const [currentPage, setCurrentPage] = useState( 1 );
+    const [search, setSearch] = useState( '' );
+
+    const queryVariables = useMemo( () => ( { page: currentPage, limit: limit, search } ), [currentPage, limit, search] );
+
+    const resetPagination = () => {
+        setCurrentPage( 1 );
+    };
 
     const [fetchCategories, { loading, error }] = useLazyQuery( GET_CATEGORIES, {
         fetchPolicy: 'cache-and-network',
-        variables: { page, limit },
+        variables: queryVariables,
         onCompleted: ( data ) => {
-            setCategories( data.getAllCategories.categories );
-            setTotalCount( data.getAllCategories.totalCount );
+            setCategories( data?.getAllCategories?.categories || [] );
+            setTotalCount( data?.getAllCategories?.totalCount || 0 );
+            setTotalPages( data?.getAllCategories?.totalPages || 1 );
         },
     } );
 
@@ -68,7 +105,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
 
     useEffect( () => {
         fetchCategories();
-    }, [fetchCategories, page, limit] );
+    }, [fetchCategories, limit] );
 
     const updateCategory = async ( { id, name, description, img }: UpdateCategoryInput ) => {
         try {
@@ -109,18 +146,6 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
         }
     };
 
-    // Methods for pagination
-    const nextPage = () => {
-        if ( page < Math.ceil( totalCount / limit ) ) {
-            setPage( ( prevPage ) => prevPage + 1 );
-        }
-    };
-
-    const previousPage = () => {
-        if ( page > 1 ) {
-            setPage( ( prevPage ) => prevPage - 1 );
-        }
-    };
 
     return (
         <CategoriesContext.Provider
@@ -134,18 +159,21 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 currentCategory,
                 fetchCategoryById,
                 categoryLoading,
+                totalCount,
+                totalPages,
+                currentPage,
                 categoryError,
                 updating,
                 updateError,
                 deleteloading,
                 deleteError,
+                search,
+                setPage: setCurrentPage,
                 categorySuccess: !!updatedCategoryData,
-                page,
                 limit,
                 setLimit,
-                totalCount,
-                nextPage,
-                previousPage,
+                setSearch,
+                resetPagination
             }}
         >
             {children}

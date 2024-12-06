@@ -235,7 +235,7 @@ export const AddProduct = () => {
                             <Select onClick={handleCategoryDropdownToggle}>
                                 <DropdownHeader>
                                     {addProduct.category
-                                        ? categories.find( ( category: any ) => category.id.toString() === addProduct.category )?.name
+                                        ? categories!?.find( ( category: any ) => category.id.toString() === addProduct.category )?.name
                                         : 'Select Category'}
                                     <ChevronContainer isDropdownOpen={isCategoryDropdownOpen}>
                                         <ChevronUp stroke="#C79D0A" />
@@ -243,7 +243,7 @@ export const AddProduct = () => {
                                 </DropdownHeader>
                                 {isCategoryDropdownOpen && (
                                     <DropdownList>
-                                        {categories.map( ( category: any ) => (
+                                        {categories!?.map( ( category: any ) => (
                                             <DropDownOption
                                                 key={category.id}
                                                 onClick={( e ) => {

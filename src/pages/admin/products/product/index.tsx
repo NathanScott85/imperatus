@@ -253,7 +253,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                     onChange={handleInputChange}
                                 >
                                     <option value="">Select a Category</option>
-                                    {categories.map( ( category: any ) => (
+                                    {categories!?.map( ( category: any ) => (
                                         <option key={category.id} value={category.id}>
                                             {category.name}
                                         </option>
@@ -296,7 +296,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                     onChange={handleInputChange}
                                 >
                                     <option value="">Select a Category</option>
-                                    {categories.map( ( category: any ) => (
+                                    {categories!?.map( ( category: any ) => (
                                         <option key={category.id} value={category.id}>
                                             {category.name}
                                         </option>

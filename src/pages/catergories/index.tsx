@@ -11,40 +11,41 @@ import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
 
-const getCategoriesPath = ( category: any ) => {
-    const categoryPath = category
-        ? generatePath( '/shop/categories/category/:id/:name', {
-            id: category.id,
-            name: category.name.replace( /\s+/g, '-' ).toLowerCase(),
-        } )
-        : '';
-    return {
-        categoryPath,
-    };
+const getCategoriesPath = ( category: { id: string; name: string } ) => {
+    const categoryPath = generatePath( '/shop/categories/category/:id/:name', {
+        id: category.id,
+        name: category.name.replace( /\s+/g, '-' ).toLowerCase(),
+    } );
+    return categoryPath;
 };
 
-export const Categories = () => {
+export const Categories: React.FC = () => {
     const {
         categories,
         loading,
         error,
         fetchCategories,
-        page,
-        nextPage,
-        previousPage,
-        totalCount,
-        limit
+        setPage,
+        currentPage,
+        totalPages,
+        limit,
     } = useCategoriesContext();
 
     useEffect( () => {
         fetchCategories();
-    }, [fetchCategories, page, limit] ); // Include page in dependency
+    }, [fetchCategories, currentPage, limit] );
 
     if ( error ) return <ErrorMessage>Error loading categories: {error.message}</ErrorMessage>;
 
-    const sortedCategories = categories
-        ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) )
-        : [];
+    const sortedCategories = categories ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) ) : [];
+
+
+    const handlePageChange = ( newPage: number ) => {
+        if ( newPage >= 1 && newPage <= totalPages ) {
+            setPage( newPage );
+            fetchCategories();
+        }
+    };
 
     return (
         <>
@@ -76,52 +77,53 @@ export const Categories = () => {
                                 <h1>Categories</h1>
                                 <FancyContainer variant="filters" size="filters">
                                     <CategoriesFilter>
-                                        {sortedCategories.map( ( category ) => {
-                                            const { categoryPath } = getCategoriesPath( category );
-                                            return (
-                                                <CatergoriesWrapper key={category.id}>
-                                                    <StyledLink to={categoryPath}>
-                                                        {category.name}
-                                                    </StyledLink>
-                                                </CatergoriesWrapper>
-                                            );
-                                        } )}
+                                        {sortedCategories.map( ( category ) => (
+                                            <CatergoriesWrapper key={category.id}>
+                                                <StyledLink to={getCategoriesPath( category )}>
+                                                    {category.name}
+                                                </StyledLink>
+                                            </CatergoriesWrapper>
+                                        ) )}
                                     </CategoriesFilter>
                                 </FancyContainer>
                             </CategoriesFilterContainer>
                             <CategoriesListContainer>
-                                {sortedCategories.map( ( category ) => {
-                                    const { categoryPath } = getCategoriesPath( category );
-                                    return (
-                                        <Link to={categoryPath} key={category.id}>
-                                            <CategoryItem>
-                                                <ImageWrapper>
-                                                    <CategoryImage
-                                                        src={category.img?.url}
-                                                        alt={category?.name}
-                                                    />
-                                                </ImageWrapper>
-                                                <p>{category?.name}</p>
-                                            </CategoryItem>
-                                        </Link>
-                                    );
-                                } )}
+                                {sortedCategories.map( ( category ) => (
+                                    <Link to={getCategoriesPath( category )} key={category.id}>
+                                        <CategoryItem>
+                                            <ImageWrapper>
+                                                <CategoryImage
+                                                    src={category.img?.url}
+                                                    alt={category.name}
+                                                />
+                                            </ImageWrapper>
+                                            <p>{category.name}</p>
+                                        </CategoryItem>
+                                    </Link>
+                                ) )}
                             </CategoriesListContainer>
                         </FiltersAndCategoriesContainer>
-                        {categories.length >= 10 ? <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton onClick={previousPage} disabled={page === 1}>
-                                    Previous
-                                </PageButton>
-                                <span>Page {page} of {Math.ceil( totalCount / limit )}</span>
-                                <PageButton onClick={nextPage} disabled={page >= Math.ceil( totalCount / limit )}>
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
-                            :
-                            null
-                        }
+                        {totalPages > 1 && (
+                            <PaginationContainer>
+                                <PaginationControls>
+                                    <PageButton
+                                        onClick={() => handlePageChange( currentPage - 1 )}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </PageButton>
+                                    <span>
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+                                    <PageButton
+                                        onClick={() => handlePageChange( currentPage + 1 )}
+                                        disabled={currentPage >= totalPages}
+                                    >
+                                        Next
+                                    </PageButton>
+                                </PaginationControls>
+                            </PaginationContainer>
+                        )}
                     </CategoriesContainer>
                 )}
                 <Reviews />

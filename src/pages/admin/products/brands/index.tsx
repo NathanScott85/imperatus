@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useDeferredValue, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FancyContainer } from '../../../../components/fancy-container';
 import { useBrandsContext } from '../../../../context/brands';
 import { Brand } from './brand';
+import { Input } from '../../../../components/input';
 
 export const AdminBrands = () => {
-  const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
+
   const {
     brands,
     fetchBrands,
@@ -14,15 +15,19 @@ export const AdminBrands = () => {
     totalPages,
     setPage,
     currentPage,
-    setCurrentPage } = useBrandsContext();
+    setCurrentPage, setSearch } = useBrandsContext();
+
+  const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
+  const [searchQuery, setSearchQuery] = useState<string>( "" );
+
+  const deferredSearchQuery = useDeferredValue( searchQuery );
 
   useEffect( () => {
+    setSearch( deferredSearchQuery );
     fetchBrands();
-  }, [fetchBrands] );
+  }, [deferredSearchQuery, fetchBrands, setSearch] );
 
-  const handleViewBrand = ( brand: any ) => {
-    setSelectedBrand( brand );
-  };
+
 
   const handlePageChange = ( newPage: number ) => {
     if ( newPage >= 1 && newPage <= totalPages ) {
@@ -31,12 +36,16 @@ export const AdminBrands = () => {
     }
   };
 
+  const handleViewBrand = ( brand: any ) => {
+    setSelectedBrand( brand );
+  };
+
   const handleBackToList = () => {
     setSelectedBrand( null );
   };
 
-  if ( loading ) return <p>Loading...</p>;
-  if ( error ) return <Span>Error loading categories: {error.message}</Span>;
+  // if ( loading ) return <p>Loading...</p>;
+  // if ( error ) return <Span>Error loading categories: {error.message}</Span>;
 
   if ( selectedBrand ) {
     return (
@@ -45,67 +54,151 @@ export const AdminBrands = () => {
   }
   return (
     <BrandsContainer>
-      <BrandsTitle>Product Brands</BrandsTitle>
-      {brands?.length !== 0 ? <BrandsWrapper>
-        <Table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {brands?.map( ( brand: any, index: any ) => {
-              return (
-                <TableRow key={brand.id} isOdd={index % 2 === 1}>
-                  <td>{brand.name}</td>
-                  <td>{brand.description}</td>
-                  <td>
-                    <ViewButton onClick={() => handleViewBrand( brand )}>
-                      View
-                    </ViewButton>
-                  </td>
-                </TableRow>
-              )
-            } )}
+      <TitleRow>
+        <BrandsTitle>Product Brands</BrandsTitle>
+        <SearchContainer>
+          <StyledInput
+            variant="secondary"
+            size="small"
+            placeholder="Search product types..."
+            value={searchQuery}
+            onChange={( e ) => setSearchQuery( e.target.value )}
+          />
+          {searchQuery && (
+            <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
+          )}
+        </SearchContainer>
+      </TitleRow>
 
-          </tbody>
-        </Table>
-        {totalPages > 1 && (
-          <Pagination>
-            <PageButton
-              onClick={() => handlePageChange( currentPage - 1 )}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </PageButton>
-            <PageButton
-              onClick={() => handlePageChange( currentPage + 1 )}
-              disabled={currentPage >= totalPages}
-            >
-              Next
-            </PageButton>
-          </Pagination>
-        )}
-      </BrandsWrapper> : <ProductsContainer>
-        <FancyContainer>
-          <NoTypesMessage>
-            <p>No Brands added at the moment.</p>
-          </NoTypesMessage>
-        </FancyContainer>
-      </ProductsContainer>
-      }
+      {brands?.length !== 0 ? (
+        <BrandsWrapper>
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <CenteredCell>Loading...</CenteredCell>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <CenteredCell>Error: {error.message}</CenteredCell>
+                </tr>
+              ) : (
+                brands?.map( ( brand: any, index: number ) => (
+                  <TableRow key={brand.id} isOdd={index % 2 === 1}>
+                    <td>{brand.name}</td>
+                    <td>{brand.description}</td>
+                    <td>
+                      <ViewButton onClick={() => handleViewBrand( brand )}>
+                        View
+                      </ViewButton>
+                    </td>
+                  </TableRow>
+                ) )
+              )}
+            </tbody>
+          </Table>
+          {totalPages > 1 && (
+            <PaginationContainer>
+              <PaginationControls>
+                <PageButton
+                  onClick={() => handlePageChange( currentPage - 1 )}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </PageButton>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <PageButton
+                  onClick={() => handlePageChange( currentPage + 1 )}
+                  disabled={currentPage >= totalPages}
+                >
+                  Next
+                </PageButton>
+              </PaginationControls>
+            </PaginationContainer>
+          )}
+        </BrandsWrapper>
+      ) : (
+        <ProductsContainer>
+          <FancyContainer>
+            <NoBrandsMessage>
+              {searchQuery ? (
+                <p>No results found for "{searchQuery}"</p>
+              ) : (
+                <p>No Brands added at the moment.</p>
+              )}
+            </NoBrandsMessage>
+          </FancyContainer>
+        </ProductsContainer>
+      )}
+
     </BrandsContainer>
   )
 }
 
-const Span = styled.span`
-    color: #fff;
-    font-family: Cinzel;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
+const SearchContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Push the search input and button to the right */
+    max-width: 325px;
+    width: 100%;
+
+`;
+
+const ClearButton = styled.button`
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: white;
+    z-index: 999;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+        color: #c79d0a;
+    }
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Spacing between title and input */
+  margin-bottom: 0.75rem;
+`;
+
+const NoBrandsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
 `;
 
 const BrandsContainer = styled.div`
@@ -121,6 +214,12 @@ const BrandsTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
+`;
+
+const StyledInput = styled( Input )`
+  margin-left: auto;
+  max-width: 300px;
+  border-radius: 3px;
 `;
 
 
@@ -181,11 +280,28 @@ const CenteredCell = styled.td`
     padding: 2rem 0;
 `;
 
-const Pagination = styled.div`
+const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 1rem;
+    align-items: center;
+
+    margin-left: 26rem;
 `;
+
+const PaginationControls = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0rem 1rem 1rem;
+    
+    span {
+        color: white;
+        text-align: center;
+        margin: 0 1rem;
+    }
+`;
+
 
 const PageButton = styled.button<{ disabled?: boolean }>`
     background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};

@@ -136,7 +136,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
     const [productTypes, setProductTypes] = useState<ProductType[]>( [] );
     const [categoryError, setCategoryError] = useState<string | null>( null );
     const [categorySuccess, setCategorySuccess] = useState<string | null>( null );
-
     const queryVariables = useMemo( () => ( { page: currentPage, limit: 10, search } ), [currentPage, search] );
 
     const resetPagination = () => {
@@ -164,20 +163,23 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
 
     const [fetchProductTypes, { loading: productTypesLoading, error: productTypesError, data: productTypesData }] = useLazyQuery( GET_ALL_PRODUCT_TYPES, {
         fetchPolicy: 'cache-and-network',
+        variables: queryVariables,
         onCompleted: ( data ) => {
-            setProductTypes( data.getAllProductTypes );
+            setProductTypes( data.getAllProductTypes.types || [] ); // Ensure fallback to an empty array
+            setTotalCount( data.getAllProductTypes.totalCount || 0 );
+            setTotalPages( data.getAllProductTypes.totalPages || 1 );
         },
     } );
 
     const [createProductMutation] = useMutation( CREATE_PRODUCT );
     const [createProductTypeMutation] = useMutation( CREATE_PRODUCT_TYPE );
     const [updateProductMutation] = useMutation( UPDATE_PRODUCT );
-    const [deleteProductMutation, { loading: deleteLoading, error: deleteError }] = useMutation( DELETE_PRODUCT );
+    const [deleteProductMutation] = useMutation( DELETE_PRODUCT );
 
     const createProduct = async ( variables: {
         name: string;
         price: string | number;
-        productTypeId: number; // Pass ID instead of name
+        productTypeId: number;
         img: File;
         categoryId: number;
         stock: {
@@ -224,8 +226,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ( { children } )
             };
         }
     };
-
-
 
     const createProductType = async ( variables: { name: string } ): Promise<{ success: boolean; message: string; productType: ProductType | null }> => {
         try {

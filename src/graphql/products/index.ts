@@ -166,13 +166,17 @@ export const DELETE_PRODUCT = gql`
 `;
 
 export const GET_ALL_PRODUCT_TYPES = gql`
- query GetAllProductTypes {
-    getAllProductTypes {
+  query GetAllProductTypes($page: Int!, $limit: Int!, $search: String) {
+    getAllProductTypes(page: $page, limit: $limit, search: $search) {
+      totalCount
+      totalPages
+      currentPage
+      types {
         id
         name
+      }
     }
-}
-
+  }
 `;
 
 export const CREATE_PRODUCT_TYPE = gql`

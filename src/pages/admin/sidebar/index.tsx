@@ -87,10 +87,10 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                             MANAGE PRODUCT TYPES
                         </SubMenuItem>
                         <SubMenuItem onClick={() => setSelectedComponent( 'AddBrand' )}>
-                            ADD PRODUCT BRAND
+                            ADD BRAND
                         </SubMenuItem>
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminBrands' )}>
-                            MANAGE PRODUCT BRAND
+                            MANAGE BRAND
                         </SubMenuItem>
                     </SubMenu>
                 )}
