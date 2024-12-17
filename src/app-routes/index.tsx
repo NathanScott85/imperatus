@@ -46,6 +46,7 @@ import { ResetPassword } from '../pages/reset-password';
 import { AdminProvider } from '../context/admin';
 import { CategoriesProvider } from '../context/categories';
 import { BrandsProvider } from '../context/brands';
+import { SetsProvider } from '../context/sets';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -63,7 +64,9 @@ export const AppRoutes = () => {
                                 <AdminProvider>
                                     <CategoriesProvider>
                                         <BrandsProvider>
-                                            <Admin />
+                                            <SetsProvider>
+                                                <Admin />
+                                            </SetsProvider>
                                         </BrandsProvider>
                                     </CategoriesProvider>
                                 </AdminProvider>
