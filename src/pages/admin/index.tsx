@@ -21,6 +21,8 @@ import { AddBrand } from './products/add-brand';
 import { AdminBrands } from './products/brands';
 import { AdminProductTypes } from './products/product-type'; // Import your new component
 import { AddProductType } from './products/add-type';
+import { AdminSets } from './products/sets';
+import { AddSet } from './products/add-set';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
@@ -57,6 +59,10 @@ export const Admin = () => {
                 return <AddBrand />;
             case 'AdminBrands':
                 return <AdminBrands />;
+            case 'AddSet':
+                return <AddSet />;
+            case 'AdminSet':
+                return <AdminSets />;
             case 'AddProductType':
                 return <AddProductType />;
             case 'AdminProductTypes':

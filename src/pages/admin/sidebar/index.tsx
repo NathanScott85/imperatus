@@ -92,6 +92,12 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminBrands' )}>
                             MANAGE BRAND
                         </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddSet' )}>
+                            ADD SET
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminSet' )}>
+                            MANAGE SET
+                        </SubMenuItem>
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Carousel', 'AdminCarousel' )}>
