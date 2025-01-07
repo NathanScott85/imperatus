@@ -1,26 +1,179 @@
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import Button from '../../../../components/button';
+import { Input } from '../../../../components/input';
+import { useCarouselContext } from '../../../../context/carousel';
 
 export const AddCarousel = () => {
+    const { addCarousel, loading } = useCarouselContext();
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (selectedFile) {
+            const objectUrl = URL.createObjectURL(selectedFile);
+            setPreviewUrl(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
+    }, [selectedFile]);
+
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.target.value);
+        setIsButtonDisabled(false);
+    };
+
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDescription(e.target.value);
+        setIsButtonDisabled(false);
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        }
+        setIsButtonDisabled(false);
+    };
+
+    const clearFileInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+        setSelectedFile(null);
+    };
+
+    const handleClearFile = () => {
+        clearFileInput();
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+        setIsButtonDisabled(true);
+
+        if (!title || !description || !selectedFile) {
+            setError('All fields are required, including an image.');
+            setIsButtonDisabled(false);
+            return;
+        }
+
+        try {
+            console.log(title, description, selectedFile , 'addCarousel data')
+            await addCarousel(title, description, selectedFile);
+
+            setSuccess('Carousel page created successfully!');
+            setError('');
+            setTitle('');
+            setDescription('');
+            clearFileInput();
+        } catch (err) {
+            const errorMessage = (err as Error).message;
+            const errorMessages: Record<string, string> = {
+                'A file with this name already exists':
+                    'A file with this name already exists. Please choose a different file or rename it.',
+                'Unique constraint failed on the fields':
+                    'A carousel with this title already exists. Please choose a different title.',
+            };
+            console.log(errorMessage, errorMessages[errorMessage], 'error messages')
+            setError(
+                errorMessages[errorMessage] ||
+                    'Failed to create carousel page. Please try again later.'
+            );
+            setSuccess('');
+        } finally {
+            setIsButtonDisabled(false);
+        }
+    };
+
     return (
         <CarouselContainer>
-            <CarouselTitle>Add Carousel Page</CarouselTitle>
+            <div>
+                <CarouselTitle>Add New Carousel Page</CarouselTitle>
+                <Form onSubmit={handleSubmit}>
+                    <FormGroup>
+                        <Label htmlFor="title">Title</Label>
+                        <Input
+                            variant="secondary"
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={handleTitleChange}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="description">Description</Label>
+                        <Input
+                            variant="secondary"
+                            type="text"
+                            id="description"
+                            value={description}
+                            onChange={handleDescriptionChange}
+                            required
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="image">Upload Image</Label>
+                        <Input
+                            variant="secondary"
+                            type="file"
+                            id="image"
+                            ref={fileInputRef}
+                            onChange={handleImageChange}
+                            required
+                        />
+                    </FormGroup>
+                    <ButtonContainer>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            disabled={
+                                !title ||
+                                !description ||
+                                isButtonDisabled ||
+                                loading
+                            }
+                        >
+                            {loading ? 'Creating...' : 'Create Carousel'}
+                        </Button>
+
+                        {selectedFile && (
+                            <Button
+                                variant="secondary"
+                                size="xsmall"
+                                onClick={handleClearFile}
+                            >
+                                Clear File
+                            </Button>
+                        )}
+                    </ButtonContainer>
+                </Form>
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                {success && <SuccessMessage>{success}</SuccessMessage>}
+            </div>
+            <ImagePreviewContainer>
+                <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
+                {previewUrl && (
+                    <ImagePreview src={previewUrl} alt="Image preview" />
+                )}
+            </ImagePreviewContainer>
         </CarouselContainer>
     );
 };
 
-export const Container = styled.div`
-    color: #10000e;
-    height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
+// Styled components omitted for brevity, same as before.
+
+
 const CarouselContainer = styled.div`
-    color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     padding: 2rem;
     background-color: #160d35;
@@ -36,4 +189,61 @@ const CarouselTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
+`;
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+`;
+
+const FormGroup = styled.div`
+    margin-bottom: 1rem;
+`;
+
+const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`;
+
+const Label = styled.label`
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+    display: block;
+`;
+
+const ErrorMessage = styled.p`
+    color: red;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    margin-top: 1rem;
+`;
+
+const SuccessMessage = styled.p`
+    color: green;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    margin-top: 1rem;
+`;
+
+const ImagePreviewContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+`;
+
+const ImagePreviewTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 18px;
+    margin-bottom: 1rem;
+    color: white;
+`;
+
+const ImagePreview = styled.img`
+    max-width: 200px;
+    max-height: 200px;
+    border: 1px solid #ac8fff;
+    border-radius: 4px;
 `;

@@ -5,38 +5,37 @@ import { ChevronLeft } from '../svg/chevron-left';
 import { ChevronRight } from '../svg/chevron-right';
 import { Dots } from '../../components/dots';
 
-interface CarouselItem {
-    id: number;
-    img: string;
-    name: string;
-    price: number;
-    rrp: number;
-    category: string;
-    cardgame: string;
+interface CarouselPage {
+    id: string;
+    title: string;
     description: string;
-    buttontext: string;
+    img?: any;
 }
 
 interface CarouselProps {
-    items: CarouselItem[];
+    items: {
+        id: string;
+        title: string;
+        pages: CarouselPage[];
+    }[];
     small?: boolean;
 }
 
-export const Carousel: React.FC<CarouselProps> = ({
-    items,
-    small = false,
-}: CarouselProps) => {
+export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    const pages = items.flatMap((item) => item.pages); // Flatten all pages across items
+    console.log(pages, 'pages');
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) =>
-            prevIndex === items.length - 1 ? 0 : prevIndex + 1,
+            prevIndex === pages.length - 1 ? 0 : prevIndex + 1,
         );
     };
 
     const prevSlide = () => {
         setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? items.length - 1 : prevIndex - 1,
+            prevIndex === 0 ? pages.length - 1 : prevIndex - 1,
         );
     };
 
@@ -47,22 +46,24 @@ export const Carousel: React.FC<CarouselProps> = ({
     return (
         <Container>
             <CarouselContainer small={small}>
-                {items.map((item, index) => (
-                    <CarouselSlide key={item.id} index={index - currentIndex}>
+                {pages.map((page, index) => (
+                    <CarouselSlide key={page.id} index={index - currentIndex}>
                         <CarouselContentContainer>
-                            <CarouselImage
-                                src={item.img}
-                                alt={item.name}
-                                small={small}
-                            />
+                            {page.img && (
+                                <CarouselImage
+                                    src={page.img.url}
+                                    alt={page.title}
+                                    small={small}
+                                />
+                            )}
                             <CarouselContentWrapper small={small}>
-                                <GameImage src={item.cardgame} small={small} />
                                 <CarouselContent small={small}>
-                                    <p>{item.description}</p>
+                                    <p>{page.title}</p>
+                                    <p>{page.description}</p>
                                     <Button
                                         link
-                                        pathname={`/shop/card-games/${item.name}`}
-                                        label={item?.buttontext}
+                                        pathname={`/shop/card-games/${page.id}`}
+                                        label="Learn More"
                                         size="small"
                                         variant="secondary"
                                     />
@@ -76,7 +77,7 @@ export const Carousel: React.FC<CarouselProps> = ({
                     <Dots
                         variant="carousel"
                         carousel
-                        items={items}
+                        items={pages}
                         currentIndex={currentIndex}
                         handleDotClick={handleDotClick}
                     />
@@ -99,15 +100,6 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-`;
-
-const GameImage = styled.img<{ small: boolean }>`
-    margin: 0 auto;
-    max-width: ${({ small }) => (small ? '80%' : '100%')};
-    height: auto;
-    &:hover {
-        transform: scale(1.1);
-    }
 `;
 
 const CarouselContainer = styled.div<{ small: boolean }>`
@@ -167,7 +159,6 @@ const CarouselContent = styled.div<{ small: boolean }>`
         padding: 0.5rem;
         color: #c79d0a;
         filter: drop-shadow(-2px -3px 2px #4444dd);
-        font-size: ${({ small }) => (small ? '2.5em' : '4em')};
     }
 `;
 

@@ -47,14 +47,24 @@ import { AdminProvider } from '../context/admin';
 import { CategoriesProvider } from '../context/categories';
 import { BrandsProvider } from '../context/brands';
 import { SetsProvider } from '../context/sets';
+import { CarouselProvider } from '../context/carousel';
 
 export const AppRoutes = () => {
     const location = useLocation();
     const { isAuthenticated, isAdminOrOwner } = useAppContext();
+
     return (
         <Routes location={location}>
-            <Route path="/" element={<Home />} />
+            <Route
+                path="/"
+                element={
+                    <CarouselProvider>
+                        <Home />
+                    </CarouselProvider>
+                }
+            />
 
+            {/* Admin Route with CarouselProvider nested */}
             {isAdminOrOwner && (
                 <Route
                     path={`/account/admin`}
@@ -65,7 +75,9 @@ export const AppRoutes = () => {
                                     <CategoriesProvider>
                                         <BrandsProvider>
                                             <SetsProvider>
-                                                <Admin />
+                                                <CarouselProvider>
+                                                    <Admin />
+                                                </CarouselProvider>
                                             </SetsProvider>
                                         </BrandsProvider>
                                     </CategoriesProvider>
@@ -75,50 +87,8 @@ export const AppRoutes = () => {
                     }
                 />
             )}
-            <Route
-                path="/account/my-account"
-                element={
-                    <ProtectedRoute
-                        redirectPath={
-                            isAuthenticated ? '/account/my-account' : '/'
-                        }
-                        element={<Account />}
-                    />
-                }
-            />
-            <Route path="/account/reset-password" element={<ResetPassword />} />
-            <Route path="/account/login" element={<Login />} />
-            <Route
-                path="/account/verification-success"
-                element={<VerificationSuccess />}
-            />
-            <Route
-                path="/account/verification-status"
-                element={<VerificationStatus />}
-            />
-            <Route
-                path="/account/verify-email"
-                element={
-                    <VerificationProvider>
-                        <VerifyEmail />
-                    </VerificationProvider>
-                }
-            />
-            <Route
-                path="/account/register"
-                element={
-                    <RegisterProvider>
-                        <Register />
-                    </RegisterProvider>
-                }
-            />
-            <Route
-                path="/account/forgot-password"
-                element={<ForgotPassword />}
-            />
-            <Route path="/account/sign-out" element={<SignOut />} />
-            <Route path="/basket" element={<Basket />} />
 
+            {/* Categories route */}
             <Route
                 path="/shop/categories/*"
                 element={
@@ -138,6 +108,7 @@ export const AppRoutes = () => {
                 }
             />
 
+            {/* Other routes */}
             <Route path="/shop/card-games" element={<CardGames />} />
             <Route
                 path="/shop/card-games/cardgame/:id/:name"
@@ -176,6 +147,7 @@ export const AppRoutes = () => {
             />
             <Route path="/shop/offers" element={<Offers />} />
 
+            {/* Informational pages */}
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
             <Route path="/news-&-events" element={<NewsAndEvents />} />
@@ -196,10 +168,23 @@ export const AppRoutes = () => {
             />
             <Route path="/returns-policy" element={<ReturnsPolicy />} />
             <Route path="/discount-codes" element={<DiscountCodes />} />
-            <Route
-                path="*"
-                element={<FourOFour isAuthenticated={!isAuthenticated} />}
-            />
+
+            {/* Account and authentication routes */}
+            <Route path="/account/my-account" element={<ProtectedRoute redirectPath={isAuthenticated ? '/account/my-account' : '/'} element={<Account />} />} />
+            <Route path="/account/reset-password" element={<ResetPassword />} />
+            <Route path="/account/login" element={<Login />} />
+            <Route path="/account/verification-success" element={<VerificationSuccess />} />
+            <Route path="/account/verification-status" element={<VerificationStatus />} />
+            <Route path="/account/verify-email" element={<VerificationProvider><VerifyEmail /></VerificationProvider>} />
+            <Route path="/account/register" element={<RegisterProvider><Register /></RegisterProvider>} />
+            <Route path="/account/forgot-password" element={<ForgotPassword />} />
+            <Route path="/account/sign-out" element={<SignOut />} />
+
+            {/* Basket */}
+            <Route path="/basket" element={<Basket />} />
+
+            {/* Fallback route */}
+            <Route path="*" element={<FourOFour isAuthenticated={!isAuthenticated} />} />
         </Routes>
     );
 };
