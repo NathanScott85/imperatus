@@ -10,7 +10,7 @@ export const AdminCarousel = () => {
                 <p>You can preview changes to the carousel here</p>
             </div>
             <div>
-                <Carousel small items={sampleItems} />
+                {/* <Carousel small items={sampleItems} /> */}
             </div>
         </CarouselContainer>
     );

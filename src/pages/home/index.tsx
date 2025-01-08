@@ -7,50 +7,57 @@ import { Products } from '../../components/products';
 import { latestproducts } from '../../lib/mocks';
 import { FancyContainer } from '../../components/fancy-container';
 import { Reviews } from '../../components/reviews';
-import { Carousel } from '../../components/carousel'; // Renamed to avoid conflict with Carousel interface
+import { Carousel } from '../../components/carousel';
 import ArenaImage from '../../components/svg/website-images/0_71.png';
 import { MainContainer } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
-import { sampleItems } from '../../lib/carousel-mocks';
+import { useCarouselContext } from '../../context/carousel';
 
-export const Home: React.FC = () => (
-    <>
-        <TopHeader />
-        <Header background />
-        <Navigation background />
-        <Carousel items={sampleItems} />
-        <MainContainer>
-            <Products label="Latest Products" products={latestproducts} />
-            <Products
-                label="Product Recommendations"
-                products={latestproducts}
-            />
-            <Section>
-                <FancyContainer variant="small" size="small">
-                    <ContentContainer>
-                        <HeadingText>Imperatus Trading</HeadingText>
-                        <HeadingText>Cards & Games</HeadingText>
-                        <ContentText>
-                            Imperatus Trading Cards & Games invites you to
-                            immerse yourself in a world where strategy meets
-                            collectible artistry. Step into our realm where each
-                            card is not just a piece of the game but a gateway
-                            to thrilling adventures and epic battles. Whether
-                            you're a seasoned collector or a novice explorer,
-                            Imperatus offers a diverse array of trading cards
-                            and games that cater to every level of player.
-                            Unveil the power of your favorite characters,
-                            mastermind cunning tactics, and forge alliances that
-                            will determine the fate of entire realms.
-                        </ContentText>
-                    </ContentContainer>
-                </FancyContainer>
-            </Section>
-            <Reviews />
-        </MainContainer>
-        <Footer />
-    </>
-);
+export const Home: React.FC = () => {
+    const { carousel, loading, error } = useCarouselContext();
+    console.log(carousel, 'carousel')
+    return (
+        <>
+            <TopHeader />
+            <Header background />
+            <Navigation background />
+            {loading && <p>Loading carousel...</p>}
+            {error && <p>Error loading carousel: {error.message}</p>}
+            {carousel && <Carousel items={carousel as any} />} 
+            <MainContainer>
+                <Products label="Latest Products" products={latestproducts} />
+                <Products
+                    label="Product Recommendations"
+                    products={latestproducts}
+                />
+                <Section>
+                    <FancyContainer variant="small" size="small">
+                        <ContentContainer>
+                            <HeadingText>Imperatus Trading</HeadingText>
+                            <HeadingText>Cards & Games</HeadingText>
+                            <ContentText>
+                                Imperatus Trading Cards & Games invites you to
+                                immerse yourself in a world where strategy meets
+                                collectible artistry. Step into our realm where
+                                each card is not just a piece of the game but a
+                                gateway to thrilling adventures and epic
+                                battles. Whether you're a seasoned collector or
+                                a novice explorer, Imperatus offers a diverse
+                                array of trading cards and games that cater to
+                                every level of player. Unveil the power of your
+                                favorite characters, mastermind cunning tactics,
+                                and forge alliances that will determine the fate
+                                of entire realms.
+                            </ContentText>
+                        </ContentContainer>
+                    </FancyContainer>
+                </Section>
+                <Reviews />
+            </MainContainer>
+            <Footer />
+        </>
+    );
+};
 
 const Section = styled.section`
     display: flex;
