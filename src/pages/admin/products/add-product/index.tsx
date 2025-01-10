@@ -4,10 +4,13 @@ import { useAdminContext } from '../../../../context/admin';
 import { useCategoriesContext } from '../../../../context/categories';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
+import { useBrandsContext } from '../../../../context/brands';
+import { useSetsContext } from '../../../../context/sets';
+import { ProductDropdown } from './dropdown';
 import { ChevronUp } from '../../../../components/svg/chevron-up';
 
 export const AddProduct = () => {
-    const [addProduct, setAddProduct] = useState( {
+    const [addProduct, setAddProduct] = useState({
         productName: '',
         productTypeId: null as number | null,
         description: '',
@@ -22,93 +25,104 @@ export const AddProduct = () => {
         },
         rrp: '',
         selectedFile: null as File | null,
-    } );
+        selectedBrand: null as number | null,
+        selectedSet: null as number | null,
+    });
 
-    const [previewUrl, setPreviewUrl] = useState<string | null>( null );
-    const [error, setError] = useState( '' );
-    const [success, setSuccess] = useState( '' );
-    const [isButtonDisabled, setIsButtonDisabled] = useState( false );
-    const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState( false );
-    const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState( false );
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const [dropdownStates, setDropdownStates] = useState<Record<string, boolean>>({
+        type: false,
+        category: false,
+        brand: false,
+        set: false,
+    });
 
     const { categories, fetchCategories } = useCategoriesContext();
     const { productTypes, fetchProductTypes, createProduct } = useAdminContext();
+    const { brands, fetchBrands } = useBrandsContext();
+    const { sets, fetchSets } = useSetsContext();
 
-    useEffect( () => {
+    useEffect(() => {
         fetchCategories();
         fetchProductTypes();
-    }, [fetchCategories, fetchProductTypes] );
+        fetchBrands();
+        fetchSets();
+    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets]);
 
-    const fileInputRef = useRef<HTMLInputElement | null>( null );
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const clearFileInput = () => {
-        if ( fileInputRef.current ) {
+        if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
-        setAddProduct( { ...addProduct, selectedFile: null } );
-        setPreviewUrl( null );
+        setAddProduct({ ...addProduct, selectedFile: null });
+        setPreviewUrl(null);
     };
 
-    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value, type } = e.target;
 
-        if ( id.startsWith( 'stock.' ) ) {
-            const stockKey = id.split( '.' )[1];
-            setAddProduct( prev => ( {
+        if (id.startsWith('stock.')) {
+            const stockKey = id.split('.')[1];
+            setAddProduct(prev => ({
                 ...prev,
                 stock: {
                     ...prev.stock,
-                    [stockKey]: type === 'checkbox' ? ( e.target as HTMLInputElement ).checked : value,
+                    [stockKey]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
                 },
-            } ) );
+            }));
         } else {
-            if ( type === 'checkbox' && e.target instanceof HTMLInputElement ) {
-                setAddProduct( { ...addProduct, [id]: e.target.checked } );
+            if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
+                setAddProduct({ ...addProduct, [id]: e.target.checked });
             } else {
-                setAddProduct( { ...addProduct, [id]: value } );
+                setAddProduct({ ...addProduct, [id]: value });
             }
         }
-        setIsButtonDisabled( false );
+        setIsButtonDisabled(false);
     };
 
-    const handleCategoryChange = ( catId: string ) => {
-        setAddProduct( { ...addProduct, category: catId } );
-        setIsCategoryDropdownOpen( false );
+    const handleDropdownToggle = (dropdown: string) => {
+        setDropdownStates((prev) => ({
+            ...Object.keys(prev).reduce((acc, key) => {
+                acc[key] = false; // Close all dropdowns
+                return acc;
+            }, {} as Record<string, boolean>),
+            [dropdown]: !prev[dropdown], // Toggle the specified dropdown
+        }));
     };
 
-    const handleTypeChange = ( typeId: number ) => {
-        setAddProduct( ( prev ) => ( {
+    const handleDropdownChange = (field: string, value: any) => {
+        setAddProduct((prev) => ({
             ...prev,
-            productTypeId: typeId
-        } ) );
-        setIsTypeDropdownOpen( false );
+            [field]: value,
+        }));
+        setDropdownStates({
+            type: false,
+            category: false,
+            brand: false,
+            set: false,
+        });
     };
 
-    const handleCategoryDropdownToggle = () => {
-        setIsCategoryDropdownOpen( prev => !prev );
-        setIsTypeDropdownOpen( false );
-    };
-
-    const handleTypeDropdownToggle = () => {
-        setIsTypeDropdownOpen( prev => !prev );
-        setIsCategoryDropdownOpen( false );
-    };
-
-    const handleImageChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
-        if ( e.target.files && e.target.files.length > 0 ) {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
-            setAddProduct( { ...addProduct, selectedFile: file } );
-            const objectUrl = URL.createObjectURL( file );
-            setPreviewUrl( objectUrl );
+            setAddProduct({ ...addProduct, selectedFile: file });
+            const objectUrl = URL.createObjectURL(file);
+            setPreviewUrl(objectUrl);
         }
-        setIsButtonDisabled( false );
+        setIsButtonDisabled(false);
     };
 
-    const handleSubmit = async ( e: React.FormEvent ) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError( '' );
-        setSuccess( '' );
-        setIsButtonDisabled( true );
+        setError('');
+        setSuccess('');
+        setIsButtonDisabled(true);
 
         const {
             productName,
@@ -119,22 +133,27 @@ export const AddProduct = () => {
             stock,
             selectedFile,
             rrp,
+            selectedBrand,
+            selectedSet,
         } = addProduct;
-        if ( !productName || !productTypeId || !category || !price || !selectedFile ) {
-            setError( 'All fields are required, including an image.' );
-            setIsButtonDisabled( false );
+
+        if (!productName || !productTypeId || !category || !price || !selectedFile || !selectedBrand || !selectedSet) {
+            setError('All fields are required, including an image, brand, and set.');
+            setIsButtonDisabled(false);
             return;
         }
 
         try {
-            const { success, message } = await createProduct( {
+            const { success, message } = await createProduct({
                 name: productName,
-                price: parseFloat( price ),
-                productTypeId: Number( productTypeId ),
+                price: parseFloat(price),
+                productTypeId: Number(productTypeId),
+                brandId: Number(selectedBrand),
+                setId: Number(selectedSet),
                 img: selectedFile,
-                categoryId: parseInt( category ),
+                categoryId: parseInt(category),
                 stock: {
-                    amount: Number( stock.amount ),
+                    amount: Number(stock.amount),
                     sold: 0,
                     instock: stock.instock,
                     soldout: stock.soldout,
@@ -142,13 +161,13 @@ export const AddProduct = () => {
                 },
                 preorder: stock.preorder,
                 description,
-                rrp: rrp ? parseFloat( rrp ) : undefined,
-            } );
+                rrp: rrp ? parseFloat(rrp) : undefined,
+            });
 
-            if ( success ) {
-                setSuccess( message );
+            if (success) {
+                setSuccess(message);
                 clearFileInput();
-                setAddProduct( {
+                setAddProduct({
                     productName: '',
                     description: '',
                     productTypeId: 0,
@@ -163,14 +182,16 @@ export const AddProduct = () => {
                     },
                     rrp: '',
                     selectedFile: null,
-                } );
+                    selectedBrand: null,
+                    selectedSet: null,
+                });
             } else {
-                setError( message );
+                setError(message);
             }
-        } catch ( err ) {
-            setError( 'An unexpected error occurred.' );
+        } catch (err) {
+            setError('An unexpected error occurred.');
         } finally {
-            setIsButtonDisabled( false );
+            setIsButtonDisabled(false);
         }
     };
 
@@ -201,63 +222,77 @@ export const AddProduct = () => {
                                 required
                             />
                         </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="type">Type</Label>
-                            <Select onClick={handleTypeDropdownToggle}>
-                                <DropdownHeader>
-                                    {addProduct.productTypeId
-                                        ? productTypes?.find( pt => pt.id === addProduct.productTypeId )?.name
-                                        : 'Select Type'}
-                                    <ChevronContainer isDropdownOpen={isTypeDropdownOpen}>
-                                        <ChevronUp stroke="#C79D0A" />
-                                    </ChevronContainer>
-                                </DropdownHeader>
-                                {isTypeDropdownOpen && (
-                                    <DropdownList onClick={( e ) => e.stopPropagation()}>
-                                        {productTypes?.map( ( pt ) => (
-                                            <DropDownOption
-                                                key={pt.id}
-                                                onClick={( e ) => {
-                                                    e.stopPropagation();
-                                                    handleTypeChange( pt.id ); // Pass the name
-                                                }}
-                                            >
-                                                {pt.name}
-                                            </DropDownOption>
-                                        ) )}
-                                    </DropdownList>
-                                )}
-                            </Select>
-                        </FormGroup>
 
-                        <FormGroup>
-                            <Label htmlFor="category">Category</Label>
-                            <Select onClick={handleCategoryDropdownToggle}>
-                                <DropdownHeader>
-                                    {addProduct.category
-                                        ? categories!?.find( ( category: any ) => category.id.toString() === addProduct.category )?.name
-                                        : 'Select Category'}
-                                    <ChevronContainer isDropdownOpen={isCategoryDropdownOpen}>
-                                        <ChevronUp stroke="#C79D0A" />
-                                    </ChevronContainer>
-                                </DropdownHeader>
-                                {isCategoryDropdownOpen && (
-                                    <DropdownList>
-                                        {categories!?.map( ( category: any ) => (
-                                            <DropDownOption
-                                                key={category.id}
-                                                onClick={( e ) => {
-                                                    e.stopPropagation();
-                                                    handleCategoryChange( category.id.toString() );
-                                                }}
-                                            >
-                                                {category.name}
-                                            </DropDownOption>
-                                        ) )}
-                                    </DropdownList>
-                                )}
-                            </Select>
-                        </FormGroup>
+                        <ProductDropdown
+    label="Category"
+    handleDropdownToggle={handleDropdownToggle}
+    handleDropdownChange={handleDropdownChange}
+    toggleValue="category"
+    isDropdownOpen={dropdownStates.category}
+    header={
+        addProduct.category
+            ? categories!?.find((category: any) => category.id.toString() === addProduct.category)?.name
+            : 'Select Category'
+    }
+    values={categories}
+    selectedValue="category"
+    displayField="name"
+/>
+
+{/* Render Sets dropdown only if the selected category is "Card Games" */}
+{categories?.find((category: any) => category.id.toString() === addProduct.category)?.name === 'Card Games' && (
+    <ProductDropdown
+        label="Set"
+        handleDropdownToggle={() => handleDropdownToggle('set')}
+        handleDropdownChange={handleDropdownChange}
+        toggleValue="set"
+        isDropdownOpen={dropdownStates.set}
+        header={
+            addProduct.selectedSet
+                ? sets.find((s: any) => s.id === addProduct.selectedSet)?.setName
+                : 'Select Set'
+        }
+        values={sets}
+        selectedValue="selectedSet"
+        displayField="setName"
+    />
+)}
+
+                        {addProduct.category && (
+                            <ProductDropdown
+                                label="Product Type"
+                                handleDropdownToggle={() => handleDropdownToggle('type')}
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="type"
+                                isDropdownOpen={dropdownStates.type}
+                                header={
+                                    addProduct.productTypeId
+                                        ? productTypes!?.find((pt: any) => pt.id === addProduct.productTypeId)?.name
+                                        : 'Select Product Type'
+                                }
+                                values={productTypes}
+                                selectedValue="productTypeId"
+                                displayField="name"
+                            />
+                        )}
+                    {addProduct.category && (
+                        <ProductDropdown
+                            label="Brand"
+                            handleDropdownToggle={() => handleDropdownToggle('brand')}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="brand"
+                            isDropdownOpen={dropdownStates.brand}
+                            header={
+                                addProduct.selectedBrand
+                                    ? brands.find((b: any) => b.id === addProduct.selectedBrand)?.name
+                                    : 'Select Brand'
+                            }
+                            values={brands}
+                            selectedValue="selectedBrand"
+                            displayField="name"
+                        />
+                    )}
+
                         <ButtonContainer>
                             <Button
                                 variant="primary"
@@ -333,9 +368,7 @@ export const AddProduct = () => {
                 </Form>
                 <ImagePreviewContainer>
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-                    {previewUrl && (
-                        <ImagePreview src={previewUrl} alt="Image preview" />
-                    )}
+                    {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
                 </ImagePreviewContainer>
             </FormContainer>
             {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -398,74 +431,6 @@ const Label = styled.label`
     font-size: 14px;
     margin-bottom: 0.5rem;
     display: block;
-`;
-
-const ProductTextarea = styled.textarea`
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-    font-family: Barlow;
-    font-size: 14px;
-    color: #000;
-    border-radius: 4px;
-    border: 1px solid #ac8fff;
-    height: 100px;
-`;
-
-const Select = styled.div`
-    position: relative;
-    width: 100%;
-`;
-
-const DropdownHeader = styled.div`
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    padding: 0.5rem;
-    border: 1px solid #4d3c7b;
-    background-color: #160d35;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const DropdownList = styled.ul`
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    position: absolute;
-    width: 100%;
-    background-color: #160d35;
-    border: 1px solid #4d3c7b;
-    max-height: 150px;
-    overflow-y: auto;
-    z-index: 10;
-`;
-
-const DropDownOption = styled.li`
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    padding: 0.5rem;
-    background-color: #2a1f51;
-    color: white;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #160d35;
-        color: #c79d0a;
-    }
-
-    &:disabled {
-        cursor: not-allowed;
-        color: #999;
-    }
-`;
-
-const ChevronContainer = styled.div<{ isDropdownOpen: boolean }>`
-    transition: transform 0.3s ease;
-    transform: ${( { isDropdownOpen } ) =>
-        isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 
 const ImagePreviewContainer = styled.div`
