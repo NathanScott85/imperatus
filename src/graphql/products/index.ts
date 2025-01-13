@@ -49,6 +49,8 @@ export const CREATE_PRODUCT = gql`
         $name: String!
         $price: Float!
         $productTypeId: Int!
+        $brandId: Int!
+        $setId: Int!
         $description: String
         $img: Upload
         $categoryId: Int!
@@ -60,6 +62,8 @@ export const CREATE_PRODUCT = gql`
             name: $name
             price: $price
             productTypeId: $productTypeId
+            brandId: $brandId
+            setId: $setId
             description: $description
             img: $img
             categoryId: $categoryId
