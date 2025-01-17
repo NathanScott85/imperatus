@@ -109,6 +109,9 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AddCarousel' )}>
                             ADD CAROUSEL PAGE
                         </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'ManageCarousel' )}>
+                            MANAGE CAROUSEL
+                        </SubMenuItem>
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Shipping' )}>

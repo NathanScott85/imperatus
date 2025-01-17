@@ -156,6 +156,26 @@ export const Brand: React.FC<BrandDetailProps> = ( { brand, onBack } ) => {
             >
               {isUpdating ? 'Updating...' : 'Update Brand'}
             </Button>
+          
+               <Button
+            variant="primary"
+            onClick={handleOpenModal}
+            disabled={isDeleting}
+          >
+            Delete Brand
+          </Button>
+          </ButtonContainer>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {success && <SuccessMessage>{success}</SuccessMessage>}
+
+       
+        </BrandDetailsWrapper>
+        <ImagePreviewContainer>
+          <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
+          {previewUrl && (
+            <ImagePreview src={previewUrl} alt="Image preview" />
+          )}
+          <br/>
             {selectedFile && (
               <Button
                 variant="secondary"
@@ -165,23 +185,6 @@ export const Brand: React.FC<BrandDetailProps> = ( { brand, onBack } ) => {
                 Clear File
               </Button>
             )}
-          </ButtonContainer>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          {success && <SuccessMessage>{success}</SuccessMessage>}
-
-          <Button
-            variant="primary"
-            onClick={handleOpenModal}
-            disabled={isDeleting}
-          >
-            Delete Brand
-          </Button>
-        </BrandDetailsWrapper>
-        <ImagePreviewContainer>
-          <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-          {previewUrl && (
-            <ImagePreview src={previewUrl} alt="Image preview" />
-          )}
         </ImagePreviewContainer>
 
       </BrandWrapper>
@@ -238,6 +241,10 @@ const ImagePreviewContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 1rem;
+
+  img {
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const ImagePreviewTitle = styled.h2`

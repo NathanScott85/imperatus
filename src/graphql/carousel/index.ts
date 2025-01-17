@@ -2,13 +2,17 @@ import { gql } from '@apollo/client';
 
 export const GET_CAROUSEL_PAGES = gql`
     query GetCarouselPages {
-        getCarouselPages {
+    getCarouselPages {
+        id
+        createdAt
+        updatedAt
+        pages {
             id
-            createdAt
-            updatedAt
-            pages {
+            title
+            description
+            brand {
                 id
-                title
+                name
                 description
                 img {
                     id
@@ -19,8 +23,17 @@ export const GET_CAROUSEL_PAGES = gql`
                     createdAt
                 }
             }
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
         }
     }
+}
 `;
 
 export const ADD_CAROUSEL_PAGE = gql`
@@ -38,3 +51,46 @@ export const ADD_CAROUSEL_PAGE = gql`
     }
 `;
 
+export const UPDATE_CAROUSEL_PAGE = gql`
+    mutation UpdateCarouselPage(
+        $id: ID!
+        $title: String
+        $description: String
+        $img: Upload
+        $brandId: ID
+    ) {
+        updateCarouselPage(
+            id: $id
+            title: $title
+            description: $description
+            img: $img
+            brandId: $brandId
+        ) {
+            id
+            title
+            description
+            img {
+                id
+                url
+                fileName
+            }
+            brand {
+                id
+                name
+            }
+        }
+    }
+`;
+
+export const DELETE_CAROUSEL_PAGE = gql`
+    mutation DeleteCarouselPage($id: ID!) {
+        deleteCarouselPage(id: $id) {
+            message
+            deletedPage {
+                id
+                title
+                description
+            }
+        }
+    }
+`;

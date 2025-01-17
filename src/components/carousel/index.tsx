@@ -10,6 +10,7 @@ interface CarouselPage {
     title: string;
     description: string;
     img?: any;
+    brand: any;
 }
 
 interface CarouselProps {
@@ -24,8 +25,7 @@ interface CarouselProps {
 export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const pages = items.flatMap((item) => item.pages); // Flatten all pages across items
-    console.log(pages, 'pages');
+    const pages = items.flatMap((item) => item.pages);
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) =>
@@ -57,6 +57,8 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                                 />
                             )}
                             <CarouselContentWrapper small={small}>
+                                {page.brand ?  <BrandThumbnail src={page.brand.img.url} />  : null }
+                               
                                 <CarouselContent small={small}>
                                     <p>{page.title}</p>
                                     <p>{page.description}</p>
@@ -91,6 +93,13 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
         </Container>
     );
 };
+
+const BrandThumbnail = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+`;
+
 
 const Container = styled.div`
     color: #10000e;

@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_CAROUSEL_PAGES, ADD_CAROUSEL_PAGE } from '../../graphql/carousel';
+import { GET_CAROUSEL_PAGES, ADD_CAROUSEL_PAGE, UPDATE_CAROUSEL_PAGE, DELETE_CAROUSEL_PAGE } from '../../graphql/carousel';
 
 interface UploadedFile {
     id: string;
@@ -16,6 +16,7 @@ interface CarouselPage {
     title: string;
     description: string;
     img?: UploadedFile | null;
+    brandId?: string;
 }
 
 interface CarouselContextProps {
@@ -23,7 +24,20 @@ interface CarouselContextProps {
     loading: boolean;
     error: any;
     fetchCarousel: () => void;
-    addCarousel: (title: string, description: string, img: File | null) => Promise<void>;
+    addCarousel: (
+        title: string,
+        description: string,
+        img: File | null,
+        brandId?: string
+    ) => Promise<void>;
+    updateCarousel: (
+        id: string,
+        title?: string,
+        description?: string,
+        img?: File | null,
+        brandId?: string
+    ) => Promise<void>;
+    deleteCarousel: (id: string) => Promise<void>;
     setCarousel: React.Dispatch<React.SetStateAction<CarouselPage[]>>;
 }
 
@@ -33,33 +47,80 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
     const [carousel, setCarousel] = useState<CarouselPage[]>([]);
 
     const [fetchCarousel, { loading, error }] = useLazyQuery(GET_CAROUSEL_PAGES, {
-        fetchPolicy: 'cache-and-network',
+        fetchPolicy: 'cache-only',
         onCompleted: (data) => {
             setCarousel(data?.getCarouselPages || []);
         },
     });
 
-    // Mutation for adding a new carousel page
     const [addCarouselMutation] = useMutation(ADD_CAROUSEL_PAGE);
+    const [updateCarouselMutation] = useMutation(UPDATE_CAROUSEL_PAGE);
+    const [deleteCarouselMutation] = useMutation(DELETE_CAROUSEL_PAGE);
 
-    // Function to call the add carousel mutation
-    const addCarousel = async (title: string, description: string, img: File | null) => {
+    const addCarousel = async (
+        title: string,
+        description: string,
+        img: File | null,
+        brandId?: string
+    ) => {
         try {
             const { data } = await addCarouselMutation({
                 variables: {
                     title,
                     description,
-                    img, // The backend should handle this as an Upload scalar
+                    img,
+                    brandId,
                 },
             });
 
-            // // Optionally update local state with the new carousel
-            // if (data) {
-            //     fetchCarousel(); // Refetch all carousels
-            // }
+            if (data) {
+                fetchCarousel();
+            }
         } catch (err) {
             console.error('Error adding carousel page:', err);
             throw new Error('Failed to add carousel page.');
+        }
+    };
+
+    const updateCarousel = async (
+        id: string,
+        title?: string,
+        description?: string,
+        img?: File | null,
+        brandId?: string
+    ) => {
+        try {
+            const { data } = await updateCarouselMutation({
+                variables: {
+                    id,
+                    title,
+                    description,
+                    img,
+                    brandId,
+                },
+            });
+
+            if (data) {
+                fetchCarousel();
+            }
+        } catch (err) {
+            console.error('Error updating carousel page:', err);
+            throw new Error('Failed to update carousel page.');
+        }
+    };
+
+    const deleteCarousel = async (id: string) => {
+        try {
+            const { data } = await deleteCarouselMutation({
+                variables: { id },
+            });
+
+            if (data?.deleteCarouselPage?.deletedPage) {
+                setCarousel((prev) => prev.filter((page) => page.id !== id));
+            }
+        } catch (err) {
+            console.error('Error deleting carousel page:', err);
+            throw new Error('Failed to delete carousel page.');
         }
     };
 
@@ -75,6 +136,8 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
                 error,
                 fetchCarousel,
                 addCarousel,
+                updateCarousel,
+                deleteCarousel,
                 setCarousel,
             }}
         >

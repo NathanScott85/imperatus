@@ -7,7 +7,6 @@ import { Input } from '../../../../components/input';
 import { useBrandsContext } from '../../../../context/brands';
 import { useSetsContext } from '../../../../context/sets';
 import { ProductDropdown } from './dropdown';
-import { ChevronUp } from '../../../../components/svg/chevron-up';
 
 export const AddProduct = () => {
     const [addProduct, setAddProduct] = useState({

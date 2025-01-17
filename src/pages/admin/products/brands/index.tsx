@@ -6,52 +6,46 @@ import { Brand } from './brand';
 import { Input } from '../../../../components/input';
 
 export const AdminBrands = () => {
+      const {
+        brands,
+        fetchBrands,
+        loading,
+        error,
+        totalPages,
+        setPage,
+        currentPage,
+        setCurrentPage, setSearch } = useBrandsContext();
 
-  const {
-    brands,
-    fetchBrands,
-    loading,
-    error,
-    totalPages,
-    setPage,
-    currentPage,
-    setCurrentPage, setSearch } = useBrandsContext();
+      const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
+      const [searchQuery, setSearchQuery] = useState<string>( "" );
 
-  const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
-  const [searchQuery, setSearchQuery] = useState<string>( "" );
+      const deferredSearchQuery = useDeferredValue( searchQuery );
 
-  const deferredSearchQuery = useDeferredValue( searchQuery );
+      useEffect( () => {
+        setSearch( deferredSearchQuery );
+        fetchBrands();
+      }, [deferredSearchQuery, fetchBrands, setSearch] );
 
-  useEffect( () => {
-    setSearch( deferredSearchQuery );
-    fetchBrands();
-  }, [deferredSearchQuery, fetchBrands, setSearch] );
+      const handlePageChange = ( newPage: number ) => {
+        if ( newPage >= 1 && newPage <= totalPages ) {
+          setCurrentPage( newPage );
+          setPage( newPage );
+        }
+      };
 
+      const handleViewBrand = ( brand: any ) => {
+        setSelectedBrand( brand );
+      };
 
+      const handleBackToList = () => {
+        setSelectedBrand( null );
+      };
 
-  const handlePageChange = ( newPage: number ) => {
-    if ( newPage >= 1 && newPage <= totalPages ) {
-      setCurrentPage( newPage );
-      setPage( newPage );
-    }
-  };
-
-  const handleViewBrand = ( brand: any ) => {
-    setSelectedBrand( brand );
-  };
-
-  const handleBackToList = () => {
-    setSelectedBrand( null );
-  };
-
-  // if ( loading ) return <p>Loading...</p>;
-  // if ( error ) return <Span>Error loading categories: {error.message}</Span>;
-
-  if ( selectedBrand ) {
-    return (
-      <Brand brand={selectedBrand} onBack={handleBackToList} />
-    )
-  }
+      if ( selectedBrand ) {
+        return (
+          <Brand brand={selectedBrand} onBack={handleBackToList} />
+        )
+      }
   return (
     <BrandsContainer>
       <TitleRow>

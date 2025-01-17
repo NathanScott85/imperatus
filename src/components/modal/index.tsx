@@ -5,15 +5,16 @@ import Button from '../button';
 import { Input } from '../input';
 
 interface ModalProps {
-    confirmationText: any;
-    errorMessage: any;
-    successMessage: any;
-    setConfirmationText: any;
-    handleDeleteAccount: any;
-    handleCloseModal: any;
-    title: string;
-    content: string;
-    label: string;
+    confirmationText?: any;
+    errorMessage?: any;
+    successMessage?: any;
+    setConfirmationText?: any;
+    handleDeleteAccount?: any;
+    handleCloseModal?: any;
+    title?: string;
+    content: string | React.ReactNode;
+    label?: string;
+    preview?: boolean;
 }
 
 export const Modal = ({
@@ -26,35 +27,42 @@ export const Modal = ({
     title,
     content,
     label,
+    preview = false,
 }: ModalProps) => {
     return (
         <FancyContainer variant="modal" size="modal">
-            <ModalContent>
+            <ModalContent preview={preview}>
                 <h1>{title}</h1>
                 <p>{content}</p>
                 {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
                 {successMessage && (
                     <SuccessMessage>{successMessage}</SuccessMessage>
                 )}
-                <label htmlFor="confirmation">{label}</label>
-                <Input
-                    variant="secondary"
-                    size="medium"
-                    value={confirmationText}
-                    onChange={(e) => setConfirmationText(e.target.value)}
-                />
+                {!preview && label && (
+                    <>
+                        <label htmlFor="confirmation">{label}</label>
+                        <Input
+                            variant="secondary"
+                            size="medium"
+                            value={confirmationText}
+                            onChange={(e) => setConfirmationText(e.target.value)}
+                        />
+                    </>
+                )}
                 <ButtonWrapper>
-                    <Button
-                        onClick={handleDeleteAccount}
-                        variant="primary"
-                        size="small"
-                        label="Confirm"
-                    />
+                    {!preview && (
+                        <Button
+                            onClick={handleDeleteAccount}
+                            variant="primary"
+                            size="small"
+                            label="Confirm"
+                        />
+                    )}
                     <Button
                         onClick={handleCloseModal}
                         variant="secondary"
                         size="small"
-                        label="Cancel"
+                        label={preview ? "Close" : "Cancel"}
                     />
                 </ButtonWrapper>
             </ModalContent>
@@ -62,13 +70,14 @@ export const Modal = ({
     );
 };
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ preview?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 0.5rem;
+
     h1 {
-        color: red;
+        color: ${({ preview }) => (preview ? 'white' : 'red')};
         font-family: Cinzel;
         font-size: 26px;
         font-style: normal;
@@ -79,6 +88,7 @@ const ModalContent = styled.div`
         padding: 0.25rem;
         margin-bottom: 0.25rem;
     }
+
     p {
         color: white;
         font-size: 16px;
@@ -90,12 +100,14 @@ const ModalContent = styled.div`
         text-align: center;
         font-family: Barlow, serif;
     }
+
     label {
         color: white;
         font-size: 16px;
         margin-bottom: 1rem;
     }
 `;
+
 
 const ButtonWrapper = styled.div`
     display: flex;

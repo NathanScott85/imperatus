@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
+import { useBrandsContext } from '../../../../context/brands';
 
 export const AddCarousel = () => {
     const { addCarousel, loading } = useCarouselContext();
+    const { brands, fetchBrands } = useBrandsContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(undefined);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
@@ -22,7 +25,8 @@ export const AddCarousel = () => {
             setPreviewUrl(objectUrl);
             return () => URL.revokeObjectURL(objectUrl);
         }
-    }, [selectedFile]);
+        fetchBrands(); // Fetch brands when component mounts
+    }, [selectedFile, fetchBrands]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -39,6 +43,10 @@ export const AddCarousel = () => {
             setSelectedFile(e.target.files[0]);
         }
         setIsButtonDisabled(false);
+    };
+
+    const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedBrandId(e.target.value || undefined); // Allow deselection
     };
 
     const clearFileInput = () => {
@@ -58,34 +66,24 @@ export const AddCarousel = () => {
         setSuccess('');
         setIsButtonDisabled(true);
 
-        if (!title || !description || !selectedFile) {
-            setError('All fields are required, including an image.');
+        if (!title || !selectedFile) {
+            setError('Title and an image are required.');
             setIsButtonDisabled(false);
             return;
         }
 
         try {
-            console.log(title, description, selectedFile , 'addCarousel data')
-            await addCarousel(title, description, selectedFile);
+            await addCarousel(title, description, selectedFile, selectedBrandId);
 
             setSuccess('Carousel page created successfully!');
             setError('');
             setTitle('');
             setDescription('');
+            setSelectedBrandId(undefined); // Reset brand selection
             clearFileInput();
         } catch (err) {
             const errorMessage = (err as Error).message;
-            const errorMessages: Record<string, string> = {
-                'A file with this name already exists':
-                    'A file with this name already exists. Please choose a different file or rename it.',
-                'Unique constraint failed on the fields':
-                    'A carousel with this title already exists. Please choose a different title.',
-            };
-            console.log(errorMessage, errorMessages[errorMessage], 'error messages')
-            setError(
-                errorMessages[errorMessage] ||
-                    'Failed to create carousel page. Please try again later.'
-            );
+            setError(errorMessage || 'Failed to create carousel page. Please try again.');
             setSuccess('');
         } finally {
             setIsButtonDisabled(false);
@@ -116,8 +114,22 @@ export const AddCarousel = () => {
                             id="description"
                             value={description}
                             onChange={handleDescriptionChange}
-                            required
                         />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="brand">Select Brand</Label>
+                        <Select
+                            id="brand"
+                            value={selectedBrandId || ''}
+                            onChange={handleBrandChange}
+                        >
+                            <option value="">No Brand Selected</option>
+                            {brands.map((brand: any) => (
+                                <option key={brand.id} value={brand.id}>
+                                    {brand.name}
+                                </option>
+                            ))}
+                        </Select>
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="image">Upload Image</Label>
@@ -136,7 +148,7 @@ export const AddCarousel = () => {
                             type="submit"
                             disabled={
                                 !title ||
-                                !description ||
+                                !selectedFile ||
                                 isButtonDisabled ||
                                 loading
                             }
@@ -167,9 +179,6 @@ export const AddCarousel = () => {
         </CarouselContainer>
     );
 };
-
-// Styled components omitted for brevity, same as before.
-
 
 const CarouselContainer = styled.div`
     display: flex;
@@ -246,4 +255,15 @@ const ImagePreview = styled.img`
     max-height: 200px;
     border: 1px solid #ac8fff;
     border-radius: 4px;
+`;
+
+const Select = styled.select`
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #4d3c7b;
+    border-radius: 4px;
+    background-color: #160d35;
+    color: white;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
 `;
