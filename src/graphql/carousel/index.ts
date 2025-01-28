@@ -23,6 +23,12 @@ export const GET_CAROUSEL_PAGES = gql`
                     createdAt
                 }
             }
+            disabled
+            product {
+                id
+                slug
+                preorder
+            }
             img {
                 id
                 url
@@ -37,34 +43,21 @@ export const GET_CAROUSEL_PAGES = gql`
 `;
 
 export const ADD_CAROUSEL_PAGE = gql`
-    mutation CreateCarouselPage($title: String!, $description: String!, $img: Upload!) {
-        createCarouselPage(title: $title, description: $description, img: $img) {
-            id
-            title
-            description
-            img {
-                id
-                url
-                fileName
-            }
-        }
-    }
-`;
-
-export const UPDATE_CAROUSEL_PAGE = gql`
-    mutation UpdateCarouselPage(
-        $id: ID!
-        $title: String
-        $description: String
-        $img: Upload
+    mutation CreateCarouselPage(
+        $title: String!
+        $description: String!
+        $img: Upload!
         $brandId: ID
+        $productId: ID
+        $disabled: Boolean
     ) {
-        updateCarouselPage(
-            id: $id
+        createCarouselPage(
             title: $title
             description: $description
             img: $img
             brandId: $brandId
+            productId: $productId
+            disabled: $disabled
         ) {
             id
             title
@@ -78,6 +71,43 @@ export const UPDATE_CAROUSEL_PAGE = gql`
                 id
                 name
             }
+            disabled
+        }
+    }
+`;
+
+export const UPDATE_CAROUSEL_PAGE = gql`
+    mutation UpdateCarouselPage(
+        $id: ID!
+        $title: String
+        $description: String
+        $img: Upload
+        $brandId: ID
+        $productId: ID
+        $disabled: Boolean
+    ) {
+        updateCarouselPage(
+            id: $id
+            title: $title
+            description: $description
+            img: $img
+            brandId: $brandId
+            productId: $productId
+            disabled: $disabled
+        ) {
+            id
+            title
+            description
+            img {
+                id
+                url
+                fileName
+            }
+            brand {
+                id
+                name
+            }
+            disabled
         }
     }
 `;

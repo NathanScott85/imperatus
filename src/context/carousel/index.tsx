@@ -17,6 +17,8 @@ interface CarouselPage {
     description: string;
     img?: UploadedFile | null;
     brandId?: string;
+    productId?: string;
+    disabled?: boolean;
 }
 
 interface CarouselContextProps {
@@ -28,14 +30,18 @@ interface CarouselContextProps {
         title: string,
         description: string,
         img: File | null,
-        brandId?: string
+        brandId?: number,
+        productId?: string,
+        disabled?: boolean
     ) => Promise<void>;
     updateCarousel: (
         id: string,
         title?: string,
         description?: string,
         img?: File | null,
-        brandId?: string
+        brandId?: string,
+        productId?: string,
+        disabled?: boolean
     ) => Promise<void>;
     deleteCarousel: (id: string) => Promise<void>;
     setCarousel: React.Dispatch<React.SetStateAction<CarouselPage[]>>;
@@ -47,7 +53,7 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
     const [carousel, setCarousel] = useState<CarouselPage[]>([]);
 
     const [fetchCarousel, { loading, error }] = useLazyQuery(GET_CAROUSEL_PAGES, {
-        fetchPolicy: 'cache-only',
+        fetchPolicy: 'cache-and-network',
         onCompleted: (data) => {
             setCarousel(data?.getCarouselPages || []);
         },
@@ -61,7 +67,9 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         title: string,
         description: string,
         img: File | null,
-        brandId?: string
+        brandId?: number,
+        productId?: string,
+        disabled: boolean = false
     ) => {
         try {
             const { data } = await addCarouselMutation({
@@ -70,6 +78,8 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
                     description,
                     img,
                     brandId,
+                    productId,
+                    disabled,
                 },
             });
 
@@ -87,16 +97,30 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         title?: string,
         description?: string,
         img?: File | null,
-        brandId?: string
+        brandId?: string,
+        productId?: string,
+        disabled?: boolean
     ) => {
         try {
+            console.log({
+                id,
+                title,
+                description,
+                img,
+                brandId,
+                productId,
+                disabled,
+            });
+            const brandid = Number(brandId)
             const { data } = await updateCarouselMutation({
                 variables: {
                     id,
                     title,
                     description,
                     img,
-                    brandId,
+                    brandid,
+                    productId,
+                    disabled,
                 },
             });
 

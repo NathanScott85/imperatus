@@ -4,18 +4,22 @@ import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
 import { useBrandsContext } from '../../../../context/brands';
+import { useAdminContext } from '../../../../context/admin';
 
 export const AddCarousel = () => {
     const { addCarousel, loading } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
+    const { products, fetchProducts } = useAdminContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(undefined);
+    const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -25,8 +29,9 @@ export const AddCarousel = () => {
             setPreviewUrl(objectUrl);
             return () => URL.revokeObjectURL(objectUrl);
         }
-        fetchBrands(); // Fetch brands when component mounts
-    }, [selectedFile, fetchBrands]);
+        fetchBrands();
+        fetchProducts();
+    }, [selectedFile, fetchBrands, fetchProducts]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -46,7 +51,15 @@ export const AddCarousel = () => {
     };
 
     const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedBrandId(e.target.value || undefined); // Allow deselection
+        setSelectedBrandId(e.target.value || undefined);
+    };
+
+    const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedProductId(e.target.value || undefined);
+    };
+
+    const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDisabled(e.target.checked);
     };
 
     const clearFileInput = () => {
@@ -73,13 +86,14 @@ export const AddCarousel = () => {
         }
 
         try {
-            await addCarousel(title, description, selectedFile, selectedBrandId);
-
+            await addCarousel(title, description, selectedFile, Number(selectedBrandId), selectedProductId, disabled);
             setSuccess('Carousel page created successfully!');
             setError('');
             setTitle('');
             setDescription('');
-            setSelectedBrandId(undefined); // Reset brand selection
+            setSelectedBrandId(undefined);
+            setSelectedProductId(undefined);
+            setDisabled(false);
             clearFileInput();
         } catch (err) {
             const errorMessage = (err as Error).message;
@@ -93,7 +107,7 @@ export const AddCarousel = () => {
     return (
         <CarouselContainer>
             <div>
-                <CarouselTitle>Add New Carousel Page</CarouselTitle>
+                <CarouselTitle>Add Carousel Page</CarouselTitle>
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label htmlFor="title">Title</Label>
@@ -132,6 +146,21 @@ export const AddCarousel = () => {
                         </Select>
                     </FormGroup>
                     <FormGroup>
+                        <Label htmlFor="product">Select Product</Label>
+                        <Select
+                            id="product"
+                            value={selectedProductId || ''}
+                            onChange={handleProductChange}
+                        >
+                            <option value="">No Product Selected</option>
+                            {products!?.map((product: any) => (
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormGroup>
+                    <FormGroup>
                         <Label htmlFor="image">Upload Image</Label>
                         <Input
                             variant="secondary"
@@ -141,6 +170,17 @@ export const AddCarousel = () => {
                             onChange={handleImageChange}
                             required
                         />
+                    </FormGroup>
+                    <FormGroup>
+                        <CheckboxContainer>
+                            <input
+                                type="checkbox"
+                                id="disabled"
+                                checked={disabled}
+                                onChange={handleDisabledChange}
+                            />
+                            <Label htmlFor="disabled">Disable Page</Label>
+                        </CheckboxContainer>
                     </FormGroup>
                     <ButtonContainer>
                         <Button
@@ -155,7 +195,6 @@ export const AddCarousel = () => {
                         >
                             {loading ? 'Creating...' : 'Create Carousel'}
                         </Button>
-
                         {selectedFile && (
                             <Button
                                 variant="secondary"
@@ -172,13 +211,17 @@ export const AddCarousel = () => {
             </div>
             <ImagePreviewContainer>
                 <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-                {previewUrl && (
-                    <ImagePreview src={previewUrl} alt="Image preview" />
-                )}
+                {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
             </ImagePreviewContainer>
         </CarouselContainer>
     );
 };
+
+const CheckboxContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
 
 const CarouselContainer = styled.div`
     display: flex;

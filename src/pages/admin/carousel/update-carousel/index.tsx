@@ -4,6 +4,7 @@ import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
 import { useBrandsContext } from '../../../../context/brands';
+import { useAdminContext } from '../../../../context/admin';
 import { Modal } from '../../../../components/modal';
 
 export interface CarouselDetailProps {
@@ -14,12 +15,15 @@ export interface CarouselDetailProps {
 export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack }) => {
     const { updateCarousel, deleteCarousel } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
+    const { products, fetchProducts } = useAdminContext(); // Fetch products
 
     const [title, setTitle] = useState(carousel.title);
     const [description, setDescription] = useState(carousel.description);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(carousel.brand?.id || null);
+    const [selectedProductId, setSelectedProductId] = useState<string | undefined>(carousel.product?.id || null);
+    const [disabled, setDisabled] = useState<boolean>(carousel.disabled || false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
@@ -31,7 +35,8 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
 
     useEffect(() => {
         fetchBrands();
-    }, [fetchBrands]);
+        fetchProducts();
+    }, [fetchBrands, fetchProducts]);
 
     useEffect(() => {
         if (selectedFile) {
@@ -63,6 +68,15 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
     const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
         setSelectedBrandId(e.target.value);
 
+    const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const productId = e.target.value;
+        console.log(productId, 'productId')
+        setSelectedProductId(e.target.value);
+    }
+
+    const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setDisabled(e.target.checked);
+
     const handleUpdate = async () => {
         setError('');
         setSuccess('');
@@ -75,12 +89,15 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         }
 
         try {
+            console.log("Selected Product ID:", selectedProductId);
             await updateCarousel(
                 carousel.id,
                 title,
                 description,
                 selectedFile || null,
-                selectedBrandId
+                selectedBrandId,
+                selectedProductId,
+                disabled
             );
 
             setSuccess('Carousel updated successfully!');
@@ -150,6 +167,17 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                         />
                     </FormGroup>
                     <FormGroup>
+                        <CheckboxContainer>
+                            <input
+                                type="checkbox"
+                                id="disabled"
+                                checked={disabled}
+                                onChange={handleDisabledChange}
+                            />
+                            <Label htmlFor="disabled">Disable Page</Label>
+                        </CheckboxContainer>
+                    </FormGroup>
+                    <FormGroup>
                         <Label htmlFor="brand">Select Brand</Label>
                         <Select
                             id="brand"
@@ -162,6 +190,23 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                             {brands.map((brand: any) => (
                                 <option key={brand.id} value={brand.id}>
                                     {brand.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="product">Select Product</Label>
+                        <Select
+                            id="product"
+                            value={selectedProductId || ''}
+                            onChange={handleProductChange}
+                        >
+                            <option value="">
+                                -- Select Product --
+                            </option>
+                            {products!?.map((product: any) => (
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
                                 </option>
                             ))}
                         </Select>
@@ -185,15 +230,7 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                         >
                             {isUpdating ? 'Updating...' : 'Update Carousel'}
                         </Button>
-                        {selectedFile && (
-                            <Button
-                                variant="secondary"
-                                size="xsmall"
-                                onClick={clearFileInput}
-                            >
-                                Clear File
-                            </Button>
-                        )}
+
                         <Button
                             variant="primary"
                             onClick={handleOpenModal}
@@ -209,6 +246,16 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
                     {previewUrl && (
                         <ImagePreview src={previewUrl} alt="Image preview" />
+                    )}
+                    <br />
+                    {selectedFile && (
+                        <Button
+                            variant="secondary"
+                            size="xsmall"
+                            onClick={clearFileInput}
+                        >
+                            Clear File
+                        </Button>
                     )}
                 </ImagePreviewContainer>
             </CarouselWrapper>
@@ -228,6 +275,13 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         </CarouselContainer>
     );
 };
+
+
+const CheckboxContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
 
 const CarouselContainer = styled.div`
     color: white;

@@ -87,10 +87,10 @@ export const AddProduct = () => {
     const handleDropdownToggle = (dropdown: string) => {
         setDropdownStates((prev) => ({
             ...Object.keys(prev).reduce((acc, key) => {
-                acc[key] = false; // Close all dropdowns
+                acc[key] = false;
                 return acc;
             }, {} as Record<string, boolean>),
-            [dropdown]: !prev[dropdown], // Toggle the specified dropdown
+            [dropdown]: !prev[dropdown],
         }));
     };
 
@@ -223,39 +223,38 @@ export const AddProduct = () => {
                         </FormGroup>
 
                         <ProductDropdown
-    label="Category"
-    handleDropdownToggle={handleDropdownToggle}
-    handleDropdownChange={handleDropdownChange}
-    toggleValue="category"
-    isDropdownOpen={dropdownStates.category}
-    header={
-        addProduct.category
-            ? categories!?.find((category: any) => category.id.toString() === addProduct.category)?.name
-            : 'Select Category'
-    }
-    values={categories}
-    selectedValue="category"
-    displayField="name"
-/>
+                            label="Category"
+                            handleDropdownToggle={handleDropdownToggle}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="category"
+                            isDropdownOpen={dropdownStates.category}
+                            header={
+                                addProduct.category
+                                    ? categories!?.find((category: any) => category.id.toString() === addProduct.category)?.name
+                                    : 'Select Category'
+                            }
+                            values={categories}
+                            selectedValue="category"
+                            displayField="name"
+                        />
 
-{/* Render Sets dropdown only if the selected category is "Card Games" */}
-{categories?.find((category: any) => category.id.toString() === addProduct.category)?.name === 'Card Games' && (
-    <ProductDropdown
-        label="Set"
-        handleDropdownToggle={() => handleDropdownToggle('set')}
-        handleDropdownChange={handleDropdownChange}
-        toggleValue="set"
-        isDropdownOpen={dropdownStates.set}
-        header={
-            addProduct.selectedSet
-                ? sets.find((s: any) => s.id === addProduct.selectedSet)?.setName
-                : 'Select Set'
-        }
-        values={sets}
-        selectedValue="selectedSet"
-        displayField="setName"
-    />
-)}
+                        {categories?.find((category: any) => category.id.toString() === addProduct.category)?.name === 'Card Games' && (
+                            <ProductDropdown
+                                label="Set"
+                                handleDropdownToggle={() => handleDropdownToggle('set')}
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="set"
+                                isDropdownOpen={dropdownStates.set}
+                                header={
+                                    addProduct.selectedSet
+                                        ? sets.find((s: any) => s.id === addProduct.selectedSet)?.setName
+                                        : 'Select Set'
+                                }
+                                values={sets}
+                                selectedValue="selectedSet"
+                                displayField="setName"
+                            />
+                        )}
 
                         {addProduct.category && (
                             <ProductDropdown
