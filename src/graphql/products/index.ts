@@ -10,7 +10,8 @@ export const GET_ALL_PRODUCTS = gql`
             id
             name
             price
-             type {
+            slug
+            type {
                 id
                 name
             }

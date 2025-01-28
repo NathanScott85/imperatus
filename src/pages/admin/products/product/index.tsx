@@ -239,44 +239,6 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="stockAmount">Sold Stock</Label>
-                            <Input
-                                variant="description"
-                                id="description"
-                                value={updateProductData.description}
-                                onChange={handleInputChange}
-                            />
-                            <div>
-                                <Label htmlFor="categoryId">Category</Label>
-                                <Select
-                                    id="categoryId"
-                                    value={updateProductData.categoryId}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="">Select a Category</option>
-                                    {categories!?.map( ( category: any ) => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
-                                        </option>
-                                    ) )}
-                                </Select>
-
-                            </div>
-
-                            <div>
-                                <Label htmlFor="type">Product Type</Label>
-                                <Select
-                                    id="type"
-                                    value={updateProductData.type}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="">Select a Type</option>
-                                    {productTypes!.map( ( type ) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.name}
-                                        </option>
-                                    ) )}
-                                </Select>
-                            </div>
                         </FormGroup>
                     </FormRow>
                     <FormRow>

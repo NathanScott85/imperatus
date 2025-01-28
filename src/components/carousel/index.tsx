@@ -10,6 +10,8 @@ interface CarouselPage {
     title: string;
     description: string;
     img?: any;
+    brand: any;
+    disabled?: boolean
 }
 
 interface CarouselProps {
@@ -24,18 +26,17 @@ interface CarouselProps {
 export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const pages = items.flatMap((item) => item.pages); // Flatten all pages across items
-    console.log(pages, 'pages');
+    const enabledPages = items.flatMap((item) => item.pages).filter((page) => !page.disabled);
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) =>
-            prevIndex === pages.length - 1 ? 0 : prevIndex + 1,
+            prevIndex === enabledPages.length - 1 ? 0 : prevIndex + 1,
         );
     };
 
     const prevSlide = () => {
         setCurrentIndex((prevIndex) =>
-            prevIndex === 0 ? pages.length - 1 : prevIndex - 1,
+            prevIndex === 0 ? enabledPages.length - 1 : prevIndex - 1,
         );
     };
 
@@ -46,7 +47,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     return (
         <Container>
             <CarouselContainer small={small}>
-                {pages.map((page, index) => (
+                {enabledPages.map((page, index) => (
                     <CarouselSlide key={page.id} index={index - currentIndex}>
                         <CarouselContentContainer>
                             {page.img && (
@@ -57,6 +58,10 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                                 />
                             )}
                             <CarouselContentWrapper small={small}>
+                                {page.brand ? (
+                                    <BrandThumbnail src={page.brand.img.url} />
+                                ) : null}
+
                                 <CarouselContent small={small}>
                                     <p>{page.title}</p>
                                     <p>{page.description}</p>
@@ -72,12 +77,13 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                         </CarouselContentContainer>
                     </CarouselSlide>
                 ))}
+
                 <ArrowContainer>
                     <StyledChevronLeft onClick={prevSlide} small={small} />
                     <Dots
                         variant="carousel"
                         carousel
-                        items={pages}
+                        items={enabledPages}
                         currentIndex={currentIndex}
                         handleDotClick={handleDotClick}
                     />
@@ -91,6 +97,13 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
         </Container>
     );
 };
+
+const BrandThumbnail = styled.img`
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+`;
+
 
 const Container = styled.div`
     color: #10000e;
@@ -172,7 +185,7 @@ const ArrowContainer = styled.div`
     right: 45%;
 `;
 
-const StyledChevronLeft = styled(ChevronLeft)<{ small: boolean }>`
+const StyledChevronLeft = styled(ChevronLeft) <{ small: boolean }>`
     width: ${({ small }) => (small ? '25px' : '35px')};
     height: ${({ small }) => (small ? '25px' : '35px')};
     border: 2px solid #ac8fff;
@@ -183,7 +196,7 @@ const StyledChevronLeft = styled(ChevronLeft)<{ small: boolean }>`
     margin-right: 10px;
 `;
 
-const StyledChevronRight = styled(ChevronRight)<{ small: boolean }>`
+const StyledChevronRight = styled(ChevronRight) <{ small: boolean }>`
     width: ${({ small }) => (small ? '25px' : '35px')};
     height: ${({ small }) => (small ? '25px' : '35px')};
     border: 2px solid #ac8fff;

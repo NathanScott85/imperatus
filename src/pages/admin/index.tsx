@@ -17,6 +17,7 @@ import { Discount } from './discount';
 import { AdminCategories } from './categories';
 import { AdminCarousel } from './carousel';
 import { AddCarousel } from './carousel/add-carousel';
+import { ManageCarousel } from './carousel/manage-carousel';
 import { AddBrand } from './products/add-brand';
 import { AdminBrands } from './products/brands';
 import { AdminProductTypes } from './products/product-type'; // Import your new component
@@ -49,6 +50,8 @@ export const Admin = () => {
                 return <AdminCarousel />;
             case 'AddCarousel':
                 return <AddCarousel />;
+            case 'ManageCarousel':
+                return <ManageCarousel />;
             case 'Shipping':
                 return <Shipping />;
             case 'Customers':

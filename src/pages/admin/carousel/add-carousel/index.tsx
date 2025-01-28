@@ -3,16 +3,23 @@ import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
+import { useBrandsContext } from '../../../../context/brands';
+import { useAdminContext } from '../../../../context/admin';
 
 export const AddCarousel = () => {
     const { addCarousel, loading } = useCarouselContext();
+    const { brands, fetchBrands } = useBrandsContext();
+    const { products, fetchProducts } = useAdminContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(undefined);
+    const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [disabled, setDisabled] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -22,7 +29,9 @@ export const AddCarousel = () => {
             setPreviewUrl(objectUrl);
             return () => URL.revokeObjectURL(objectUrl);
         }
-    }, [selectedFile]);
+        fetchBrands();
+        fetchProducts();
+    }, [selectedFile, fetchBrands, fetchProducts]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -39,6 +48,18 @@ export const AddCarousel = () => {
             setSelectedFile(e.target.files[0]);
         }
         setIsButtonDisabled(false);
+    };
+
+    const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedBrandId(e.target.value || undefined);
+    };
+
+    const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedProductId(e.target.value || undefined);
+    };
+
+    const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setDisabled(e.target.checked);
     };
 
     const clearFileInput = () => {
@@ -58,34 +79,25 @@ export const AddCarousel = () => {
         setSuccess('');
         setIsButtonDisabled(true);
 
-        if (!title || !description || !selectedFile) {
-            setError('All fields are required, including an image.');
+        if (!title || !selectedFile) {
+            setError('Title and an image are required.');
             setIsButtonDisabled(false);
             return;
         }
 
         try {
-            console.log(title, description, selectedFile , 'addCarousel data')
-            await addCarousel(title, description, selectedFile);
-
+            await addCarousel(title, description, selectedFile, Number(selectedBrandId), selectedProductId, disabled);
             setSuccess('Carousel page created successfully!');
             setError('');
             setTitle('');
             setDescription('');
+            setSelectedBrandId(undefined);
+            setSelectedProductId(undefined);
+            setDisabled(false);
             clearFileInput();
         } catch (err) {
             const errorMessage = (err as Error).message;
-            const errorMessages: Record<string, string> = {
-                'A file with this name already exists':
-                    'A file with this name already exists. Please choose a different file or rename it.',
-                'Unique constraint failed on the fields':
-                    'A carousel with this title already exists. Please choose a different title.',
-            };
-            console.log(errorMessage, errorMessages[errorMessage], 'error messages')
-            setError(
-                errorMessages[errorMessage] ||
-                    'Failed to create carousel page. Please try again later.'
-            );
+            setError(errorMessage || 'Failed to create carousel page. Please try again.');
             setSuccess('');
         } finally {
             setIsButtonDisabled(false);
@@ -95,7 +107,7 @@ export const AddCarousel = () => {
     return (
         <CarouselContainer>
             <div>
-                <CarouselTitle>Add New Carousel Page</CarouselTitle>
+                <CarouselTitle>Add Carousel Page</CarouselTitle>
                 <Form onSubmit={handleSubmit}>
                     <FormGroup>
                         <Label htmlFor="title">Title</Label>
@@ -116,8 +128,37 @@ export const AddCarousel = () => {
                             id="description"
                             value={description}
                             onChange={handleDescriptionChange}
-                            required
                         />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="brand">Select Brand</Label>
+                        <Select
+                            id="brand"
+                            value={selectedBrandId || ''}
+                            onChange={handleBrandChange}
+                        >
+                            <option value="">No Brand Selected</option>
+                            {brands.map((brand: any) => (
+                                <option key={brand.id} value={brand.id}>
+                                    {brand.name}
+                                </option>
+                            ))}
+                        </Select>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="product">Select Product</Label>
+                        <Select
+                            id="product"
+                            value={selectedProductId || ''}
+                            onChange={handleProductChange}
+                        >
+                            <option value="">No Product Selected</option>
+                            {products!?.map((product: any) => (
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
+                                </option>
+                            ))}
+                        </Select>
                     </FormGroup>
                     <FormGroup>
                         <Label htmlFor="image">Upload Image</Label>
@@ -130,20 +171,30 @@ export const AddCarousel = () => {
                             required
                         />
                     </FormGroup>
+                    <FormGroup>
+                        <CheckboxContainer>
+                            <input
+                                type="checkbox"
+                                id="disabled"
+                                checked={disabled}
+                                onChange={handleDisabledChange}
+                            />
+                            <Label htmlFor="disabled">Disable Page</Label>
+                        </CheckboxContainer>
+                    </FormGroup>
                     <ButtonContainer>
                         <Button
                             variant="primary"
                             type="submit"
                             disabled={
                                 !title ||
-                                !description ||
+                                !selectedFile ||
                                 isButtonDisabled ||
                                 loading
                             }
                         >
                             {loading ? 'Creating...' : 'Create Carousel'}
                         </Button>
-
                         {selectedFile && (
                             <Button
                                 variant="secondary"
@@ -160,16 +211,17 @@ export const AddCarousel = () => {
             </div>
             <ImagePreviewContainer>
                 <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-                {previewUrl && (
-                    <ImagePreview src={previewUrl} alt="Image preview" />
-                )}
+                {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
             </ImagePreviewContainer>
         </CarouselContainer>
     );
 };
 
-// Styled components omitted for brevity, same as before.
-
+const CheckboxContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+`;
 
 const CarouselContainer = styled.div`
     display: flex;
@@ -246,4 +298,15 @@ const ImagePreview = styled.img`
     max-height: 200px;
     border: 1px solid #ac8fff;
     border-radius: 4px;
+`;
+
+const Select = styled.select`
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #4d3c7b;
+    border-radius: 4px;
+    background-color: #160d35;
+    color: white;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
 `;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -14,8 +14,12 @@ import { mediaQueries } from '../../styled/breakpoints';
 import { useCarouselContext } from '../../context/carousel';
 
 export const Home: React.FC = () => {
-    const { carousel, loading, error } = useCarouselContext();
-    console.log(carousel, 'carousel')
+    const { carousel, loading, error, fetchCarousel } = useCarouselContext();
+    
+    useEffect(()=> {
+        fetchCarousel();
+    }, [fetchCarousel]);
+
     return (
         <>
             <TopHeader />
