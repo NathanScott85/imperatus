@@ -141,17 +141,16 @@ export const Set: React.FC<SetDetailProps> = ( { set, onBack } ) => {
             >
               {isUpdating ? 'Updating...' : 'Update Set'}
             </Button>
-          </ButtonContainer>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
-          {success && <SuccessMessage>{success}</SuccessMessage>}
-
-          <Button
+            <Button
             variant="primary"
             onClick={handleOpenModal}
             disabled={isDeleting}
           >
             Delete Set
           </Button>
+          </ButtonContainer>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {success && <SuccessMessage>{success}</SuccessMessage>}         
         </SetDetailsWrapper>
       </SetWrapper>
       {isModalVisible && (
@@ -206,7 +205,7 @@ const Label = styled.label`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin-top: 1rem;
 `;
 
