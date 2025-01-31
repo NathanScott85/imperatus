@@ -9,7 +9,7 @@ export const AdminCarousel = () => {
     useEffect(()=> {
         fetchCarousel()
     }, [fetchCarousel])
-
+    //TODO: to be removed.
     return (
         <CarouselContainer>
             <CarouselTitle>Carousel</CarouselTitle>
