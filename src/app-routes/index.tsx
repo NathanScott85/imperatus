@@ -48,6 +48,7 @@ import { CategoriesProvider } from '../context/categories';
 import { BrandsProvider } from '../context/brands';
 import { SetsProvider } from '../context/sets';
 import { CarouselProvider } from '../context/carousel';
+import { PromotionsProvider } from '../context/promotions';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -76,7 +77,10 @@ export const AppRoutes = () => {
                                         <BrandsProvider>
                                             <SetsProvider>
                                                 <CarouselProvider>
-                                                    <Admin />
+                                                    <PromotionsProvider>
+                                                        <Admin />
+                                                    </PromotionsProvider>
+                                              
                                                 </CarouselProvider>
                                             </SetsProvider>
                                         </BrandsProvider>
