@@ -1,16 +1,20 @@
 import styled from 'styled-components';
 import Carousel from '../../../components/carousel';
 import { sampleItems } from '../../../lib/carousel-mocks';
+import { useCarouselContext } from '../../../context/carousel';
 
 export const AdminCarousel = () => {
+       const { carousel, loading, error } = useCarouselContext();
     return (
         <CarouselContainer>
             <CarouselTitle>Carousel</CarouselTitle>
             <div>
                 <p>You can preview changes to the carousel here</p>
             </div>
-            <div>
-                {/* <Carousel small items={sampleItems} /> */}
+            <div>  
+                {loading && <p>Loading carousel...</p>}
+                {error && <p>Error loading carousel: {error.message}</p>}
+                {carousel && <Carousel small items={carousel as any} />} 
             </div>
         </CarouselContainer>
     );

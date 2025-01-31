@@ -24,8 +24,7 @@ interface CarouselProps {
 export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const pages = items.flatMap((item) => item.pages); // Flatten all pages across items
-    console.log(pages, 'pages');
+    const pages = items.flatMap((item) => item.pages);
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) =>

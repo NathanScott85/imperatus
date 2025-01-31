@@ -19,10 +19,12 @@ import { AdminCarousel } from './carousel';
 import { AddCarousel } from './carousel/add-carousel';
 import { AddBrand } from './products/add-brand';
 import { AdminBrands } from './products/brands';
-import { AdminProductTypes } from './products/product-type'; // Import your new component
+import { AdminProductTypes } from './products/product-type';
 import { AddProductType } from './products/add-type';
 import { AdminSets } from './products/sets';
 import { AddSet } from './products/add-set';
+import { AdminPromotions } from './promotions';
+import { AddPromotion } from './promotions/add-promotion';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
@@ -67,6 +69,10 @@ export const Admin = () => {
                 return <AddProductType />;
             case 'AdminProductTypes':
                 return <AdminProductTypes />;
+            case 'AddPromotion':
+                return <AddPromotion />;
+            case 'AdminPromotions':
+                return <AdminPromotions />;
             default:
                 return <Overview />;
         }

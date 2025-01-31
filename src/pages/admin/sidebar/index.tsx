@@ -11,6 +11,7 @@ import {
     SignOut,
     Percent,
     Carousel,
+    Promotion,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
@@ -100,7 +101,21 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu( 'Carousel', 'AdminCarousel' )}>
+                <MenuItem onClick={() => toggleMenu( 'Promotions', 'AddPromotion' )}>
+                    <Promotion />
+                    PROMOTIONS
+                </MenuItem>
+                {expandedMenu === 'Promotions' && (
+                    <SubMenu>
+                        <SubMenuItem onClick={() => setSelectedComponent('AddPromotion')}>
+                            ADD PROMOTION
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent('AdminPromotions')}>
+                            MANAGE PROMOTIONS
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem onClick={() => toggleMenu('Carousel', 'AdminCarousel')}>
                     <Carousel />
                     CAROUSEL
                 </MenuItem>
