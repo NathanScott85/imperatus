@@ -4,11 +4,11 @@ import { mediaQueries } from '../../styled/breakpoints';
 
 interface InputProps {
     label?: string;
-    onClick?: ( event: React.MouseEvent<HTMLButtonElement> ) => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
     size?: 'small' | 'medium';
     type?: string | number;
     placeholder?: string;
-    onChange?: ( event: React.ChangeEvent<HTMLInputElement> ) => void;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     variant?:
     | 'search'
     | 'primary'
@@ -17,7 +17,8 @@ interface InputProps {
     | 'secondary'
     | 'birthday'
     | 'description'
-    | 'upload';
+    | 'upload'
+    | 'small';
     className?: string;
     name?: string;
     value?: number | undefined | string;
@@ -25,7 +26,7 @@ interface InputProps {
     checked?: boolean;
     id?: string;
     required?: boolean;
-    onKeyDown?: ( event: KeyboardEvent<HTMLInputElement> ) => void;
+    onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input = forwardRef<
@@ -135,7 +136,7 @@ const UploadButton = styled.button`
 `;
 
 const StyledInput = styled.input<InputProps>`
-    ${( { radio } ) =>
+    ${({ radio }) =>
         radio &&
         css`
             position: absolute;
@@ -162,7 +163,7 @@ const StyledInput = styled.input<InputProps>`
     }
     z-index: 50;
 
-    ${( { variant } ) =>
+    ${({ variant }) =>
         variant === 'search' &&
         css`
             margin-right: 0.5rem;
@@ -187,20 +188,20 @@ const StyledInput = styled.input<InputProps>`
                 color: transparent;
             }
 
-            ${mediaQueries( 'md' )`
+            ${mediaQueries('md')`
                 width: 280px;
             `}
 
-            ${mediaQueries( 'lg' )`
+            ${mediaQueries('lg')`
                 width: 320px;
             `}
 
-            ${mediaQueries( 'xl' )`
+            ${mediaQueries('xl')`
                 width: 550px;
             `}
         `}
 
-    ${( { variant } ) =>
+    ${({ variant }) =>
         variant === 'primary' &&
         css`
             margin-right: 0.5rem;
@@ -244,7 +245,7 @@ const StyledInput = styled.input<InputProps>`
             text-indent: 5px;
         `}
 
-    ${( { variant } ) =>
+    ${({ variant }) =>
         variant === 'birthday' &&
         css`
             margin-right: 0.5rem;
@@ -270,9 +271,39 @@ const StyledInput = styled.input<InputProps>`
 
             text-indent: 5px;
             width: 90px;
-        `}
+        `
+    }
 
-    ${( { variant } ) =>
+    ${({ variant }) =>
+        variant === 'small' &&
+        css`
+            margin-left: auto;
+            max-width: 300px;
+            width: 325px;
+            border-radius: 3px;
+            font-size: 14px;
+            padding: 0.5rem;
+            border: 1px solid rgba(172, 143, 255, 0.5);
+            background-color: transparent;
+            color: white;
+            height: 32px;
+
+            &:focus {
+                outline: none;
+                border: 1px solid #c79d0a;
+            }
+
+            font-family: Barlow, serif;
+
+            &::placeholder {
+                color: white;
+                font-size: 12px;
+                padding-left: 5px;
+            }
+        `
+    }
+
+    ${({ variant }) =>
         variant === 'secondary' &&
         css`
             margin-right: 0.5rem;
@@ -298,13 +329,15 @@ const StyledInput = styled.input<InputProps>`
 
             text-indent: 5px;
             width: 325px;
-        `}
+        `
+    }
 
-    ${( { variant } ) =>
+    ${({ variant }) =>
         variant === 'upload' &&
         css`
             display: none;
-        `}
+        `
+    }
 `;
 
 const StyledTextArea = styled.textarea<InputProps>`

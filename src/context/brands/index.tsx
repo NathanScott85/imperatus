@@ -2,15 +2,6 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { CREATE_BRAND, DELETE_BRAND, GET_BRANDS, UPDATE_BRAND } from '../../graphql/brands';
 
-interface File {
-  id: string;
-  url: string;
-  key: string;
-  fileName: string;
-  contentType: string;
-  createdAt: string;
-}
-
 interface Brands {
   id: string;
   name: string;
@@ -18,7 +9,37 @@ interface Brands {
   img?: File | null;
 }
 
-const BrandsContext = createContext<any | null>( null );
+interface Brand {
+  id: string;
+  name: string;
+  description: string;
+  img?: File | null;
+}
+
+interface BrandsContext {
+    brands: Brand[];
+    fetchBrands: () => void;
+    loading: boolean;
+    error: any;
+    page: number;
+    setPage: (page: number) => void;
+    search: string;
+    setSearch: (search: string) => void;
+    limit: number;
+    setLimit: (limit: number) => void;
+    totalCount: number;
+    totalPages: number;
+    currentPage: number;
+    setTotalPages: (totalPages: number) => void;
+    setTotalCount: (totalCount: number) => void;
+    setCurrentPage: (currentPage: number) => void;
+    resetPagination: () => void;
+    createProductBrand: (name: string, description: string, img?: File | null) => Promise<{ success: boolean; message: string; brand: Brand | null }>;
+    updateBrand: (brand: Brand) => Promise<void>;
+    deleteBrand: (id: string) => Promise<void>;
+}
+
+const BrandsContext = createContext<BrandsContext | null>( null );
 
 export const BrandsProvider = ( { children }: { children: ReactNode } ) => {
   const [brands, setBrands] = useState<Brands[]>( [] );
@@ -126,6 +147,7 @@ export const BrandsProvider = ( { children }: { children: ReactNode } ) => {
       error,
       page,
       setPage,
+      search,
       setSearch,
       limit,
       setLimit,

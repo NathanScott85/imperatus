@@ -2,7 +2,7 @@ import React, { createContext, ReactNode, useContext, useMemo, useState } from '
 import { CREATE_SET, DELETE_SET, GET_SETS, UPDATE_SET } from '../../graphql/sets';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
-const SetsContext = createContext<any | null>( null );
+
 
 interface Sets {
   id: any
@@ -10,6 +10,30 @@ interface Sets {
   setCode: string;
   description: string;
 }
+
+interface SetsContext {
+  fetchSets: () => void;
+  sets: Sets[];
+  loading: boolean;
+  error: any;
+  page: number;
+  setPage: (page: number) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  limit: number;
+  setLimit: (limit: number) => void;
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  setTotalPages: (totalPages: number) => void;
+  setTotalCount: (totalCount: number) => void;
+  setCurrentPage: (currentPage: number) => void;
+  createSet: (setName: string, setCode: string, description: string) => Promise<{ success: boolean; message: string; set: Sets | null }>;
+  updateSet: (set: Sets) => Promise<void>;
+  deleteSet: (id: string) => Promise<void>;
+}
+
+const SetsContext = createContext<SetsContext | null>( null );
 
 export const SetsProvider = ( { children }: { children: ReactNode } ) => {
   const [sets, setSets] = useState<Sets[]>( [] );
@@ -115,6 +139,7 @@ export const SetsProvider = ( { children }: { children: ReactNode } ) => {
       error,
       page,
       setPage,
+      search,
       setSearch,
       limit,
       setLimit,

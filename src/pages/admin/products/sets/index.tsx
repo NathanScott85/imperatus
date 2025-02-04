@@ -1,165 +1,156 @@
-import React, { useDeferredValue, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSetsContext } from "../../../../context/sets";
 import styled from "styled-components";
 import { Input } from "../../../../components/input";
 import { FancyContainer } from "../../../../components/fancy-container";
+import { Search } from '../../../../components/search';
 import { Set } from "./set";
 
 export const AdminSets = () => {
-  const { sets, fetchSets,
-    loading,
-    error,
-    totalPages,
-    setPage,
-    currentPage,
-    setCurrentPage, setSearch } = useSetsContext();
-  const [selectedSet, setSelectedSet] = useState<any | null>( null );
-  const [searchQuery, setSearchQuery] = useState<string>( "" );
+    const { 
+      sets, 
+      fetchSets,
+      loading,
+      error,
+      totalPages,
+      setPage,
+      search,
+      currentPage,
+      setCurrentPage, setSearch } = useSetsContext();
+    const [selectedSet, setSelectedSet] = useState<any | null>(null);
 
-  const deferredSearchQuery = useDeferredValue( searchQuery );
+    useEffect(() => {
+      fetchSets();
+    }, [fetchSets, currentPage]);
 
-  useEffect( () => {
-    setSearch( deferredSearchQuery );
-    fetchSets();
-  }, [deferredSearchQuery, fetchSets, setSearch] );
+    const handlePageChange = (newPage: number) => {
+      if (newPage >= 1 && newPage <= totalPages) {
+        setCurrentPage(newPage);
+        setPage(newPage);
+      }
+    };
 
-  const handlePageChange = ( newPage: number ) => {
-    if ( newPage >= 1 && newPage <= totalPages ) {
-      setCurrentPage( newPage );
-      setPage( newPage );
+    const handleViewSet = (set: any) => {
+      setSelectedSet(set);
+    };
+
+    const triggerSearch = () => {
+      setSearch(search);
+    };
+
+    const handleReset = () => {
+      setSearch('');
+      setPage(1);
+    };
+
+    const handleBackToList = () => {
+      setSelectedSet(null);
+    };
+
+    if (selectedSet) {
+      return (
+        <Set set={selectedSet} onBack={handleBackToList} />
+      )
     }
-  };
 
-  const handleViewSet = ( set: any ) => {
-    setSelectedSet( set );
-  };
-
-  const handleBackToList = () => {
-    setSelectedSet( null );
-  };
-
-  if ( selectedSet ) {
     return (
-      <Set set={selectedSet} onBack={handleBackToList} />
+      <SetsContainer>
+        <TitleRow>
+          <SetsTitle>Product Sets</SetsTitle>
+          <SearchContainer>
+              <Search
+                  type="text"
+                  variant="small"
+                  onSearch={triggerSearch}
+                  search={search}
+                  placeholder="Search Sets"
+                  onChange={(e) => setSearch(e.target.value)}
+                  handleReset={handleReset}
+              />
+          </SearchContainer>
+        </TitleRow>
+        {sets?.length !== 0 ? (
+          <SetsWrapper>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Set Name</th>
+                  <th>Set Code</th>
+                  <th>Description</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <CenteredCell>Loading...</CenteredCell>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <CenteredCell>Error: {error.message}</CenteredCell>
+                  </tr>
+                ) : (
+                  sets?.map((set: any, index: number) => (
+                    <TableRow key={set.id} isOdd={index % 2 === 1}>
+                      <td>{set.setName}</td>
+                      <td>{set.setCode}</td>
+                      <td>{set.description}</td>
+                      <td>
+                        <ViewButton onClick={() => handleViewSet(set)}>
+                          View
+                        </ViewButton>
+                      </td>
+                    </TableRow>
+                  ))
+                )}
+              </tbody>
+            </Table>
+            {totalPages > 1 && (
+              <PaginationContainer>
+                <PaginationControls>
+                  <PageButton
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </PageButton>
+                  <span>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <PageButton
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
+                  >
+                    Next
+                  </PageButton>
+                </PaginationControls>
+              </PaginationContainer>
+            )}
+          </SetsWrapper>
+        ) : (
+          <SetsContainer>
+            <FancyContainer>
+              <NoSetsMessage>
+                {search ? (
+                  <p>No results found for "{search}"</p>
+                ) : (
+                  <p>No Sets added at the moment.</p>
+                )}
+              </NoSetsMessage>
+            </FancyContainer>
+          </SetsContainer>
+        )}
+      </SetsContainer>
     )
-  }
-
-  return (
-    <SetsContainer>
-      <TitleRow>
-        <SetsTitle>Product Sets</SetsTitle>
-        <SearchContainer>
-          <StyledInput
-            variant="secondary"
-            size="small"
-            placeholder="Search product sets..."
-            value={searchQuery}
-            onChange={( e ) => setSearchQuery( e.target.value )}
-          />
-          {searchQuery && (
-            <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
-          )}
-        </SearchContainer>
-      </TitleRow>
-
-      {sets?.length !== 0 ? (
-        <SetsWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <th>Set Name</th>
-                <th>Set Code</th>
-                <th>Description</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <CenteredCell>Loading...</CenteredCell>
-                </tr>
-              ) : error ? (
-                <tr>
-                  <CenteredCell>Error: {error.message}</CenteredCell>
-                </tr>
-              ) : (
-                sets?.map( ( set: any, index: number ) => (
-                  <TableRow key={set.id} isOdd={index % 2 === 1}>
-                    <td>{set.setName}</td>
-                    <td>{set.setCode}</td>
-                    <td>{set.description}</td>
-                    <td>
-                      <ViewButton onClick={() => handleViewSet( set )}>
-                        View
-                      </ViewButton>
-                    </td>
-                  </TableRow>
-                ) )
-              )}
-            </tbody>
-          </Table>
-          {totalPages > 1 && (
-            <PaginationContainer>
-              <PaginationControls>
-                <PageButton
-                  onClick={() => handlePageChange( currentPage - 1 )}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </PageButton>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <PageButton
-                  onClick={() => handlePageChange( currentPage + 1 )}
-                  disabled={currentPage >= totalPages}
-                >
-                  Next
-                </PageButton>
-              </PaginationControls>
-            </PaginationContainer>
-          )}
-        </SetsWrapper>
-      ) : (
-        <SetsContainer>
-          <FancyContainer>
-            <NoSetsMessage>
-              {searchQuery ? (
-                <p>No results found for "{searchQuery}"</p>
-              ) : (
-                <p>No Brands added at the moment.</p>
-              )}
-            </NoSetsMessage>
-          </FancyContainer>
-        </SetsContainer>
-      )}
-    </SetsContainer>
-  )
 }
 
 const SearchContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    margin-left: auto; /* Push the search input and button to the right */
+    margin-left: auto;
     max-width: 325px;
     width: 100%;
-
-`;
-
-const ClearButton = styled.button`
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: white;
-    z-index: 999;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-        color: #c79d0a;
-    }
 `;
 
 const SetsContainer = styled.div`
@@ -193,7 +184,7 @@ const SetsTitle = styled.h2`
     color: white;
 `;
 
-const StyledInput = styled( Input )`
+const StyledInput = styled(Input)`
   margin-left: auto;
   max-width: 300px;
   border-radius: 3px;
@@ -246,7 +237,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
+    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
 `;
 
 const CenteredCell = styled.td`
@@ -258,10 +249,10 @@ const CenteredCell = styled.td`
 
 
 const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem; /* Spacing between title and input */
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 `;
 
 const NoSetsMessage = styled.div`
@@ -294,7 +285,6 @@ const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
     margin-left: 26rem;
 `;
 
@@ -314,16 +304,16 @@ const PaginationControls = styled.div`
 
 
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
 `;

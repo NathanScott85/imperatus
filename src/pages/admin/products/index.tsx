@@ -3,125 +3,156 @@ import styled from 'styled-components';
 import { useAdminContext } from '../../../context/admin';
 import { Product } from './product';
 import { FancyContainer } from '../../../components/fancy-container';
+import { Search } from '../../../components/search';
 
 export const AdminProducts = () => {
     const {
         products,
         loading,
         error,
+        search,
+        setSearch,
         fetchProducts,
-        currentPage,
         totalPages,
+        page,
         setPage,
     } = useAdminContext();
 
-    const [selectedProduct, setSelectedProduct] = useState<any | null>( null );
+    const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
-    useEffect( () => {
+    useEffect(() => {
         fetchProducts();
-    }, [fetchProducts, currentPage] );
+    }, [fetchProducts]);
 
-    const handlePageChange = ( newPage: number ) => {
-        if ( newPage >= 1 && newPage <= totalPages ) {
-            setPage( newPage );
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
         }
     };
 
-    const handleViewProduct = ( product: any ) => {
-        setSelectedProduct( product );
+    const triggerSearch = () => {
+        setSearch(search);
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        setPage(1);
+    };
+
+    const handleViewProduct = (product: any) => {
+        setSelectedProduct(product);
     };
 
     const handleBackToList = () => {
-        setSelectedProduct( null );
+        setSelectedProduct(null);
     };
 
-    if ( selectedProduct ) {
+    if (selectedProduct) {
         return <Product product={selectedProduct} onBack={handleBackToList} />;
     }
 
     return (
         <ProductsContainer>
-            <ProductsTitle>Products</ProductsTitle>
-            {products?.length !== 0 ? <ProductsWrapper>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock Amount</th>
-                            <th>Stock Status</th>
-                            <th>View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
+            <TitleRow>
+                <ProductsTitle>Products</ProductsTitle>
+                <SearchContainer>
+                    <Search
+                        type="text"
+                        variant="small"
+                        onSearch={triggerSearch}
+                        search={search}
+                        placeholder="Search Products"
+                        onChange={(e) => setSearch(e.target.value)}
+                        handleReset={handleReset}
+                    />
+                </SearchContainer>
+            </TitleRow>
+
+            {products?.length !== 0 ? (
+                <ProductsWrapper>
+                    <Table>
+                        <thead>
                             <tr>
-                                <CenteredCell>Loading...</CenteredCell>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Set</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>View</th>
                             </tr>
-                        ) : error ? (
-                            <tr>
-                                <CenteredCell>
-                                    Error: {error.message}
-                                </CenteredCell>
-                            </tr>
-                        ) : (
-                            products?.map( ( product, index ) => (
-                                <TableRow
-                                    key={product.id}
-                                    isOdd={index % 2 === 1}
-                                >
-                                    <td>{product.name}</td>
-                                    <td>{product.category?.name}</td>
-                                    <td>£{product.price}</td>
-                                    <td>{product.stock.amount}</td>
-                                    <td>
-                                        {product.stock.amount > 0 ? (
-                                            <span>{product.stock.instock}</span>
-                                        ) : (
-                                            <span>{product.stock.soldout}</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <ViewButton
-                                            onClick={() =>
-                                                handleViewProduct( product )
-                                            }
-                                        >
-                                            View
-                                        </ViewButton>
-                                    </td>
-                                </TableRow>
-                            ) )
-                        )}
-                    </tbody>
-                </Table>
-                {products!.length >= 10 && <Pagination>
-                    <PageButton
-                        onClick={() => handlePageChange( currentPage - 1 )}
-                        disabled={currentPage === 1}
-                    >
-                        Previous
-                    </PageButton>
-                    <PageButton
-                        onClick={() => handlePageChange( currentPage + 1 )}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next
-                    </PageButton>
-                </Pagination>
-                }
-            </ProductsWrapper> : <ProductsContainer>
-                <FancyContainer>
-                    <NoProductsMessage>
-                        <p>No products available at the moment.</p>
-                    </NoProductsMessage>
-                </FancyContainer>
-            </ProductsContainer>
-            }
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell >Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell>
+                                        Error: {error.message}
+                                    </CenteredCell>
+                                </tr>
+                            ) : (
+                                products?.map((product, index) => (
+
+                                    <TableRow key={product.id} isOdd={index % 2 === 1}>
+                                        {console.log(product, 'product') as any}
+                                        <td>{product.name}</td>
+                                        <td>{product.category?.name || 'N/A'}</td>
+                                        <td>{product?.brand?.name || 'N/A'}</td>
+                                        <td>{product.set?.setName || 'N/A'}</td>
+                                        <td>£{product.price}</td>
+                                        <td>{product.stock?.amount ?? 'N/A'}</td>
+                                        <td>
+                                            <ViewButton onClick={() => handleViewProduct(product)}>
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ))
+                            )}
+                        </tbody>
+                    </Table>
+                    {totalPages > 1 && (
+                        <Pagination>
+                            <PageButton onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
+                                Previous
+                            </PageButton>
+                            <PageButton onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>
+                                Next
+                            </PageButton>
+                        </Pagination>
+                    )}
+                </ProductsWrapper>
+            ) : (
+                <ProductsContainer>
+                    <FancyContainer>
+                        <NoProductsMessage>
+                            {search ? <p>No results found for "{search}"</p> : <p>No Products added at the moment.</p>}
+                        </NoProductsMessage>
+                    </FancyContainer>
+                </ProductsContainer>
+            )}
         </ProductsContainer>
     );
 };
+
+const SearchContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    max-width: 325px;
+    width: 100%;
+`;
+
+const TitleRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+`;
 
 const NoProductsMessage = styled.div`
     display: flex;
@@ -177,7 +208,6 @@ const Table = styled.table`
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #4d3c7b;
-
     background-color: #160d35;
     th,
     td {
@@ -217,7 +247,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
+    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
 `;
 
 const CenteredCell = styled.td`
@@ -234,17 +264,17 @@ const Pagination = styled.div`
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
 `;
 

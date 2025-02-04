@@ -4,6 +4,7 @@ import { FancyContainer } from '../../../../components/fancy-container';
 import { useBrandsContext } from '../../../../context/brands';
 import { Brand } from './brand';
 import { Input } from '../../../../components/input';
+import { Search } from '../../../../components/search';
 
 export const AdminBrands = () => {
       const {
@@ -11,26 +12,32 @@ export const AdminBrands = () => {
         fetchBrands,
         loading,
         error,
+        search,
         totalPages,
         setPage,
         currentPage,
         setCurrentPage, setSearch } = useBrandsContext();
 
       const [selectedBrand, setSelectedBrand] = useState<any | null>( null );
-      const [searchQuery, setSearchQuery] = useState<string>( "" );
-
-      const deferredSearchQuery = useDeferredValue( searchQuery );
 
       useEffect( () => {
-        setSearch( deferredSearchQuery );
         fetchBrands();
-      }, [deferredSearchQuery, fetchBrands, setSearch] );
+      }, [fetchBrands] );
 
       const handlePageChange = ( newPage: number ) => {
         if ( newPage >= 1 && newPage <= totalPages ) {
           setCurrentPage( newPage );
           setPage( newPage );
         }
+      };
+
+      const handleReset = () => {
+        setSearch('');
+        setPage(1);
+      };
+
+      const triggerSearch = () => {
+        setSearch(search);
       };
 
       const handleViewBrand = ( brand: any ) => {
@@ -46,24 +53,23 @@ export const AdminBrands = () => {
           <Brand brand={selectedBrand} onBack={handleBackToList} />
         )
       }
+
   return (
     <BrandsContainer>
       <TitleRow>
         <BrandsTitle>Product Brands</BrandsTitle>
         <SearchContainer>
-          <StyledInput
-            variant="secondary"
-            size="small"
-            placeholder="Search product types..."
-            value={searchQuery}
-            onChange={( e ) => setSearchQuery( e.target.value )}
-          />
-          {searchQuery && (
-            <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
-          )}
+          <Search
+              type="text"
+              variant="small"
+              onSearch={triggerSearch}
+              search={search}
+              placeholder="Search Brands"
+              onChange={(e) => setSearch(e.target.value)}
+              handleReset={handleReset}
+          />             
         </SearchContainer>
       </TitleRow>
-
       {brands?.length !== 0 ? (
         <BrandsWrapper>
           <Table>
@@ -124,8 +130,8 @@ export const AdminBrands = () => {
         <ProductsContainer>
           <FancyContainer>
             <NoBrandsMessage>
-              {searchQuery ? (
-                <p>No results found for "{searchQuery}"</p>
+              {search ? (
+                <p>No results found for "{search}"</p>
               ) : (
                 <p>No Brands added at the moment.</p>
               )}
@@ -142,31 +148,16 @@ const SearchContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    margin-left: auto; /* Push the search input and button to the right */
+    margin-left: auto;
     max-width: 325px;
     width: 100%;
 
 `;
 
-const ClearButton = styled.button`
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: white;
-    z-index: 999;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-        color: #c79d0a;
-    }
-`;
-
 const TitleRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem; /* Spacing between title and input */
+  gap: 1rem;
   margin-bottom: 0.75rem;
 `;
 
