@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, KeyboardEvent } from 'react';
 import styled from 'styled-components';
+import { FancyContainer } from '../../../components/fancy-container';
 import { useAdminContext } from '../../../context/admin';
-import moment from 'moment';
+
 import { Search } from '../../../components/search';
 import { Customer } from './customer';
-import { useAppContext } from '../../../context';
-
 import { Roles } from '../../../types';
 import { Eye } from '../../../components/svg';
 
@@ -26,32 +25,21 @@ export const Customers: React.FC = () => {
         users,
         loading,
         error,
+        page,
         setPage,
+        search,
         setSearch,
         totalPages,
-        currentPage,
         fetchUsers,
     } = useAdminContext();
-    const { isAdminOrOwner } = useAppContext();
+
     const [selectedCustomer, setSelectedCustomer] =
         useState<CustomerType | null>(null);
-    const [search, setSearchTerm] = useState('');
-    const [visibleDetails, setVisibleDetails] = useState<{
-        [key: string]: boolean;
-    }>({});
+    const [visibleDetails, setVisibleDetails] = useState<{ [key: string]: boolean }>({});
 
     useEffect(() => {
         fetchUsers();
-    }, [fetchUsers, currentPage]);
-
-    const handleSearchInputChange = (e: any) => {
-        const searchTerm = e.target.value;
-        setSearchTerm(searchTerm);
-        setPage(1);
-        if (searchTerm === '') {
-            setSearch('');
-        }
-    };
+    }, [fetchUsers]);
 
     const handleViewCustomer = (customer: any) => {
         setSelectedCustomer(customer);
@@ -62,7 +50,6 @@ export const Customers: React.FC = () => {
     };
 
     const handleReset = () => {
-        setSearchTerm('');
         setSearch('');
         setPage(1);
     };
@@ -84,13 +71,6 @@ export const Customers: React.FC = () => {
         setSelectedCustomer(null);
     };
 
-    if (!isAdminOrOwner) {
-        return <p>You do not have permission to view this content.</p>;
-    }
-
-    if (loading) return <p>loading....</p>;
-    if (error) return <Span>Error loading users: {error.message}</Span>;
-
     if (selectedCustomer) {
         return (
             <Customer
@@ -102,137 +82,160 @@ export const Customers: React.FC = () => {
     }
 
     return (
-        <CustomersContainer>
-            <CustomersWrapper>
-                <CustomersHeader>
-                    <CustomersTitle>Customers</CustomersTitle>
+        <ProductsContainer>
+            <TitleRow>
+                <CustomersTitle>Customers</CustomersTitle>
+                <SearchContainer>
                     <Search
                         type="text"
+                        variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        onChange={handleSearchInputChange}
+                        placeholder="Search Customers..."
+                        onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
-                </CustomersHeader>
+                </SearchContainer>
+            </TitleRow>
 
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>Full Name</th>
-                            <th>Display</th>
-                            <th>Email</th>
-                            <th>Date of Birth</th>
-                            <th>Phone</th>
-                            <th>Address</th>
-                            <th>View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
+            {users?.length !== 0 ? (
+                <CustomersWrapper>
+                    <Table>
+                        <thead>
                             <tr>
-                                <LoadingCell colSpan={7}>
-                                    Loading...
-                                </LoadingCell>
+                                <th>Full Name</th>
+                                <th>Display</th>
+                                <th>Email</th>
+                                <th>Date of Birth</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>View</th>
                             </tr>
-                        ) : error ? (
-                            <tr>
-                                <ErrorCell colSpan={7}>
-                                    Error loading users: {error.message}
-                                </ErrorCell>
-                            </tr>
-                        ) : (
-                            users?.map((user) => (
-                                <tr key={user.id}>
-                                    <td>{user.fullname}</td>
-                                    <td>
-                                        <EyeIcon
-                                            onClick={() =>
-                                                toggleVisibility(
-                                                    user.id.toString(),
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell colSpan={7}>Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell colSpan={7}>
+                                        Error: {error.message}
+                                    </CenteredCell>
+                                </tr>
+                            ) : (
+                                users?.map((user) => (
+                                    <TableRow key={user.id}>
+                                        <td>{user.fullname}</td>
+                                        <td>
+                                            <EyeIcon
+                                                onClick={() =>
+                                                    toggleVisibility(user.id.toString())
+                                                }
+                                            >
+                                                <Eye />
+                                            </EyeIcon>
+                                        </td>
+                                        <td>
+                                            {visibleDetails[user.id] ? (
+                                                <span>{user.email}</span>
+                                            ) : (
+                                                <span>...</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {visibleDetails[user.id] ? (
+                                                user.dob ? (
+                                                    <span>
+                                                        {user.dob}
+                                                    </span>
+                                                ) : (
+                                                    <span>N/A</span>
                                                 )
-                                            }
-                                        >
-                                            <Eye />
-                                        </EyeIcon>
-                                    </td>
-                                    <td>
-                                        {visibleDetails[user.id] ? (
-                                            <span>{user.email}</span>
-                                        ) : (
-                                            <span>...</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {visibleDetails[user.id] ? (
-                                            user.dob ? (
+                                            ) : (
+                                                <span>...</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {visibleDetails[user.id] ? (
+                                                <span>{user.phone}</span>
+                                            ) : (
+                                                <span>...</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            {visibleDetails[user.id] ? (
                                                 <span>
-                                                    {moment(user.dob).format(
-                                                        'MM/DD/YYYY',
-                                                    )}
+                                                    {user.address}, <br />
+                                                    {user.city}, {user.postcode}
                                                 </span>
                                             ) : (
-                                                <span>N/A</span>
-                                            )
-                                        ) : (
-                                            <span>...</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {visibleDetails[user.id] ? (
-                                            <span>{user.phone}</span>
-                                        ) : (
-                                            <span>...</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        {visibleDetails[user.id] ? (
-                                            <span>
-                                                {user.address}, <br />
-                                                {user.city},{user.postcode}
-                                            </span>
-                                        ) : (
-                                            <span>...</span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <ViewButton
-                                            onClick={() =>
-                                                handleViewCustomer(user)
-                                            }
-                                        >
-                                            View
-                                        </ViewButton>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </Table>
-                {loading && (
-                    <Pagination>
-                        <PageButton
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                        >
-                            Previous
-                        </PageButton>
-                        <PageButton
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                        >
-                            Next
-                        </PageButton>
-                    </Pagination>
-                )}
-            </CustomersWrapper>
-        </CustomersContainer>
+                                                <span>...</span>
+                                            )}
+                                        </td>
+                                        <td>
+                                            <ViewButton onClick={() => handleViewCustomer(user)}>
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ))
+                            )}
+                        </tbody>
+                    </Table>
+                    {totalPages > 1 && (
+                        <Pagination>
+                            <PaginationControls>
+                                <PageButton
+                                    onClick={() => handlePageChange(page - 1)}
+                                    disabled={page === 1}
+                                >
+                                    Previous
+                                </PageButton>
+                                <span>
+                                    Page {page} of {totalPages}
+                                </span>
+                                <PageButton
+                                    onClick={() => handlePageChange(page + 1)}
+                                    disabled={page >= totalPages}
+                                >
+                                    Next
+                                </PageButton>
+                            </PaginationControls>
+                        </Pagination>
+                    )}
+                </CustomersWrapper>
+            ) : (
+                <ProductsContainer>
+                    <FancyContainer>
+                        <NoResultsMessage>
+                            {search ? (
+                                <p>No results found for "{search}"</p>
+                            ) : (
+                                <p>No customers added at the moment.</p>
+                            )}
+                        </NoResultsMessage>
+                    </FancyContainer>
+                </ProductsContainer>
+            )}
+        </ProductsContainer>
     );
 };
 
-const CustomersHeader = styled.div`
+
+const ProductsContainer = styled.div`
+    flex-direction: column;
+    p {
+        font-size: 16px;
+        color: white;
+    }
+`;
+
+const TitleRow = styled.div`
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 `;
 
 const CustomersTitle = styled.h2`
@@ -240,6 +243,15 @@ const CustomersTitle = styled.h2`
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
+`;
+
+const SearchContainer = styled.div`
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    max-width: 325px;
+    width: 100%;
 `;
 
 const EyeIcon = styled.button`
@@ -280,34 +292,15 @@ const ViewButton = styled.button`
     }
 `;
 
-const Span = styled.span`
-    color: #fff;
-    font-family: Cinzel;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
-`;
 
-const CustomersContainer = styled.div`
-    color: white;
-    display: grid;
-    flex-direction: column;
-    padding: 2rem;
-    background-color: #160d35;
-    border: 1px solid #4d3c7b;
-    border-radius: 8px;
-    width: 100%;
-    margin: 0 auto;
-    p {
-        font-size: 16px;
-        color: white;
-    }
-`;
 
 const CustomersWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
+    padding: 1rem;
     border-radius: 8px;
+    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -315,7 +308,6 @@ const Table = styled.table`
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #4d3c7b;
-
     background-color: #160d35;
     th,
     td {
@@ -324,7 +316,6 @@ const Table = styled.table`
         border-bottom: 1px solid #4d3c7b;
         line-height: normal;
     }
-
     th {
         background-color: #4d3c7b;
         color: #fff;
@@ -356,25 +347,54 @@ const Table = styled.table`
         color: #c79d0a;
     }
 `;
-
-const LoadingCell = styled.td`
+const CenteredCell = styled.td`
     text-align: center;
-    padding: 2rem;
     color: #999;
     font-size: 14px;
-`;
-
-const ErrorCell = styled.td`
-    text-align: center;
-    padding: 2rem;
-    color: red;
-    font-size: 14px;
+    padding: 2rem 0;
 `;
 
 const Pagination = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-top: 1rem;
+`;
+
+const PaginationControls = styled.div`
+    display: flex;
+    align-items: center;
+    margin: 1rem;
+`;
+
+const NoResultsMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
+
+
+const TableRow = styled.tr`
+    background-color: transparent;
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`

@@ -1,45 +1,50 @@
 import { gql } from '@apollo/client';
 
 export const GET_CAROUSEL_PAGES = gql`
-    query GetCarouselPages {
-    getCarouselPages {
+  query GetCarouselPages($page: Int, $limit: Int, $search: String) {
+    getCarouselPages(page: $page, limit: $limit, search: $search) {
+      carouselPages {
         id
         createdAt
         updatedAt
         pages {
+          id
+          title
+          description
+          brand {
             id
-            title
+            name
             description
-            brand {
-                id
-                name
-                description
-                img {
-                    id
-                    url
-                    key
-                    fileName
-                    contentType
-                    createdAt
-                }
-            }
-            disabled
-            product {
-                id
-                slug
-                preorder
-            }
             img {
-                id
-                url
-                key
-                fileName
-                contentType
-                createdAt
+              id
+              url
+              key
+              fileName
+              contentType
+              createdAt
             }
+          }
+          disabled
+          product {
+            id
+            slug
+            preorder
+          }
+          img {
+            id
+            url
+            key
+            fileName
+            contentType
+            createdAt
+          }
         }
+      }
+      totalCount
+      totalPages
+      currentPage
     }
-}
+  }
 `;
 
 export const ADD_CAROUSEL_PAGE = gql`

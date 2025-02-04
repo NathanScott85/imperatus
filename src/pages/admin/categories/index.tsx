@@ -4,6 +4,7 @@ import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Input } from '../../../components/input';
+import { Search } from '../../../components/search';
 
 export const AdminCategories = () => {
     const {
@@ -15,34 +16,40 @@ export const AdminCategories = () => {
         totalPages,
         setSearch,
         setPage,
+        search
     } = useCategoriesContext();
 
-    const [selectedCategory, setSelectedCategory] = useState<any | null>( null );
-    const [searchQuery, setSearchQuery] = useState<string>( '' );
+    const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
 
-    const deferredSearchQuery = useDeferredValue( searchQuery );
 
-    useEffect( () => {
-        setSearch( deferredSearchQuery );
+    useEffect(() => {
         fetchCategories();
+    }, [search, setSearch, fetchCategories,])
 
-    }, [deferredSearchQuery, setSearch, fetchCategories,] )
-
-    const handleViewCategory = ( category: any ) => {
-        setSelectedCategory( category );
+    const handleViewCategory = (category: any) => {
+        setSelectedCategory(category);
     };
 
-    const handlePageChange = ( newPage: number ) => {
-        if ( newPage >= 1 && newPage <= totalPages ) {
-            setPage( newPage );
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
         }
     };
 
-    const handleBackToList = () => {
-        setSelectedCategory( null );
+    const triggerSearch = () => {
+        setSearch(search);
     };
 
-    if ( selectedCategory ) {
+    const handleReset = () => {
+        setSearch('');
+        setPage(1);
+    };
+
+    const handleBackToList = () => {
+        setSelectedCategory(null);
+    };
+
+    if (selectedCategory) {
         return <Category category={selectedCategory} onBack={handleBackToList} />;
     }
 
@@ -51,17 +58,17 @@ export const AdminCategories = () => {
             <TitleRow>
                 <CategoriesTitle>Categories</CategoriesTitle>
                 <SearchContainer>
-                    <StyledInput
-                        variant="secondary"
-                        size="small"
-                        placeholder="Search categories..."
-                        value={searchQuery}
-                        onChange={( e ) => setSearchQuery( e.target.value )}
+                    <Search
+                        type="text"
+                        variant='small'
+                        onSearch={triggerSearch}
+                        search={search}
+                        placeholder='Search'
+                        onChange={(e) => setSearch(e.target.value)}
+                        handleReset={handleReset}
                     />
-                    {searchQuery && (
-                        <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
-                    )}
                 </SearchContainer>
+
             </TitleRow>
             {categories?.length !== 0 ? (
                 <CategoriesWrapper>
@@ -83,17 +90,17 @@ export const AdminCategories = () => {
                                     <CenteredCell>Error: {error.message}</CenteredCell>
                                 </tr>
                             ) : (
-                                categories?.map( ( category: any, index: number ) => (
+                                categories?.map((category: any, index: number) => (
                                     <TableRow key={category.id} isOdd={index % 2 === 1}>
                                         <td>{category.name}</td>
                                         <td>{category.description}</td>
                                         <td>
-                                            <ViewButton onClick={() => handleViewCategory( category )}>
+                                            <ViewButton onClick={() => handleViewCategory(category)}>
                                                 View
                                             </ViewButton>
                                         </td>
                                     </TableRow>
-                                ) )
+                                ))
                             )}
                         </tbody>
                     </Table>
@@ -101,7 +108,7 @@ export const AdminCategories = () => {
                         <PaginationContainer>
                             <PaginationControls>
                                 <PageButton
-                                    onClick={() => handlePageChange( currentPage - 1 )}
+                                    onClick={() => handlePageChange(currentPage - 1)}
                                     disabled={currentPage === 1}
                                 >
                                     Previous
@@ -110,7 +117,7 @@ export const AdminCategories = () => {
                                     Page {currentPage} of {totalPages}
                                 </span>
                                 <PageButton
-                                    onClick={() => handlePageChange( currentPage + 1 )}
+                                    onClick={() => handlePageChange(currentPage + 1)}
                                     disabled={currentPage >= totalPages}
                                 >
                                     Next
@@ -123,8 +130,8 @@ export const AdminCategories = () => {
                 <ProductsContainer>
                     <FancyContainer>
                         <NoProductsMessage>
-                            {searchQuery ? (
-                                <p>No results found for "{searchQuery}"</p>
+                            {search ? (
+                                <p>No results found for "{search}"</p>
                             ) : (
                                 <p>No categories added at the moment.</p>
                             )}
@@ -134,7 +141,6 @@ export const AdminCategories = () => {
             )}
         </CategoriesContainer>
     );
-
 };
 
 
@@ -145,26 +151,10 @@ const SearchContainer = styled.div`
     margin-left: auto;
     max-width: 325px;
     width: 100%;
-
-`;
-
-const ClearButton = styled.button`
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: white;
-    z-index: 999;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-        color: #c79d0a;
-    }
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
+    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
 `;
 
 
@@ -188,13 +178,6 @@ const TitleRow = styled.div`
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
-`;
-
-
-const StyledInput = styled( Input )`
-    flex: 1;
-    padding-right: 2rem; /* Space for the clear button */
-        border-radius: 3px;
 `;
 
 const NoProductsMessage = styled.div`
@@ -245,16 +228,16 @@ const PaginationControls = styled.div`
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
 `;
 
@@ -279,16 +262,8 @@ const ViewButton = styled.button`
     }
 `;
 
-const Span = styled.span`
-    color: #fff;
-    font-family: Cinzel;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
-`;
-
 const CategoriesContainer = styled.div`
-    flex-direction: column;
+         flex-direction: column;
     p {
         font-size: 16px;
         color: white;
@@ -349,11 +324,4 @@ const Table = styled.table`
         background-color: #2a1f51;
         color: #c79d0a;
     }
-`;
-
-const LoadingCell = styled.td`
-    text-align: center;
-    padding: 2rem;
-    color: #999;
-    font-size: 14px;
 `;

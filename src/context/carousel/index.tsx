@@ -45,17 +45,30 @@ interface CarouselContextProps {
     ) => Promise<void>;
     deleteCarousel: (id: string) => Promise<void>;
     setCarousel: React.Dispatch<React.SetStateAction<CarouselPage[]>>;
+    totalCount: number;
+    totalPages: number;
+    page: number;
+    setPage: (page: number) => void;
+    search: string;
+    setSearch: (search: string) => void;
 }
 
 const CarouselContext = createContext<CarouselContextProps | null>(null);
 
 export const CarouselProvider = ({ children }: { children: ReactNode }) => {
     const [carousel, setCarousel] = useState<CarouselPage[]>([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState('');
 
     const [fetchCarousel, { loading, error }] = useLazyQuery(GET_CAROUSEL_PAGES, {
         fetchPolicy: 'cache-and-network',
+        variables: { page, limit: 10, search },
         onCompleted: (data) => {
-            setCarousel(data?.getCarouselPages || []);
+            setCarousel(data?.getCarouselPages.carouselPages || []);
+            setTotalCount(data?.getCarouselPages.totalCount || 0);
+            setTotalPages(data?.getCarouselPages.totalPages || 1);
         },
     });
 
@@ -102,16 +115,7 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         disabled?: boolean
     ) => {
         try {
-            console.log({
-                id,
-                title,
-                description,
-                img,
-                brandId,
-                productId,
-                disabled,
-            });
-            const brandid = Number(brandId)
+            const brandid = Number(brandId);
             const { data } = await updateCarouselMutation({
                 variables: {
                     id,
@@ -150,7 +154,7 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         fetchCarousel();
-    }, [fetchCarousel]);
+    }, [fetchCarousel, page, search]);
 
     return (
         <CarouselContext.Provider
@@ -163,6 +167,12 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
                 updateCarousel,
                 deleteCarousel,
                 setCarousel,
+                totalCount,
+                totalPages,
+                page,
+                setPage,
+                search,
+                setSearch,
             }}
         >
             {children}

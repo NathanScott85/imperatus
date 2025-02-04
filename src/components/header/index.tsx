@@ -20,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
             <ImperatusLink />
             <Search
                 search=""
+                variant='large'
                 handleReset={() => ''}
                 onChange={() => ''}
                 onSearch={() => ''}

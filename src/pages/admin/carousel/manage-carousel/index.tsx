@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useCarouselContext } from '../../../../context/carousel';
+import { useCarouselContext } from '../.././../../context/carousel';
 import { FancyContainer } from '../../../../components/fancy-container';
-import { Input } from '../../../../components/input';
 import { UpdateCarousel } from '../update-carousel';
 import { Modal } from '../../../../components/modal';
+import { Search } from '../../../../components/search';
 
 export const ManageCarousel = () => {
-    const { carousel, loading, error, fetchCarousel } = useCarouselContext();
+    const {
+        carousel,
+        loading,
+        error,
+        fetchCarousel,
+        totalPages,
+        search,
+        setSearch,
+        page,
+        setPage
+    } = useCarouselContext();
+
     const [selectedCarouselPage, setSelectedCarouselPage] = useState<any | null>(null);
     const [selectedThumbnail, setSelectedThumbnail] = useState<string | null>(null);
-    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         fetchCarousel();
-    }, [fetchCarousel]);
+    }, [search, page]);
 
     const handleViewPage = (page: any) => {
         setSelectedCarouselPage(page);
@@ -28,6 +38,21 @@ export const ManageCarousel = () => {
         setSelectedThumbnail(null);
     };
 
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    };
+
+    const triggerSearch = () => {
+        setSearch(search);
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        setPage(1);
+    };
+
     const handleBackToList = () => {
         setSelectedCarouselPage(null);
     };
@@ -35,79 +60,112 @@ export const ManageCarousel = () => {
     if (selectedCarouselPage) {
         return <UpdateCarousel carousel={selectedCarouselPage} onBack={handleBackToList} />;
     }
+    const allPages = carousel?.flatMap((carouselPage: any) => carouselPage.pages) || [];
 
     return (
         <CarouselContainer>
             <TitleRow>
                 <CarouselTitle>Manage Carousel</CarouselTitle>
                 <SearchContainer>
-                    <StyledInput
-                        variant="secondary"
-                        size="small"
-                        placeholder="Search carousel pages..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                    <Search
+                        type="text"
+                        variant='small'
+                        onSearch={triggerSearch}
+                        search={search}
+                        placeholder='Search Carousel'
+                        onChange={(e) => setSearch(e.target.value)}
+                        handleReset={handleReset}
                     />
-                    {searchQuery && (
-                        <ClearButton onClick={() => setSearchQuery('')}>✕</ClearButton>
-                    )}
                 </SearchContainer>
             </TitleRow>
-            {carousel!?.length > 0 ? (
+            {allPages.length > 0 ? (
                 <CarouselWrapper>
-                    {carousel!?.map((carousel: any) => (
-                        <CarouselGroup key={carousel.id}>
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Description</th>
-                                        <th>Image</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {carousel.pages.map((page: any, index: number) => (
-                                        <TableRow key={page.id} isOdd={index % 2 === 1}>
-                                            <td>{page.title}</td>
-                                            <td>{page.description}</td>
-                                            <td>
-                                                {page.img ? (
-                                                    <Thumbnail
-                                                        src={page.img.url}
-                                                        alt={page.img.title || 'Thumbnail'}
-                                                        onClick={() => handleThumbnailClick(page.img.url)}
-                                             
-                                                    />
-                                                ) : (
-                                                    'No Image Available'
-                                                )}
-                                            </td>
-                                            <td>
-                                                <ViewButton onClick={() => handleViewPage(page)}>
-                                                    View
-                                                </ViewButton>
-                                            </td>
-                                        </TableRow>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </CarouselGroup>
-                    ))}
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell colSpan={5}>Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell colSpan={5}>Error: {error.message}</CenteredCell>
+                                </tr>
+                            ) : (
+                                allPages.map((page: any, index: number) => (  // ✅ Iterate over all pages directly
+                                    <TableRow key={page.id} isOdd={index % 2 === 1}>
+                                        <td>{page.title}</td>
+                                        <td>{page.description}</td>
+                                        <td>
+                                            {page.img ? (
+                                                <Thumbnail
+                                                    src={page.img.url}
+                                                    alt={page.img.title || 'Thumbnail'}
+                                                    onClick={() => handleThumbnailClick(page.img.url)}
+                                                />
+                                            ) : (
+                                                'No Image Available'
+                                            )}
+                                        </td>
+                                        <td>
+                                            <StatusBadge isDisabled={page.disabled}>
+                                                {page.disabled ? 'Disabled' : 'Active'}
+                                            </StatusBadge>
+                                        </td>
+                                        <td>
+                                            <ViewButton onClick={() => handleViewPage(page)}>
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ))
+                            )}
+                        </tbody>
+                    </Table>
+
+                    {totalPages > 1 && (
+                        <PaginationContainer>
+                            <PaginationControls>
+                                <PageButton
+                                    onClick={() => handlePageChange(page - 1)}
+                                    disabled={page === 1}
+                                >
+                                    Previous
+                                </PageButton>
+                                <span>
+                                    Page {page} of {totalPages}
+                                </span>
+                                <PageButton
+                                    onClick={() => handlePageChange(page + 1)}
+                                    disabled={page >= totalPages}
+                                >
+                                    Next
+                                </PageButton>
+                            </PaginationControls>
+                        </PaginationContainer>
+                    )}
                 </CarouselWrapper>
-            ) : loading ? (
-                <p>Loading...</p>
-            ) : error ? (
-                <p>Error: {error.message}</p>
             ) : (
                 <FancyContainer>
                     <NoCarouselMessage>
-                        <p>No carousel pages added at the moment.</p>
+                        {search ? (
+                            <p>No results found for "{search}"</p>
+                        ) : (
+                            <p>No carousel pages added at the moment.</p>
+                        )}
                     </NoCarouselMessage>
                 </FancyContainer>
             )}
 
-            {/* Modal for Thumbnail Preview */}
+
             {selectedThumbnail && (
                 <Modal
                     title="Image Preview"
@@ -122,21 +180,13 @@ export const ManageCarousel = () => {
     );
 };
 
-const CarouselContainer = styled.div`
-    flex-direction: column;
-    padding: 1rem;
-`;
-
-const CarouselWrapper = styled.div`
+const SearchContainer = styled.div`
+    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 2rem;
-`;
-
-const CarouselGroup = styled.div`
-    border: 1px solid #4d3c7b;
-    border-radius: 8px;
-    padding: 1rem;
+    align-items: center;
+    margin-left: auto;
+    max-width: 325px;
+    width: 100%;
 `;
 
 const TitleRow = styled.div`
@@ -149,8 +199,15 @@ const TitleRow = styled.div`
 const CarouselTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
+    margin-bottom: 1rem;
     color: white;
 `;
+
+const CarouselContainer = styled.div`
+    flex-direction: column;
+    padding: 1rem;
+`;
+
 
 const ViewButton = styled.button`
     background-color: #4d3c7b;
@@ -166,33 +223,14 @@ const ViewButton = styled.button`
     }
 `;
 
-const SearchContainer = styled.div`
-    position: relative;
+const CarouselWrapper = styled.div`
     display: flex;
-    align-items: center;
-    margin-left: auto;
-    max-width: 325px;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #4d3c7b;
     width: 100%;
-`;
-
-const ClearButton = styled.button`
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-        color: #c79d0a;
-    }
-`;
-
-const StyledInput = styled(Input)`
-    flex: 1;
-    padding-right: 2rem;
-    border-radius: 3px;
 `;
 
 const Table = styled.table`
@@ -226,14 +264,52 @@ const TableRow = styled.tr<{ isOdd: boolean }>`
     background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
 `;
 
-const NoCarouselMessage = styled.div`
+const CenteredCell = styled.td`
     text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 2rem 0;
+`;
+
+const StatusBadge = styled.span<{ isDisabled: boolean }>`
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+    font-family: Barlow, sans-serif;
+    border-radius: 5px;
+    color: white;
+    background-color: #4d3c7b;
+    border: none;
+    cursor: default;
+    &:hover {
+        background-color: ${({ isDisabled }) => (isDisabled ? '#c0392b' : '#146b14')}; 
+    }
+`;
+
+const NoCarouselMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 18px;
     color: #777;
+    text-align: center;
+    width: 100%;
     p {
+        height: 100%;
         color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
         font-size: 24px;
         font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
     }
 `;
 

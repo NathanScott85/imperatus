@@ -52,6 +52,17 @@ interface Product {
     category: {
         name: string;
     };
+    brand?: {
+        id: string;
+        name: string;
+        description?: string;
+    };
+    set?: {
+        id: string;
+        setName: string;
+        setCode: string;
+        description: string;
+    }
     stock: Stock;
     preorder: boolean;
 }
@@ -69,8 +80,9 @@ interface AdminContextProps {
     error: any;
     totalCount: number;
     totalPages: number;
-    currentPage: number;
+    page: number;
     setPage: (page: number) => void;
+    search: string;
     setSearch: (search: string) => void;
     fetchUsers: () => void;
     fetchProducts: () => void;
@@ -87,8 +99,8 @@ interface AdminContextProps {
             name: string;
             price: string | number;
             productTypeId: number;
-            brandId: number; // Added brandId
-            setId: number;   // Added setId
+            brandId: number;
+            setId: number;
             img: File;
             categoryId: number;
             stock: {
@@ -134,17 +146,17 @@ const AdminContext = createContext<AdminContextProps | undefined>(undefined);
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
-    const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
+    const [page, setPage] = useState(1);
     const [productTypes, setProductTypes] = useState<ProductType[]>([]);
     const [categoryError, setCategoryError] = useState<string | null>(null);
     const [categorySuccess, setCategorySuccess] = useState<string | null>(null);
 
-    const queryVariables = useMemo(() => ({ page: currentPage, limit: 10, search }), [currentPage, search]);
+    const queryVariables = useMemo(() => ({ page, limit: 10, search }), [page, search]);
 
     const resetPagination = () => {
-        setCurrentPage(1);
+        setPage(1);
     };
 
     const [fetchUsers, { loading: usersLoading, error: usersError, data: usersData }] = useLazyQuery(GET_ALL_USERS, {
@@ -183,8 +195,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         name: string;
         price: string | number;
         productTypeId: number;
-        brandId: number; // Added brandId
-        setId: number;   // Added setId
+        brandId: number;
+        setId: number;
         img: File;
         categoryId: number;
         stock: {
@@ -200,19 +212,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }): Promise<{ success: boolean; message: string; product: Product | null }> => {
         try {
             const { data } = await createProductMutation({
-                variables: {
-                    name: variables.name,
-                    price: variables.price,
-                    productTypeId: variables.productTypeId,
-                    brandId: variables.brandId, // Included brandId
-                    setId: variables.setId,     // Included setId
-                    categoryId: variables.categoryId,
-                    img: variables.img,
-                    stock: variables.stock,
-                    preorder: variables.preorder,
-                    description: variables.description,
-                    rrp: variables.rrp,
-                },
+                variables,
             });
 
             if (data?.createProduct) {
@@ -287,7 +287,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             const { data } = await updateProductMutation({
                 variables: {
                     ...variables,
-                    stock, // Pass the stock input
+                    stock,
                 },
             });
             if (data?.updateProduct) {
@@ -376,11 +376,12 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 products,
                 productTypes,
                 loading,
+                search,
                 error,
                 totalCount,
                 totalPages,
-                currentPage,
-                setPage: setCurrentPage,
+                page,
+                setPage,
                 setSearch,
                 fetchUsers,
                 fetchProducts,

@@ -1,49 +1,68 @@
 import { gql } from '@apollo/client';
 
 export const GET_ALL_PRODUCTS = gql`
-    query GetAllProducts {
-    getAllProducts {
-        totalCount
-        totalPages
-        currentPage
-        products {
-            id
-            name
-            price
-            slug
-            type {
+    query GetAllProducts($page: Int, $limit: Int, $search: String) {
+        getAllProducts(page: $page, limit: $limit, search: $search) {
+            totalCount
+            totalPages
+            currentPage
+            products {
                 id
                 name
-            }
-            rrp
-            description
-            preorder
-             category {
-                id
-                name
+                price
+                slug
+                type {
+                    id
+                    name
+                }
+                rrp
                 description
-            }
-             img {
-                id
-                url
-                key
-                fileName
-                contentType
-                createdAt
-            }
-            stock {
-                id
-                amount
-                sold
-                instock
-                soldout
                 preorder
+                category {
+                    id
+                    name
+                    description
+                }
+                brand {
+                    id
+                    name
+                    description
+                    img {
+                        id
+                        url
+                        key
+                        fileName
+                        contentType
+                        createdAt
+                    }
+                }
+                set {
+                    id
+                    setName
+                    setCode
+                    description
+                }
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+                stock {
+                    id
+                    amount
+                    sold
+                    instock
+                    soldout
+                    preorder
+                }
             }
         }
     }
-}
-
 `;
+
 
 export const CREATE_PRODUCT = gql`
     mutation CreateProduct(

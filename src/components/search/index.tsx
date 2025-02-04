@@ -1,6 +1,6 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
-import { SearchIcon } from '../svg'; // Assuming you have a SearchIcon component
-import styled from 'styled-components';
+import { SearchIcon } from '../svg';
+import styled, { css } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
 import { Input } from '../input';
 
@@ -9,14 +9,19 @@ interface SearchProps {
     onSearch: (searchTerm: string) => void;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     type: string;
-    handleReset: any;
+    variant?: 'small' | 'large';
+    handleReset: () => void;
+    placeholder?: string;
 }
 
 export const Search: React.FC<SearchProps> = ({
     search,
     onSearch,
     onChange,
+    variant = 'large',
     handleReset,
+    type,
+    placeholder = 'Search',
 }) => {
     const [isSearching, setIsSearching] = useState(false);
 
@@ -28,7 +33,7 @@ export const Search: React.FC<SearchProps> = ({
     };
 
     const buttonReset = () => {
-        onSearch(''); // Clear the search
+        onSearch('');
         handleReset();
         setIsSearching(false);
     };
@@ -40,36 +45,57 @@ export const Search: React.FC<SearchProps> = ({
     };
 
     return (
-        <SearchContainer>
-            <Input
-                value={search}
-                name="search"
-                variant="search"
-                className="search-input"
-                type="text"
-                onChange={onChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Search"
-            />
-            <SearchButton
-                type="button"
-                onClick={isSearching ? buttonReset : handleSearchClick}
-                className="search-button"
-            >
-                {isSearching ? <span>X</span> : <SearchIcon />}
-            </SearchButton>
-        </SearchContainer>
+        <>
+            {variant === 'large' && (
+                <SearchContainer variant={variant}>
+                    <Input
+                        value={search}
+                        name="search"
+                        variant="search"
+                        className="search-input"
+                        type={type}
+                        onChange={onChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder={placeholder}
+                    />
+                    <SearchButton
+                        type="button"
+                        onClick={isSearching ? buttonReset : handleSearchClick}
+                        className="search-button"
+                    >
+                        {isSearching ? <span>X</span> : <SearchIcon />}
+                    </SearchButton>
+                </SearchContainer>
+            )}
+            {variant === 'small' && (
+                <SearchContainer variant={variant}>
+                    <Input
+                        variant="secondary"
+                        size="small"
+                        className="search-input"
+                        placeholder={placeholder}
+                        value={search}
+                        onChange={onChange}
+                        onKeyDown={handleKeyDown}
+                    />
+                    {search && <ClearButton onClick={buttonReset}>✕</ClearButton>}
+                </SearchContainer>
+            )}
+        </>
     );
 };
 
-const SearchContainer = styled.div`
+const SearchContainer = styled.div<{ variant?: 'small' | 'large' }>`
     display: flex;
     align-items: center;
     color: #c79d0a;
     margin: 0 3.5rem;
+    position: relative;
+
     ${mediaQueries('md')`
         width: 100%;
     `};
+
     ${mediaQueries('xl')`
         padding-left: 0rem;
         width: 600px;
@@ -85,10 +111,16 @@ const SearchContainer = styled.div`
         }
         .search-input {
             border: 1px solid #c79d0a;
-            border-top-right-radius: 0px;
-            border-right: none;
         }
     }
+
+    ${({ variant }) =>
+        variant === 'small' &&
+        css`
+            max-width: 325px;
+            width: 100%;
+            margin: 0;
+    `}
 `;
 
 export const SearchButton = styled.button`
@@ -116,5 +148,22 @@ export const SearchButton = styled.button`
     span {
         padding: 0.25rem;
         font-size: 15px;
+    }
+`;
+
+const ClearButton = styled.button`
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    z-index: 999;
+    font-size: 16px;
+    cursor: pointer;
+
+    &:hover {
+        color: #c79d0a;
     }
 `;

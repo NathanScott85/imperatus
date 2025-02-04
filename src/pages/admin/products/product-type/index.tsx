@@ -5,135 +5,142 @@ import { FancyContainer } from '../../../../components/fancy-container';
 import { TypeDetail } from './type-detail';
 
 import { Input } from '../../../../components/input';
+import { Search } from '../../../../components/search';
 
 export const AdminProductTypes = () => {
-  const {
-    productTypes,
-    loading,
-    error,
-    fetchProductTypes,
-    currentPage,
-    totalPages,
-    setPage,
-    setSearch,
-  } = useAdminContext();
+    const {
+      productTypes,
+      loading,
+      error,
+      fetchProductTypes,
+      search,
+      totalPages,
+      page,
+      setPage,
+      setSearch,
+    } = useAdminContext();
 
-  const [selectedType, setSelectedType] = useState<any | null>( null );
-  const [searchQuery, setSearchQuery] = useState<string>( "" );
+    const [selectedType, setSelectedType] = useState<any | null>( null );
 
-  const deferredSearchQuery = useDeferredValue( searchQuery );
 
-  useEffect( () => {
-    setSearch( deferredSearchQuery );
-    fetchProductTypes();
-  }, [deferredSearchQuery, setSearch, fetchProductTypes] )
+    useEffect( () => {
+      fetchProductTypes();
+    }, [setSearch, fetchProductTypes] )
 
-  const handlePageChange = ( newPage: number ) => {
-    if ( newPage >= 1 && newPage <= totalPages ) {
-      setPage( newPage );
+    const handlePageChange = ( newPage: number ) => {
+      if ( newPage >= 1 && newPage <= totalPages ) {
+        setPage( newPage );
+      }
+    };
+
+    const triggerSearch = () => {
+        setSearch(search);
+    };
+    
+    const handleReset = () => {
+      setSearch('');
+      setPage(1);
+    };
+
+    const handleViewType = ( type: any ) => {
+      setSelectedType( type );
+    };
+
+    const handleBackToList = () => {
+      setSelectedType( null );
+    };
+
+    if ( selectedType ) {
+      return <TypeDetail type={selectedType} onBack={handleBackToList} />;
     }
-  };
 
-  const handleViewType = ( type: any ) => {
-    setSelectedType( type );
-  };
+    return (
+      <TypesContainer>
+        <TitleRow>
+          <TypesTitle>Product Types</TypesTitle>
+          <SearchContainer>
+          <Search
+              type="text"
+              variant="small"
+              onSearch={triggerSearch}
+              search={search}
+              placeholder="Search Product Types"
+              onChange={(e) => setSearch(e.target.value)}
+              handleReset={handleReset}
+          />   
+          </SearchContainer>
+        </TitleRow>
 
-  const handleBackToList = () => {
-    setSelectedType( null );
-  };
-
-  if ( selectedType ) {
-    return <TypeDetail type={selectedType} onBack={handleBackToList} />;
-  }
-
-  return (
-    <TypesContainer>
-      <TitleRow>
-        <TypesTitle>Product Types</TypesTitle>
-        <SearchContainer>
-          <StyledInput
-            variant="secondary"
-            size="small"
-            placeholder="Search product types..."
-            value={searchQuery}
-            onChange={( e ) => setSearchQuery( e.target.value )}
-          />
-          {searchQuery && (
-            <ClearButton onClick={() => setSearchQuery( '' )}>✕</ClearButton>
-          )}
-        </SearchContainer>
-      </TitleRow>
-
-      {productTypes?.length !== 0 ? (
-        <TypesWrapper>
-          <Table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>View</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
+        {productTypes?.length !== 0 ? (
+          <TypesWrapper>
+            <Table>
+              <thead>
                 <tr>
-                  <CenteredCell>Loading...</CenteredCell>
+                  <th>Name</th>
+                  <th>View</th>
                 </tr>
-              ) : error ? (
-                <tr>
-                  <CenteredCell>Error: {error.message}</CenteredCell>
-                </tr>
-              ) : (
-                productTypes?.map( ( type, index ) => (
-                  <TableRow key={type.id} isOdd={index % 2 === 1}>
-                    <td>{type.name}</td>
-                    <td>
-                      <ViewButton onClick={() => handleViewType( type )}>
-                        View
-                      </ViewButton>
-                    </td>
-                  </TableRow>
-                ) )
-              )}
-            </tbody>
-          </Table>
-          {totalPages > 1 && (
-            <PaginationContainer>
-              <PaginationControls>
-                <PageButton
-                  onClick={() => handlePageChange( currentPage - 1 )}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </PageButton>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <PageButton
-                  onClick={() => handlePageChange( currentPage + 1 )}
-                  disabled={currentPage >= totalPages}
-                >
-                  Next
-                </PageButton>
-              </PaginationControls>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <CenteredCell>Loading...</CenteredCell>
+                  </tr>
+                ) : error ? (
+                  <tr>
+                    <CenteredCell>Error: {error.message}</CenteredCell>
+                  </tr>
+                ) : (
+                  productTypes?.map( ( type, index ) => (
+                    <TableRow key={type.id} isOdd={index % 2 === 1}>
+                      <td>{type.name}</td>
+                      <td>
+                        <ViewButton onClick={() => handleViewType( type )}>
+                          View
+                        </ViewButton>
+                      </td>
+                    </TableRow>
+                  ) )
+                )}
+              </tbody>
+            </Table>
+            {totalPages > 1 && (
+              <PaginationContainer>
+                <PaginationControls>
+                  <PageButton
+                    onClick={() => handlePageChange( page - 1 )}
+                    disabled={page === 1}
+                  >
+                    Previous
+                  </PageButton>
+                  <span>
+                    Page {page} of {totalPages}
+                  </span>
+                  <PageButton
+                    onClick={() => handlePageChange( page + 1 )}
+                    disabled={page >= totalPages}
+                  >
+                    Next
+                  </PageButton>
+                </PaginationControls>
 
-            </PaginationContainer>
-          )}
-        </TypesWrapper>
-      ) : (
-        <ProductsContainer>
-          <FancyContainer>
-            <NoTypesMessage>
-              {searchQuery ? (
-                <p>No results found for "{searchQuery}"</p>
-              ) : (
-                <p>No Types added at the moment.</p>
-              )}
-            </NoTypesMessage>
-          </FancyContainer>
-        </ProductsContainer>
-      )}
-    </TypesContainer>
-  );
+              </PaginationContainer>
+            )}
+          </TypesWrapper>
+        ) : (
+          <ProductsContainer>
+            <FancyContainer>
+              <NoTypesMessage>
+                {search ? (
+                  <p>No results found for "{search}"</p>
+                ) : (
+                  <p>No Types added at the moment.</p>
+                )}
+              </NoTypesMessage>
+            </FancyContainer>
+          </ProductsContainer>
+        )}
+      </TypesContainer>
+    );
 };
 
 
@@ -141,25 +148,10 @@ const SearchContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    margin-left: auto; /* Push the search input and button to the right */
+    margin-left: auto;
     max-width: 325px;
     width: 100%;
 
-`;
-
-const ClearButton = styled.button`
-    position: absolute;
-    right: 1rem;
-    background: none;
-    border: none;
-    color: white;
-    z-index: 999;
-    font-size: 16px;
-    cursor: pointer;
-
-    &:hover {
-        color: #c79d0a;
-    }
 `;
 
 const TitleRow = styled.div`
