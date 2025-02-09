@@ -10,6 +10,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
+import { Error } from '../../components/error';
 
 const getCategoriesPath = ( category: { id: string; name: string } ) => {
     const categoryPath = generatePath( '/shop/categories/category/:id/:name', {
@@ -35,7 +36,7 @@ export const Categories: React.FC = () => {
         fetchCategories();
     }, [fetchCategories, currentPage, limit] );
 
-    if ( error ) return <ErrorMessage>Error loading categories: {error.message}</ErrorMessage>;
+    if ( !error ) return <Error error={error} />;
 
     const sortedCategories = categories ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) ) : [];
 
@@ -56,7 +57,7 @@ export const Categories: React.FC = () => {
             <CategoriesMain>
                 {loading ? (
                     <CategoriesContainer>
-                        <FancyContainer variant="medium" size="medium">
+                        <FancyContainer variant="login" size="login">
                             <NoProductsMessage>
                                 <p>Loading categories...</p>
                             </NoProductsMessage>
@@ -64,7 +65,7 @@ export const Categories: React.FC = () => {
                     </CategoriesContainer>
                 ) : sortedCategories.length === 0 ? (
                     <CategoriesContainer>
-                        <FancyContainer>
+                          <FancyContainer variant="login" size="login">
                             <NoProductsMessage>
                                 <p>No categories available at the moment.</p>
                             </NoProductsMessage>
@@ -318,14 +319,6 @@ const CategoryItem = styled.div`
         line-height: 16.8px;
         margin: 1rem;
     }
-`;
-
-const ErrorMessage = styled.span`
-    color: #fff;
-    font-family: Cinzel;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
 `;
 
 export default Categories;
