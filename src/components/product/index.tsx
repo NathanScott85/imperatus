@@ -19,10 +19,10 @@ export const Product = ({ product }: ProductProps) => {
                     state={{ product }}
                 >
                     <ImageWrapper>
-                        <ProductImage
-                            src={product?.img?.url}
-                            alt={product?.name}
-                        />
+                    <ProductImage
+                        src={product!?.img!?.url}
+                        alt={product?.name}
+                    />
                     </ImageWrapper>
                     <ProductName>{product?.name}</ProductName>
                     <ProductPriceWrapper>

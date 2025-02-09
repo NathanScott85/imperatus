@@ -10,7 +10,7 @@ import { FancyContainer } from '../../components/fancy-container';
 import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { useAppContext } from '../../context';
-import { FourOFour } from '../404';
+import { Unauthorized } from '../404/unauthorized';
 
 export const VerificationStatus = () => {
     const { user, isAuthenticated } = useAppContext();
@@ -23,7 +23,7 @@ export const VerificationStatus = () => {
     });
 
     if (!isAuthenticated) {
-        return <FourOFour isAuthenticated={isAuthenticated} />;
+        return <Unauthorized />;
     }
 
     if (loading) return <p>Loading...</p>;
@@ -70,7 +70,6 @@ export const VerificationStatus = () => {
     );
 };
 
-// Styled components
 const FancyLinkContainer = styled.div`
     display: flex;
     flex-direction: column;

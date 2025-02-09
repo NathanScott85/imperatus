@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { Search } from '../search';
 import { Login } from '../login';
 import { ImperatusLink } from '../imperatus-link';
@@ -8,22 +9,32 @@ import { AdminIcon } from '../svg';
 import { Link } from 'react-router-dom';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useAppContext } from '../../context';
+import { useProductsContext } from '../../context/products';
 
 interface HeaderProps {
     background?: boolean;
 }
+
 export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
     const { isAdminOrOwner } = useAppContext();
-    //TODO:  add values to search so that it does not error.
+    const { search, setSearch } = useProductsContext();
+    const navigate = useNavigate();
+
+    const triggerSearch = () => {
+        if (search.trim()) {
+            navigate(`/shop/search/${encodeURIComponent(search.trim())}`);
+        }
+    };
+
     return (
         <HeaderContainer background={background}>
             <ImperatusLink />
             <Search
-                search=""
+                search={search}
                 variant='large'
-                handleReset={() => ''}
-                onChange={() => ''}
-                onSearch={() => ''}
+                handleReset={() => setSearch('')}
+                onChange={(e) => setSearch(e.target.value)}
+                onSearch={triggerSearch}
                 type="text"
             />
             <HeaderWrapper>

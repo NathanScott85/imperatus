@@ -49,146 +49,119 @@ import { BrandsProvider } from '../context/brands';
 import { SetsProvider } from '../context/sets';
 import { CarouselProvider } from '../context/carousel';
 import { PromotionsProvider } from '../context/promotions';
+import { ProductsProvider } from '../context/products';
+import { SearchResults } from '../pages/search';
 
 export const AppRoutes = () => {
     const location = useLocation();
     const { isAuthenticated, isAdminOrOwner } = useAppContext();
 
     return (
-        <Routes location={location}>
-            <Route
-                path="/"
-                element={
-                    <CarouselProvider>
-                        <Home />
-                    </CarouselProvider>
-                }
-            />
-
-            {/* Admin Route with CarouselProvider nested */}
-            {isAdminOrOwner && (
+        <ProductsProvider>
+            <Routes location={location}>
                 <Route
-                    path={`/account/admin`}
+                    path="/"
                     element={
-                        <ProtectedRoute
-                            element={
-                                <AdminProvider>
-                                    <CategoriesProvider>
-                                        <BrandsProvider>
-                                            <SetsProvider>
-                                                <CarouselProvider>
-                                                    <PromotionsProvider>
-                                                        <Admin />
-                                                    </PromotionsProvider>
-                                              
-                                                </CarouselProvider>
-                                            </SetsProvider>
-                                        </BrandsProvider>
-                                    </CategoriesProvider>
-                                </AdminProvider>
-                            }
-                        />
+                        <CarouselProvider>
+                            <Home />
+                        </CarouselProvider>
                     }
                 />
-            )}
 
-            {/* Categories route */}
-            <Route
-                path="/shop/categories/*"
-                element={
-                    <CategoriesProvider>
-                        <Routes>
-                            <Route path="" element={<Categories />} />
-                            <Route
-                                path="category/:id/:name"
-                                element={<Category />}
+                {/* Admin Route with CarouselProvider nested */}
+                {isAdminOrOwner && (
+                    <Route
+                        path={`/account/admin`}
+                        element={
+                            <ProtectedRoute
+                                element={
+                                    <AdminProvider>
+                                        <CategoriesProvider>
+                                            <BrandsProvider>
+                                                <SetsProvider>
+                                                    <CarouselProvider>
+                                                        <PromotionsProvider>
+                                                            <Admin />
+                                                        </PromotionsProvider>
+                                                    </CarouselProvider>
+                                                </SetsProvider>
+                                            </BrandsProvider>
+                                        </CategoriesProvider>
+                                    </AdminProvider>
+                                }
                             />
-                            <Route
-                                path="category/:id/:name/:productid/:productname"
-                                element={<ProductPage />}
-                            />
-                        </Routes>
-                    </CategoriesProvider>
-                }
-            />
+                        }
+                    />
+                )}
 
-            {/* Other routes */}
-            <Route path="/shop/card-games" element={<CardGames />} />
-            <Route
-                path="/shop/card-games/cardgame/:id/:name"
-                element={<CardGame />}
-            />
-            <Route
-                path="/shop/card-games/cardgame/:id/:name/:productid/:productname"
-                element={<ProductPage />}
-            />
-            <Route path="/shop/accessories" element={<Accessories />} />
-            <Route
-                path="/shop/accessories/accessory/:id/:name"
-                element={<Accessory />}
-            />
-            <Route
-                path="/shop/accessories/accessory/:id/:name/:productid/:productname"
-                element={<ProductPage />}
-            />
-            <Route path="/shop/coming-soon" element={<Preorders />} />
-            <Route
-                path="/shop/coming-soon/new/:id/:name"
-                element={<Orders />}
-            />
-            <Route
-                path="/shop/coming-soon/new/:id/:name/:productid/:productname"
-                element={<ProductPage />}
-            />
-            <Route path="/shop/board-games" element={<BoardGames />} />
-            <Route
-                path="/shop/board-games/boardgame/:id/:name"
-                element={<BoardGame />}
-            />
-            <Route
-                path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
-                element={<ProductPage />}
-            />
-            <Route path="/shop/offers" element={<Offers />} />
+                {/* Search route */}
+                <Route path="/shop/search" element={<SearchResults />} />
+                <Route path="/shop/search/:query" element={<SearchResults />} />
+                <Route path="/shop/search/:query/:id/:productname" element={<ProductPage />} />
 
-            {/* Informational pages */}
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
-            <Route path="/news-&-events" element={<NewsAndEvents />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/featured-brands" element={<FeaturedBrands />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/site-map" element={<SiteMap />} />
-            <Route
-                path="/terms-&-conditions"
-                element={<TermsAndConditions />}
-            />
-            <Route path="/payment-methods" element={<PaymentMethods />} />
-            <Route path="/delivery" element={<Delivery />} />
-            <Route
-                path="/international-delivery"
-                element={<InternationalDelivery />}
-            />
-            <Route path="/returns-policy" element={<ReturnsPolicy />} />
-            <Route path="/discount-codes" element={<DiscountCodes />} />
+                {/* Categories route */}
+                <Route
+                    path="/shop/categories/*"
+                    element={
+                        <CategoriesProvider>
+                            <Routes>
+                                <Route path="" element={<Categories />} />
+                                <Route path="category/:id/:name" element={<Category />} />
+                                <Route path="category/:id/:name/:productid/:productname" element={<ProductPage />} />
+                            </Routes>
+                        </CategoriesProvider>
+                    }
+                />
 
-            {/* Account and authentication routes */}
-            <Route path="/account/my-account" element={<ProtectedRoute redirectPath={isAuthenticated ? '/account/my-account' : '/'} element={<Account />} />} />
-            <Route path="/account/reset-password" element={<ResetPassword />} />
-            <Route path="/account/login" element={<Login />} />
-            <Route path="/account/verification-success" element={<VerificationSuccess />} />
-            <Route path="/account/verification-status" element={<VerificationStatus />} />
-            <Route path="/account/verify-email" element={<VerificationProvider><VerifyEmail /></VerificationProvider>} />
-            <Route path="/account/register" element={<RegisterProvider><Register /></RegisterProvider>} />
-            <Route path="/account/forgot-password" element={<ForgotPassword />} />
-            <Route path="/account/sign-out" element={<SignOut />} />
+                {/* Other routes */}
+                <Route path="/shop/card-games" element={<CardGames />} />
+                <Route path="/shop/card-games/cardgame/:id/:name" element={<CardGame />} />
+                <Route path="/shop/card-games/cardgame/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route path="/shop/accessories" element={<Accessories />} />
+                <Route path="/shop/accessories/accessory/:id/:name" element={<Accessory />} />
+                <Route path="/shop/accessories/accessory/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route path="/shop/coming-soon" element={<Preorders />} />
+                <Route path="/shop/coming-soon/new/:id/:name" element={<Orders />} />
+                <Route path="/shop/coming-soon/new/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route path="/shop/board-games" element={<BoardGames />} />
+                <Route path="/shop/board-games/boardgame/:id/:name" element={<BoardGame />} />
+                <Route path="/shop/board-games/boardgame/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route path="/shop/offers" element={<Offers />} />
 
-            {/* Basket */}
-            <Route path="/basket" element={<Basket />} />
+                {/* Informational pages */}
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
+                <Route path="/news-&-events" element={<NewsAndEvents />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/featured-brands" element={<FeaturedBrands />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/cookie-policy" element={<CookiePolicy />} />
+                <Route path="/site-map" element={<SiteMap />} />
+                <Route path="/terms-&-conditions" element={<TermsAndConditions />} />
+                <Route path="/payment-methods" element={<PaymentMethods />} />
+                <Route path="/delivery" element={<Delivery />} />
+                <Route path="/international-delivery" element={<InternationalDelivery />} />
+                <Route path="/returns-policy" element={<ReturnsPolicy />} />
+                <Route path="/discount-codes" element={<DiscountCodes />} />
 
-            {/* Fallback route */}
-            <Route path="*" element={<FourOFour isAuthenticated={!isAuthenticated} />} />
-        </Routes>
+                {/* Account and authentication routes */}
+                <Route path="/account/my-account" element={<ProtectedRoute redirectPath={isAuthenticated ? '/account/my-account' : '/'} element={<Account />} />} />
+                <Route path="/account/reset-password" element={<ResetPassword />} />
+                <Route path="/account/login" element={<Login isAuthenticated={isAuthenticated} />} />
+                <Route path="/account/verification-success" element={<VerificationSuccess />} />
+                <Route path="/account/verification-status" element={<VerificationStatus />} />
+                <Route path="/account/verify-email" element={<VerificationProvider><VerifyEmail /></VerificationProvider>} />
+                <Route path="/account/register" element={<RegisterProvider><Register /></RegisterProvider>} />
+                <Route path="/account/forgot-password" element={<ForgotPassword />} />
+                <Route path="/account/sign-out" element={<SignOut />} />
+
+                {/* Basket */}
+                <Route path="/basket" element={<Basket />} />
+
+                {/* Fallback route */}
+                <Route path="/404" element={<FourOFour />} />
+                <Route path="*" element={<FourOFour />} />
+            </Routes>
+        </ProductsProvider>
     );
 };

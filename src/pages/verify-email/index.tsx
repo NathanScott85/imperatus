@@ -1,8 +1,10 @@
-// src/pages/verify.js
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { useVerificationContext } from '../../context/verification';
+import { useAppContext } from '../../context';
+import { GET_VERIFICATION_STATUS } from '../../graphql/verification-status';
 import { FancyContainer } from '../../components/fancy-container';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -16,6 +18,20 @@ export const VerifyEmail = () => {
     const [localError, setLocalError] = useState('');
     const { verifyEmail, loading, error } = useVerificationContext();
     const navigate = useNavigate();
+    const { user } = useAppContext();
+
+    const userId = user ? user.id : null;
+
+    const { data, loading: statusLoading, error: statusError } = useQuery(GET_VERIFICATION_STATUS, {
+        variables: { userId },
+        skip: !userId,
+    });
+
+    useEffect(() => {
+        if (data?.getVerificationStatus?.emailVerified) {
+            navigate('/account/verification-status');
+        }
+    }, [data, navigate]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setVerificationCode(e.target.value);
@@ -33,6 +49,14 @@ export const VerifyEmail = () => {
             );
         }
     };
+
+    if (statusLoading) {
+        return <p>Checking verification status...</p>;
+    }
+
+    if (statusError) {
+        console.error('Verification status error:', statusError);
+    }
 
     return (
         <>

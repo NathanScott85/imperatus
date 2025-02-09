@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
@@ -14,7 +14,7 @@ import { FormInformation } from '../../components/form/form-information';
 import { useAppContext } from '../../context';
 import { LOGIN_MUTATION } from '../../graphql/login';
 
-export const Login = () => {
+export const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -29,12 +29,14 @@ export const Login = () => {
     const navigate = useNavigate();
     const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION);
 
-    // // Redirect if already authenticated
-    // useEffect(() => {
-    //     if (isAuthenticated) {
-    //         navigate('/account/my-account', { replace: true }); // Redirect to the account page
-    //     }
-    // }, [isAuthenticated, navigate]);
+    // ✅ Redirect if already authenticated BEFORE rendering the component
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/account/my-account', { replace: true });
+        }
+    }, [isAuthenticated, navigate]);
+
+    if (isAuthenticated) return <>Loading ......</>
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -77,12 +79,9 @@ export const Login = () => {
                 if (data && data.loginUser) {
                     const { accessToken, refreshToken, user } = data.loginUser;
 
-                    login(accessToken, refreshToken, user); // Call login with accessToken, refreshToken, and user data
+                    login(accessToken, refreshToken, user);
 
-                    // Navigate to the account page
                     navigate('/account/my-account');
-                    //   navigate('/account/my-account', { replace: true });
-                    // decide if I want the login page to be redirected or not
                 }
             } catch (err) {
                 console.error('Login failed:', err);
@@ -109,9 +108,7 @@ export const Login = () => {
                                     onChange={handleInputChange}
                                 />
                                 {errors.email && (
-                                    <StyledParagraph>
-                                        {errors.email}
-                                    </StyledParagraph>
+                                    <StyledParagraph>{errors.email}</StyledParagraph>
                                 )}
 
                                 <label>Password</label>
@@ -123,9 +120,7 @@ export const Login = () => {
                                     onChange={handleInputChange}
                                 />
                                 {errors.password && (
-                                    <StyledParagraph>
-                                        {errors.password}
-                                    </StyledParagraph>
+                                    <StyledParagraph>{errors.password}</StyledParagraph>
                                 )}
 
                                 {error && (
@@ -158,14 +153,13 @@ export const Login = () => {
         </>
     );
 };
+
 // Styled components definitions (remain unchanged)
 const MainContainer = styled.main`
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    justify-content: center;
-    flex: 1;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -226,5 +220,3 @@ const Form = styled.form`
     align-items: center;
     width: 350px;
 `;
-
-export default Login;
