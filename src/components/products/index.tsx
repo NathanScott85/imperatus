@@ -5,11 +5,7 @@ import { mediaQueries } from '../../styled/breakpoints';
 import { FancyContainer } from '../fancy-container';
 import { ProductType } from '../../types';
 
-interface ProductsProps {
-    products: ProductType[];
-    label?: string;
-}
-export const Products = ( { products, label }: ProductsProps ) => {
+export const Products = ( { products, label }: any ) => {
 
     return (
         <>
@@ -19,10 +15,10 @@ export const Products = ( { products, label }: ProductsProps ) => {
                         <ProductsWrapper>
                             <ProductsHeader>{label}</ProductsHeader>
                             <ProductsContainer>
-                                {products?.length !== 0 ? (
-                                    products.map( ( product: ProductType ) => (
+                                {products!?.length !== 0 ? (
+                                    products.map( ( product: any ) => (
                                         <Product
-                                            key={product.id}
+                                            key={product!?.id}
                                             product={product}
                                         />
                                     ) )

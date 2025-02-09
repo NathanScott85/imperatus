@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
 import { Loading } from '../../pages/loading';
 import { Navigation } from '../../components/navigation';
@@ -21,6 +21,7 @@ interface Product {
 export const ProductPage: React.FC = () => {
     const { productid } = useParams<{ productid: string }>();
     const location = useLocation();
+    const navigate = useNavigate();
     const [product, setProduct] = useState<Product | null>(
         location.state?.product || null,
     );
@@ -28,11 +29,12 @@ export const ProductPage: React.FC = () => {
     useEffect(() => {
         if (!product) {
             setProduct(null);
+            navigate('/404', { replace: true });
         }
-    }, [productid, product]);
+    }, [productid, product, navigate]);
 
     if (!product) {
-        return <Loading />;
+        return null;
     }
 
     return (
@@ -98,8 +100,6 @@ export const ProductPage: React.FC = () => {
         </>
     );
 };
-
-// Styled Components (unchanged)
 
 const TitleAndStockContainer = styled.div`
     display: flex;

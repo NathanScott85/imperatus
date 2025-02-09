@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
@@ -8,6 +8,7 @@ import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
 import { FancyContainer } from '../../../components/fancy-container';
+import { HomeIcon } from '../../../components/svg/home';
 
 export const Category = () => {
     const { id } = useParams();
@@ -29,7 +30,6 @@ export const Category = () => {
         }
     }, [id, fetchCategoryById, currentCategory] );
 
-
     const [checkedStatus, setCheckedStatus] = useState( {
         inStock: false,
         outOfStock: false,
@@ -48,9 +48,9 @@ export const Category = () => {
             <Header background />
             <Navigation background />
             <ImageWrapper>
-                <p>{categoryName}</p>
+            <p>{categoryName !== null ? categoryName : '404 Error, Page Not Found'}</p>
             </ImageWrapper>
-            <CategoriesMain>
+            <CategoriesMain background={categoryName !== null}>
                 {categoryLoading ? (
                     <CategoriesContainer>
                         <FancyContainer variant="filters" size="filters">
@@ -75,12 +75,20 @@ export const Category = () => {
                             />
                         </CategoriesFilterContainer>
                         <CategoriesListContainer>
-                            <Products products={currentCategory.products} />
+                            <Products products={currentCategory!?.products} />
                         </CategoriesListContainer>
                     </CategoriesContainer>
                 ) : (
                     <CategoriesContainer>
-                        <p>No category found.</p>
+                        <FancyContainer variant="login" size="login">
+                            <FancyContainerSubWrapper>
+                                <h1>404 Error, Page Not Found</h1>
+                                <p>The page you are looking for does not exist.</p>
+                                <Link to="/" aria-label="Go to Home Page">
+                                    <HomeIcon aria-hidden="true" />
+                                </Link>
+                            </FancyContainerSubWrapper>
+                        </FancyContainer>
                     </CategoriesContainer>
                 )}
             </CategoriesMain>
@@ -88,6 +96,28 @@ export const Category = () => {
         </>
     );
 };
+
+const FancyContainerSubWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+
+    p {
+        margin: 0.5rem;
+        font-family: 'Barlow', sans-serif;
+        font-size: 16px;
+    }
+
+    h1 {
+        margin: 1rem;
+        font-family: Cinzel;
+        font-size: 24px;
+    }
+    z-index: 50;
+`;
 
 const NoProductsMessage = styled.div`
     display: flex;
@@ -129,8 +159,8 @@ const CategoriesContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CategoriesMain = styled.main`
-    background-color: white;
+const CategoriesMain = styled.main<{ background: any}>`
+    background-color: ${({ background }) => (background ?  'white' : '#130a30' )};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -138,7 +168,6 @@ const CategoriesMain = styled.main`
     color: #c79d0a;
     padding: 2rem;
     margin: auto;
-    width: 80%;
     padding: 1rem 0rem;
 `;
 

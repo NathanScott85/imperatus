@@ -158,4 +158,5 @@ const TabContent = styled.div`
 
 const ProductDescriptionSection = styled.section`
     margin-top: 17.5rem;
+    min-width: 100%;
 `;
