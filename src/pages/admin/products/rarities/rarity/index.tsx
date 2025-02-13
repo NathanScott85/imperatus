@@ -4,17 +4,17 @@ import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
 import { useAdminContext } from '../../../../../context/admin';
 
-export interface TypeDetailProps {
-    type: {
-        id: number;
+interface RarityDetailProps {
+    rarity: {
+        id: string;
         name: string;
     };
     onBack: () => void;
 }
 
-export const TypeDetail: React.FC<TypeDetailProps> = ({ type, onBack }) => {
-    const { updateProductType } = useAdminContext();
-    const [name, setName] = useState(type.name);
+export const Rarity: React.FC<RarityDetailProps> = ({ rarity, onBack }) => {
+    const { updateRarity } = useAdminContext();
+    const [name, setName] = useState(rarity.name);
 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -30,59 +30,60 @@ export const TypeDetail: React.FC<TypeDetailProps> = ({ type, onBack }) => {
         setIsUpdating(true);
 
         if (!name) {
-            setError('Product type name is required.');
+            setError('Rarity name is required.');
             setIsUpdating(false);
             return;
         }
 
         try {
-            await updateProductType(Number(type.id), name);
-            setSuccess('Product type updated successfully!');
+            await updateRarity(Number(rarity.id), name);
+            setSuccess('Rarity updated successfully!');
         } catch (err) {
-            setError('Failed to update product type.');
+            setError('Failed to update rarity.');
         } finally {
             setIsUpdating(false);
         }
     };
 
     return (
-        <TypeDetailContainer>
-            <FormTitle>Edit Product Type</FormTitle>
-            <BackButton onClick={onBack}>Back to Product Types</BackButton>
-            <TypeWrapper>
-                <TypeDetailsWrapper>
+        <RarityContainer>
+            <FormTitle>Edit Rarity</FormTitle>
+            <BackButton onClick={onBack}>Back to Rarities</BackButton>
+            <RarityWrapper>
+                <RarityDetailsWrapper>
                     <FormGroup>
-                        <Label htmlFor="name">Product Type Name</Label>
+                        <Label htmlFor="rarityName">Rarity Name</Label>
                         <Input
                             variant="secondary"
-                            id="name"
+                            id="rarityName"
                             value={name}
                             onChange={handleNameChange}
                         />
                     </FormGroup>
+
                     <ButtonContainer>
                         <Button
                             variant="primary"
                             onClick={handleUpdate}
                             disabled={isUpdating}
                         >
-                            {isUpdating ? 'Updating...' : 'Update Product Type'}
+                            {isUpdating ? 'Updating...' : 'Update Rarity'}
                         </Button>
                     </ButtonContainer>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                     {success && <SuccessMessage>{success}</SuccessMessage>}
-                </TypeDetailsWrapper>
-            </TypeWrapper>
-        </TypeDetailContainer>
+                </RarityDetailsWrapper>
+            </RarityWrapper>
+        </RarityContainer>
     );
 };
 
-const TypeDetailContainer = styled.div`
+const RarityContainer = styled.div`
     color: white;
     width: 100%;
 `;
 
-const TypeWrapper = styled.div`
+const RarityWrapper = styled.div`
     border: 1px solid #ac8fff;
     border-radius: 4px;
     background-color: #160d35;
@@ -91,7 +92,7 @@ const TypeWrapper = styled.div`
     align-items: flex-start;
 `;
 
-const TypeDetailsWrapper = styled.div`
+const RarityDetailsWrapper = styled.div`
     font-family: Barlow;
     font-size: 16px;
     color: white;
@@ -107,8 +108,6 @@ const Label = styled.label`
     font-size: 14px;
     margin-bottom: 0.5rem;
     display: block;
-    color: #c79d0a;
-    font-weight: bold;
 `;
 
 const ButtonContainer = styled.div`

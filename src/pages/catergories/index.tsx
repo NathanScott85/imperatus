@@ -40,7 +40,6 @@ export const Categories: React.FC = () => {
 
     const sortedCategories = categories ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) ) : [];
 
-
     const handlePageChange = ( newPage: number ) => {
         if ( newPage >= 1 && newPage <= totalPages ) {
             setPage( newPage );
@@ -143,7 +142,7 @@ const FiltersAndCategoriesContainer = styled.div`
 const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
-        align-items: center;
+    align-items: center;
     padding: 1rem;
     margin-left: 26rem;
 `;

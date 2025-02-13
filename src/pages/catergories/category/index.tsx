@@ -9,6 +9,7 @@ import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
 import { FancyContainer } from '../../../components/fancy-container';
 import { HomeIcon } from '../../../components/svg/home';
+import { BreadCrumb } from '../../../components/breadcrumbs';
 
 export const Category = () => {
     const { id } = useParams();
@@ -47,6 +48,7 @@ export const Category = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
+            <BreadCrumb />
             <ImageWrapper>
             <p>{categoryName !== null ? categoryName : '404 Error, Page Not Found'}</p>
             </ImageWrapper>

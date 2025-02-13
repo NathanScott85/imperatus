@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 import { FancyContainer } from '../../../components/fancy-container';
-import { Input } from '../../../components/input';
 import { Search } from '../../../components/search';
 
 export const AdminCategories = () => {
@@ -154,7 +153,7 @@ const SearchContainer = styled.div`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
+   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 

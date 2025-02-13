@@ -24,38 +24,55 @@ export const BreadCrumb = ({
     hidden,
 }: BreadCrumbProps) => {
     const location = useLocation();
-    const segments = location.pathname
-        .split('/')
-        .filter(Boolean)
-        .map((segment) =>
-            segment.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase()),
-        )
-        .filter((value) => value !== 'Shop' && value !== 'Account');
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+    let fullPath = '';
 
     return (
         <>
             <BreadCrumbNav background={background}>
-                <BreadCrumbWrapper>
-                    <BreadcrumbList>
+                <BreadcrumbList>
+                    <BreadCrumbWrapper>
                         <Link to="/">
                             <HomeIcon />
                         </Link>
-                    </BreadcrumbList>
-                    <ChevronRight stroke="white" />
-                    {segments.map((segment: string) => (
-                        <BreadcrumbList key={segment}>
-                            <Link to={location.pathname}>{segment}</Link>
-                            {segments.indexOf(segment) <
-                                segments.length - 2 && <ChevronRight />}
-                        </BreadcrumbList>
-                    ))}
-                </BreadCrumbWrapper>
+                    </BreadCrumbWrapper>
+                    <BreadCrumbWrapper>
+                        <ChevronRight stroke="white" />
+                    </BreadCrumbWrapper>
+                    {pathSegments.map((segment: string, index: number) => {
+                        fullPath += `/${segment}`; // Always build full route for navigation
+
+                        const displaySegment =
+                            !['shop', 'account', 'category'].includes(segment.toLowerCase()) &&
+                                isNaN(Number(segment)) // Removes numbers
+                                ? decodeURIComponent(segment.replace(/-/g, ' '))
+                                : null;
+
+                        return displaySegment ? (
+                            <BreadCrumbWrapper key={segment}>
+                                <StyledLink to={fullPath} isActive={fullPath === location.pathname}>
+                                    {displaySegment
+                                        .split(' ')
+                                        .map(word => word.replace(/^\w/, (c) => c.toUpperCase()))
+                                        .join(' ')}
+                                </StyledLink>
+                                {index < pathSegments.length - 1 && <ChevronRight stroke="white" />}
+                            </BreadCrumbWrapper>
+                        ) : null;
+                    })}
+                </BreadcrumbList>
                 {hidden && <Label>{label}</Label>}
                 {renderText(text)}
             </BreadCrumbNav>
         </>
     );
 };
+
+const StyledLink = styled(Link) <{ isActive: boolean }>`
+    font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
+    color: ${({ isActive }) => (isActive ? '#c79d0a' : 'white')};
+    font-size: ${({ isActive }) => (isActive ? '1.2rem' : '1.2rem')};
+`;
 
 const Text = styled.p<{ text: any }>`
     font-size: 1rem;
@@ -92,9 +109,7 @@ const BreadcrumbList = styled.ul`
     justify-content: space-evenly;
     align-items: center;
     padding: 0 0.5rem;
-    a {
-        font-size: 1rem;
-    }
+  
 `;
 
 const BreadCrumbWrapper = styled.li`
@@ -102,4 +117,5 @@ const BreadCrumbWrapper = styled.li`
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
+    text-align: center;
 `;

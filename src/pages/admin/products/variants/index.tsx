@@ -1,78 +1,76 @@
-import React, { useDeferredValue, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
-import { FancyContainer } from '../../../../components/fancy-container';
-import { TypeDetail } from './type-detail';
-
-import { Input } from '../../../../components/input';
+import React, { useEffect, useState } from "react";
+import { useAdminContext } from "../../../../context/admin";
+import styled from "styled-components";
 import { Search } from '../../../../components/search';
+import { FancyContainer } from "../../../../components/fancy-container";
+import { Variant } from './variant';
 
-export const AdminProductTypes = () => {
-    const {
-      productTypes,
+export const AdminVariants = () => {
+    const { 
+      variants, 
+      fetchVariants, 
       loading,
       error,
-      fetchProductTypes,
-      search,
       totalPages,
-      page,
       setPage,
-      setSearch,
+      search,
+      page, 
+      setSearch 
     } = useAdminContext();
 
-    const [selectedType, setSelectedType] = useState<any | null>( null );
+    const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
 
+    useEffect(() => {
+      fetchVariants();
+    }, [fetchVariants, page]);
 
-    useEffect( () => {
-      fetchProductTypes();
-    }, [setSearch, fetchProductTypes] )
-
-    const handlePageChange = ( newPage: number ) => {
-      if ( newPage >= 1 && newPage <= totalPages ) {
-        setPage( newPage );
+    const handlePageChange = (newPage: number) => {
+      if (newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
       }
     };
 
-    const triggerSearch = () => {
-        setSearch(search);
+    const handleViewVariant = (variant: any) => {
+      setSelectedVariant(variant);
     };
-    
+
+    const triggerSearch = () => {
+      setSearch(search);
+    };
+
     const handleReset = () => {
       setSearch('');
       setPage(1);
     };
 
-    const handleViewType = ( type: any ) => {
-      setSelectedType( type );
-    };
-
     const handleBackToList = () => {
-      setSelectedType( null );
+      setSelectedVariant(null);
     };
 
-    if ( selectedType ) {
-      return <TypeDetail type={selectedType} onBack={handleBackToList} />;
+    if (selectedVariant) {
+      return (
+        <Variant variant={selectedVariant} onBack={handleBackToList} />
+      );
     }
 
     return (
-      <TypesContainer>
+      <VariantsContainer>
         <TitleRow>
-          <TypesTitle>Product Types</TypesTitle>
+          <VariantsTitle>Product Variants</VariantsTitle>
           <SearchContainer>
-          <Search
-              type="text"
-              variant="small"
-              onSearch={triggerSearch}
-              search={search}
-              placeholder="Search Product Types"
-              onChange={(e) => setSearch(e.target.value)}
-              handleReset={handleReset}
-          />   
+              <Search
+                  type="text"
+                  variant="small"
+                  onSearch={triggerSearch}
+                  search={search}
+                  placeholder="Search Variants"
+                  onChange={(e) => setSearch(e.target.value)}
+                  handleReset={handleReset}
+              />
           </SearchContainer>
         </TitleRow>
-
-        {productTypes?.length !== 0 ? (
-          <TypesWrapper>
+        {variants?.length !== 0 ? (
+          <VariantsWrapper>
             <Table>
               <thead>
                 <tr>
@@ -90,16 +88,16 @@ export const AdminProductTypes = () => {
                     <CenteredCell>Error: {error.message}</CenteredCell>
                   </tr>
                 ) : (
-                  productTypes?.map( ( type, index ) => (
-                    <TableRow key={type.id} isOdd={index % 2 === 1}>
-                      <td>{type.name}</td>
+                  variants?.map((variant: any, index: number) => ( 
+                    <TableRow key={variant.id} isOdd={index % 2 === 1}>
+                      <td>{variant.name}</td>
                       <td>
-                        <ViewButton onClick={() => handleViewType( type )}>
+                        <ViewButton onClick={() => handleViewVariant(variant)}>
                           View
                         </ViewButton>
                       </td>
                     </TableRow>
-                  ) )
+                  ))
                 )}
               </tbody>
             </Table>
@@ -107,7 +105,7 @@ export const AdminProductTypes = () => {
               <PaginationContainer>
                 <PaginationControls>
                   <PageButton
-                    onClick={() => handlePageChange( page - 1 )}
+                    onClick={() => handlePageChange(page - 1)}
                     disabled={page === 1}
                   >
                     Previous
@@ -116,33 +114,31 @@ export const AdminProductTypes = () => {
                     Page {page} of {totalPages}
                   </span>
                   <PageButton
-                    onClick={() => handlePageChange( page + 1 )}
+                    onClick={() => handlePageChange(page + 1)}
                     disabled={page >= totalPages}
                   >
                     Next
                   </PageButton>
                 </PaginationControls>
-
               </PaginationContainer>
             )}
-          </TypesWrapper>
+          </VariantsWrapper>
         ) : (
-          <ProductsContainer>
+          <VariantsContainer>
             <FancyContainer>
-              <NoTypesMessage>
+              <NoVariantsMessage>
                 {search ? (
                   <p>No results found for "{search}"</p>
                 ) : (
-                  <p>No Types added at the moment.</p>
+                  <p>No Variants added at the moment.</p>
                 )}
-              </NoTypesMessage>
+              </NoVariantsMessage>
             </FancyContainer>
-          </ProductsContainer>
-        )}
-      </TypesContainer>
+          </VariantsContainer>
+        )} 
+      </VariantsContainer>
     );
-};
-
+}
 
 const SearchContainer = styled.div`
     position: relative;
@@ -151,24 +147,100 @@ const SearchContainer = styled.div`
     margin-left: auto;
     max-width: 325px;
     width: 100%;
+`;
 
+const VariantsContainer = styled.div`
+    flex-direction: column;
+    p {
+        font-size: 16px;
+        color: white;
+    }
+`;
+
+const ViewButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #2a1f51;
+    }
+`;
+
+const VariantsTitle = styled.h2`
+    font-family: Cinzel, serif;
+    font-size: 24px;
+    margin-bottom: 1rem;
+    color: white;
+`;
+
+const VariantsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #4d3c7b;
+    width: 100%;
+`;
+
+const Table = styled.table`
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #4d3c7b;
+    background-color: #160d35;
+
+    th,
+    td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #4d3c7b;
+        line-height: normal;
+    }
+
+    th {
+        background-color: #4d3c7b;
+        color: #fff;
+        font-family: Cinzel;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    td {
+        color: white;
+        font-family: Barlow;
+        font-size: 14px;
+    }
+
+    tr:hover {
+        background-color: #2a1f51;
+        color: #c79d0a;
+    }
+`;
+
+const TableRow = styled.tr<{ isOdd: boolean }>`
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+`;
+
+const CenteredCell = styled.td`
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    padding: 2rem 0;
 `;
 
 const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 `;
 
-const StyledInput = styled( Input )`
-  margin-left: auto;
-  max-width: 300px;
-  border-radius: 3px;
-`;
-
-
-const NoTypesMessage = styled.div`
+const NoVariantsMessage = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -193,91 +265,10 @@ const NoTypesMessage = styled.div`
     }
 `;
 
-const ProductsContainer = styled.div`
-    flex-direction: column;
-    p {
-        font-size: 16px;
-        color: white;
-    }
-`;
-
-const TypesContainer = styled.div`
-    flex-direction: column;
-    p {
-        font-size: 16px;
-        color: white;
-    }
-`;
-
-const TypesTitle = styled.h2`
-    font-family: Cinzel, serif;
-    font-size: 24px;
-    margin-bottom: 1rem;
-    color: white;
-`;
-
-const TypesWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
-    width: 100%;
-`;
-
-const Table = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #4d3c7b;
-
-    background-color: #160d35;
-    th,
-    td {
-        padding: 1rem;
-        text-align: left;
-        border-bottom: 1px solid #4d3c7b;
-        line-height: normal;
-    }
-
-    th {
-        background-color: #4d3c7b;
-        color: #fff;
-        font-family: Cinzel;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: bold;
-    }
-
-    td {
-        color: white;
-        font-family: Barlow;
-        font-size: 14px;
-        font-style: normal;
-    }
-
-    tr:hover {
-        background-color: #2a1f51;
-        color: #c79d0a;
-    }
-`;
-
-const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
-`;
-
-const CenteredCell = styled.td`
-    text-align: center;
-    color: #999;
-    font-size: 14px;
-    padding: 2rem 0;
-`;
-
 const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
     margin-left: 26rem;
 `;
 
@@ -295,37 +286,17 @@ const PaginationControls = styled.div`
     }
 `;
 
-
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
-`;
-
-const ViewButton = styled.button`
-    background-color: #4d3c7b;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 5px;
-    &:hover {
-        background-color: #2a1f51;
-    }
-`;
-
-const TypeDetailContainer = styled.div`
-    // Add your styling for the product type detail view here
-    color: white;
 `;

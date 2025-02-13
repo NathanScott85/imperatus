@@ -20,7 +20,7 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                         <p>Create an account with us and you'll be able to:</p>
                     </HeaderContainer>
                     <p>Check out faster</p>
-                    <p>Save multiple shipping addresses</p>
+                    <p>Save your shipping addresses</p>
                     <p>Access your order history</p>
                     <p>Track new orders</p>
                     <p>Save items to your Wish List</p>
@@ -42,7 +42,7 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                         <p>Create an account with us and you'll be able to:</p>
                     </HeaderContainer>
                     <p>Check out faster</p>
-                    <p>Save multiple shipping addresses</p>
+                    <p>Save your shipping address</p>
                     <p>Access your order history</p>
                     <p>Track new orders</p>
                     <p>Save items to your Wish List</p>

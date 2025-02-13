@@ -70,7 +70,6 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
 
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const productId = e.target.value;
-        console.log(productId, 'productId')
         setSelectedProductId(e.target.value);
     }
 
@@ -89,7 +88,6 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         }
 
         try {
-            console.log("Selected Product ID:", selectedProductId);
             await updateCarousel(
                 carousel.id,
                 title,

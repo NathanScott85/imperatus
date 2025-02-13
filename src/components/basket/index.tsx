@@ -25,7 +25,7 @@ const items = [
 ];
 
 export const Basket = () => (
-    <Link to="/basket">
+    <Link to="/shop/basket">
         <BasketContainer>
             {items.length > 0 ? (
                 <BasketIcon type={'full'} />

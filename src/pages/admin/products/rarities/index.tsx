@@ -1,78 +1,76 @@
-import React, { useDeferredValue, useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
-import { FancyContainer } from '../../../../components/fancy-container';
-import { TypeDetail } from './type-detail';
-
-import { Input } from '../../../../components/input';
+import React, { useEffect, useState } from "react";
+import { useAdminContext } from "../../../../context/admin";
+import styled from "styled-components";
 import { Search } from '../../../../components/search';
+import { FancyContainer } from "../../../../components/fancy-container";
+import { Rarity } from './rarity';
 
-export const AdminProductTypes = () => {
-    const {
-      productTypes,
+export const AdminRarities = () => {
+    const { 
+      rarities, 
+      fetchRarities,
       loading,
       error,
-      fetchProductTypes,
-      search,
       totalPages,
-      page,
       setPage,
-      setSearch,
+      search,
+      page, 
+      setSearch 
     } = useAdminContext();
 
-    const [selectedType, setSelectedType] = useState<any | null>( null );
+    const [selectedRarity, setSelectedRarity] = useState<any | null>(null);
 
+    useEffect(() => {
+      fetchRarities();
+    }, [fetchRarities, page]);
 
-    useEffect( () => {
-      fetchProductTypes();
-    }, [setSearch, fetchProductTypes] )
-
-    const handlePageChange = ( newPage: number ) => {
-      if ( newPage >= 1 && newPage <= totalPages ) {
-        setPage( newPage );
+    const handlePageChange = (newPage: number) => {
+      if (newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
       }
     };
 
-    const triggerSearch = () => {
-        setSearch(search);
+    const handleViewRarity = (rarity: any) => {
+      setSelectedRarity(rarity);
     };
-    
+
+    const triggerSearch = () => {
+      setSearch(search);
+    };
+
     const handleReset = () => {
       setSearch('');
       setPage(1);
     };
 
-    const handleViewType = ( type: any ) => {
-      setSelectedType( type );
-    };
-
     const handleBackToList = () => {
-      setSelectedType( null );
+      setSelectedRarity(null);
     };
 
-    if ( selectedType ) {
-      return <TypeDetail type={selectedType} onBack={handleBackToList} />;
+    if (selectedRarity) {
+      return (
+        <Rarity rarity={selectedRarity} onBack={handleBackToList} />
+      );
     }
 
     return (
-      <TypesContainer>
+      <RaritiesContainer>
         <TitleRow>
-          <TypesTitle>Product Types</TypesTitle>
+          <RaritiesTitle>Product Rarities</RaritiesTitle>
           <SearchContainer>
-          <Search
-              type="text"
-              variant="small"
-              onSearch={triggerSearch}
-              search={search}
-              placeholder="Search Product Types"
-              onChange={(e) => setSearch(e.target.value)}
-              handleReset={handleReset}
-          />   
+              <Search
+                  type="text"
+                  variant="small"
+                  onSearch={triggerSearch}
+                  search={search}
+                  placeholder="Search Rarities"
+                  onChange={(e) => setSearch(e.target.value)}
+                  handleReset={handleReset}
+              />
           </SearchContainer>
         </TitleRow>
-
-        {productTypes?.length !== 0 ? (
-          <TypesWrapper>
+        {rarities?.length !== 0 ? (
+          <RaritiesWrapper>
             <Table>
               <thead>
                 <tr>
@@ -90,16 +88,16 @@ export const AdminProductTypes = () => {
                     <CenteredCell>Error: {error.message}</CenteredCell>
                   </tr>
                 ) : (
-                  productTypes?.map( ( type, index ) => (
-                    <TableRow key={type.id} isOdd={index % 2 === 1}>
-                      <td>{type.name}</td>
+                  rarities?.map((rarity: any, index: number) => (
+                    <TableRow key={rarity.id} isOdd={index % 2 === 1}>
+                      <td>{rarity.name}</td>
                       <td>
-                        <ViewButton onClick={() => handleViewType( type )}>
+                        <ViewButton onClick={() => handleViewRarity(rarity)}>
                           View
                         </ViewButton>
                       </td>
                     </TableRow>
-                  ) )
+                  ))
                 )}
               </tbody>
             </Table>
@@ -107,7 +105,7 @@ export const AdminProductTypes = () => {
               <PaginationContainer>
                 <PaginationControls>
                   <PageButton
-                    onClick={() => handlePageChange( page - 1 )}
+                    onClick={() => handlePageChange(page - 1)}
                     disabled={page === 1}
                   >
                     Previous
@@ -116,33 +114,31 @@ export const AdminProductTypes = () => {
                     Page {page} of {totalPages}
                   </span>
                   <PageButton
-                    onClick={() => handlePageChange( page + 1 )}
+                    onClick={() => handlePageChange(page + 1)}
                     disabled={page >= totalPages}
                   >
                     Next
                   </PageButton>
                 </PaginationControls>
-
               </PaginationContainer>
             )}
-          </TypesWrapper>
+          </RaritiesWrapper>
         ) : (
-          <ProductsContainer>
+          <RaritiesContainer>
             <FancyContainer>
-              <NoTypesMessage>
+              <NoRaritiesMessage>
                 {search ? (
                   <p>No results found for "{search}"</p>
                 ) : (
-                  <p>No Types added at the moment.</p>
+                  <p>No Rarities added at the moment.</p>
                 )}
-              </NoTypesMessage>
+              </NoRaritiesMessage>
             </FancyContainer>
-          </ProductsContainer>
+          </RaritiesContainer>
         )}
-      </TypesContainer>
+      </RaritiesContainer>
     );
-};
-
+}
 
 const SearchContainer = styled.div`
     position: relative;
@@ -151,49 +147,9 @@ const SearchContainer = styled.div`
     margin-left: auto;
     max-width: 325px;
     width: 100%;
-
 `;
 
-const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-`;
-
-const StyledInput = styled( Input )`
-  margin-left: auto;
-  max-width: 300px;
-  border-radius: 3px;
-`;
-
-
-const NoTypesMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #777;
-    text-align: center;
-    width: 100%;
-    p {
-        height: 100%;
-        color: white;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-        font-family: Cinzel, serif;
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 1.5;
-        letter-spacing: 0.02em;
-        padding: 6rem;
-    }
-`;
-
-const ProductsContainer = styled.div`
+const RaritiesContainer = styled.div`
     flex-direction: column;
     p {
         font-size: 16px;
@@ -201,22 +157,28 @@ const ProductsContainer = styled.div`
     }
 `;
 
-const TypesContainer = styled.div`
-    flex-direction: column;
-    p {
-        font-size: 16px;
-        color: white;
+const ViewButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #2a1f51;
     }
 `;
 
-const TypesTitle = styled.h2`
+const RaritiesTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
 `;
 
-const TypesWrapper = styled.div`
+const RaritiesWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -245,7 +207,6 @@ const Table = styled.table`
         color: #fff;
         font-family: Cinzel;
         font-size: 14px;
-        font-style: normal;
         font-weight: bold;
     }
 
@@ -253,7 +214,6 @@ const Table = styled.table`
         color: white;
         font-family: Barlow;
         font-size: 14px;
-        font-style: normal;
     }
 
     tr:hover {
@@ -273,11 +233,42 @@ const CenteredCell = styled.td`
     padding: 2rem 0;
 `;
 
+const TitleRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+`;
+
+const NoRaritiesMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #777;
+    text-align: center;
+    width: 100%;
+    p {
+        height: 100%;
+        color: white;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        font-family: Cinzel, serif;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: 0.02em;
+        padding: 6rem;
+    }
+`;
+
 const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
     margin-left: 26rem;
 `;
 
@@ -295,37 +286,17 @@ const PaginationControls = styled.div`
     }
 `;
 
-
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
-`;
-
-const ViewButton = styled.button`
-    background-color: #4d3c7b;
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 5px;
-    &:hover {
-        background-color: #2a1f51;
-    }
-`;
-
-const TypeDetailContainer = styled.div`
-    // Add your styling for the product type detail view here
-    color: white;
 `;
