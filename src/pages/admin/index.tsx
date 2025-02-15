@@ -30,6 +30,8 @@ import { AdminRarities } from './products/rarities';
 import { AdminVariants } from './products/variants';
 import { AddRarity } from './products/add-rarity';
 import { AddVariant } from './products/add-variant';
+import { AdminCardTypes } from './products/card-types';
+import { AddCardType } from './products/add-cardtype';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
@@ -84,10 +86,14 @@ export const Admin = () => {
                 return <AddRarity />
             case 'AdminRarity':
                 return <AdminRarities />
-                case 'AddVariant':
+            case 'AddVariant':
                     return <AddVariant />
             case 'AdminVariant':
                 return <AdminVariants/>
+            case 'AddCardType':
+                return <AddCardType />         
+            case 'AdminCardTypes':
+                return <AdminCardTypes />
             default:
                 return <Overview />;
         }

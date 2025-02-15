@@ -19,6 +19,7 @@ import {
 import { CREATE_CATEGORY } from '../../graphql/categories';
 import { CREATE_RARITY, GET_RARITIES, UPDATE_RARITY } from '../../graphql/rarities';
 import { GET_VARIANTS, CREATE_VARIANT, UPDATE_VARIANT } from '../../graphql/variants';
+import { GET_ALL_CARD_TYPES, CREATE_CARD_TYPE, UPDATE_CARD_TYPE } from '../../graphql/card-type';
 
 interface User {
     id: number;
@@ -80,6 +81,12 @@ interface Rarity {
     name: string;
 }
 
+interface CardType {
+    id: number;
+    name: string;
+    brand: any;
+}
+
 interface Variant {
     id: number;
     name: string
@@ -91,6 +98,7 @@ interface AdminContextProps {
     productTypes: ProductType[] | null;
     rarities: Rarity[] | null; 
     variants: Variant[] | null;
+    cardTypes: CardType[] | null;
     loading: boolean;
     error: any;
     totalCount: number;
@@ -104,6 +112,7 @@ interface AdminContextProps {
     fetchProductTypes: () => void;
     fetchRarities: () => void; 
     fetchVariants: () => void;
+    fetchCardTypes: () => void;
     resetPagination: () => void;
     createProductType: (variables: { name: string }) => Promise<{ success: boolean; message: string; productType: ProductType | null }>;
     createCategory: (variables: {
@@ -128,6 +137,13 @@ interface AdminContextProps {
         message: string; 
         productType: ProductType | null;
     }>;
+    createCardType: (variables: { name: string; brandId: number }) => Promise<{ 
+        success: boolean; 
+        message: string; 
+        cardType: CardType | null;
+    }>;
+    updateCardType: (variables: { id: number; name: string; brandId: number }) => Promise<{ success: boolean; message: string; cardType: CardType | null }>;
+
     createProduct: (
         variables: {
             name: string;
@@ -184,6 +200,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const [products, setProducts] = useState<Product[]>([]);
     const [rarities, setRarities] = useState<Rarity[]>([]);
     const [variants, setVariants] = useState<Rarity[]>([]);
+    const [cardTypes, setCardTypes] = useState<CardType[]>([]);
     const [page, setPage] = useState(1);
     const [productTypes, setProductTypes] = useState<ProductType[]>([]);
     const [categoryError, setCategoryError] = useState<string | null>(null);
@@ -234,15 +251,79 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     });
 
     const [fetchVariants, { loading: variantsLoading, error: variantsError }] =
-    useLazyQuery(GET_VARIANTS, {
-        variables: queryVariables,
-        fetchPolicy: 'cache-and-network',
-        onCompleted: (data) => {
-            setVariants(data.getAllVariants.variants || []);
-            setTotalCount(data.getAllVariants.totalCount);
-            setTotalPages(data.getAllVariants.totalPages);
-    },
-});
+        useLazyQuery(GET_VARIANTS, {
+            variables: queryVariables,
+            fetchPolicy: 'cache-and-network',
+            onCompleted: (data) => {
+                setVariants(data.getAllVariants.variants || []);
+                setTotalCount(data.getAllVariants.totalCount);
+                setTotalPages(data.getAllVariants.totalPages);
+            },
+    });
+
+    const [createCardTypeMutation] = useMutation(CREATE_CARD_TYPE);
+    const [updateCardTypeMutation] = useMutation(UPDATE_CARD_TYPE);
+
+    const updateCardType = async (variables: { id: number; name: string; brandId: number }): Promise<{ success: boolean; message: string; cardType: CardType | null }> => {
+        try {
+            const { data } = await updateCardTypeMutation({ variables });
+
+            if (data?.updateCardType) {
+                return {
+                    success: true,
+                    message: "Card Type updated successfully!",
+                    cardType: data.updateCardType,
+                };
+            } else {
+                throw new Error("Failed to update card type.");
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return {
+                success: false,
+                message: errorMessage,
+                cardType: null,
+            };
+        }
+    };
+
+    const createCardType = async (variables: { name: string; brandId: number }): Promise<{ 
+        success: boolean; 
+        message: string; 
+        cardType: CardType | null;
+    }> => {
+        try {
+            const { data } = await createCardTypeMutation({ variables });
+    
+            if (data?.createCardType) {
+                return {
+                    success: true,
+                    message: "Card type created successfully!",
+                    cardType: data.createCardType,
+                };
+            } else {
+                throw new Error("Failed to create card type.");
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : "Unknown error";
+            return {
+                success: false,
+                message: errorMessage,
+                cardType: null,
+            };
+        }
+    };
+
+    const [fetchCardTypes, { loading: cardTypeLoading, error: cardTypeError }] =
+        useLazyQuery(GET_ALL_CARD_TYPES, {
+            variables: queryVariables,
+            fetchPolicy: 'cache-and-network',
+            onCompleted: (data) => {
+                setCardTypes(data.getAllCardTypes.cardTypes || []);
+                setTotalCount(data.getAllVariants.totalCount);
+                setTotalPages(data.getAllVariants.totalPages);
+            },
+    });
 
     const [createProductMutation] = useMutation(CREATE_PRODUCT);
     const [updateProductTypeMutation] = useMutation(UPDATE_PRODUCT_TYPE);
@@ -557,6 +638,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 productTypes,
                 rarities,
                 variants,
+                cardTypes,
                 loading,
                 search,
                 error,
@@ -570,6 +652,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 fetchProductTypes,
                 fetchRarities,
                 fetchVariants,
+                fetchCardTypes,
+                createCardType,
                 resetPagination,
                 createCategory,
                 categoryLoading,
@@ -583,7 +667,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 createVariant,
                 updateVariant,
                 updateProductType,
-                updateRarity
+                updateRarity,
+                updateCardType
             }}
         >
             {children}

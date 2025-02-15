@@ -111,6 +111,12 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminVariant' )}>
                             MANAGE VARIANT
                         </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCardType' )}>
+                            ADD CARDTYPE
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCardTypes' )}>
+                            MANAGE CARDTYPE
+                        </SubMenuItem>
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Promotions', 'AddPromotion' )}>
