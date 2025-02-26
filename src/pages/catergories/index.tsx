@@ -220,7 +220,6 @@ const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: column;
     margin-bottom: 2.5rem;
-    margin-right: 10.5rem;
 `;
 
 const ImageWrapper = styled.div`

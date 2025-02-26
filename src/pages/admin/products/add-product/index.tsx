@@ -12,6 +12,8 @@ export const AddProduct = () => {
     const [addProduct, setAddProduct] = useState({
         productName: '',
         productTypeId: null as number | null,
+        cardTypeId: null as number | null,
+        variantId: null as number | null,
         description: '',
         category: '',
         price: '',
@@ -38,10 +40,12 @@ export const AddProduct = () => {
         category: false,
         brand: false,
         set: false,
+        cardType: false,
+        variant: false,
     });
 
     const { categories, fetchCategories } = useCategoriesContext();
-    const { productTypes, fetchProductTypes, createProduct } = useAdminContext();
+    const { variants, cardTypes, productTypes, fetchProductTypes, fetchVariants, createProduct } = useAdminContext();
     const { brands, fetchBrands } = useBrandsContext();
     const { sets, fetchSets } = useSetsContext();
 
@@ -50,7 +54,13 @@ export const AddProduct = () => {
         fetchProductTypes();
         fetchBrands();
         fetchSets();
-    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets]);
+        fetchVariants();
+        if (addProduct.selectedFile) {
+            const objectUrl = URL.createObjectURL(addProduct.selectedFile);
+            setPreviewUrl(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
+    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets, fetchVariants, addProduct.selectedFile]);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -67,11 +77,14 @@ export const AddProduct = () => {
 
         if (id.startsWith('stock.')) {
             const stockKey = id.split('.')[1];
-            setAddProduct(prev => ({
+            setAddProduct((prev) => ({
                 ...prev,
                 stock: {
                     ...prev.stock,
-                    [stockKey]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+                    [stockKey]:
+                        type === 'checkbox'
+                            ? (e.target as HTMLInputElement).checked
+                            : value,
                 },
             }));
         } else {
@@ -86,10 +99,13 @@ export const AddProduct = () => {
 
     const handleDropdownToggle = (dropdown: string) => {
         setDropdownStates((prev) => ({
-            ...Object.keys(prev).reduce((acc, key) => {
-                acc[key] = false;
-                return acc;
-            }, {} as Record<string, boolean>),
+            ...Object.keys(prev).reduce(
+                (acc, key) => {
+                    acc[key] = false;
+                    return acc;
+                },
+                {} as Record<string, boolean>,
+            ),
             [dropdown]: !prev[dropdown],
         }));
     };
@@ -113,6 +129,7 @@ export const AddProduct = () => {
             setAddProduct({ ...addProduct, selectedFile: file });
             const objectUrl = URL.createObjectURL(file);
             setPreviewUrl(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
         }
         setIsButtonDisabled(false);
     };
@@ -122,7 +139,6 @@ export const AddProduct = () => {
         setError('');
         setSuccess('');
         setIsButtonDisabled(true);
-
         const {
             productName,
             productTypeId,
@@ -135,18 +151,19 @@ export const AddProduct = () => {
             selectedBrand,
             selectedSet,
         } = addProduct;
-
-        if (!productName || !productTypeId || !category || !price || !selectedFile || !selectedBrand || !selectedSet) {
+    
+        if (!productName || !productTypeId || !category || !price || !selectedFile || !selectedBrand) {
             setError('All fields are required, including an image, brand, and set.');
             setIsButtonDisabled(false);
             return;
         }
-
+    
         try {
             const { success, message } = await createProduct({
                 name: productName,
                 price: parseFloat(price),
                 productTypeId: Number(productTypeId),
+                cardTypeId: addProduct.cardTypeId ? Number(addProduct.cardTypeId) : undefined,
                 brandId: Number(selectedBrand),
                 setId: Number(selectedSet),
                 img: selectedFile,
@@ -162,14 +179,16 @@ export const AddProduct = () => {
                 description,
                 rrp: rrp ? parseFloat(rrp) : undefined,
             });
-
+    
             if (success) {
                 setSuccess(message);
                 clearFileInput();
                 setAddProduct({
                     productName: '',
                     description: '',
-                    productTypeId: 0,
+                    productTypeId: null,
+                    cardTypeId: null,
+                    variantId: null,
                     category: '',
                     price: '',
                     stock: {
@@ -221,7 +240,6 @@ export const AddProduct = () => {
                                 required
                             />
                         </FormGroup>
-
                         <ProductDropdown
                             label="Category"
                             handleDropdownToggle={handleDropdownToggle}
@@ -230,7 +248,11 @@ export const AddProduct = () => {
                             isDropdownOpen={dropdownStates.category}
                             header={
                                 addProduct.category
-                                    ? categories!?.find((category: any) => category.id.toString() === addProduct.category)?.name
+                                    ? categories!?.find(
+                                        (category: any) =>
+                                            category.id.toString() ===
+                                            addProduct.category,
+                                    )?.name
                                     : 'Select Category'
                             }
                             values={categories}
@@ -238,34 +260,46 @@ export const AddProduct = () => {
                             displayField="name"
                         />
 
-                        {categories?.find((category: any) => category.id.toString() === addProduct.category)?.name === 'Card Games' && (
-                            <ProductDropdown
-                                label="Set"
-                                handleDropdownToggle={() => handleDropdownToggle('set')}
-                                handleDropdownChange={handleDropdownChange}
-                                toggleValue="set"
-                                isDropdownOpen={dropdownStates.set}
-                                header={
-                                    addProduct.selectedSet
-                                        ? sets.find((s: any) => s.id === addProduct.selectedSet)?.setName
-                                        : 'Select Set'
-                                }
-                                values={sets}
-                                selectedValue="selectedSet"
-                                displayField="setName"
-                            />
-                        )}
+                        {['Card Games', 'Single Cards'].includes(
+                            categories?.find((category: any) =>
+                                category.id.toString() === addProduct.category
+                            )?.name || ''
+                        ) && (
+                                <ProductDropdown
+                                    label="Set"
+                                    handleDropdownToggle={() => handleDropdownToggle('set')}
+                                    handleDropdownChange={handleDropdownChange}
+                                    toggleValue="set"
+                                    isDropdownOpen={dropdownStates.set}
+                                    header={
+                                        addProduct.selectedSet
+                                            ? sets.find((s: any) => s.id === addProduct.selectedSet)
+                                                ?.setName
+                                            : 'Select Set'
+                                    }
+                                    values={sets}
+                                    selectedValue="selectedSet"
+                                    displayField="setName"
+                                />
+                            )}
+
 
                         {addProduct.category && (
                             <ProductDropdown
                                 label="Product Type"
-                                handleDropdownToggle={() => handleDropdownToggle('type')}
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('type')
+                                }
                                 handleDropdownChange={handleDropdownChange}
                                 toggleValue="type"
                                 isDropdownOpen={dropdownStates.type}
                                 header={
                                     addProduct.productTypeId
-                                        ? productTypes!?.find((pt: any) => pt.id === addProduct.productTypeId)?.name
+                                        ? productTypes!?.find(
+                                            (pt: any) =>
+                                                pt.id ===
+                                                addProduct.productTypeId,
+                                        )?.name
                                         : 'Select Product Type'
                                 }
                                 values={productTypes}
@@ -273,26 +307,72 @@ export const AddProduct = () => {
                                 displayField="name"
                             />
                         )}
-                    {addProduct.category && (
+                        {addProduct.category && (
+                            <ProductDropdown
+                                label="Brand"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('brand')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="brand"
+                                isDropdownOpen={dropdownStates.brand}
+                                header={
+                                    addProduct.selectedBrand
+                                        ? brands.find(
+                                            (b: any) =>
+                                                b.id ===
+                                                addProduct.selectedBrand,
+                                        )?.name
+                                        : 'Select Brand'
+                                }
+                                values={brands}
+                                selectedValue="selectedBrand"
+                                displayField="name"
+                            />
+                        )}
                         <ProductDropdown
-                            label="Brand"
-                            handleDropdownToggle={() => handleDropdownToggle('brand')}
+                            label="Variant"
+                            handleDropdownToggle={() => handleDropdownToggle('variant')}
                             handleDropdownChange={handleDropdownChange}
-                            toggleValue="brand"
-                            isDropdownOpen={dropdownStates.brand}
+                            toggleValue="variant"
+                            isDropdownOpen={dropdownStates.variant}
                             header={
-                                addProduct.selectedBrand
-                                    ? brands.find((b: any) => b.id === addProduct.selectedBrand)?.name
-                                    : 'Select Brand'
+                                addProduct.variantId
+                                    ? variants?.find((v: any) => v.id === addProduct.variantId)?.name
+                                    : 'Select Variant'
                             }
-                            values={brands}
-                            selectedValue="selectedBrand"
+                            values={variants}
+                            selectedValue="variantId"
                             displayField="name"
                         />
-                    )}
 
+                        {['Card Games', 'Single Cards'].includes(
+                            categories?.find((category: any) =>
+                                category.id.toString() === addProduct.category
+                            )?.name || ''
+                        ) && (
+                                <ProductDropdown
+                                    label="Card Type"
+                                    handleDropdownToggle={() =>
+                                        handleDropdownToggle('cardType')
+                                    }
+                                    handleDropdownChange={handleDropdownChange}
+                                    toggleValue="cardType"
+                                    isDropdownOpen={dropdownStates.cardType}
+                                    header={
+                                        addProduct.cardTypeId
+                                            ? cardTypes!?.find(
+                                                (ct: any) => ct.id === addProduct.cardTypeId
+                                            )?.name
+                                            : 'Select Card Type'
+                                    }
+                                    values={cardTypes}
+                                    selectedValue="cardTypeId"
+                                    displayField="name"
+                                />
+                            )}
                         <ButtonContainer>
-                            <Button
+                            {addProduct.productName && <Button
                                 variant="primary"
                                 type="submit"
                                 disabled={
@@ -305,7 +385,7 @@ export const AddProduct = () => {
                                 }
                             >
                                 {isButtonDisabled ? 'Adding...' : 'Add Product'}
-                            </Button>
+                            </Button>}
                         </ButtonContainer>
                     </FormWrapper>
                     <FormWrapper>
@@ -367,6 +447,12 @@ export const AddProduct = () => {
                 <ImagePreviewContainer>
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
                     {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
+                    <br />
+                    {addProduct.selectedFile && (
+                        <Button variant="secondary" size="xsmall" onClick={clearFileInput}>
+                            Clear File
+                        </Button>
+                    )}
                 </ImagePreviewContainer>
             </FormContainer>
             {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -422,6 +508,7 @@ const ButtonContainer = styled.div`
     flex-direction: row;
     justify-content: flex-start;
     margin-top: 1rem;
+    z-index: 0;
 `;
 
 const Label = styled.label`
@@ -435,7 +522,6 @@ const ImagePreviewContainer = styled.div`
     margin-left: 2rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
 `;
 
 const ImagePreviewTitle = styled.h3`

@@ -73,11 +73,13 @@ export const SearchResults = () => {
                 ) : products && products.length > 0 ? (
                     <SearchContainer>
                         <SearchFilterContainer>
-                            <Filters
+                            {/* <Filters
+                                currentFilters={filters} // ✅ Pass filters
+                                setFilters={setFilters}  
                                 filters
                                 checkedStatus={checkedStatus}
                                 handleChecked={handleChecked}
-                            />
+                            /> */}
                         </SearchFilterContainer>
                         <SearchListContainer>
                             <Products products={products} />
@@ -86,11 +88,13 @@ export const SearchResults = () => {
                 ) : (
                     <SearchContainer>
                         <SearchFilterContainer>
-                            <Filters
+                            {/* <Filters
+                                  currentFilters={filters} // ✅ Pass filters
+                                  setFilters={setFilters}  
                                 filters
                                 checkedStatus={checkedStatus}
                                 handleChecked={handleChecked}
-                            />
+                            /> */}
                         </SearchFilterContainer>
                         <SearchListContainer>
                             <NoResultsMessage>

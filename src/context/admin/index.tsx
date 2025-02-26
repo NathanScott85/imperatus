@@ -46,8 +46,10 @@ interface Product {
     name: string;
     price: number;
     productTypeId: string;
+    cardTypeId?: string; 
     brandId: string;
     setId: string;
+    variantId?: string;
     rrp: number;
     description?: string;
     img: {
@@ -149,6 +151,8 @@ interface AdminContextProps {
             name: string;
             price: string | number;
             productTypeId: number;
+            cardTypeId?: number;
+            variantId?: number;
             brandId: number;
             setId: number;
             img: File;
@@ -433,8 +437,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         name: string;
         price: string | number;
         productTypeId: number;
+        cardTypeId?: number;
         brandId: number;
         setId: number;
+        variantId?: number;
         img: File;
         categoryId: number;
         stock: {
@@ -452,7 +458,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             const { data } = await createProductMutation({
                 variables,
             });
-
+    
             if (data?.createProduct) {
                 return {
                     success: true,
@@ -471,6 +477,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             };
         }
     };
+    
 
     const createProductType = async (variables: { name: string }): Promise<{ success: boolean; message: string; productType: ProductType | null }> => {
         try {

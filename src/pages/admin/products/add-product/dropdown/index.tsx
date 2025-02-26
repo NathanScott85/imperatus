@@ -94,12 +94,12 @@ const DropDownOption = styled.li`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     padding: 0.5rem;
-    background-color: #2a1f51;
+    background-color: #160d35;
     color: white;
     cursor: pointer;
 
     &:hover {
-        background-color: #160d35;
+        background-color: #2a1f51;
         color: #c79d0a;
     }
 

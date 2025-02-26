@@ -162,31 +162,32 @@ export const Category: React.FC<CategoryDetailProps> = ({
                         >
                             {isUpdating ? 'Updating...' : 'Update Category'}
                         </Button>
-                        {selectedFile && (
-                            <Button
-                                variant="secondary"
-                                size="xsmall"
-                                onClick={clearFileInput}
-                            >
-                                Clear File
-                            </Button>
-                        )}
+                        <Button
+                            variant="primary"
+                            onClick={handleOpenModal}
+                            disabled={isDeleting}
+                        >
+                            Delete Category
+                        </Button>
+
                     </ButtonContainer>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                     {success && <SuccessMessage>{success}</SuccessMessage>}
-
-                    <Button
-                        variant="primary"
-                        onClick={handleOpenModal}
-                        disabled={isDeleting}
-                    >
-                        Delete Category
-                    </Button>
                 </CategoryDetailsWrapper>
                 <ImagePreviewContainer>
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
                     {previewUrl && (
                         <ImagePreview src={previewUrl} alt="Image preview" />
+                    )}
+                    <br />
+                    {selectedFile && (
+                        <Button
+                            variant="secondary"
+                            size="xsmall"
+                            onClick={clearFileInput}
+                        >
+                            Clear File
+                        </Button>
                     )}
                 </ImagePreviewContainer>
             </CategoryWrapper>

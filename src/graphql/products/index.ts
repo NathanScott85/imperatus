@@ -68,6 +68,7 @@ export const CREATE_PRODUCT = gql`
         $name: String!
         $price: Float!
         $productTypeId: Int!
+        $cardTypeId: Int
         $brandId: Int!
         $setId: Int!
         $description: String
@@ -81,6 +82,7 @@ export const CREATE_PRODUCT = gql`
             name: $name
             price: $price
             productTypeId: $productTypeId
+            cardTypeId: $cardTypeId
             brandId: $brandId
             setId: $setId
             description: $description
@@ -97,6 +99,10 @@ export const CREATE_PRODUCT = gql`
             description
             preorder
             type {
+                id
+                name
+            }
+            cardType {
                 id
                 name
             }

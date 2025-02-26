@@ -1,46 +1,112 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
 import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
-import { useCategoriesContext } from '../../../context/categories';
-import { FancyContainer } from '../../../components/fancy-container';
-import { HomeIcon } from '../../../components/svg/home';
+import {  useCategoriesContext } from '../../../context/categories';
 import { BreadCrumb } from '../../../components/breadcrumbs';
+
+interface CategoryFilters {
+    brandId?: number[];
+    variantId?: number[];
+    setId?: number[];
+    productTypeId?: number[];
+    preorder?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+    stockMin?: number;
+    stockMax?: number;
+}
 
 export const Category = () => {
     const { id } = useParams();
-    const {
-        currentCategory,
-        fetchCategoryById,
-        categoryLoading,
-        categoryError,
-    } = useCategoriesContext();
+    const { currentCategory, fetchCategoryById } = useCategoriesContext();
 
-    const [categoryName, setCategoryName] = useState<string | null>( null );
+    const [categoryName, setCategoryName] = useState<string | null>(null);
+    const [selectedFilters, setSelectedFilters] = useState<CategoryFilters>({});
+    const [filterOptions, setFilterOptions] = useState<{
+        brands: { id: number; name: string }[];
+        sets: { id: number; setName: string }[];
+        variants: { id: number; name: string }[];
+        productTypes: { id: number; name: string }[];
+    }>({
+        brands: [],
+        sets: [],
+        variants: [],
+        productTypes: [],
+    });
 
-    useEffect( () => {
-        if ( id ) {
-            fetchCategoryById( { variables: { id: parseInt( id ) } } );
+    useEffect(() => {
+        if (id) fetchCategoryById(parseInt(id));
+    }, [id, fetchCategoryById]);
+
+    useEffect(() => {
+        if (currentCategory) {
+            setCategoryName(currentCategory.name);
+    
+            const brandsMap = new Map();
+            const setsMap = new Map();
+            const variantsMap = new Map();
+            const productTypesMap = new Map();
+
+            currentCategory.products.forEach((product: any) => {
+                if (!selectedFilters.brandId?.length || selectedFilters.brandId.includes(product.brand?.id)) {
+                    if (product.brand)  brandsMap.set(product.brand.id, product.brand);
+                    if (product.set) setsMap.set(product.set.id, product.set);
+                    if (product.variant) variantsMap.set(product.variant.id, product.variant);
+                    if (product.type) productTypesMap.set(product.type.id, product.type);
+                }
+            });
+            setFilterOptions({
+                brands: Array.from(brandsMap.values()),
+                sets: Array.from(setsMap.values()),
+                variants: Array.from(variantsMap.values()),
+                productTypes: Array.from(productTypesMap.values()),
+            });
         }
-        if ( currentCategory ) {
-            setCategoryName( currentCategory.name );
-        }
-    }, [id, fetchCategoryById, currentCategory] );
+    }, [currentCategory]);
+    
 
-    const [checkedStatus, setCheckedStatus] = useState( {
+    const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,
-    } );
+    });
 
-    const handleChecked = ( type: keyof typeof checkedStatus ) => {
-        setCheckedStatus( ( prevState ) => ( {
+    const handleChecked = (type: keyof typeof checkedStatus) => {
+        setCheckedStatus((prevState) => ({
             ...prevState,
             [type]: !prevState[type],
-        } ) );
+        }));
+    };
+
+    const handleFilterChange = useCallback((key: keyof CategoryFilters, value: any) => {
+        setSelectedFilters((prevFilters: CategoryFilters) => {
+            prevFilters[key] = value as any;
+            return {
+                ...prevFilters
+            };
+        });
+    }, []);    
+
+    const filteredProducts = useMemo(() => {
+        return currentCategory?.products.filter((product: any) => {
+            return (
+                (!selectedFilters.brandId?.length || selectedFilters.brandId.includes(Number(product.brand?.id))) &&
+                (!selectedFilters.setId?.length || selectedFilters.setId.includes(product.set?.id)) &&
+                (!selectedFilters.variantId?.length || selectedFilters.variantId.includes(product.variant?.id)) &&
+                (!selectedFilters.productTypeId?.length || selectedFilters.productTypeId.includes(product.type?.id)) &&
+                (!selectedFilters.priceMin || product.price >= selectedFilters.priceMin) &&
+                (!selectedFilters.priceMax || product.price <= selectedFilters.priceMax)
+            );
+        });
+    }, [currentCategory, selectedFilters]);    
+    
+
+    const resetFilters = () => {
+        setSelectedFilters({});
     };
 
     return (
@@ -50,54 +116,74 @@ export const Category = () => {
             <Navigation background />
             <BreadCrumb />
             <ImageWrapper>
-            <p>{categoryName !== null ? categoryName : '404 Error, Page Not Found'}</p>
+                <p>{categoryName ? categoryName : '404 Error, Page Not Found'}</p>
             </ImageWrapper>
-            <CategoriesMain background={categoryName !== null}>
-                {categoryLoading ? (
-                    <CategoriesContainer>
-                        <FancyContainer variant="filters" size="filters">
-                            <NoProductsMessage>
-                                <p>Loading category details...</p>
-                            </NoProductsMessage>
-                        </FancyContainer>
-                    </CategoriesContainer>
-                ) : categoryError ? (
-                    <CategoriesContainer>
-                        <ErrorMessage>
-                            Error loading category: {categoryError.message}
-                        </ErrorMessage>
-                    </CategoriesContainer>
-                ) : currentCategory ? (
-                    <CategoriesContainer>
-                        <CategoriesFilterContainer>
+            <CategoriesMain background={!!categoryName}>
+                <CategoriesContainer>
+                    <CategoriesFilterContainer>
+                        {categoryName && (
                             <Filters
-                                filters
                                 checkedStatus={checkedStatus}
                                 handleChecked={handleChecked}
+                                filters={selectedFilters}
+                                brands={filterOptions.brands}
+                                sets={filterOptions.sets}
+                                variants={filterOptions.variants}
+                                productTypes={filterOptions.productTypes}
+                                onFilterChange={handleFilterChange}
+                                resetFilters={resetFilters}
                             />
-                        </CategoriesFilterContainer>
-                        <CategoriesListContainer>
-                            <Products products={currentCategory!?.products} />
-                        </CategoriesListContainer>
-                    </CategoriesContainer>
-                ) : (
-                    <CategoriesContainer>
-                        <FancyContainer variant="login" size="login">
-                            <FancyContainerSubWrapper>
-                                <h1>404 Error, Page Not Found</h1>
-                                <p>The page you are looking for does not exist.</p>
-                                <Link to="/" aria-label="Go to Home Page">
-                                    <HomeIcon aria-hidden="true" />
-                                </Link>
-                            </FancyContainerSubWrapper>
-                        </FancyContainer>
-                    </CategoriesContainer>
-                )}
+                        )}
+                    </CategoriesFilterContainer>
+                    <CategoriesListContainer>
+                        <ProductsWrapper>
+                            {currentCategory?.products.length && <Products products={filteredProducts} />}
+                        </ProductsWrapper>
+                    </CategoriesListContainer>
+                </CategoriesContainer>
             </CategoriesMain>
             <Footer />
         </>
     );
 };
+
+const CategoriesContainer = styled.section`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 80vh;
+    margin-bottom: 2.5rem;
+`;
+
+const CategoriesMain = styled.main<{ background: any }>`
+    background-color: ${({ background }) => (background ? 'white' : '#130a30')};
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: #c79d0a;
+    padding: 2rem;
+    margin: auto;
+    width: 100%;
+`;
+
+const CategoriesFilterContainer = styled.div`
+    flex: 0 0 250px;
+    min-height: 600px;
+    padding-right: 2rem;
+`;
+
+const CategoriesListContainer = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 600px;
+    padding: 2rem;
+    width: 100%;
+`;
 
 const FancyContainerSubWrapper = styled.div`
     display: flex;
@@ -106,13 +192,12 @@ const FancyContainerSubWrapper = styled.div`
     justify-content: center;
     text-align: center;
     color: white;
-
+    height: 100%;
     p {
         margin: 0.5rem;
         font-family: 'Barlow', sans-serif;
         font-size: 16px;
     }
-
     h1 {
         margin: 1rem;
         font-family: Cinzel;
@@ -121,70 +206,36 @@ const FancyContainerSubWrapper = styled.div`
     z-index: 50;
 `;
 
-const NoProductsMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #777;
-    text-align: center;
+
+const ProductsWrapper = styled.div`
     width: 100%;
-    p {
-        height: 100%;
-        color: black;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-        font-family: Cinzel, serif;
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 1.5;
-        letter-spacing: 0.02em;
-        padding: 6rem;
-        width: 100%;
-    }
-`;
-
-const ErrorMessage = styled.p`
-    text-align: center;
-    font-size: 1.2rem;
-    color: red;
-    margin: 2rem 0;
-`;
-
-const CategoriesContainer = styled.section`
+    min-height: 400px;
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
-    margin-bottom: 2.5rem;
+    align-items: flex-start;
 `;
 
-const CategoriesMain = styled.main<{ background: any}>`
-    background-color: ${({ background }) => (background ?  'white' : '#130a30' )};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    color: #c79d0a;
-    padding: 2rem;
-    margin: auto;
-    padding: 1rem 0rem;
-`;
+// const FancyContainerSubWrapper = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     text-align: center;
+//     color: white;
+//     p {
+//         margin: 0.5rem;
+//         font-family: 'Barlow', sans-serif;
+//         font-size: 16px;
+//     }
+//     h1 {
+//         margin: 1rem;
+//         font-family: Cinzel;
+//         font-size: 24px;
+//     }
+//     z-index: 50;
+// `;
 
-const CategoriesFilterContainer = styled.div`
-    h1 {
-        color: black;
-        font-family: Cinzel;
-        font-size: 30px;
-        font-weight: 700;
-        line-height: 57px;
-        letter-spacing: 0.02em;
-        text-align: left;
-        padding-bottom: 2rem;
-    }
-`;
 
 const ImageWrapper = styled.div`
     width: 100%;
@@ -204,11 +255,6 @@ const ImageWrapper = styled.div`
         padding-bottom: 2rem;
         margin-left: 2rem;
     }
-`;
-
-const CategoriesListContainer = styled.div`
-    display: flex;
-    padding: 2rem;
 `;
 
 export default Category;

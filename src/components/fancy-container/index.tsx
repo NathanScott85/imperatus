@@ -109,7 +109,7 @@ const StyledContainer = styled.div<Variant>`
             case 'medium':
                 return '762px';
             case 'stock':
-                return '225px';
+                return '200px';
             case 'modal':
                 return 'auto';
             default:

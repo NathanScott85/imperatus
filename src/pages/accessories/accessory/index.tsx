@@ -40,11 +40,13 @@ export const Accessory = () => {
             <AccessoryMain>
                 <AccessoryContainer>
                     <FiltersContainer>
-                        <Filters
+                        {/* <Filters
+                                currentFilters={filters} // ✅ Pass filters
+                                setFilters={setFilters}  
                             filters
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
-                        />
+                        /> */}
                     </FiltersContainer>
                     <AccessoryListContainer>
                         {accessory && (

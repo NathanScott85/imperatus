@@ -1,45 +1,132 @@
 import { gql } from '@apollo/client';
 
 export const GET_CATEGORIES = gql`
-  query GetAllCategories($page: Int, $limit: Int, $search: String) {
-    getAllCategories(page: $page, limit: $limit, search: $search) {
+  query GetAllCategories($page: Int, $limit: Int, $search: String, $filters: CategoryFilters) {
+    getAllCategories(page: $page, limit: $limit, search: $search, filters: $filters) {
       categories {
-        id
-        name
-        description
-        products {
-          id
-          name
-          price
-          rrp
-          description
-          preorder
-          img {
             id
-            url
-            key
-            fileName
-            contentType
-            createdAt
-          }
-          stock {
+            name
+            description
+            products {
+                id
+                name
+                price
+                rrp
+                description
+                slug
+                preorder
+                stock {
+                    id
+                    amount
+                    sold
+                    instock
+                    soldout
+                    preorder
+                }
+                brand {
+                    id
+                    name
+                    description
+                }
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+                type {
+                    id
+                    name
+                }
+                set {
+                    id
+                    setName
+                    setCode
+                    description
+                }
+                variant {
+                    id
+                    name
+                }
+                cardType {
+                    id
+                    name
+                    brandId
+                }
+            }
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
+            type {
+                id
+                name
+            }
+        }
+        totalCount
+        totalPages
+        currentPage
+    }
+  }
+`;
+
+export const GET_CATEGORY_BY_ID = gql`
+    query GetCategoryById($id: ID!, $page: Int, $limit: Int) {
+        getCategoryById(id: $id, page: $page, limit: $limit) {
             id
-            amount
-            sold
-            instock
-            soldout
-            preorder
+            name
+            description
+            products {
+                id
+                name
+                price
+                rrp
+                description
+                slug
+                preorder
+                stock {
+                    id
+                    amount
+                    sold
+                    instock
+                    soldout
+                    preorder
+                }
+                set {
+                    id
+                    setName
+                    setCode
+                    description
+                }
+                variant {
+                    id
+                    name
+                }
+                cardType {
+                    id
+                    name
+                    brandId
+            }
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+           }
+            brand {
+              id
+              name
+              description
           }
         }
-        img {
-          id
-          url
-          key
-          fileName
-          contentType
-          createdAt
-        }
-      }
       totalCount
       totalPages
       currentPage
@@ -47,39 +134,6 @@ export const GET_CATEGORIES = gql`
   }
 `;
 
-export const GET_CATEGORY_BY_ID = gql`
-  query GetCategoryById ($id: ID!) {
-    getCategoryById(id: $id) {
-      id
-      name
-      description
-      img {
-        url
-        fileName
-        contentType
-      }
-      products {
-        id
-        name
-        price
-        rrp
-        img {
-          url
-          fileName
-          contentType
-        }
-        description
-        stock {
-          amount
-          sold
-          instock
-          soldout
-        }
-        preorder
-      }
-    }
-  }
-`;
 
 export const CREATE_CATEGORY = gql`
 mutation CreateCategory($name: String!, $description: String!, $img: Upload!) {
