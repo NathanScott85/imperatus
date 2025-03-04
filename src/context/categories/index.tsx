@@ -110,7 +110,6 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     ] = useLazyQuery(GET_CATEGORY_BY_ID, {
         fetchPolicy: "cache-and-network",
         onCompleted: (data) => {
-            console.log(data, 'data');
             setTotalCount(data?.getCategoryById?.totalCount || 0);
             setTotalPages(data?.getCategoryById?.totalPages || 1);
             setCurrentCategory(data?.getCategoryById);

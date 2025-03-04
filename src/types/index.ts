@@ -21,7 +21,7 @@ export type ProductType = {
     price: number;
     type: string;
     rrp: number;
-    description?: string; // put this as optional for now to not have to change the temp mocks
+    description?: string;
     img: {
         url: string;
     };
@@ -29,7 +29,8 @@ export type ProductType = {
         name: string;
     };
     stock: Stock;
-    preorder?: boolean; // put this as optional for now to not have to change the temp mocks
+    preorder?: boolean;
+    set: any;
 };
 
 export interface Product {

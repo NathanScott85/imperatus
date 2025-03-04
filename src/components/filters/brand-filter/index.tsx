@@ -25,10 +25,10 @@ export const BrandFilter = ({ filters, brands, onFilterChange }: any) => {
                     <CheckboxLabel key={brand.id}>
                         <CheckboxContainer>
                             <HiddenCheckbox
-                                checked={filters.brandId?.includes(brand.id) || false}
+                                checked={filters.brandId?.includes(Number(brand.id)) || false}
                                 onChange={() => handleCheckboxChange(brand.id)}
                             />
-                            <StyledCheckbox checked={filters.brandId?.includes(brand.id) || false}>
+                            <StyledCheckbox checked={filters.brandId?.includes(Number(brand.id)) || false}>
                                 <Icon viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
                                 </Icon>

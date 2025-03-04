@@ -6,7 +6,7 @@ import Theros from '../lib/mock-images/theros.jpg';
 import Zendikar from './mock-images/zendikar-rising.jpg';
 import { ProductType } from '../types';
 
-export const latestproducts: ProductType[] = [
+export const latestproducts = [
     {
         id: 1,
         category: { name: 'card games' },
