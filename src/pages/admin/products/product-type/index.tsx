@@ -263,7 +263,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${( { isOdd } ) => ( isOdd ? '#160d35' : 'transparent' )};
+   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`

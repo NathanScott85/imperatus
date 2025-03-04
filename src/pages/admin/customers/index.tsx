@@ -124,8 +124,8 @@ export const Customers: React.FC = () => {
                                     </CenteredCell>
                                 </tr>
                             ) : (
-                                users?.map((user) => (
-                                    <TableRow key={user.id}>
+                                users?.map((user: any, index: number) => (
+                                    <TableRow key={user.id} isOdd={index % 2 === 1}>
                                         <td>{user.fullname}</td>
                                         <td>
                                             <EyeIcon
@@ -347,6 +347,7 @@ const Table = styled.table`
         color: #c79d0a;
     }
 `;
+
 const CenteredCell = styled.td`
     text-align: center;
     color: #999;
@@ -393,8 +394,8 @@ const NoResultsMessage = styled.div`
 `;
 
 
-const TableRow = styled.tr`
-    background-color: transparent;
+const TableRow = styled.tr<{ isOdd: boolean }>`
+   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`

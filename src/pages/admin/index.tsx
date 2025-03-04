@@ -26,6 +26,12 @@ import { AdminSets } from './products/sets';
 import { AddSet } from './products/add-set';
 import { AdminPromotions } from './promotions';
 import { AddPromotion } from './promotions/add-promotion';
+import { AdminRarities } from './products/rarities';
+import { AdminVariants } from './products/variants';
+import { AddRarity } from './products/add-rarity';
+import { AddVariant } from './products/add-variant';
+import { AdminCardTypes } from './products/card-types';
+import { AddCardType } from './products/add-cardtype';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState( 'Overview' );
@@ -76,6 +82,18 @@ export const Admin = () => {
                 return <AddPromotion />;
             case 'AdminPromotions':
                 return <AdminPromotions />;
+            case 'AddRarity':
+                return <AddRarity />
+            case 'AdminRarity':
+                return <AdminRarities />
+            case 'AddVariant':
+                    return <AddVariant />
+            case 'AdminVariant':
+                return <AdminVariants/>
+            case 'AddCardType':
+                return <AddCardType />         
+            case 'AdminCardTypes':
+                return <AdminCardTypes />
             default:
                 return <Overview />;
         }

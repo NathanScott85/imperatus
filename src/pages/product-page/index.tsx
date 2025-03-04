@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
-import { Loading } from '../../pages/loading';
 import { Navigation } from '../../components/navigation';
-import { Cart } from '../../components/svg';
+import { Cart, Heart, Van } from '../../components/svg';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { Footer } from '../../components/footer';
 import { ProductDescription } from './product-page-description';
+import { BreadCrumb } from '../../components/breadcrumbs';
 
 interface Product {
     name: string;
@@ -42,6 +42,7 @@ export const ProductPage: React.FC = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
+            <BreadCrumb />
             <ProductPageMain>
                 <ProductContentSection>
                     <div>
@@ -73,23 +74,41 @@ export const ProductPage: React.FC = () => {
                                 £{product.price.toFixed(2)}
                             </ProductPrice>
                             <StyledRRP>RRP £{product.rrp.toFixed(2)}</StyledRRP>
+                            <StyledRRP>19.60% OFF</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
                             <CartWrapper>
-                                <Cart />
+                                <Cart stroke='black' />
                             </CartWrapper>
                             <p>In Stock</p>
+                        </CartContainer>
+                        <CartContainer>
+                            <CartWrapper>
+                                <Van stroke='black' />
+                            </CartWrapper>
+                            <p>Dispatched day before release, together with all other items in your order. More info</p>
                         </CartContainer>
                         <TitleAndStockContainer>
                             <StockContainer>
                                 <ProductControls>+</ProductControls>
                                 <Input type="number" />
                                 <ProductControls>-</ProductControls>
-                                <Button
-                                    variant="primary"
-                                    size="small"
-                                    label="ADD TO CART"
-                                />
+                                <span>
+                                    <Button
+                                        variant="primary"
+                                        size="small"
+                                        label="add to cart"
+                                    />
+                                </span>
+                                <span>
+                                    <Button
+                                        variant="primary"
+                                        size="small"
+                                    >
+                                        Add to Wishlist
+                                    </Button>
+                                    <Heart />
+                                </span>
                             </StockContainer>
                         </TitleAndStockContainer>
                     </ProductContent>
@@ -191,17 +210,23 @@ const CartContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    p {
+        font-size: 1.2rem;
+        margin-left: 0.5rem;
+    }
 `;
 
 const CartWrapper = styled.div`
     width: 40px;
     height: 40px;
+    min-width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 3px;
     background-color: #d9d9d9;
     margin-top: 1rem;
+
 `;
 
 const ProductContent = styled.div`

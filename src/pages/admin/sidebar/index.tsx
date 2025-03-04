@@ -48,7 +48,7 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Orders' )}>
-                    <Cart />
+                    <Cart stroke='#C79D0A' />
                     ORDERS
                 </MenuItem>
                 <MenuItem onClick={() => toggleMenu( 'Discount' )}>
@@ -99,6 +99,24 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <SubMenuItem onClick={() => setSelectedComponent( 'AdminSet' )}>
                             MANAGE SET
                         </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddRarity' )}>
+                            ADD  RARITY
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminRarity' )}>
+                            MANAGE RARITY
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddVariant' )}>
+                            ADD VARIANT
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminVariant' )}>
+                            MANAGE VARIANT
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCardType' )}>
+                            ADD CARDTYPE
+                        </SubMenuItem>
+                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCardTypes' )}>
+                            MANAGE CARDTYPE
+                        </SubMenuItem>
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Promotions', 'AddPromotion' )}>
@@ -130,7 +148,7 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                     </SubMenu>
                 )}
                 <MenuItem onClick={() => toggleMenu( 'Shipping' )}>
-                    <Van />
+                        <Van stroke='#C79D0A' />
                     SHIPPING
                 </MenuItem>
                 <MenuItem onClick={() => toggleMenu( 'Customers' )}>

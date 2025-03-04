@@ -63,12 +63,12 @@ export const GET_ALL_PRODUCTS = gql`
     }
 `;
 
-
 export const CREATE_PRODUCT = gql`
     mutation CreateProduct(
         $name: String!
         $price: Float!
         $productTypeId: Int!
+        $cardTypeId: Int
         $brandId: Int!
         $setId: Int!
         $description: String
@@ -82,6 +82,7 @@ export const CREATE_PRODUCT = gql`
             name: $name
             price: $price
             productTypeId: $productTypeId
+            cardTypeId: $cardTypeId
             brandId: $brandId
             setId: $setId
             description: $description
@@ -101,6 +102,10 @@ export const CREATE_PRODUCT = gql`
                 id
                 name
             }
+            cardType {
+                id
+                name
+            }
             stock {
                 id
                 amount
@@ -115,7 +120,6 @@ export const CREATE_PRODUCT = gql`
         }
     }
 `;
-
 
 export const UPDATE_PRODUCT = gql`
     mutation UpdateProduct(
@@ -206,6 +210,15 @@ export const GET_ALL_PRODUCT_TYPES = gql`
 export const CREATE_PRODUCT_TYPE = gql`
   mutation CreateProductType($input: ProductTypeInput!) {
     createProductType(input: $input) {
+      id
+      name
+    }
+  }
+`;
+
+export const UPDATE_PRODUCT_TYPE = gql`
+  mutation UpdateProductType($id: Int!, $name: String!) {
+    updateProductType(id: $id, name: $name) {
       id
       name
     }

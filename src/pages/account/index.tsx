@@ -88,7 +88,7 @@ export const Account = () => {
                                     handleMenuClick('DeliveryAddresses')
                                 }
                             >
-                                <Van />
+                                <Van stroke='#C79D0A' />
                                 Delivery Address
                             </StyledWrapper>
                             <StyledWrapper

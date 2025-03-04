@@ -31,6 +31,18 @@ interface UpdateCategoryInput {
     img: any;
 }
 
+export interface CategoryFilters {
+    brandId?: number;
+    variantId?: number;
+    setId?: number;
+    productTypeId?: number;
+    preorder?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+    stockMin?: number;
+    stockMax?: number;
+}
+
 interface CategoriesContextProps {
     categories: Category[] | null;
     loading: boolean;
@@ -39,7 +51,7 @@ interface CategoriesContextProps {
     deleteCategory: ( id: string ) => Promise<void>;
     fetchCategories: () => void;
     currentCategory: Category | null;
-    fetchCategoryById: ( options: { variables: { id: number } } ) => void;
+    fetchCategoryById: (id: number, page?: number, limit?: number) => void;
     categoryLoading: boolean;
     totalCount: number;
     totalPages: number;
@@ -56,6 +68,8 @@ interface CategoriesContextProps {
     search: string;
     setSearch: ( search: string ) => void;
     resetPagination: () => void;
+    filters: CategoryFilters;
+    setFilters: React.Dispatch<React.SetStateAction<CategoryFilters>>;
 }
 
 const CategoriesContext = createContext<CategoriesContextProps | null>( null );
@@ -68,8 +82,13 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     const [totalPages, setTotalPages] = useState( 1 );
     const [currentPage, setCurrentPage] = useState( 1 );
     const [search, setSearch] = useState( '' );
+    const [filters, setFilters] = useState<CategoryFilters>({});   
 
-    const queryVariables = useMemo( () => ( { page: currentPage, limit: limit, search } ), [currentPage, limit, search] );
+    const queryVariables = useMemo(() => ({
+        page: currentPage,
+        limit: limit,
+        search,
+    }), [currentPage, limit, search, filters]);    
 
     const resetPagination = () => {
         setCurrentPage( 1 );
@@ -86,13 +105,25 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     } );
 
     const [
-        fetchCategoryById,
+        fetchCategoryByIdQuery,
         { loading: categoryLoading, error: categoryError },
-    ] = useLazyQuery( GET_CATEGORY_BY_ID, {
-        onCompleted: ( data ) => setCurrentCategory( data.getCategoryById ),
-        fetchPolicy: 'cache-and-network',
-    } );
-
+    ] = useLazyQuery(GET_CATEGORY_BY_ID, {
+        fetchPolicy: "cache-and-network",
+        onCompleted: (data) => {
+            setTotalCount(data?.getCategoryById?.totalCount || 0);
+            setTotalPages(data?.getCategoryById?.totalPages || 1);
+            setCurrentCategory(data?.getCategoryById);
+        },
+    });
+    
+    const fetchCategoryById = useCallback(
+        (id: number) => {
+            fetchCategoryByIdQuery({ variables: { id, page: 1, limit: 1000 } });
+        },
+        [fetchCategoryByIdQuery]
+    );
+    
+    
     const [
         updateCategoryMutation,
         { loading: updating, error: updateError, data: updatedCategoryData },
@@ -173,7 +204,9 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 limit,
                 setLimit,
                 setSearch,
-                resetPagination
+                resetPagination,
+                filters,
+                setFilters,
             }}
         >
             {children}

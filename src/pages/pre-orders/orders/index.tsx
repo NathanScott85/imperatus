@@ -43,11 +43,13 @@ export const Orders = () => {
             <CategoriesMain>
                 <CategoriesContainer>
                     <CategoriesFilterContainer>
-                        <Filters
+                        {/* <Filters
                             filters
+                            currentFilters={filters}
+                            setFilters={setFilters}  
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
-                        />
+                        /> */}
                     </CategoriesFilterContainer>
                     <CategoriesListContainer>
                         {preorders && (

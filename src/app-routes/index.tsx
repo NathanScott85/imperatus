@@ -156,7 +156,7 @@ export const AppRoutes = () => {
                 <Route path="/account/sign-out" element={<SignOut />} />
 
                 {/* Basket */}
-                <Route path="/basket" element={<Basket />} />
+                <Route path="/shop/basket" element={<Basket />} />
 
                 {/* Fallback route */}
                 <Route path="/404" element={<FourOFour />} />

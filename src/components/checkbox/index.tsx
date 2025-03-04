@@ -36,8 +36,8 @@ const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
 
 const StyledCheckbox = styled.div<{ checked: boolean }>`
     display: inline-block;
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     background: ${({ checked }) => (checked ? '#ac8fff' : 'white')};
     border: ${({ checked }) => (checked ? 'none' : '1px solid #AC8FFF80')};
     border-radius: 3px;

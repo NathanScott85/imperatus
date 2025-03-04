@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
@@ -7,39 +7,128 @@ import { Filters } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
-import { FancyContainer } from '../../../components/fancy-container';
-import { HomeIcon } from '../../../components/svg/home';
+import { BreadCrumb } from '../../../components/breadcrumbs';
+
+interface CategoryFilters {
+    brandId?: number[];
+    setId?: number[];
+    preorder?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+    stockMin?: number;
+    stockMax?: number;
+}
 
 export const Category = () => {
     const { id } = useParams();
-    const {
-        currentCategory,
-        fetchCategoryById,
-        categoryLoading,
-        categoryError,
-    } = useCategoriesContext();
+    const { currentCategory, loading, fetchCategoryById } = useCategoriesContext();
 
-    const [categoryName, setCategoryName] = useState<string | null>( null );
+    const [categoryName, setCategoryName] = useState<string | null>(null);
+    const [selectedFilters, setSelectedFilters] = useState<CategoryFilters>({});
+    const [filterOptions, setFilterOptions] = useState<{
+        brands: { id: number; name: string }[];
+        sets: { id: number; setName: string }[];
+        stockMin: number;
+        stockMax: number;
+        priceMin: number;
+        priceMax: number;
+    }>({
+        brands: [],
+        sets: [],
+        stockMin: 0,
+        stockMax: 0,
+        priceMin: 0,
+        priceMax: 0,
+    });
 
-    useEffect( () => {
-        if ( id ) {
-            fetchCategoryById( { variables: { id: parseInt( id ) } } );
+    useEffect(() => {
+        if (id) fetchCategoryById(parseInt(id));
+    }, [id, fetchCategoryById]);
+
+    useEffect(() => {
+        if (currentCategory) {
+            setCategoryName(currentCategory.name);
+
+            const brandsMap = new Map();
+            const setsMap = new Map();
+            let stockMin = Infinity;
+            let stockMax = -Infinity;
+            let priceMin = Infinity;
+            let priceMax = -Infinity;
+
+            currentCategory.products.forEach((product: any) => {
+
+                const isInStock = product.stock?.amount > 0;
+                if (checkedStatus.inStock && !isInStock) return;
+                if (checkedStatus.outOfStock && isInStock) return;
+
+                priceMin = Math.min(priceMin, product.price);
+                priceMax = Math.max(priceMax, product.price);
+
+                if (product.brand) brandsMap.set(product.brand.id, product.brand);
+                if (product.set) setsMap.set(product.set.id, product.set);
+                if (product.stock?.amount !== undefined) {
+                    stockMin = Math.min(stockMin, product.stock.amount);
+                    stockMax = Math.max(stockMax, product.stock.amount);
+                }
+            });
+            setFilterOptions({
+                brands: Array.from(brandsMap.values()),
+                sets: Array.from(setsMap.values()),
+                stockMin: stockMin === Infinity ? 0 : stockMin,
+                stockMax: stockMax === -Infinity ? 0 : stockMax,
+                priceMin: priceMin === Infinity ? 0 : priceMin,
+                priceMax: priceMax === -Infinity ? 0 : priceMax,
+            });
         }
-        if ( currentCategory ) {
-            setCategoryName( currentCategory.name );
-        }
-    }, [id, fetchCategoryById, currentCategory] );
+    }, [currentCategory]);
 
-    const [checkedStatus, setCheckedStatus] = useState( {
+    const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,
-    } );
+    });
 
-    const handleChecked = ( type: keyof typeof checkedStatus ) => {
-        setCheckedStatus( ( prevState ) => ( {
+    const handleChecked = (type: keyof typeof checkedStatus) => {
+        setCheckedStatus((prevState) => ({
             ...prevState,
             [type]: !prevState[type],
-        } ) );
+        }));
+    };
+
+    const handleFilterChange = useCallback((key: keyof CategoryFilters, value: any) => {
+        setSelectedFilters((prevFilters: CategoryFilters) => {
+            prevFilters[key] = value as any;
+            return {
+                ...prevFilters
+            };
+        });
+    }, []);
+
+    const filteredProducts = useMemo(() => {
+        if (!currentCategory) return [];
+    
+        return currentCategory.products.filter((product: any) => {
+            const { brandId, setId, priceMin, priceMax } = selectedFilters;
+            const isInStock = product.stock?.amount > 0;
+
+            if (checkedStatus.inStock && !checkedStatus.outOfStock && !isInStock) return false;
+            if (checkedStatus.outOfStock && !checkedStatus.inStock && isInStock) return false;
+    
+            const matchesBrand = !brandId?.length || brandId.includes(Number(product.brand?.id));
+            const matchesSet = !setId?.length || setId.includes(Number(product.set?.id));
+            const matchesMinPrice = !priceMin || product.price >= priceMin;
+            const matchesMaxPrice = !priceMax || product.price <= priceMax;
+    
+            return matchesBrand && matchesSet && matchesMinPrice && matchesMaxPrice;
+        });
+    }, [currentCategory, selectedFilters, checkedStatus]);
+
+    const resetFilters = () => {
+        setSelectedFilters({});
+        setCheckedStatus({
+            inStock: false,
+            outOfStock: false,
+        });
     };
 
     return (
@@ -47,142 +136,97 @@ export const Category = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
+            <BreadCrumb />
             <ImageWrapper>
-            <p>{categoryName !== null ? categoryName : '404 Error, Page Not Found'}</p>
+                <p>
+                    {loading ? 'Loading...' : categoryName ? categoryName : '404 Error, Page Not Found'}
+                </p>
             </ImageWrapper>
-            <CategoriesMain background={categoryName !== null}>
-                {categoryLoading ? (
-                    <CategoriesContainer>
-                        <FancyContainer variant="filters" size="filters">
-                            <NoProductsMessage>
-                                <p>Loading category details...</p>
-                            </NoProductsMessage>
-                        </FancyContainer>
-                    </CategoriesContainer>
-                ) : categoryError ? (
-                    <CategoriesContainer>
-                        <ErrorMessage>
-                            Error loading category: {categoryError.message}
-                        </ErrorMessage>
-                    </CategoriesContainer>
-                ) : currentCategory ? (
-                    <CategoriesContainer>
-                        <CategoriesFilterContainer>
+            <CategoriesMain background={!!categoryName}>
+                <CategoriesContainer>
+                    <CategoriesFilterContainer>
+                        {categoryName && (
                             <Filters
-                                filters
+                                categoryName={categoryName}
                                 checkedStatus={checkedStatus}
                                 handleChecked={handleChecked}
+                                filters={selectedFilters}
+                                brands={filterOptions.brands}
+                                sets={filterOptions.sets}
+                                priceMin={filterOptions.priceMin}
+                                priceMax={filterOptions.priceMax}
+                                onPriceChange={(min, max) => {
+                                    setSelectedFilters((prevFilters) => ({
+                                        ...prevFilters,
+                                        priceMin: min,
+                                        priceMax: max,
+                                    }));
+                                }}
+                                onFilterChange={handleFilterChange}
+                                resetFilters={resetFilters}
                             />
-                        </CategoriesFilterContainer>
-                        <CategoriesListContainer>
-                            <Products products={currentCategory!?.products} />
-                        </CategoriesListContainer>
-                    </CategoriesContainer>
-                ) : (
-                    <CategoriesContainer>
-                        <FancyContainer variant="login" size="login">
-                            <FancyContainerSubWrapper>
-                                <h1>404 Error, Page Not Found</h1>
-                                <p>The page you are looking for does not exist.</p>
-                                <Link to="/" aria-label="Go to Home Page">
-                                    <HomeIcon aria-hidden="true" />
-                                </Link>
-                            </FancyContainerSubWrapper>
-                        </FancyContainer>
-                    </CategoriesContainer>
-                )}
+                        )}
+                    </CategoriesFilterContainer>
+                    <CategoriesListContainer>
+                        <ProductsWrapper>
+                            {currentCategory?.products.length && <Products products={filteredProducts} />}
+                        </ProductsWrapper>
+                    </CategoriesListContainer>
+                </CategoriesContainer>
             </CategoriesMain>
             <Footer />
         </>
     );
 };
 
-const FancyContainerSubWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-
-    p {
-        margin: 0.5rem;
-        font-family: 'Barlow', sans-serif;
-        font-size: 16px;
-    }
-
-    h1 {
-        margin: 1rem;
-        font-family: Cinzel;
-        font-size: 24px;
-    }
-    z-index: 50;
-`;
-
-const NoProductsMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #777;
-    text-align: center;
-    width: 100%;
-    p {
-        height: 100%;
-        color: black;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-        font-family: Cinzel, serif;
-        font-size: 24px;
-        font-weight: 700;
-        line-height: 1.5;
-        letter-spacing: 0.02em;
-        padding: 6rem;
-        width: 100%;
-    }
-`;
-
-const ErrorMessage = styled.p`
-    text-align: center;
-    font-size: 1.2rem;
-    color: red;
-    margin: 2rem 0;
-`;
-
 const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 80vh;
     margin-bottom: 2.5rem;
 `;
 
-const CategoriesMain = styled.main<{ background: any}>`
-    background-color: ${({ background }) => (background ?  'white' : '#130a30' )};
+const CategoriesMain = styled.main<{ background: any }>`
+    background-color: ${({ background }) => (background ? 'white' : '#130a30')};
     display: flex;
     justify-content: center;
-    align-items: center;
-    align-content: center;
+    align-items: flex-start;
     color: #c79d0a;
     padding: 2rem;
     margin: auto;
-    padding: 1rem 0rem;
+    width: 100%;
 `;
 
 const CategoriesFilterContainer = styled.div`
-    h1 {
-        color: black;
-        font-family: Cinzel;
-        font-size: 30px;
-        font-weight: 700;
-        line-height: 57px;
-        letter-spacing: 0.02em;
-        text-align: left;
-        padding-bottom: 2rem;
-    }
+    flex: 0 0 250px;
+    min-height: 600px;
+    padding-right: 2rem;
 `;
+
+const CategoriesListContainer = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 600px;
+    padding: 2rem;
+    width: 100%;
+`;
+
+
+const ProductsWrapper = styled.div`
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+`;
+
 
 const ImageWrapper = styled.div`
     width: 100%;
@@ -202,11 +246,6 @@ const ImageWrapper = styled.div`
         padding-bottom: 2rem;
         margin-left: 2rem;
     }
-`;
-
-const CategoriesListContainer = styled.div`
-    display: flex;
-    padding: 2rem;
 `;
 
 export default Category;

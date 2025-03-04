@@ -95,9 +95,7 @@ export const AdminProducts = () => {
                                 </tr>
                             ) : (
                                 products?.map((product, index) => (
-
                                     <TableRow key={product.id} isOdd={index % 2 === 1}>
-                                        {console.log(product, 'product') as any}
                                         <td>{product.name}</td>
                                         <td>{product.category?.name || 'N/A'}</td>
                                         <td>{product?.brand?.name || 'N/A'}</td>
@@ -247,7 +245,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-    background-color: ${({ isOdd }) => (isOdd ? '#160d35' : 'transparent')};
+   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`

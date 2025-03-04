@@ -39,11 +39,13 @@ export const BoardGame = () => {
             <BoardGameMain>
                 <BoardGameContainer>
                     <FiltersContainer>
-                        <Filters
+                        {/* <Filters
                             filters
+                            currentFilters={filters} // ✅ Pass filters
+                            setFilters={setFilters}  
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
-                        />
+                        /> */}
                     </FiltersContainer>
                     <BoardGameListContainer>
                         {boardgame && (

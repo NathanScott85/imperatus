@@ -45,11 +45,13 @@ export const CardGame = () => {
             <CardGameMain>
                 <CardGameContainer>
                     <FiltersContainer>
-                        <Filters
+                        {/* <Filters
                             filters
+                            currentFilters={filters}
+                            setFilters={setFilters}  
                             checkedStatus={checkedStatus}
                             handleChecked={handleChecked}
-                        />
+                        /> */}
                     </FiltersContainer>
                     <CardGameListContainer>
                         {currentCardGame && <Products
