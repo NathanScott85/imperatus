@@ -1,53 +1,75 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Input } from '../../../../components/input';
 import Button from '../../../../components/button';
 import { useSetsContext } from '../../../../context/sets';
+import { useBrandsContext } from '../../../../context/brands';
+import { ProductDropdown } from '../add-product/dropdown';
 
 export const AddSet = () => {
-  const [setData, setSetData] = useState( {
+  const [setData, setSetData] = useState({
     setName: '',
     setCode: '',
     description: '',
-  } );
-  const [isButtonDisabled, setIsButtonDisabled] = useState( false );
-  const [error, setError] = useState( '' );
-  const [success, setSuccess] = useState( '' );
+    brandId: 0,
+  });
 
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { brands, fetchBrands } = useBrandsContext();
   const { createSet } = useSetsContext();
+  
+  useEffect(()=> {
+    fetchBrands();
+  }, [fetchBrands])
 
-  const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setSetData( ( prev ) => ( { ...prev, [id]: value } ) );
+    setSetData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = async ( e: React.FormEvent ) => {
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const handleDropdownChange = (_selectedValue: string, value: number) => {
+    setSetData((prev) => ({
+      ...prev,
+      brandId: Number(value)
+    }));
+    setIsDropdownOpen(false);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError( '' );
-    setSuccess( '' );
-    setIsButtonDisabled( true );
+    setError('');
+    setSuccess('');
+    setIsButtonDisabled(true);
 
-    const { setName, setCode, description } = setData;
+    const { setName, setCode, description, brandId } = setData;
 
-    if ( !setName || !setCode || !description ) {
-      setError( 'Set Name, Set Code, and Description are required.' );
-      setIsButtonDisabled( false );
+    if (!setName || !setCode || !description || brandId === 0) {
+      setError('Set Name, Set Code, Description, and Brand are required.');
+      setIsButtonDisabled(false);
       return;
     }
 
     try {
-      const result = await createSet( setName, setCode, description );
+      const result = await createSet(setName, setCode, description, brandId);
 
-      if ( result.success ) {
-        setSuccess( 'Set added successfully!' );
-        setSetData( { setName: '', setCode: '', description: '' } );
+      if (result.success) {
+        setSuccess('Set added successfully!');
+        setSetData({ setName: '', setCode: '', description: '', brandId: 0 });
       } else {
-        setError( result.message || 'Failed to add set.' );
+        setError(result.message || 'Failed to add set.');
       }
-    } catch ( err ) {
-      setError( 'An unexpected error occurred.' );
+    } catch (err) {
+      setError('An unexpected error occurred.');
     } finally {
-      setIsButtonDisabled( false );
+      setIsButtonDisabled(false);
     }
   };
 
@@ -89,6 +111,24 @@ export const AddSet = () => {
               required
             />
           </FormGroup>
+          <FormGroup>
+            <Label>Brand</Label>
+            <ProductDropdown
+              label="Select Brand"
+              handleDropdownToggle={handleDropdownToggle}
+              handleDropdownChange={handleDropdownChange}
+              toggleValue="brand"
+              isDropdownOpen={isDropdownOpen}
+              header={
+                setData.brandId
+                    ? brands.find((b) => Number(b.id) === Number(setData.brandId))?.name
+                    : 'Select a brand'
+            }
+              values={brands}
+              selectedValue="brandId"
+              displayField="name"
+            />
+          </FormGroup>
           <ButtonContainer>
             <Button
               variant="primary"
@@ -97,6 +137,7 @@ export const AddSet = () => {
                 !setData.setName ||
                 !setData.setCode ||
                 !setData.description ||
+                setData.brandId === 0 ||
                 isButtonDisabled
               }
             >
@@ -175,3 +216,5 @@ const SuccessMessage = styled.p`
   font-size: 14px;
   margin-top: 1rem;
 `;
+
+export default AddSet;
