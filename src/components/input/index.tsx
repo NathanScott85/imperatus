@@ -365,4 +365,23 @@ const StyledTextArea = styled.textarea<InputProps>`
         font-size: 14px;
         padding-left: 5px;
     }
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #4d3c7b;
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #ac8fff;
+        border-radius: 4px;
+        border: none;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #8c6fd9;
+    }
 `;

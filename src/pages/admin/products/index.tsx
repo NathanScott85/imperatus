@@ -45,6 +45,7 @@ export const AdminProducts = () => {
 
     const handleBackToList = () => {
         setSelectedProduct(null);
+        fetchProducts();
     };
 
     if (selectedProduct) {

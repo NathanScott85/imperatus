@@ -20,22 +20,22 @@ export const StockStatus: React.FC<StockStatusProps> = ({
             <FilterTitle>Stock Status</FilterTitle>
             <FancyContainer variant="stock" size="stock">
                 <FilterOption display>
-                    <label htmlFor="inStock">In Stock</label>
-                    <Checkbox
+                <Checkbox
                         type="checkbox"
                         checked={checkedStatus.inStock}
                         onChange={() => handleChecked('inStock')}
                         id="inStock"
                     />
+                    <label htmlFor="inStock">In Stock</label>
                 </FilterOption>
                 <FilterOption display={false}>
-                    <label htmlFor="outOfStock">Out of Stock</label>
-                    <Checkbox
+                <Checkbox
                         checked={checkedStatus.outOfStock}
                         type="checkbox"
                         onChange={() => handleChecked('outOfStock')}
                         id="outOfStock"
                     />
+                    <label htmlFor="outOfStock">Out of Stock</label>
                 </FilterOption>
             </FancyContainer>
         </FilterSection>
@@ -50,7 +50,7 @@ const FilterTitle = styled.p`
    font-family: Cinzel, serif;
     font-size: 16.2px;
     font-weight: 400;
-    padding-bottom: 1rem;
+    margin-bottom: 2rem;
     color: black;
     line-height: 1.7;
     border-bottom: 1px solid #e5def9;
@@ -59,9 +59,9 @@ const FilterTitle = styled.p`
 const FilterOption = styled.div<{ display: boolean }>`
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin-bottom: 0.425rem;
-    padding-bottom: 0.425rem;
+    padding-bottom: 0.5rem;
     border-bottom: ${({ display }) => (display ? '1px solid #e5def9' : 'none')};
 
     input {
@@ -75,5 +75,6 @@ const FilterOption = styled.div<{ display: boolean }>`
         line-height: 18.4px;
         letter-spacing: 0.017em;
         color: black;
+        padding-left: 1rem;
     }
 `;

@@ -148,7 +148,7 @@ const StyledButton = styled.button<{
     border-radius: 3px;
     padding: 0.75rem;
     color: ${({ disabled }) => (disabled ? '#A9A9A9' : 'white')};
-    z-index: 50;
+    z-index: 1;
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
 

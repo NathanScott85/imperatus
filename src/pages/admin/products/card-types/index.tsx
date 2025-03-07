@@ -74,7 +74,7 @@ export const AdminCardTypes = () => {
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Card Game</th>
+                  <th>Brand</th>
                   <th>View</th>
                 </tr>
               </thead>

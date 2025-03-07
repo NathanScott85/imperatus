@@ -76,7 +76,9 @@ export const AdminSets = () => {
                 <tr>
                   <th>Set Name</th>
                   <th>Set Code</th>
+                  <th>Brand</th>
                   <th>Description</th>
+            
                   <th>View</th>
                 </tr>
               </thead>
@@ -94,7 +96,9 @@ export const AdminSets = () => {
                     <TableRow key={set.id} isOdd={index % 2 === 1}>
                       <td>{set.setName}</td>
                       <td>{set.setCode}</td>
+                      <td>{set.brand.name}</td>
                       <td>{set.description}</td>
+             
                       <td>
                         <ViewButton onClick={() => handleViewSet(set)}>
                           View

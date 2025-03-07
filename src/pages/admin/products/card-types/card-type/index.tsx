@@ -4,6 +4,7 @@ import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
 import { useAdminContext } from '../../../../../context/admin';
 import { useBrandsContext } from '../../../../../context/brands';
+import { ProductDropdown } from '../../add-product/dropdown'; // Ensure correct import path
 
 export interface CardTypeDetailProps {
     type: {
@@ -22,7 +23,8 @@ export const CardType: React.FC<CardTypeDetailProps> = ({ type, onBack }) => {
     const { brands } = useBrandsContext();
 
     const [name, setName] = useState(type.name);
-    const [selectedBrand, setSelectedBrand] = useState<number>(Number(type.brand.id)); // Extract brand ID
+    const [selectedBrand, setSelectedBrand] = useState<number>(Number(type.brand.id)); // Store selected brand ID
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
@@ -31,8 +33,13 @@ export const CardType: React.FC<CardTypeDetailProps> = ({ type, onBack }) => {
         setName(e.target.value);
     };
 
-    const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedBrand(Number(e.target.value));
+    const handleDropdownToggle = () => {
+        setIsDropdownOpen((prev) => !prev);
+    };
+
+    const handleDropdownChange = (_selectedValue: string, value: string) => {
+        setSelectedBrand(Number(value));
+        setIsDropdownOpen(false);
     };
 
     const handleUpdate = async () => {
@@ -73,15 +80,21 @@ export const CardType: React.FC<CardTypeDetailProps> = ({ type, onBack }) => {
                     </FormGroup>
 
                     <FormGroup>
-                        <Label htmlFor="brand">Select Brand</Label>
-                        <Select id="brand" value={selectedBrand} onChange={handleBrandChange}>
-                            <option value="">Select a Brand</option>
-                            {brands.map((brand) => (
-                                <option key={brand.id} value={brand.id}>
-                                    {brand.name}
-                                </option>
-                            ))}
-                        </Select>
+                        <ProductDropdown
+                            label="Select Brand"
+                            handleDropdownToggle={handleDropdownToggle}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="brand"
+                            isDropdownOpen={isDropdownOpen}
+                            header={
+                                selectedBrand
+                                    ? brands.find((b) => Number(b.id) === Number(selectedBrand))?.name
+                                    : 'Select a brand'
+                            }
+                            values={brands}
+                            selectedValue={selectedBrand}
+                            displayField="name"
+                        />
                     </FormGroup>
 
                     <ButtonContainer>
@@ -128,22 +141,6 @@ const Label = styled.label`
   font-size: 14px;
   margin-bottom: 0.5rem;
   display: block;
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 0.5rem;
-  font-size: 14px;
-  font-family: Barlow, sans-serif;
-  background-color: #2a1f51;
-  color: white;
-  border: 1px solid #4d3c7b;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    border-color: #c79d0a;
-  }
 `;
 
 const ButtonContainer = styled.div`

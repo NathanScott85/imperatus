@@ -45,7 +45,7 @@ export const AddProduct = () => {
     });
 
     const { categories, fetchCategories } = useCategoriesContext();
-    const { variants, cardTypes, productTypes, fetchProductTypes, fetchVariants, createProduct } = useAdminContext();
+    const { variants, cardTypes, fetchCardTypes, productTypes, fetchProductTypes, fetchVariants, createProduct } = useAdminContext();
     const { brands, fetchBrands } = useBrandsContext();
     const { sets, fetchSets } = useSetsContext();
 
@@ -55,6 +55,7 @@ export const AddProduct = () => {
         fetchBrands();
         fetchSets();
         fetchVariants();
+        fetchCardTypes();
         if (addProduct.selectedFile) {
             const objectUrl = URL.createObjectURL(addProduct.selectedFile);
             setPreviewUrl(objectUrl);

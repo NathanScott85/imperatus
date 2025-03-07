@@ -5,6 +5,9 @@ import { Input } from '../../../../components/input';
 import { Modal } from '../../../../components/modal';
 import { useAdminContext } from '../../../../context/admin';
 import { useCategoriesContext } from '../../../../context/categories';
+import { ProductDropdown } from '../add-product/dropdown';
+import { useBrandsContext } from '../../../../context/brands';
+import { useSetsContext } from '../../../../context/sets';
 
 export interface ProductDetailProps {
     product: any;
@@ -12,8 +15,10 @@ export interface ProductDetailProps {
 }
 
 export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
-    const { updateProduct, deleteProduct, productTypes, fetchProductTypes } = useAdminContext();
-    const { categories, fetchCategories } = useCategoriesContext();
+    const { updateProduct, deleteProduct, variants, cardTypes, fetchCardTypes, productTypes, fetchProductTypes, fetchVariants } = useAdminContext();
+       const { categories, fetchCategories } = useCategoriesContext();
+       const { brands, fetchBrands } = useBrandsContext();
+       const { sets, fetchSets } = useSetsContext();
 
     const [updateProductData, setUpdateProductData] = useState( {
         name: product.name,
@@ -22,6 +27,10 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
         type: product.type?.id,
         rrp: product.rrp,
         categoryId: product.categoryId,
+        selectedBrand: product.brand?.id || null,
+        selectedSet: product.set?.id || null,
+        selectedVariant: product.variant?.id || null,
+        selectedCardType: product.cardType?.id || null,
         preorder: product.preorder,
         stockAmount: product.stock?.amount,
         stockSold: product.stock?.sold,
@@ -29,6 +38,15 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
         stockSoldout: product.stock?.soldout === 'Sold Out',
         selectedFile: null as File | null,
     } );
+    
+    const [dropdownStates, setDropdownStates] = useState<Record<string, boolean>>({
+      type: false,
+      category: false,
+      brand: false,
+      set: false,
+      variant: false,
+      cardType: false,
+    });
 
     const [previewUrl, setPreviewUrl] = useState<string | null>( null );
     const [error, setError] = useState( '' );
@@ -43,7 +61,11 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
     useEffect( () => {
         fetchProductTypes();
         fetchCategories();
-    }, [fetchProductTypes, fetchCategories] );
+        fetchBrands();
+        fetchCardTypes();
+        fetchSets();
+        fetchVariants();
+    }, [fetchProductTypes, fetchCategories, fetchVariants, fetchSets, fetchCardTypes, fetchBrands] );
 
     useEffect( () => {
         if ( updateProductData.selectedFile ) {
@@ -72,6 +94,35 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
             } ) );
         }
     };
+
+    const handleDropdownToggle = (dropdown: string) => {
+        setDropdownStates((prev) => ({
+          ...Object.keys(prev).reduce(
+            (acc, key) => {
+              acc[key] = false;
+              return acc;
+            },
+            {} as Record<string, boolean>
+          ),
+          [dropdown]: !prev[dropdown],
+        }));
+    };
+
+    const handleDropdownChange = (field: string, value: any) => {
+        setUpdateProductData((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
+    
+        setDropdownStates({
+            type: false,
+            category: false,
+            brand: false,
+            set: false,
+            variant: false,
+            cardType: false,
+        });
+    };    
 
     const clearFileInput = () => {
         if ( fileInputRef.current ) {
@@ -177,6 +228,8 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                     <ProductDetail>{product.name}</ProductDetail>
                     <strong>Description:</strong>
                     <ProductDetail>{product.description}</ProductDetail>
+                    <strong>Category:</strong>
+                    <ProductDetail>{product.category.name}</ProductDetail>
                     <strong>Type:</strong>
                     <ProductDetail>{product.type.name}</ProductDetail>
                     <strong>Price:</strong>
@@ -250,38 +303,97 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 value={updateProductData.description}
                                 onChange={handleInputChange}
                             />
-                            <div>
-                                <Label htmlFor="categoryId">Category</Label>
-                                <Select
-                                    id="categoryId"
-                                    value={updateProductData.categoryId}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="">Select a Category</option>
-                                    {categories!?.map( ( category: any ) => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
-                                        </option>
-                                    ) )}
-                                </Select>
+                            <ProductDropdown
+                                label="Category"
+                                handleDropdownToggle={() => handleDropdownToggle("category")}
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="category"
+                                isDropdownOpen={dropdownStates.category}
+                                header={
+                                  categories?.find((c: any) => c.id.toString() === updateProductData.categoryId)?.name ||
+                                  "Select Category"
+                                }
+                                values={categories}
+                                selectedValue="categoryId"
+                                displayField="name"
+                            />
+                          <ProductDropdown
+                              label="Product Type"
+                              handleDropdownToggle={() => handleDropdownToggle("type")}
+                              handleDropdownChange={handleDropdownChange}
+                              toggleValue="type"
+                              isDropdownOpen={dropdownStates.type}
+                              header={
+                                productTypes?.find((pt: any) => pt.id === updateProductData.type)?.name ||
+                                "Select Product Type"
+                              }
+                              values={productTypes}
+                              selectedValue="type"
+                              displayField="name"
+                          />
+                          <ProductDropdown
+                            label="Brand"
+                            handleDropdownToggle={() => handleDropdownToggle("brand")}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="brand"
+                            isDropdownOpen={dropdownStates.brand}
+                            header={
+                                updateProductData.selectedBrand
+                                    ? brands?.find((b: any) => b.id === updateProductData.selectedBrand)?.name || "Select Brand"
+                                    : "Select Brand"
+                            }
+                            values={brands}
+                            selectedValue={updateProductData.selectedBrand}
+                            displayField="name"
+                        />
 
-                            </div>
+                        <ProductDropdown
+                            label="Set"
+                            handleDropdownToggle={() => handleDropdownToggle("set")}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="set"
+                            isDropdownOpen={dropdownStates.set}
+                            header={
+                                updateProductData.selectedSet
+                                    ? sets?.find((s: any) => s.id === updateProductData.selectedSet)?.setName || "Select Set"
+                                    : "Select Set"
+                            }
+                            values={sets}
+                            selectedValue={updateProductData.selectedSet}
+                            displayField="setName"
+                        />
 
-                            <div>
-                                <Label htmlFor="type">Product Type</Label>
-                                <Select
-                                    id="type"
-                                    value={updateProductData.type}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="">Select a Type</option>
-                                    {productTypes!.map( ( type ) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.name}
-                                        </option>
-                                    ) )}
-                                </Select>
-                            </div>
+                        <ProductDropdown
+                            label="Variant"
+                            handleDropdownToggle={() => handleDropdownToggle("variant")}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="variant"
+                            isDropdownOpen={dropdownStates.variant}
+                            header={
+                                updateProductData.selectedVariant
+                                    ? variants?.find((v: any) => v.id === updateProductData.selectedVariant)?.name || "Select Variant"
+                                    : "Select Variant"
+                            }
+                            values={variants}
+                            selectedValue={updateProductData.selectedVariant}
+                            displayField="name"
+                        />
+
+                        <ProductDropdown
+                            label="Card Type"
+                            handleDropdownToggle={() => handleDropdownToggle("cardType")}
+                            handleDropdownChange={handleDropdownChange}
+                            toggleValue="cardType"
+                            isDropdownOpen={dropdownStates.cardType}
+                            header={
+                                updateProductData.selectedCardType
+                                    ? cardTypes?.find((ct: any) => ct.id === updateProductData.selectedCardType)?.name || "Select Card Type"
+                                    : "Select Card Type"
+                            }
+                            values={cardTypes}
+                            selectedValue={updateProductData.selectedCardType}
+                            displayField="name"
+                        />
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="stockInstock">In Stock</Label>
@@ -449,17 +561,6 @@ const ImagePreview = styled.img`
     max-height: 200px;
     border: 1px solid #ac8fff;
     border-radius: 4px;
-`;
-
-const Select = styled.select`
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ac8fff;
-    border-radius: 4px;
-    background-color: #160d35;
-    color: white;
-        font-family: Barlow, sans-serif;
-        font-size: 14px;
 `;
 
 const ButtonContainer = styled.div`
