@@ -132,15 +132,11 @@ export const AppRoutes = () => {
                 <Route path="/about-us" element={<AboutUs />} />
                 <Route path="/faqs" element={<FrequentlyAskedQuestions />} />
                 <Route path="/news-&-events" element={<NewsAndEvents />} />
-                <Route path="/careers" element={<Careers />} />
-                <Route path="/featured-brands" element={<FeaturedBrands />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
-                <Route path="/site-map" element={<SiteMap />} />
                 <Route path="/terms-&-conditions" element={<TermsAndConditions />} />
                 <Route path="/payment-methods" element={<PaymentMethods />} />
                 <Route path="/delivery" element={<Delivery />} />
-                <Route path="/international-delivery" element={<InternationalDelivery />} />
                 <Route path="/returns-policy" element={<ReturnsPolicy />} />
                 <Route path="/discount-codes" element={<DiscountCodes />} />
 

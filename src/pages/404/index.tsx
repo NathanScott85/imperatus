@@ -8,6 +8,7 @@ import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { MainContainer } from '../../components/styled';
 import { BreadCrumb } from '../../components/breadcrumbs';
+import Reviews from '../../components/reviews';
 
 export const FourOFour = () => {
     return (
@@ -19,6 +20,7 @@ export const FourOFour = () => {
                 label='404 Error, Page not found'
             />
             <MainContainer>
+                <Section>
                 <FancyContainer variant="login" size="login">
                     <FancyContainerSubWrapper>
                         <h1>404 Error, Page Not Found</h1>
@@ -28,11 +30,25 @@ export const FourOFour = () => {
                         </Link>
                     </FancyContainerSubWrapper>
                 </FancyContainer>
+                </Section>
+               
+                <Reviews />
             </MainContainer>
             <Footer />
         </>
     );
 };
+
+const Section = styled.section`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    color: black;
+    font-size: 1.5rem;
+    margin: 1.5rem;
+`;
 
 const FancyContainerSubWrapper = styled.div`
     display: flex;

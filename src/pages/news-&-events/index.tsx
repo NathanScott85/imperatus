@@ -9,23 +9,10 @@ import { MainContainer, Container } from '../../components/styled';
 export const NewsAndEvents = () => (
     <>
         <TopHeader />
-        <Header />
-        <Navigation />
+        <Header background />
+        <Navigation background />
         <BreadCrumb label="News And Events" />
-        <Container>
-            <Background />
-        </Container>
         <MainContainer></MainContainer>
         <Footer />
     </>
 );
-
-const Background = styled('div')`
-    background: #130a30;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -2;
-`;
