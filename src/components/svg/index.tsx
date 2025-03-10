@@ -20,3 +20,9 @@ export { Icon as Eye } from './eye';
 export { Icon as Info } from './info';
 export { Icon as CardGameIcon } from './card-document';
 export { Icon as Promotion } from './promotion';
+export { Icon as Stripe } from './stripe';
+export { Icon as Visa} from './visa';
+export { Icon as Mastercard} from './mastercard';
+export { Icon as Discover } from './discover';
+export { Icon as AmericanExpress} from './american-express';
+export { Icon as Timer } from './time'

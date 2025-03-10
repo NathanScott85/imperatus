@@ -1,145 +1,105 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Input } from '../input';
-import Button from '../button';
 import FooterIMG from '../../components/svg/website-images/footer-bg.png';
-import { footerContent } from './footer';
 import { ImperatusLink } from '../imperatus-link';
 
-interface FormData {
-    email: string;
-}
-
 export const Footer = () => {
-    const [formData, setFormData] = useState<FormData>({
-        email: '',
-    });
-
-    const [errors, setErrors] = useState({
-        email: '',
-    });
-
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-        setErrors({ ...errors, [name]: '' }); // Clear previous errors on input change
-    };
-
-    const validateForm = () => {
-        const newErrors = { ...errors };
-        let valid = true;
-
-        if (!formData.email) {
-            newErrors.email = 'Email address is required';
-            valid = false;
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Email address is invalid';
-            valid = false;
-        }
-
-        setErrors(newErrors);
-        return valid;
-    };
-
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (validateForm()) {
-            // Handle form submission (currently logging the email)
-            console.log('Email submitted:', formData.email);
-            // You can add further handling like sending data to server, etc.
-            // Reset form after submission if needed:
-            // setFormData({ email: '' });
-        }
-    };
-
     return (
         <FooterContainer>
             <ImageContainer img={FooterIMG}>
                 <FooterWrapper>
-                    <SignUpSection>
-                        <ImperatusLink />
-                        <SignUpText>
-                            Sign up for our information about our <br /> latest
-                            deals and product releases!
-                        </SignUpText>
-                        <SignUpForm onSubmit={handleSubmit}>
-                            <Input
-                                name="email"
-                                value={formData.email}
-                                variant="primary"
-                                type="email"
-                                placeholder="Enter your email"
-                                onChange={handleInputChange}
-                            />
-                            {errors.email && (
-                                <StyledParagraph>
-                                    {errors.email}
-                                </StyledParagraph>
-                            )}
-                            <Button
-                                variant="primary"
-                                size="xsmall"
-                                label="SIGN UP"
-                                type="submit"
-                            />
-                        </SignUpForm>
-                    </SignUpSection>
                     <FooterSections>
-                        {footerContent.map((section, index) => (
-                            <FooterSection key={index}>
-                                {section.sectionTitle && (
-                                    <SectionTitle>
-                                        {section.sectionTitle}
-                                    </SectionTitle>
-                                )}
-                                <FooterContent>
-                                    {section.items.map((item, subIndex) => (
-                                        <ContentItem key={subIndex}>
-                                            {item.type === 'text' &&
-                                                (Array.isArray(item.content) ? (
-                                                    item.content.map(
-                                                        (line, lineIndex) => (
-                                                            <p key={lineIndex}>
-                                                                {line}
-                                                            </p>
-                                                        ),
-                                                    )
-                                                ) : (
-                                                    <>
-                                                        <FooterLink
-                                                            to={`/${item.content
-                                                                .replace(
-                                                                    / /g,
-                                                                    '-',
-                                                                )
-                                                                .toLowerCase()}`}
-                                                        >
-                                                            {item.content}
-                                                        </FooterLink>
-                                                    </>
-                                                ))}
-                                        </ContentItem>
-                                    ))}
-                                </FooterContent>
-                            </FooterSection>
-                        ))}
+                        <FooterSection>
+                            <SectionTitle>
+                                <ImperatusLink />
+                                <p>1 Address Land</p>
+                                <p> Address,</p>
+                                <p>Address City</p>
+                                <p>Address County</p>
+                                <p>AD1S 1PS</p>
+                                <p>manager@imperatusgames.co.uk </p>
+                                <p>07542490573</p>
+                            </SectionTitle>
+                        </FooterSection>
+                        <FooterSection>
+                            <SectionTitle>
+                                Resources
+                            </SectionTitle>
+                            <ContentItem>
+                                <FooterLink to="/about-us">
+                                    About us
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/faqs">
+                                    FAQS
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/news-&-events">
+                                    News & Events
+                                </FooterLink>
+                            </ContentItem>
+                        </FooterSection>
+                        <FooterSection>
+                            <SectionTitle>
+                            Legal
+                            </SectionTitle>
+                            <ContentItem>
+                                <FooterLink to="/privacy-policy">
+                                    Privacy Policy
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="cookie-policy">
+                                    Cookie Policy
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/terms-&-conditions">
+                                    Terms & Conditions
+                                </FooterLink>
+                            </ContentItem>
+                        </FooterSection>
+                        <FooterSection>
+                            <SectionTitle>
+                                Ordering
+                            </SectionTitle>
+                            <ContentItem>
+                                <FooterLink to="/payment-methods">
+                                    Payment Methods
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/delivery">
+                                    Delivery
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/returns-policy">
+                                    Returns Policy
+                                </FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/discount-codes">
+                                    Discount Codes
+                                </FooterLink>
+                            </ContentItem>
+                        </FooterSection>
                     </FooterSections>
+                    <CompanyInfo>
+                        <p>
+                            Imperatus Games Ltd is a registered company in England & Wales.
+                            Company Registration Number: <strong>12345678</strong>
+                        </p>
+                    </CompanyInfo>
+
                 </FooterWrapper>
             </ImageContainer>
         </FooterContainer>
     );
 };
-
-const FooterLink = styled(Link)`
-    color: white;
-    text-decoration: none;
-    &:hover {
-        text-decoration: underline;
-    }
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-`;
 
 const FooterContainer = styled.footer`
     display: flex;
@@ -163,65 +123,46 @@ const ImageContainer = styled.div<{ img: any }>`
     align-items: center;
 `;
 
-const SignUpSection = styled.section`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    color: white;
-    padding-bottom: 2rem;
-`;
-
-const SignUpText = styled.p`
-    font-family: Barlow;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 28px;
-    text-align: left;
-`;
-
-const SignUpForm = styled.form`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border: 1px solid #c79d0a;
-    background: #130a30;
-    padding: 0.25rem;
-`;
-
-const StyledParagraph = styled.p`
-    color: red;
-`;
-
 const FooterWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
     max-width: 1200px;
     padding: 3rem 1rem;
+    flex-grow: 1;
 `;
 
 const FooterSections = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    width: 100%;
+    flex-wrap: wrap;
 `;
 
 const FooterSection = styled.section`
     margin-bottom: 2rem;
+    text-align: center;
 `;
 
 const SectionTitle = styled.h2`
     color: #c79d0a;
     font-family: Cinzel;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 400;
     line-height: 28px;
-`;
-
-const FooterContent = styled.div`
-    display: flex;
-    flex-direction: column;
+    font-weight: bold;
+    text-align: center;
+    p {
+        font-family: Barlow;
+        font-size: 14px;
+        color: white;
+        text-align: center;
+        font-weight: normal;
+    }
+    &:hover {
+        color: white;
+        font-weight: bold:
+    }
 `;
 
 const ContentItem = styled.div`
@@ -230,5 +171,42 @@ const ContentItem = styled.div`
     p {
         font-size: 1.2rem;
         padding: 0.25rem;
+    }
+`;
+
+const FooterLink = styled(Link)`
+    color: white;
+    text-decoration: none;
+    font-family: Barlow;
+    &:hover {
+        text-decoration: underline;
+        color: #c79d0a;
+        font-weight: bold:
+    }
+    font-size: 16px;
+    margin-bottom: 0.5rem;
+`;
+
+const CompanyInfo = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: 1px solid #c79d0a;
+    margin-top: auto;
+    padding-top: 1rem;
+    text-align: center;
+    color: white;
+    font-size: 1rem;
+    p {
+        font-family: Barlow;
+        font-size: 1.2rem;
+        font-weight: 400;
+        margin-left: 1rem;
+    }
+
+    strong {
+        color: #c79d0a;
+        font-size: 1.2rem;
+        font-weight: 400;
     }
 `;

@@ -12,6 +12,7 @@ import ArenaImage from '../../components/svg/website-images/0_71.png';
 import { MainContainer } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCarouselContext } from '../../context/carousel';
+import { DeliveryInfo } from './delivery-info';
 
 export const Home: React.FC = () => {
     const { carousel, loading, error, fetchCarousel } = useCarouselContext();
@@ -57,6 +58,7 @@ export const Home: React.FC = () => {
                     </FancyContainer>
                 </Section>
                 <Reviews />
+                <DeliveryInfo />
             </MainContainer>
             <Footer />
         </>
