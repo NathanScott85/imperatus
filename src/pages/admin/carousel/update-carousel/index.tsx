@@ -15,10 +15,11 @@ export interface CarouselDetailProps {
 export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack }) => {
     const { updateCarousel, deleteCarousel } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
-    const { products, fetchProducts } = useAdminContext(); // Fetch products
+    const { products, fetchProducts } = useAdminContext();
 
     const [title, setTitle] = useState(carousel.title);
     const [description, setDescription] = useState(carousel.description);
+    const [buttonText, setButtonText] = useState(carousel.buttonText || '');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(carousel.brand?.id || null);
@@ -68,6 +69,10 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
     const handleBrandChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
         setSelectedBrandId(e.target.value);
 
+    const handleButtonTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setButtonText(e.target.value);
+    };
+
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const productId = e.target.value;
         setSelectedProductId(e.target.value);
@@ -92,6 +97,7 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                 carousel.id,
                 title,
                 description,
+                buttonText,
                 selectedFile || null,
                 selectedBrandId,
                 selectedProductId,
@@ -162,6 +168,16 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                             id="description"
                             value={description}
                             onChange={handleDescriptionChange}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="buttonText">Button Text</Label>
+                        <Input
+                            variant="secondary"
+                            type="text"
+                            id="buttonText"
+                            value={buttonText}
+                            onChange={handleButtonTextChange}
                         />
                     </FormGroup>
                     <FormGroup>

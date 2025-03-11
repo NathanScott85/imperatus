@@ -9,6 +9,7 @@ interface CarouselPage {
     id: string;
     title: string;
     description: string;
+    buttonText: string;
     img?: any;
     brand: any;
     disabled?: boolean
@@ -49,6 +50,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
             <CarouselContainer small={small}>
                 {enabledPages.map((page, index) => (
                     <CarouselSlide key={page.id} index={index - currentIndex}>
+                        {console.log(page, 'page') as any};
                         <CarouselContentContainer>
                             {page.img && (
                                 <CarouselImage
@@ -68,7 +70,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                                     <Button
                                         link
                                         pathname={`/shop/card-games/${page.id}`}
-                                        label="Learn More"
+                                        label={page.buttonText ? page.buttonText : "Learn More"}
                                         size="small"
                                         variant="secondary"
                                     />

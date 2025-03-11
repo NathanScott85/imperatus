@@ -9,6 +9,7 @@ import { useAdminContext } from '../../../../context/admin';
 export const AddCarousel = () => {
     const { addCarousel, loading } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
+    const [buttonText, setButtonText] = useState('');
     const { products, fetchProducts } = useAdminContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -57,6 +58,9 @@ export const AddCarousel = () => {
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedProductId(e.target.value || undefined);
     };
+    const handleButtonTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setButtonText(e.target.value);
+    };
 
     const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDisabled(e.target.checked);
@@ -86,7 +90,7 @@ export const AddCarousel = () => {
         }
 
         try {
-            await addCarousel(title, description, selectedFile, Number(selectedBrandId), selectedProductId, disabled);
+            await addCarousel(title, description, selectedFile, buttonText , Number(selectedBrandId), selectedProductId, disabled);
             setSuccess('Carousel page created successfully!');
             setError('');
             setTitle('');
@@ -128,6 +132,16 @@ export const AddCarousel = () => {
                             id="description"
                             value={description}
                             onChange={handleDescriptionChange}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="buttonText">Button Text</Label>
+                        <Input
+                            variant="secondary"
+                            type="text"
+                            id="buttonText"
+                            value={buttonText}
+                            onChange={handleButtonTextChange}
                         />
                     </FormGroup>
                     <FormGroup>

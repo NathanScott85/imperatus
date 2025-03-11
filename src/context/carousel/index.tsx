@@ -15,6 +15,7 @@ interface CarouselPage {
     id: string;
     title: string;
     description: string;
+    buttonText?: string;
     img?: UploadedFile | null;
     brandId?: string;
     productId?: string;
@@ -30,6 +31,7 @@ interface CarouselContextProps {
         title: string,
         description: string,
         img: File | null,
+        buttonText?: string,
         brandId?: number,
         productId?: string,
         disabled?: boolean
@@ -38,6 +40,7 @@ interface CarouselContextProps {
         id: string,
         title?: string,
         description?: string,
+        buttonText?: string, 
         img?: File | null,
         brandId?: string,
         productId?: string,
@@ -80,20 +83,14 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         title: string,
         description: string,
         img: File | null,
+        buttonText?: string,
         brandId?: number,
         productId?: string,
         disabled: boolean = false
     ) => {
         try {
             const { data } = await addCarouselMutation({
-                variables: {
-                    title,
-                    description,
-                    img,
-                    brandId,
-                    productId,
-                    disabled,
-                },
+                variables: { title, description, img, buttonText, brandId, productId, disabled },
             });
 
             if (data) {
@@ -109,6 +106,7 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         id: string,
         title?: string,
         description?: string,
+        buttonText?: string, 
         img?: File | null,
         brandId?: string,
         productId?: string,
@@ -117,15 +115,7 @@ export const CarouselProvider = ({ children }: { children: ReactNode }) => {
         try {
             const brandid = Number(brandId);
             const { data } = await updateCarouselMutation({
-                variables: {
-                    id,
-                    title,
-                    description,
-                    img,
-                    brandid,
-                    productId,
-                    disabled,
-                },
+                variables: { id, title, description, buttonText, img, brandid, productId, disabled },
             });
 
             if (data) {
