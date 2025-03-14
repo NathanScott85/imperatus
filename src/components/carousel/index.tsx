@@ -75,7 +75,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                                     <p>{page.title}</p>
                                     <p>{page.description}</p>
                                     <Button
-                                         link
+                                        link
                                         onClick={() => handleNavigate(page.product)}
                                         label={page.buttonText ? page.buttonText : "Learn More"}
                                         size="small"

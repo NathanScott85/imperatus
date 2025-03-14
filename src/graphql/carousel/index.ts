@@ -11,6 +11,7 @@ export const GET_CAROUSEL_PAGES = gql`
           id
           title
           description
+          buttonText
           brand {
             id
             name
@@ -68,7 +69,8 @@ export const GET_CAROUSEL_PAGES = gql`
 export const ADD_CAROUSEL_PAGE = gql`
     mutation CreateCarouselPage(
         $title: String!
-        $description: String!
+        $description: String
+        $buttonText: String
         $img: Upload!
         $brandId: ID
         $productId: ID
@@ -77,6 +79,7 @@ export const ADD_CAROUSEL_PAGE = gql`
         createCarouselPage(
             title: $title
             description: $description
+            buttonText: $buttonText
             img: $img
             brandId: $brandId
             productId: $productId
@@ -85,6 +88,7 @@ export const ADD_CAROUSEL_PAGE = gql`
             id
             title
             description
+            buttonText
             img {
                 id
                 url
@@ -104,6 +108,7 @@ export const UPDATE_CAROUSEL_PAGE = gql`
         $id: ID!
         $title: String
         $description: String
+        $buttonText: String
         $img: Upload
         $brandId: ID
         $productId: ID
@@ -113,6 +118,7 @@ export const UPDATE_CAROUSEL_PAGE = gql`
             id: $id
             title: $title
             description: $description
+            buttonText: $buttonText
             img: $img
             brandId: $brandId
             productId: $productId
@@ -121,6 +127,7 @@ export const UPDATE_CAROUSEL_PAGE = gql`
             id
             title
             description
+            buttonText
             img {
                 id
                 url
