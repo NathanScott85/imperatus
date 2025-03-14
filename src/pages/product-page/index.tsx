@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
@@ -9,31 +9,29 @@ import { Input } from '../../components/input';
 import { Footer } from '../../components/footer';
 import { ProductDescription } from './product-page-description';
 import { BreadCrumb } from '../../components/breadcrumbs';
-
-interface Product {
-    name: string;
-    img: { url: string };
-    price: number;
-    rrp: number;
-    description: string;
-}
+import { useProductsContext } from '../../context/products';
+import { Loading } from '../loading';
 
 export const ProductPage: React.FC = () => {
     const { productid } = useParams<{ productid: string }>();
     const location = useLocation();
     const navigate = useNavigate();
-    const [product, setProduct] = useState<Product | null>(
-        location.state?.product || null,
-    );
-
+    const { product, setProduct, fetchProductById, loading, error } = useProductsContext(); 
+    const hasFetched = useRef(false);
     useEffect(() => {
-        if (!product) {
-            setProduct(null);
-            navigate('/404', { replace: true });
+        if (location.state?.product) {
+            setProduct(location.state.product);
+        } else if (productid && !hasFetched.current) {
+            hasFetched.current = true;
+            fetchProductById(productid);
         }
-    }, [productid, product, navigate]);
+    }, [productid, setProduct, fetchProductById, location.state]);
+
+    if (loading) return <Loading />;
+    if (error) return <p>Error fetching product</p>;
 
     if (!product) {
+        navigate('/404', { replace: true });
         return null;
     }
 
@@ -47,33 +45,19 @@ export const ProductPage: React.FC = () => {
                 <ProductContentSection>
                     <div>
                         <ProductImageWrapper>
-                            <ProductImage
-                                src={product?.img?.url}
-                                alt={product.name}
-                            />
+                            <ProductImage src={product?.img?.url} alt={product.name} />
                         </ProductImageWrapper>
                         <ProductImageSmallWrapper>
-                            <ProductImageSmall
-                                src={product?.img?.url}
-                                alt={product.name}
-                            />
-                            <ProductImageSmall
-                                src={product?.img?.url}
-                                alt={product.name}
-                            />
-                            <ProductImageSmall
-                                src={product?.img?.url}
-                                alt={product.name}
-                            />
+                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
+                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
+                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
                         </ProductImageSmallWrapper>
                     </div>
                     <ProductContent>
                         <h1>{product.name}</h1>
                         <ProductPriceWrapper>
-                            <ProductPrice>
-                                £{product.price.toFixed(2)}
-                            </ProductPrice>
-                            <StyledRRP>RRP £{product.rrp.toFixed(2)}</StyledRRP>
+                            <ProductPrice>£{product.price.toFixed(2)}</ProductPrice>
+                            {product.rrp && <StyledRRP>RRP £{product.rrp.toFixed(2)}</StyledRRP>}
                             <StyledRRP>19.60% OFF</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
@@ -94,17 +78,10 @@ export const ProductPage: React.FC = () => {
                                 <Input type="number" />
                                 <ProductControls>-</ProductControls>
                                 <span>
-                                    <Button
-                                        variant="primary"
-                                        size="small"
-                                        label="add to cart"
-                                    />
+                                    <Button variant="primary" size="small" label="add to cart" />
                                 </span>
                                 <span>
-                                    <Button
-                                        variant="primary"
-                                        size="small"
-                                    >
+                                    <Button variant="primary" size="small">
                                         Add to Wishlist
                                     </Button>
                                     <Heart />
@@ -119,6 +96,7 @@ export const ProductPage: React.FC = () => {
         </>
     );
 };
+
 
 const TitleAndStockContainer = styled.div`
     display: flex;
@@ -226,7 +204,6 @@ const CartWrapper = styled.div`
     border-radius: 3px;
     background-color: #d9d9d9;
     margin-top: 1rem;
-
 `;
 
 const ProductContent = styled.div`

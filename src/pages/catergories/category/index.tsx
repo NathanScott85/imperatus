@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
@@ -20,11 +20,11 @@ interface CategoryFilters {
 }
 
 export const Category = () => {
-    const { id } = useParams();
-    const { currentCategory, loading, fetchCategoryById } = useCategoriesContext();
-
-    const [categoryName, setCategoryName] = useState<string | null>(null);
+    const { id } = useParams<{ id: string }>();
+    const location = useLocation();
     const [selectedFilters, setSelectedFilters] = useState<CategoryFilters>({});
+    const [checkedStatus, setCheckedStatus] = useState({ inStock: false, outOfStock: false });
+    const [categoryName, setCategoryName] = useState<string | null>(null);
     const [filterOptions, setFilterOptions] = useState<{
         brands: { id: number; name: string }[];
         sets: { id: number; setName: string }[];
@@ -40,15 +40,30 @@ export const Category = () => {
         priceMin: 0,
         priceMax: 0,
     });
+    const {
+        currentCategory,
+        setCurrentCategory,
+        loading,
+        error,
+        fetchCategoryById,
+    } = useCategoriesContext();
+
+    const hasFetched = useRef(false);
 
     useEffect(() => {
-        if (id) fetchCategoryById(parseInt(id));
-    }, [id, fetchCategoryById]);
+        if (location.state?.category) {
+            setCurrentCategory(location.state.category);
+        } else if (id && !hasFetched.current) {
+            hasFetched.current = true;
+           fetchCategoryById(Number(id));
+      
+        }
+    }, [id, setCurrentCategory, fetchCategoryById, location.state]);
 
     useEffect(() => {
         if (currentCategory) {
             setCategoryName(currentCategory.name);
-
+            setCurrentCategory(currentCategory);
             const brandsMap = new Map();
             const setsMap = new Map();
             let stockMin = Infinity;
@@ -81,12 +96,7 @@ export const Category = () => {
                 priceMax: priceMax === -Infinity ? 0 : priceMax,
             });
         }
-    }, [currentCategory]);
-
-    const [checkedStatus, setCheckedStatus] = useState({
-        inStock: false,
-        outOfStock: false,
-    });
+    }, [currentCategory, setCurrentCategory, id, checkedStatus]);
 
     const handleChecked = (type: keyof typeof checkedStatus) => {
         setCheckedStatus((prevState) => ({
@@ -106,30 +116,34 @@ export const Category = () => {
 
     const filteredProducts = useMemo(() => {
         if (!currentCategory) return [];
-    
+
         return currentCategory.products.filter((product: any) => {
             const { brandId, setId, priceMin, priceMax } = selectedFilters;
             const isInStock = product.stock?.amount > 0;
 
             if (checkedStatus.inStock && !checkedStatus.outOfStock && !isInStock) return false;
             if (checkedStatus.outOfStock && !checkedStatus.inStock && isInStock) return false;
-    
+
             const matchesBrand = !brandId?.length || brandId.includes(Number(product.brand?.id));
             const matchesSet = !setId?.length || setId.includes(Number(product.set?.id));
             const matchesMinPrice = !priceMin || product.price >= priceMin;
             const matchesMaxPrice = !priceMax || product.price <= priceMax;
-    
+
             return matchesBrand && matchesSet && matchesMinPrice && matchesMaxPrice;
         });
     }, [currentCategory, selectedFilters, checkedStatus]);
 
     const resetFilters = () => {
         setSelectedFilters({});
-        setCheckedStatus({
-            inStock: false,
+        setCheckedStatus({ 
+            inStock: false, 
             outOfStock: false,
         });
     };
+
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Error fetching product</p>;
 
     return (
         <>
@@ -138,16 +152,16 @@ export const Category = () => {
             <Navigation background />
             <BreadCrumb />
             <ImageWrapper>
-                <p>
+            <p>
                     {loading ? 'Loading...' : categoryName ? categoryName : '404 Error, Page Not Found'}
                 </p>
             </ImageWrapper>
-            <CategoriesMain background={!!categoryName}>
+            <CategoriesMain background={!!currentCategory?.name}>
                 <CategoriesContainer>
                     <CategoriesFilterContainer>
-                        {categoryName && (
+                        {currentCategory?.name && (
                             <Filters
-                                categoryName={categoryName}
+                                categoryName={currentCategory.name}
                                 checkedStatus={checkedStatus}
                                 handleChecked={handleChecked}
                                 filters={selectedFilters}
@@ -155,13 +169,13 @@ export const Category = () => {
                                 sets={filterOptions.sets}
                                 priceMin={filterOptions.priceMin}
                                 priceMax={filterOptions.priceMax}
-                                onPriceChange={(min, max) => {
+                                onPriceChange={(min, max) =>
                                     setSelectedFilters((prevFilters) => ({
                                         ...prevFilters,
                                         priceMin: min,
                                         priceMax: max,
-                                    }));
-                                }}
+                                    }))
+                                }
                                 onFilterChange={handleFilterChange}
                                 resetFilters={resetFilters}
                             />
@@ -217,7 +231,6 @@ const CategoriesListContainer = styled.div`
     width: 100%;
 `;
 
-
 const ProductsWrapper = styled.div`
     width: 100%;
     min-height: 400px;
@@ -226,7 +239,6 @@ const ProductsWrapper = styled.div`
     justify-content: center;
     align-items: flex-start;
 `;
-
 
 const ImageWrapper = styled.div`
     width: 100%;

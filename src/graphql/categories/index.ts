@@ -6,6 +6,7 @@ export const GET_CATEGORIES = gql`
       categories {
             id
             name
+            slug
             description
             products {
                 id
@@ -49,6 +50,11 @@ export const GET_CATEGORIES = gql`
                 variant {
                     id
                     name
+                }
+                category {
+                    id
+                    name
+                    description
                 }
                 cardType {
                     id

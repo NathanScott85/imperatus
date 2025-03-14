@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import { GET_ALL_PRODUCTS } from '../../graphql/products';
+import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../../graphql/products';
 
 interface Stock {
     amount: number;
@@ -21,6 +21,8 @@ interface Product {
     category: {
         id: string;
         name: string;
+        slug: string;
+        description: string;
     };
     brand?: {
         id: string;
@@ -41,6 +43,7 @@ interface Product {
 
 interface ProductsContextProps {
     products: Product[] | null;
+    product: Product | null;
     loading: boolean;
     error: any;
     totalCount: number;
@@ -49,13 +52,16 @@ interface ProductsContextProps {
     setPage: (page: number) => void;
     search: string;
     setSearch: (search: string) => void;
+    setProduct: (product: any) => void;
     fetchProducts: () => void;
+    fetchProductById: (id: string) => void;
 }
 
 const ProductsContext = createContext<ProductsContextProps | undefined>(undefined);
 
 export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [product, setProduct] = useState<Product | null>(null);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
@@ -73,6 +79,17 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         },
     });
 
+    const [getProductByIdQuery] = useLazyQuery(GET_PRODUCT_BY_ID, {
+        fetchPolicy: 'cache-and-network',
+        onCompleted: (data) => {
+            setProduct(data?.getProductById || null);
+        },
+    });
+
+    const fetchProductById = (id: string) => {
+        getProductByIdQuery({ variables: { id } });
+    };
+
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts, page, search]);
@@ -81,6 +98,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         <ProductsContext.Provider
             value={{
                 products,
+                product,
                 loading,
                 error,
                 totalCount,
@@ -89,7 +107,9 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 setPage,
                 search,
                 setSearch,
+                setProduct,
                 fetchProducts,
+                fetchProductById,
             }}
         >
             {children}

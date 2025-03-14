@@ -1,42 +1,52 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import { useParams, useLocation, NavLink } from 'react-router-dom';
 import Button from '../button';
-import { NavLink, useLocation } from 'react-router-dom';
-import { ProductType } from '../../types';
+import { useProductsContext } from '../../context/products';
 
-interface ProductProps {
-    product: ProductType;
-}
-
-export const Product = ({ product }: ProductProps) => {
+export const Product = () => { 
+    const { id } = useParams<{ id: string }>();
     const location = useLocation();
+    const { product, setProduct, loading, fetchProductById } = useProductsContext();
+    const hasFetched = useRef(false);
+
+    useEffect(() => {
+        if (location.state?.product) {
+            setProduct(location.state.product);
+        } else if (id && !hasFetched.current) {  
+            hasFetched.current = true;
+            fetchProductById(id);  
+        }
+    }, [id, setProduct, fetchProductById, location.state?.product]);
+
+    if (!product || loading) {
+        return <p>loading...</p>;
+    }
 
     return (
         <ProductContainer>
             <ProductWrapper>
-                <NavLink
-                    to={`${location.pathname}/${product.id}/${product.name}`}
-                    state={{ product }}
-                >
-                    <ImageWrapper>
-                    <ProductImage
-                        src={product!?.img!?.url}
-                        alt={product?.name}
-                    />
-                    </ImageWrapper>
-                    <ProductName>{product?.name}</ProductName>
-                    <ProductPriceWrapper>
-                        <ProductPrice>
-                            £{product?.price.toFixed(2)}
-                        </ProductPrice>
-                        <StyledRRP>RRP {product?.rrp.toFixed(2)}</StyledRRP>
-                    </ProductPriceWrapper>
-                </NavLink>
+                {product && (
+                    <NavLink
+                        to={`/shop/categories/category/${product!?.category!?.id}/${product!?.category!?.slug}/${product!?.id}/${product!?.slug}`}
+                        state={{ product }}
+                    >
+                        <ImageWrapper>
+                            <ProductImage src={product!.img?.url} alt={product!.name} />
+                        </ImageWrapper>
+                        <ProductName>{product!.name}</ProductName>
+                        <ProductPriceWrapper>
+                            <ProductPrice>£{product!.price.toFixed(2)}</ProductPrice>
+                            <StyledRRP>RRP £{product!?.rrp!?.toFixed(2)}</StyledRRP>
+                        </ProductPriceWrapper>
+                    </NavLink>
+                )}
                 <Button label="Add to cart" variant="primary" size="small" />
             </ProductWrapper>
         </ProductContainer>
     );
 };
+
 
 const ProductContainer = styled.div`
     border: 1px solid #ac8fff;

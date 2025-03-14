@@ -52,9 +52,9 @@ export const Orders = () => {
                         /> */}
                     </CategoriesFilterContainer>
                     <CategoriesListContainer>
-                        {preorders && (
+                        {/* {preorders && (
                             <Products products={preorders?.products} />
-                        )}
+                        )} */}
                     </CategoriesListContainer>
                 </CategoriesContainer>
             </CategoriesMain>

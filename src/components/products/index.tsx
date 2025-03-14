@@ -6,7 +6,6 @@ import { FancyContainer } from '../fancy-container';
 import { ProductType } from '../../types';
 
 export const Products = ( { products, label }: any ) => {
-
     return (
         <>
             {( label === 'Latest Products' ||
@@ -15,11 +14,10 @@ export const Products = ( { products, label }: any ) => {
                         <ProductsWrapper>
                             <ProductsHeader>{label}</ProductsHeader>
                             <ProductsContainer>
-                                {products!?.length !== 0 ? (
-                                    products.map( ( product: any ) => (
+                                {products && products.length > 0 ? (
+                                     products.map( ( product: any ) => (
                                         <Product
                                             key={product!?.id}
-                                            product={product}
                                         />
                                     ) )
                                 ) : (
@@ -39,7 +37,7 @@ export const Products = ( { products, label }: any ) => {
                     {products.length !== 0 ? (
                         <ProductsGrid>
                             {products.map( ( product: ProductType ) => (
-                                <Product key={product.id} product={product} />
+                                <Product key={product.id} />
                             ) )}
                         </ProductsGrid>
                     ) : (

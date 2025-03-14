@@ -63,6 +63,48 @@ export const GET_ALL_PRODUCTS = gql`
     }
 `;
 
+export const GET_PRODUCT_BY_ID = gql`
+  query GetProductById($id: ID!) {
+    getProductById(id: $id) {
+      id
+      name
+      price
+      rrp
+      description
+      slug
+      preorder
+      category {
+        id
+        name
+        slug
+        description
+      }
+      img {
+        id
+        url
+        key
+        fileName
+        contentType
+        createdAt
+      }
+      stock {
+        id
+        amount
+        sold
+        instock
+        soldout
+        preorder
+      }
+      brand {
+        id
+        name
+        description
+      }
+    }
+  }
+`;
+
+
 export const CREATE_PRODUCT = gql`
     mutation CreateProduct(
         $name: String!

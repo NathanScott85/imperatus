@@ -5,20 +5,12 @@ import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
-import { generatePath, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
 import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
 import { Error } from '../../components/error';
-
-const getCategoriesPath = ( category: { id: string; name: string } ) => {
-    const categoryPath = generatePath( '/shop/categories/category/:id/:name', {
-        id: category.id,
-        name: category.name.replace( /\s+/g, '-' ).toLowerCase(),
-    } );
-    return categoryPath;
-};
 
 export const Categories: React.FC = () => {
     const {
@@ -46,7 +38,7 @@ export const Categories: React.FC = () => {
             fetchCategories();
         }
     };
-
+    
     return (
         <>
             <TopHeader />
@@ -79,7 +71,10 @@ export const Categories: React.FC = () => {
                                     <CategoriesFilter>
                                         {sortedCategories.map( ( category ) => (
                                             <CatergoriesWrapper key={category.id}>
-                                                <StyledLink to={getCategoriesPath( category )}>
+                                                <StyledLink 
+                                                    state={{category}} 
+                                                    to={`/shop/categories/category/${category.id}/${category.slug}`}
+                                                >
                                                     {category.name}
                                                 </StyledLink>
                                             </CatergoriesWrapper>
@@ -89,7 +84,12 @@ export const Categories: React.FC = () => {
                             </CategoriesFilterContainer>
                             <CategoriesListContainer>
                                 {sortedCategories.map( ( category ) => (
-                                    <Link to={getCategoriesPath( category )} key={category.id}>
+                         
+                                   <Link 
+                                        key={category.id}
+                                        state={{ category }} 
+                                        to={`/shop/categories/category/${category.id}/${category.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                    >
                                         <CategoryItem>
                                             <ImageWrapper>
                                                 <CategoryImage

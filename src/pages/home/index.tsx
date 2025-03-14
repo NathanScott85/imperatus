@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { Footer } from '../../components/footer';
-import { Products } from '../../components/products';
-import { latestproducts } from '../../lib/mocks';
+// import { Products } from '../../components/products';
 import { FancyContainer } from '../../components/fancy-container';
 import { Reviews } from '../../components/reviews';
 import { Carousel } from '../../components/carousel';
@@ -20,7 +19,6 @@ export const Home: React.FC = () => {
     useEffect(()=> {
         fetchCarousel();
     }, [fetchCarousel]);
-
     return (
         <>
             <TopHeader />
@@ -30,11 +28,11 @@ export const Home: React.FC = () => {
             {error && <p>Error loading carousel: {error.message}</p>}
             {carousel && <Carousel items={carousel as any} />} 
             <MainContainer>
-                <Products label="Latest Products" products={latestproducts} />
-                <Products
+                {/* <Products label="Latest Products" products={latestproducts} /> */}
+                {/* <Products
                     label="Product Recommendations"
                     products={latestproducts}
-                />
+                /> */}
                 <Section>
                     <FancyContainer variant="small" size="small">
                         <ContentContainer>
