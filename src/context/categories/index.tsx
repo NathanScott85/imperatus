@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback } from 'react';
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+    ReactNode,
+    useMemo,
+} from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import {
     GET_CATEGORIES,
@@ -19,9 +26,10 @@ interface File {
 interface Category {
     id: string;
     name: string;
+    slug: string;
     description: string;
     img?: File | null;
-    products: any
+    products: any;
 }
 
 interface UpdateCategoryInput {
@@ -51,6 +59,7 @@ interface CategoriesContextProps {
     deleteCategory: ( id: string ) => Promise<void>;
     fetchCategories: () => void;
     currentCategory: Category | null;
+    setCurrentCategory: React.Dispatch<React.SetStateAction<Category | null>>;
     fetchCategoryById: (id: number, page?: number, limit?: number) => void;
     categoryLoading: boolean;
     totalCount: number;
@@ -82,13 +91,13 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     const [totalPages, setTotalPages] = useState( 1 );
     const [currentPage, setCurrentPage] = useState( 1 );
     const [search, setSearch] = useState( '' );
-    const [filters, setFilters] = useState<CategoryFilters>({});   
+    const [filters, setFilters] = useState<CategoryFilters>({});
 
     const queryVariables = useMemo(() => ({
-        page: currentPage,
-        limit: limit,
-        search,
-    }), [currentPage, limit, search, filters]);    
+            page: currentPage,
+            limit: limit,
+            search,
+        }), [currentPage, limit, search]);
 
     const resetPagination = () => {
         setCurrentPage( 1 );
@@ -112,18 +121,13 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
         onCompleted: (data) => {
             setTotalCount(data?.getCategoryById?.totalCount || 0);
             setTotalPages(data?.getCategoryById?.totalPages || 1);
-            setCurrentCategory(data?.getCategoryById);
+            setCurrentCategory(data?.getCategoryById || null);
         },
     });
-    
-    const fetchCategoryById = useCallback(
-        (id: number) => {
-            fetchCategoryByIdQuery({ variables: { id, page: 1, limit: 1000 } });
-        },
-        [fetchCategoryByIdQuery]
-    );
-    
-    
+
+    const fetchCategoryById = (id: number) => {
+        fetchCategoryByIdQuery({ variables: { id } });
+    };
     const [
         updateCategoryMutation,
         { loading: updating, error: updateError, data: updatedCategoryData },
@@ -141,10 +145,10 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
     const updateCategory = async ( { id, name, description, img }: UpdateCategoryInput ) => {
         try {
             const { data } = await updateCategoryMutation( {
-                variables: {
-                    id,
-                    name,
-                    description,
+                variables: { 
+                    id, 
+                    name, 
+                    description, 
                     img,
                 },
             } );
@@ -153,7 +157,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 setCategories( ( prevCategories ) =>
                     prevCategories.map( ( category ) =>
                         category.id === id ? data.updateCategory : category,
-                    ),
+            ),
                 );
             }
         } catch ( error ) {
@@ -163,7 +167,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
 
     const deleteCategory = async ( id: string ) => {
         try {
-            const { data } = await deleteCategoryMutation( {
+            const { data } = await deleteCategoryMutation( { 
                 variables: { id },
             } );
 
@@ -177,7 +181,6 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
         }
     };
 
-
     return (
         <CategoriesContext.Provider
             value={{
@@ -188,6 +191,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 deleteCategory,
                 fetchCategories,
                 currentCategory,
+                setCurrentCategory,
                 fetchCategoryById,
                 categoryLoading,
                 totalCount,
@@ -200,7 +204,7 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
                 deleteError,
                 search,
                 setPage: setCurrentPage,
-                categorySuccess: !!updatedCategoryData,
+                categorySuccess: !!updatedCategoryData,      
                 limit,
                 setLimit,
                 setSearch,
@@ -215,9 +219,9 @@ export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
 };
 
 export const useCategoriesContext = () => {
-    const context = useContext( CategoriesContext );
-    if ( !context ) {
-        throw new Error( "useCategoriesContext must be used within a CategoriesProvider" );
+    const context = useContext(CategoriesContext);
+    if (!context) {
+        throw new Error("useCategoriesContext must be used within a CategoriesProvider");
     }
     return context;
 };

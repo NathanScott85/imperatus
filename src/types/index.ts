@@ -26,8 +26,12 @@ export type ProductType = {
         url: string;
     };
     category: {
+        id: any;
         name: string;
+        description: string;
+        slug: string;
     };
+    slug: string;
     stock: Stock;
     preorder?: boolean;
     set: any;
@@ -44,6 +48,7 @@ export interface Product {
         url: string;
     };
     category: {
+        id: string;
         name: string;
     };
     stock: Stock;

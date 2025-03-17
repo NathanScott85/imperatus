@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from '../button';
 import { ChevronLeft } from '../svg/chevron-left';
 import { ChevronRight } from '../svg/chevron-right';
 import { Dots } from '../../components/dots';
+import { ProductType } from '../../types';
 
 interface CarouselPage {
     id: string;
@@ -12,7 +14,8 @@ interface CarouselPage {
     buttonText: string;
     img?: any;
     brand: any;
-    disabled?: boolean
+    disabled?: boolean;
+    product: any;
 }
 
 interface CarouselProps {
@@ -26,8 +29,13 @@ interface CarouselProps {
 
 export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-
+    const navigate = useNavigate();
     const enabledPages = items.flatMap((item) => item.pages).filter((page) => !page.disabled);
+    const handleNavigate = (product: ProductType) => { 
+        navigate(`/shop/categories/category/${product.category.id}/${product.category.slug}/${product.id}/${product.slug}`, {
+            state: { product },
+        });
+    };
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) =>
@@ -49,8 +57,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
         <Container>
             <CarouselContainer small={small}>
                 {enabledPages.map((page, index) => (
-                    <CarouselSlide key={page.id} index={index - currentIndex}>
-                        {console.log(page, 'page') as any};
+                    <CarouselSlide key={page.id} index={index - currentIndex}>                               
                         <CarouselContentContainer>
                             {page.img && (
                                 <CarouselImage
@@ -69,7 +76,7 @@ export const Carousel: React.FC<CarouselProps> = ({ items, small = false }) => {
                                     <p>{page.description}</p>
                                     <Button
                                         link
-                                        pathname={`/shop/card-games/${page.id}`}
+                                        onClick={() => handleNavigate(page.product)}
                                         label={page.buttonText ? page.buttonText : "Learn More"}
                                         size="small"
                                         variant="secondary"

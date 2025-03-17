@@ -28,8 +28,26 @@ export const GET_CAROUSEL_PAGES = gql`
           disabled
           product {
             id
+            name
+            price
+            rrp
+            description
             slug
             preorder
+            category {
+                id
+                name
+                description
+                slug
+            }
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
           }
           img {
             id

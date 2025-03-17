@@ -56,7 +56,10 @@ interface Product {
         url: string;
     };
     category: {
+        id: string;
         name: string;
+        description: string
+        slug: string
     };
     brand?: {
         id: string;
