@@ -46,7 +46,8 @@ export const AboutUs = () => (
                 </ContentContainer>
             </FancyContainer>
             </Section>
-            <Reviews />
+                            {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
         </MainContainer>
         <Footer />
     </>

@@ -12,6 +12,7 @@ import { MainContainer } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCarouselContext } from '../../context/carousel';
 import { DeliveryInfo } from './delivery-info';
+import { Products } from '../../components/products';
 
 export const Home: React.FC = () => {
     const { carousel, loading, error, fetchCarousel } = useCarouselContext();
@@ -28,7 +29,7 @@ export const Home: React.FC = () => {
             {error && <p>Error loading carousel: {error.message}</p>}
             {carousel && <Carousel items={carousel as any} />} 
             <MainContainer>
-                {/* <Products label="Latest Products" products={latestproducts} /> */}
+                <Products label="Latest Products" products={[]} />
                 {/* <Products
                     label="Product Recommendations"
                     products={latestproducts}
@@ -55,7 +56,8 @@ export const Home: React.FC = () => {
                         </ContentContainer>
                     </FancyContainer>
                 </Section>
-                <Reviews />
+                                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
                 <DeliveryInfo />
             </MainContainer>
             <Footer />

@@ -32,21 +32,21 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
     return (
         <SidebarAside>
             <Menu>
-                <MenuItem onClick={() => toggleMenu( 'Overview' )}>
+                {/* <MenuItem onClick={() => toggleMenu( 'Overview' )}>
                     <HomeIcon />
                     OVERVIEW
-                </MenuItem>
-                <MenuItem onClick={() => toggleMenu( 'Analytics' )}>
+                </MenuItem> */}
+                {/* <MenuItem onClick={() => toggleMenu( 'Analytics' )}>
                     <Pie />
                     ANALYTICS
-                </MenuItem>
-                {expandedMenu === 'Analytics' && (
+                </MenuItem> */}
+                {/* {expandedMenu === 'Analytics' && (
                     <SubMenu>
                         <SubMenuItem onClick={() => setSelectedComponent( 'Temp' )}>
                             Temp
                         </SubMenuItem>
                     </SubMenu>
-                )}
+                )} */}
                 <MenuItem onClick={() => toggleMenu( 'Orders' )}>
                     <Cart stroke='#C79D0A' />
                     ORDERS
@@ -147,10 +147,10 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu( 'Shipping' )}>
+                {/* <MenuItem onClick={() => toggleMenu( 'Shipping' )}>
                         <Van stroke='#C79D0A' />
                     SHIPPING
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem onClick={() => toggleMenu( 'Customers' )}>
                     <UserIcon />
                     CUSTOMERS
@@ -159,10 +159,10 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
             <BottomContainer>
                 <AdminDivider />
                 <BottomMenu>
-                    <MenuItem onClick={() => toggleMenu( 'Settings' )}>
+                    {/* <MenuItem onClick={() => toggleMenu( 'Settings' )}>
                         <AdminIcon />
                         SETTINGS
-                    </MenuItem>
+                    </MenuItem> */}
                     <StyledLink onClick={logout} to="/account/sign-out">
                         <SignOut />
                         LOGOUT

@@ -31,12 +31,12 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 >
                     Delivery
                 </Tab>
-                <Tab
+                {/* <Tab
                     isActive={activeTab === 'Click & Collect'}
                     onClick={() => setActiveTab('Click & Collect')}
                 >
                     Click & Collect
-                </Tab>
+                </Tab> */}
             </Tabs>
             {renderTabContent()}
             <Details>

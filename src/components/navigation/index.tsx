@@ -11,27 +11,27 @@ const navItems = [
         divider: false,
         displayed: true,
     },
-    {
-        id: 2,
-        name: 'Card Games',
-        path: '/shop/card-games',
-        divider: false,
-        displayed: true,
-    },
-    {
-        id: 3,
-        name: 'Accessories',
-        path: '/shop/accessories',
-        divider: false,
-        displayed: true,
-    },
-    {
-        id: 4,
-        name: 'Boardgames',
-        path: '/shop/board-games',
-        divider: false,
-        displayed: true,
-    },
+    // {
+    //     id: 2,
+    //     name: 'Card Games',
+    //     path: '/shop/card-games',
+    //     divider: false,
+    //     displayed: true,
+    // },
+    // {
+    //     id: 3,
+    //     name: 'Accessories',
+    //     path: '/shop/accessories',
+    //     divider: false,
+    //     displayed: true,
+    // },
+    // {
+    //     id: 4,
+    //     name: 'Boardgames',
+    //     path: '/shop/board-games',
+    //     divider: false,
+    //     displayed: true,
+    // },
     {
         id: 5,
         name: 'Coming Soon',
@@ -39,13 +39,13 @@ const navItems = [
         divider: false,
         displayed: true,
     },
-    {
-        id: 6,
-        name: 'Offers',
-        path: '/shop/offers',
-        divider: false,
-        displayed: true,
-    },
+    // {
+    //     id: 6,
+    //     name: 'Offers',
+    //     path: '/shop/offers',
+    //     divider: false,
+    //     displayed: true,
+    // },
 ];
 
 interface NavigationProps {
@@ -93,7 +93,7 @@ export const NavigationContainer = styled.nav<NavigationProps>`
 export const NavigationList = styled('ul')`
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+     justify-content: center;
     align-items: center;
     list-style-type: none;
     width: 100%;

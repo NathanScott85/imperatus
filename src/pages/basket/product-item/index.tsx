@@ -14,8 +14,8 @@ interface ProductItemProps {
 export const ProductItem: React.FC<ProductItemProps> = ({
     product,
     onRemove,
-    onMove,
-    moveLabel,
+    // onMove,
+    // moveLabel,
     variant = false,
 }) => {
     return (
@@ -25,9 +25,9 @@ export const ProductItem: React.FC<ProductItemProps> = ({
                 <div>
                     <p>{product.name}</p>
                     <p>£{product.price.toFixed(2)}</p>
-                    <Button size="small" variant="none" onClick={onMove}>
+                    {/* <Button size="small" variant="none" onClick={onMove}>
                         {moveLabel}
-                    </Button>
+                    </Button> */}
                 </div>
                 {!variant && (
                     <StyledInput type="number" defaultValue={1} min={1} />

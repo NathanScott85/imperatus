@@ -63,12 +63,12 @@ export const Delivery = () => (
                         certain value threshold.
                     </Paragraph>
                     <Paragraph>
-                        Shipping costs are subject to change based on carrier rate adjustments, 
+                        Shipping costs are subject to change based on carrier rate adjustments,
                         <br />
-                        seasonal demand, and promotional offers. 
+                        seasonal demand, and promotional offers.
                         <br />
                         We recommend checking our checkout page for the most up-to-date shipping fees.
-                </Paragraph>
+                    </Paragraph>
                 </Content>
             </Section>
 
@@ -89,7 +89,7 @@ export const Delivery = () => (
                 <Content>
                     <Subtitle>Shipping Locations</Subtitle>
                     <Paragraph>
-                        We currently deliver within the UK. In the future, <br /> 
+                        We currently deliver within the UK. In the future, <br />
                         we plan to expand our shipping options to include other destinations such as the EU.
                     </Paragraph>
                 </Content>
@@ -100,7 +100,7 @@ export const Delivery = () => (
                     <Subtitle>International Shipping</Subtitle>
                     <Paragraph>
                         At this time, we only deliver within the UK. International shipping, <br />
-                        including to the EU, will be introduced in the future. 
+                        including to the EU, will be introduced in the future.
                     </Paragraph>
                 </Content>
             </Section>
@@ -161,7 +161,8 @@ export const Delivery = () => (
                 </Content>
             </Section>
             <br />
-            <Reviews />
+            {/* <Reviews /> */}
+            <p>Replace with Latest Products</p>
         </MainContainer>
         <Footer />
     </>

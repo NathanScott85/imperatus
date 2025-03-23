@@ -22,9 +22,9 @@ export const Products = ( { products, label }: any ) => {
                                     ) )
                                 ) : (
                                     <NoProductsMessage>
-                                        <FancyContainer variant="medium">
-                                            No products available, please check back
-                                            later
+                                        <FancyContainer size="small" variant="filters">
+                                          <p>  No products available, please check back
+                                          later</p>
                                         </FancyContainer>
                                     </NoProductsMessage>
                                 )}

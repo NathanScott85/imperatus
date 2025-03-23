@@ -31,10 +31,10 @@ export const PaymentMethods = () => (
                         We process all major credit and debit cards securely through <StyledLink target="_blank" to="https://stripe.com/gb"><Stripe /></StyledLink> a trusted global payment provider.
                     </Paragraph>
                     <List>
-              
+
                         <ListItem>
-                        <StyledLink target="_blank" to="https://www.visa.co.uk/"><Visa /> </StyledLink>
-                        <StyledLink to="https://www.mastercard.co.uk/" target="_blank" rel="noopener noreferrer">
+                            <StyledLink target="_blank" to="https://www.visa.co.uk/"><Visa /> </StyledLink>
+                            <StyledLink to="https://www.mastercard.co.uk/" target="_blank" rel="noopener noreferrer">
                                 <Mastercard />
                             </StyledLink>
                             <StyledLink target="_blank" to="https://www.americanexpress.com/">
@@ -45,7 +45,7 @@ export const PaymentMethods = () => (
                             </StyledLink>
                         </ListItem>
 
-                     
+
                     </List>
                     <Paragraph>
                         Payments are encrypted and protected to ensure your security.
@@ -110,7 +110,8 @@ export const PaymentMethods = () => (
                 </Content>
             </Section>
             <br />
-            <Reviews />
+            {/* <Reviews /> */}
+            <p>Replace with Latest Products</p>
         </MainContainer>
         <Footer />
     </>

@@ -209,7 +209,8 @@ export const TermsAndConditions = () => (
             </Section>
 
             <br />
-            <Reviews />
+            {/* <Reviews /> */}
+            <p>Replace with Latest Products</p>
         </MainContainer>
         <Footer />
     </>

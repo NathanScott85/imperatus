@@ -126,7 +126,8 @@ export const Categories: React.FC = () => {
                         )}
                     </CategoriesContainer>
                 )}
-                <Reviews />
+                                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
             </CategoriesMain>
             <Footer />
         </>

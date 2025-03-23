@@ -80,12 +80,6 @@ export const ProductPage: React.FC = () => {
                                 <span>
                                     <Button variant="primary" size="small" label="add to cart" />
                                 </span>
-                                <span>
-                                    <Button variant="primary" size="small">
-                                        Add to Wishlist
-                                    </Button>
-                                    <Heart />
-                                </span>
                             </StockContainer>
                         </TitleAndStockContainer>
                     </ProductContent>

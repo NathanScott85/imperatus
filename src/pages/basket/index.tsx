@@ -23,11 +23,11 @@ export const Basket = () => {
         );
     };
 
-    const handleRemoveFromWishlist = (id: number) => {
-        setWishlistProducts(
-            wishlistProducts.filter((product) => product.id !== id),
-        );
-    };
+    // const handleRemoveFromWishlist = (id: number) => {
+    //     setWishlistProducts(
+    //         wishlistProducts.filter((product) => product.id !== id),
+    //     );
+    // };
 
     const handleMoveToWishlist = (product: any) => {
         if (!wishlistProducts.some((p) => p.id === product.id)) {
@@ -115,12 +115,12 @@ export const Basket = () => {
             <StyledMainContainer>
                 <CenteredContainer>
                     <BasketSection>
-                        <BasketHeader
+                        {/* <BasketHeader
                             title="Basket"
                             hasProducts={basketProducts.length !== 0}
                             onMoveAllClick={handleMoveAllToWishlist}
                             moveAllLabel="Move to Wishlist"
-                        />
+                        /> */}
                         <BasketContent>
                             {basketProducts.length === 0 ? (
                                 <EmptyMessage>
@@ -157,13 +157,13 @@ export const Basket = () => {
                         </BasketContent>
                     </BasketSection>
                     <WishlistSection>
-                        <BasketHeader
+                        {/* <BasketHeader
                             title="Wishlist"
                             hasProducts={wishlistProducts.length !== 0}
                             onMoveAllClick={handleMoveAllToBasket}
                             moveAllLabel="Move All to Basket"
-                        />
-                        {wishlistProducts.length === 0 ? (
+                        /> */}
+                        {/* {wishlistProducts.length === 0 ? (
                             <EmptyMessage>Your wishlist is empty.</EmptyMessage>
                         ) : (
                             <ProductList>
@@ -179,7 +179,7 @@ export const Basket = () => {
                                     />
                                 ))}
                             </ProductList>
-                        )}
+                        )} */}
                     </WishlistSection>
                 </CenteredContainer>
             </StyledMainContainer>
