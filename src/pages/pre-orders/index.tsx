@@ -15,9 +15,9 @@ import { preorders } from '../../lib/preorder-mocks';
 const getCategoriesPath = (orders: any) => {
     const comingsoonPath = orders
         ? generatePath('/shop/coming-soon/new/:id/:name', {
-              id: orders.id,
-              name: orders.name.replace(/\s+/g, '-').toLowerCase(),
-          })
+            id: orders.id,
+            name: orders.name.replace(/\s+/g, '-').toLowerCase(),
+        })
         : '';
     return {
         comingsoonPath,
@@ -79,7 +79,8 @@ export const Preorders = () => {
                     </PreordersListContainer>
                 </PreOrdersContainer>
 
-                <Reviews />
+                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
             </PreOrdersMain>
             <Footer />
         </>

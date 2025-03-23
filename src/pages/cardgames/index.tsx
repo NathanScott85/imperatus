@@ -95,7 +95,8 @@ export const CardGames = () => {
                         </CategoriesListContainer>
                     </CategoriesContainer>
                 )} */}
-                <Reviews />
+                                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
             </CardGamesMain>
             <Footer />
         </>

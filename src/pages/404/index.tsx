@@ -21,18 +21,19 @@ export const FourOFour = () => {
             />
             <MainContainer>
                 <Section>
-                <FancyContainer variant="login" size="login">
-                    <FancyContainerSubWrapper>
-                        <h1>404 Error, Page Not Found</h1>
-                        <p>The page you are looking for does not exist.</p>
-                        <Link to="/" aria-label="Go to Home Page">
-                            <HomeIcon aria-hidden="true" />
-                        </Link>
-                    </FancyContainerSubWrapper>
-                </FancyContainer>
+                    <FancyContainer variant="login" size="login">
+                        <FancyContainerSubWrapper>
+                            <h1>404 Error, Page Not Found</h1>
+                            <p>The page you are looking for does not exist.</p>
+                            <Link to="/" aria-label="Go to Home Page">
+                                <HomeIcon aria-hidden="true" />
+                            </Link>
+                        </FancyContainerSubWrapper>
+                    </FancyContainer>
                 </Section>
-               
-                <Reviews />
+
+                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
             </MainContainer>
             <Footer />
         </>

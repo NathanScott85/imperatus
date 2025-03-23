@@ -10,7 +10,7 @@ import { Footer } from '../footer';
 import { HomeIcon } from '../svg/home';
 import { Link } from 'react-router-dom';
 
-export const Error = ({error}: any) => {
+export const Error = ({ error }: any) => {
     return (
         <>
             <TopHeader />
@@ -18,7 +18,7 @@ export const Error = ({error}: any) => {
             <Navigation background />
             {error && <BreadCrumb label="Categories" />}
             <ImageWrapper>
-            <p>Error, A Problem Occurred</p>
+                <p>Error, A Problem Occurred</p>
             </ImageWrapper>
             <ErrorMain>
                 <FancyContainer variant="login" size="login">
@@ -30,7 +30,7 @@ export const Error = ({error}: any) => {
                         </Link>
                     </FancyContainerSubWrapper>
                 </FancyContainer>
-                <Reviews />
+                {/*                 {/* <Reviews /> */}
             </ErrorMain>
             <Footer />
         </>

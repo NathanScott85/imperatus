@@ -96,7 +96,7 @@ export const PersonalDetails = () => {
                             onChange={handleInputChange}
                             variant="secondary"
                         />
-                        <BirthdayContainer>
+                        {/* <BirthdayContainer>
                             <Label>Birthday</Label>
                             <BirthdayWrapper>
                                 <Input
@@ -121,7 +121,7 @@ export const PersonalDetails = () => {
                                     placeholder="YYYY"
                                 />
                             </BirthdayWrapper>
-                        </BirthdayContainer>
+                        </BirthdayContainer> */}
                         <ButtonWrapper>
                             <Button
                                 variant="primary"
@@ -145,10 +145,10 @@ export const PersonalDetails = () => {
                         <PersonalDetail>{formData.fullname}</PersonalDetail>
                         <strong>Email Address:</strong>
                         <PersonalDetail>{formData.email}</PersonalDetail>
-                        <strong>Birthday:</strong>
-                        <PersonalDetail>
+                        {/* <strong>Birthday:</strong> */}
+                        {/* <PersonalDetail>
                             {`${formData.day}/${formData.month}/${formData.year}`}
-                        </PersonalDetail>
+                        </PersonalDetail> */}
                         <ButtonWrapper>
                             <Button
                                 variant="primary"

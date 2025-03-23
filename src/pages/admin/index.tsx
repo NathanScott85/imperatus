@@ -10,7 +10,7 @@ import { Overview } from './overview';
 import { Analytics } from './analytics';
 import { Orders } from './orders';
 import { AdminProducts } from './products';
-import { Shipping } from './shipping';
+// import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
 import { Discount } from './discount';
@@ -60,8 +60,8 @@ export const Admin = () => {
                 return <AddCarousel />;
             case 'ManageCarousel':
                 return <ManageCarousel />;
-            case 'Shipping':
-                return <Shipping />;
+            // case 'Shipping':
+            //     return <Shipping />;
             case 'Customers':
                 return <Customers />;
             case 'Settings':

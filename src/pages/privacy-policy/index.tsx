@@ -10,13 +10,13 @@ import Reviews from '../../components/reviews';
 export const PrivacyPolicy = () => (
     <>
         <TopHeader />
-        <Header  background />
+        <Header background />
         <Navigation background />
         <BreadCrumb label="Privacy Policy" />
         <Container>
             <Background />
         </Container>
-        <MainContainer>   
+        <MainContainer>
             <Section>
                 <Content>
                     <Subtitle>Personal Data We Collect</Subtitle>
@@ -114,13 +114,14 @@ export const PrivacyPolicy = () => (
                     <Subtitle>Contact Information</Subtitle>
                     <Paragraph>For any privacy-related queries, contact us at:</Paragraph>
                     <List>
-                    <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                    <ListItem>Telephone: <span>07542490573</span></ListItem>
+                        <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
+                        <ListItem>Telephone: <span>07542490573</span></ListItem>
                     </List>
                 </Content>
             </Section>
-            
-            <Reviews />
+
+            {/* <Reviews /> */}
+            <p>Replace with Latest Products</p>
         </MainContainer>
         <Footer />
     </>

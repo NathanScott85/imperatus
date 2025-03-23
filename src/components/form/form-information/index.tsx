@@ -23,7 +23,7 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                     <p>Save your shipping addresses</p>
                     <p>Access your order history</p>
                     <p>Track new orders</p>
-                    <p>Save items to your Wish List</p>
+                    {/* <p>Save items to your Wish List</p> */}
                     <ButtonContainer>
                         <Button
                             link
@@ -45,7 +45,7 @@ export const FormInformation: React.FC<FormInformationProps> = ({
                     <p>Save your shipping address</p>
                     <p>Access your order history</p>
                     <p>Track new orders</p>
-                    <p>Save items to your Wish List</p>
+                    {/* <p>Save items to your Wish List</p> */}
                     <ButtonContainer>
                         <Button
                             link

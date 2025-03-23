@@ -55,8 +55,8 @@ export const Account = () => {
                 return <PaymentDetails />;
             case 'OrderHistory':
                 return <OrderHistory onViewOrder={setSelectedOrder} />;
-            case 'Wishlist':
-                return <Wishlist />;
+            // case 'Wishlist':
+            //     return <Wishlist />;
             case 'AccountManagement':
                 return <AccountManagement />;
             default:
@@ -101,11 +101,11 @@ export const Account = () => {
                             >
                                 <ClockThree /> Order history
                             </StyledWrapper>
-                            <StyledWrapper
+                            {/* <StyledWrapper
                                 onClick={() => handleMenuClick('Wishlist')}
                             >
                                 <Heart /> Wishlist
-                            </StyledWrapper>
+                            </StyledWrapper> */}
                             <StyledWrapper
                                 onClick={() =>
                                     handleMenuClick('AccountManagement')

@@ -78,7 +78,8 @@ export const BoardGames = () => {
                         })}
                     </BoardGamesListContainer>
                 </BoardGamesContainer>
-                <Reviews />
+                                {/* <Reviews /> */}
+                <p>Replace with Latest Products</p>
             </BoardgamesMain>
             <Footer />
         </>
