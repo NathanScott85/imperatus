@@ -3,23 +3,26 @@ import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { Footer } from '../../components/footer';
-// import { Products } from '../../components/products';
+import { Products } from '../../components/products';
 import { FancyContainer } from '../../components/fancy-container';
-import { Reviews } from '../../components/reviews';
+// import { Reviews } from '../../components/reviews';
 import { Carousel } from '../../components/carousel';
 import ArenaImage from '../../components/svg/website-images/0_71.png';
 import { MainContainer } from '../../components/styled';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCarouselContext } from '../../context/carousel';
 import { DeliveryInfo } from './delivery-info';
-import { Products } from '../../components/products';
+import { useProductsContext } from '../../context/products';
 
 export const Home: React.FC = () => {
     const { carousel, loading, error, fetchCarousel } = useCarouselContext();
+    const { latestLoading, latestProducts, fetchLatestProducts } = useProductsContext();
     
-    useEffect(()=> {
+    useEffect(() => {
         fetchCarousel();
-    }, [fetchCarousel]);
+        fetchLatestProducts();
+    }, [fetchCarousel, fetchLatestProducts]);
+
     return (
         <>
             <TopHeader />
@@ -27,13 +30,13 @@ export const Home: React.FC = () => {
             <Navigation background />
             {loading && <p>Loading carousel...</p>}
             {error && <p>Error loading carousel: {error.message}</p>}
-            {carousel && <Carousel items={carousel as any} />} 
+            {carousel && <Carousel items={carousel as any} />}
+
             <MainContainer>
-                <Products label="Latest Products" products={[]} />
-                {/* <Products
-                    label="Product Recommendations"
-                    products={latestproducts}
-                /> */}
+                {latestLoading && <p>Loading latest products...</p>}
+                {!latestLoading && latestProducts && (
+                    <Products label="Latest Products" products={latestProducts} />
+                )}
                 <Section>
                     <FancyContainer variant="small" size="small">
                         <ContentContainer>
@@ -56,8 +59,6 @@ export const Home: React.FC = () => {
                         </ContentContainer>
                     </FancyContainer>
                 </Section>
-                                {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
                 <DeliveryInfo />
             </MainContainer>
             <Footer />

@@ -63,6 +63,65 @@ export const GET_ALL_PRODUCTS = gql`
     }
 `;
 
+export const GET_LATEST_PRODUCTS = gql`
+    query GetLatestProducts {
+        getLatestProducts {
+            id
+            name
+            price
+            slug
+            type {
+                id
+                name
+            }
+            rrp
+            description
+            preorder
+            category {
+                id
+                name
+                description
+            }
+            brand {
+                id
+                name
+                description
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+            }
+            set {
+                id
+                setName
+                setCode
+                description
+            }
+            img {
+                id
+                url
+                key
+                fileName
+                contentType
+                createdAt
+            }
+            stock {
+                id
+                amount
+                sold
+                instock
+                soldout
+                preorder
+            }
+        }
+    }
+`;
+
+
 export const GET_PRODUCT_BY_ID = gql`
   query GetProductById($id: ID!) {
     getProductById(id: $id) {
