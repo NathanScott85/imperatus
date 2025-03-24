@@ -5,26 +5,26 @@ import { mediaQueries } from '../../styled/breakpoints';
 import { FancyContainer } from '../fancy-container';
 import { ProductType } from '../../types';
 
-export const Products = ( { products, label }: any ) => {
+export const Products = ({ products, label }: any) => {
     return (
         <>
-            {( label === 'Latest Products' ||
-                label === 'Product Recommendations' ) && (
+            {(label === 'Latest Products' ||
+                label === 'Product Recommendations') && (
                     <Section>
                         <ProductsWrapper>
                             <ProductsHeader>{label}</ProductsHeader>
                             <ProductsContainer>
                                 {products && products.length > 0 ? (
-                                     products.map( ( product: any ) => (
-                                        <Product
-                                            key={product!?.id}
+                                    products.map((product: any) => (
+                                        <Product key={product.id}
+                                            product={product}
                                         />
-                                    ) )
+                                    ))
                                 ) : (
                                     <NoProductsMessage>
                                         <FancyContainer size="small" variant="filters">
-                                          <p>  No products available, please check back
-                                          later</p>
+                                            <p>  No products available, please check back
+                                                later</p>
                                         </FancyContainer>
                                     </NoProductsMessage>
                                 )}
@@ -36,9 +36,12 @@ export const Products = ( { products, label }: any ) => {
                 <ProductsSection>
                     {products.length !== 0 ? (
                         <ProductsGrid>
-                            {products.map( ( product: ProductType ) => (
-                                <Product key={product.id} />
-                            ) )}
+                            {products.map((product: ProductType) => (
+                                <Product
+                                    key={product.id}
+                                    product={product}
+                                />
+                            ))}
                         </ProductsGrid>
                     ) : (
                         <NoProductsMessage>
@@ -100,11 +103,11 @@ const ProductsHeader = styled.h1`
     text-align: left;
     color: #130a30;
 
-    ${mediaQueries( 'md' )`
+    ${mediaQueries('md')`
         padding-left: 3rem;
         width: 100%;
     `};
-    ${mediaQueries( 'xl' )`
+    ${mediaQueries('xl')`
         padding-left: 0rem;
         width: 100%;
     `};
@@ -115,10 +118,10 @@ const ProductsWrapper = styled.div`
     flex-direction: column;
     height: 100%;
     padding: 2rem 0;
-    ${mediaQueries( 'sm' )`
+    ${mediaQueries('sm')`
         height: 25vh;
     `};
-    ${mediaQueries( 'md' )`
+    ${mediaQueries('md')`
         height: 100%;
     `};
 `;

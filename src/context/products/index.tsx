@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../../graphql/products';
+import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID, GET_LATEST_PRODUCTS } from '../../graphql/products';
 
 interface Stock {
     amount: number;
@@ -43,6 +43,8 @@ interface Product {
 
 interface ProductsContextProps {
     products: Product[] | null;
+    latestProducts: Product[] | null;
+    latestLoading: boolean;
     product: Product | null;
     loading: boolean;
     error: any;
@@ -54,6 +56,7 @@ interface ProductsContextProps {
     setSearch: (search: string) => void;
     setProduct: (product: any) => void;
     fetchProducts: () => void;
+    fetchLatestProducts: () => void;
     fetchProductById: (id: string) => void;
 }
 
@@ -61,6 +64,8 @@ const ProductsContext = createContext<ProductsContextProps | undefined>(undefine
 
 export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [latestProducts, setLatestProducts] = useState<Product[]>([]);
+    const [latestLoading, setLatestLoading] = useState(false);
     const [product, setProduct] = useState<Product | null>(null);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
@@ -79,6 +84,17 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         },
     });
 
+    const [fetchLatestProductsQuery] = useLazyQuery(GET_LATEST_PRODUCTS, {
+        fetchPolicy: 'cache-and-network',
+        onCompleted: (data) => {
+            setLatestProducts(data?.getLatestProducts || []);
+            setLatestLoading(false);
+        },
+        onError: () => {
+            setLatestLoading(false);
+        }
+    });
+
     const [getProductByIdQuery] = useLazyQuery(GET_PRODUCT_BY_ID, {
         fetchPolicy: 'cache-and-network',
         onCompleted: (data) => {
@@ -90,6 +106,11 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         getProductByIdQuery({ variables: { id } });
     };
 
+    const fetchLatestProducts = useCallback(() => {
+        setLatestLoading(true);
+        fetchLatestProductsQuery();
+    }, [fetchLatestProductsQuery]);
+
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts, page, search]);
@@ -98,6 +119,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         <ProductsContext.Provider
             value={{
                 products,
+                latestProducts,
                 product,
                 loading,
                 error,
@@ -109,6 +131,8 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 setSearch,
                 setProduct,
                 fetchProducts,
+                latestLoading,
+                fetchLatestProducts,
                 fetchProductById,
             }}
         >

@@ -3,44 +3,49 @@ import styled from 'styled-components';
 import { useParams, useLocation, NavLink } from 'react-router-dom';
 import Button from '../button';
 import { useProductsContext } from '../../context/products';
+import { ProductType } from '../../types';
 
-export const Product = () => { 
+export const Product = ({ product: productProp }: { product?: ProductType }) => {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const { product, setProduct, loading, fetchProductById } = useProductsContext();
     const hasFetched = useRef(false);
 
     useEffect(() => {
-        if (location.state?.product) {
+        if (productProp) {
+            setProduct(productProp);
+        } else if (location.state?.product) {
             setProduct(location.state.product);
-        } else if (id && !hasFetched.current) {  
+        } else if (id && !hasFetched.current) {
             hasFetched.current = true;
-            fetchProductById(id);  
+            fetchProductById(id);
         }
-    }, [id, setProduct, fetchProductById, location.state?.product]);
+    }, [id, productProp, setProduct, fetchProductById, location.state?.product]);
 
-    if (!product || loading) {
+    const productToUse = productProp || product;
+
+    if (!productToUse || loading) {
         return <p>loading...</p>;
     }
 
     return (
         <ProductContainer>
             <ProductWrapper>
-                {product && (
-                    <NavLink
-                        to={`/shop/categories/category/${product!?.category!?.id}/${product!?.category!?.slug}/${product!?.id}/${product!?.slug}`}
-                        state={{ product }}
-                    >
-                        <ImageWrapper>
-                            <ProductImage src={product!.img?.url} alt={product!.name} />
-                        </ImageWrapper>
-                        <ProductName>{product!.name}</ProductName>
-                        <ProductPriceWrapper>
-                            <ProductPrice>£{product!.price.toFixed(2)}</ProductPrice>
-                            <StyledRRP>RRP £{product!?.rrp!?.toFixed(2)}</StyledRRP>
-                        </ProductPriceWrapper>
-                    </NavLink>
-                )}
+                <NavLink
+                    to={`/shop/categories/category/${productToUse.category.id}/${productToUse.category.slug}/${productToUse.id}/${productToUse.slug}`}
+                    state={{ product: productToUse }}
+                >
+                    <ImageWrapper>
+                        <ProductImage src={productToUse.img.url} alt={productToUse.name} />
+                    </ImageWrapper>
+                    <ProductName>{productToUse.name}</ProductName>
+                    <ProductPriceWrapper>
+                        <ProductPrice>£{productToUse.price.toFixed(2)}</ProductPrice>
+                        {productToUse.rrp && (
+                            <StyledRRP>RRP £{productToUse.rrp.toFixed(2)}</StyledRRP>
+                        )}
+                    </ProductPriceWrapper>
+                </NavLink>
                 <Button label="Add to cart" variant="primary" size="small" />
             </ProductWrapper>
         </ProductContainer>
