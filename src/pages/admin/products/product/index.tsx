@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { Modal } from '../../../../components/modal';
-import { useAdminContext } from '../../../../context/admin';
 import { useCategoriesContext } from '../../../../context/categories';
 import { ProductDropdown } from '../add-product/dropdown';
 import { useBrandsContext } from '../../../../context/brands';
 import { useSetsContext } from '../../../../context/sets';
+import { useProductTypeContext } from '../../../../context/product-types';
+import { useProductsContext } from '../../../../context/products';
+import { useVariantsContext } from '../../../../context/variants';
+import { useCardTypesContext } from '../../../../context/card-types';
 
 export interface ProductDetailProps {
     product: any;
@@ -15,10 +18,13 @@ export interface ProductDetailProps {
 }
 
 export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
-    const { updateProduct, deleteProduct, variants, cardTypes, fetchCardTypes, productTypes, fetchProductTypes, fetchVariants } = useAdminContext();
-       const { categories, fetchCategories } = useCategoriesContext();
-       const { brands, fetchBrands } = useBrandsContext();
-       const { sets, fetchSets } = useSetsContext();
+    const { updateProduct, deleteProduct } = useProductsContext();
+    const { cardTypes, fetchCardTypes } = useCardTypesContext();
+    const { variants, fetchVariants } = useVariantsContext();
+    const { categories, fetchCategories } = useCategoriesContext();
+    const { productTypes, fetchProductTypes} = useProductTypeContext();
+    const { brands, fetchBrands } = useBrandsContext();
+    const { sets, fetchSets } = useSetsContext();
 
     const [updateProductData, setUpdateProductData] = useState( {
         name: product.name,

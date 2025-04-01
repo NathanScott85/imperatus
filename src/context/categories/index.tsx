@@ -23,6 +23,12 @@ interface File {
     createdAt: string;
 }
 
+interface Brand {
+    id: string;
+    name: string;
+    description: string;
+}
+
 interface Category {
     id: string;
     name: string;
@@ -30,6 +36,7 @@ interface Category {
     description: string;
     img?: File | null;
     products: any;
+    brands: Brand[]; // Adding brands directly to Category
 }
 
 interface UpdateCategoryInput {
@@ -40,27 +47,24 @@ interface UpdateCategoryInput {
 }
 
 export interface CategoryFilters {
-    brandId?: number;
-    variantId?: number;
-    setId?: number;
-    productTypeId?: number;
-    preorder?: boolean;
-    priceMin?: number;
-    priceMax?: number;
-    stockMin?: number;
-    stockMax?: number;
+    brandId?: number[];
 }
 
 interface CategoriesContextProps {
     categories: Category[] | null;
     loading: boolean;
     error: any;
-    updateCategory: ( variables: UpdateCategoryInput ) => Promise<void>;
-    deleteCategory: ( id: string ) => Promise<void>;
+    updateCategory: (variables: UpdateCategoryInput) => Promise<void>;
+    deleteCategory: (id: string) => Promise<void>;
     fetchCategories: () => void;
     currentCategory: Category | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<Category | null>>;
-    fetchCategoryById: (id: number, page?: number, limit?: number) => void;
+    fetchCategoryById: (
+        id: number,
+        page?: number,
+        limit?: number,
+        filters?: CategoryFilters
+    ) => void;
     categoryLoading: boolean;
     totalCount: number;
     totalPages: number;
@@ -70,114 +74,132 @@ interface CategoriesContextProps {
     updateError: any;
     deleteloading: boolean;
     deleteError: any;
-    setPage: ( page: number ) => void;
+    setPage: (page: number) => void;
     categorySuccess: boolean;
     limit: number;
-    setLimit: ( limit: number ) => void;
+    setLimit: (limit: number) => void;
     search: string;
-    setSearch: ( search: string ) => void;
+    setSearch: (search: string) => void;
     resetPagination: () => void;
     filters: CategoryFilters;
     setFilters: React.Dispatch<React.SetStateAction<CategoryFilters>>;
 }
 
-const CategoriesContext = createContext<CategoriesContextProps | null>( null );
+const CategoriesContext = createContext<CategoriesContextProps | null>(null);
 
-export const CategoriesProvider = ( { children }: { children: ReactNode } ) => {
-    const [categories, setCategories] = useState<Category[]>( [] );
-    const [currentCategory, setCurrentCategory] = useState<Category | null>( null );
-    const [limit, setLimit] = useState( 9 );
-    const [totalCount, setTotalCount] = useState( 0 );
-    const [totalPages, setTotalPages] = useState( 1 );
-    const [currentPage, setCurrentPage] = useState( 1 );
-    const [search, setSearch] = useState( '' );
+export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+    const [limit, setLimit] = useState(10);
+    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [search, setSearch] = useState('');
     const [filters, setFilters] = useState<CategoryFilters>({});
-
     const queryVariables = useMemo(() => ({
-            page: currentPage,
-            limit: limit,
-            search,
-        }), [currentPage, limit, search]);
+        page: currentPage,
+        limit,
+        search,
+        filters,
+    }), [currentPage, limit, search, filters]);
 
     const resetPagination = () => {
-        setCurrentPage( 1 );
+        setCurrentPage(1);
     };
 
-    const [fetchCategories, { loading, error }] = useLazyQuery( GET_CATEGORIES, {
+    const [fetchCategories, { loading, error }] = useLazyQuery(GET_CATEGORIES, {
         fetchPolicy: 'cache-and-network',
         variables: queryVariables,
-        onCompleted: ( data ) => {
-            setCategories( data?.getAllCategories?.categories || [] );
-            setTotalCount( data?.getAllCategories?.totalCount || 0 );
-            setTotalPages( data?.getAllCategories?.totalPages || 1 );
+        onCompleted: (data) => {
+            setCategories(data?.getAllCategories?.categories || []);
+            setTotalCount(data?.getAllCategories?.totalCount || 0);
+            setTotalPages(data?.getAllCategories?.totalPages || 1);
         },
-    } );
+    });
 
     const [
         fetchCategoryByIdQuery,
         { loading: categoryLoading, error: categoryError },
     ] = useLazyQuery(GET_CATEGORY_BY_ID, {
         fetchPolicy: "cache-and-network",
+        variables: queryVariables,
         onCompleted: (data) => {
+            console.log('✅ Category data fetched:', data);
             setTotalCount(data?.getCategoryById?.totalCount || 0);
             setTotalPages(data?.getCategoryById?.totalPages || 1);
-            setCurrentCategory(data?.getCategoryById || null);
-        },
+            setCurrentCategory({
+                ...data?.getCategoryById,
+                brands: data?.getCategoryById?.brands || [],
+            });
+        }
     });
-
-    const fetchCategoryById = (id: number) => {
-        fetchCategoryByIdQuery({ variables: { id } });
+    
+    const fetchCategoryById = (
+        id: number,
+        page = currentPage,
+        limitOverride = limit,
+        filtersOverride = filters
+    ) => {
+        fetchCategoryByIdQuery({
+            variables: {
+                id,
+                page,
+                limit: limitOverride,
+                filters: filtersOverride,
+            },
+        });
     };
+
     const [
         updateCategoryMutation,
         { loading: updating, error: updateError, data: updatedCategoryData },
-    ] = useMutation( UPDATE_CATEGORY );
+    ] = useMutation(UPDATE_CATEGORY);
 
     const [
         deleteCategoryMutation,
         { loading: deleteloading, error: deleteError },
-    ] = useMutation( DELETE_CATEGORY );
+    ] = useMutation(DELETE_CATEGORY);
 
-    useEffect( () => {
+    useEffect(() => {
         fetchCategories();
-    }, [fetchCategories, limit] );
+    }, [fetchCategories, limit]);
 
-    const updateCategory = async ( { id, name, description, img }: UpdateCategoryInput ) => {
+    const updateCategory = async ({ id, name, description, img }: UpdateCategoryInput) => {
         try {
-            const { data } = await updateCategoryMutation( {
+            const { data } = await updateCategoryMutation({
                 variables: { 
                     id, 
                     name, 
                     description, 
                     img,
                 },
-            } );
+            });
 
-            if ( data && data.updateCategory ) {
-                setCategories( ( prevCategories ) =>
-                    prevCategories.map( ( category ) =>
+            if (data && data.updateCategory) {
+                setCategories((prevCategories) =>
+                    prevCategories.map((category) =>
                         category.id === id ? data.updateCategory : category,
-            ),
+                    ),
                 );
             }
-        } catch ( error ) {
-            console.error( 'Error updating category:', error );
+        } catch (error) {
+            console.error('Error updating category:', error);
         }
     };
 
-    const deleteCategory = async ( id: string ) => {
+    const deleteCategory = async (id: string) => {
         try {
-            const { data } = await deleteCategoryMutation( { 
+            const { data } = await deleteCategoryMutation({ 
                 variables: { id },
-            } );
+            });
 
-            if ( data && data.deleteCategory ) {
-                setCategories( ( prevCategories ) =>
-                    prevCategories.filter( ( category ) => category.id !== id ),
+            if (data && data.deleteCategory) {
+                setCategories((prevCategories) =>
+                    prevCategories.filter((category) => category.id !== id),
                 );
             }
-        } catch ( error ) {
-            console.error( 'Error deleting category:', error );
+        } catch (error) {
+            console.error('Error deleting category:', error);
         }
     };
 

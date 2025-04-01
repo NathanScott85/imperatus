@@ -8,56 +8,56 @@ import { SetFilter } from './set-filters';
 
 interface FiltersType {
     brandId?: number[];
-    setId?: number[];
-    preorder?: boolean;
-    priceMin?: number;
-    priceMax?: number;
-    stockMin?: number;
-    stockMax?: number;
+    // setId?: number[];
+    // preorder?: boolean;
+    // priceMin?: number;
+    // priceMax?: number;
+    // stockMin?: number;
+    // stockMax?: number;
 }
 
 interface FiltersProps {
-    checkedStatus: { inStock: boolean; outOfStock: boolean };
-    handleChecked: (status: "inStock" | "outOfStock") => void;
+    // checkedStatus: { inStock: boolean; outOfStock: boolean };
+    // handleChecked: (status: "inStock" | "outOfStock") => void;
     filters: any;
     brands: { id: number; name: string }[];
-    sets: { id: number; setName: string }[];
-    priceMin: number;
-    priceMax: number;
+    // sets: { id: number; setName: string }[];
+    // priceMin: number;
+    // priceMax: number;
     categoryName: string;
-    onPriceChange: (min: number, max: number) => void;
+    // onPriceChange: (min: number, max: number) => void;
     onFilterChange: (key: keyof FiltersType, value: any) => void;
     resetFilters: () => void;
 }
 
 
 export const Filters: React.FC<FiltersProps> = ({
-    checkedStatus,
-    handleChecked,
+    // checkedStatus,
+    // handleChecked,
     filters,
     brands,
-    sets,
+    // sets,
     onFilterChange,
     resetFilters,
-    priceMin,
-    priceMax,
+    // priceMin,
+    // priceMax,
     categoryName
 }) => {
     return (
         <FiltersContainer>
             <h1>Filters</h1>
-            <StockStatus
+            {/* <StockStatus
                 handleChecked={handleChecked}
                 checkedStatus={checkedStatus}
-            />
+            /> */}
             <BrandFilter
                 brands={brands}
                 onFilterChange={onFilterChange}
                 filters={filters}
 
             />
-            { categoryName !== "Board Games" && <SetFilter sets={sets} filters={filters} onFilterChange={onFilterChange} />}
-            <PriceSlider
+            {/* { categoryName !== "Board Games" && <SetFilter sets={sets} filters={filters} onFilterChange={onFilterChange} />} */}
+            {/* <PriceSlider
                 filters={filters}
                 priceMin={priceMin}
                 priceMax={priceMax}
@@ -67,7 +67,7 @@ export const Filters: React.FC<FiltersProps> = ({
                     onFilterChange("priceMin", min);
                     onFilterChange("priceMax", max);
                 }}
-            />
+            /> */}
             <Button variant='secondary' onClick={resetFilters}>Reset Filters</Button>
         </FiltersContainer>
     );

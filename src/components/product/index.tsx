@@ -36,7 +36,7 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
                     state={{ product: productToUse }}
                 >
                     <ImageWrapper>
-                        <ProductImage src={productToUse.img.url} alt={productToUse.name} />
+                        {productToUse.img?.url && <ProductImage src={productToUse.img?.url} alt={productToUse.name} />}
                     </ImageWrapper>
                     <ProductName>{productToUse.name}</ProductName>
                     <ProductPriceWrapper>

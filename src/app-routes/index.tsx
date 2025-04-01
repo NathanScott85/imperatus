@@ -47,6 +47,10 @@ import { CarouselProvider } from '../context/carousel';
 import { PromotionsProvider } from '../context/promotions';
 import { ProductsProvider } from '../context/products';
 import { SearchResults } from '../pages/search';
+import { ProductTypeProvider } from '../context/product-types';
+import { RaritiesProvider } from '../context/card-rarity';
+import { CardTypesProvider } from '../context/card-types';
+import { VariantsProvider } from '../context/variants';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -77,7 +81,15 @@ export const AppRoutes = () => {
                                                 <SetsProvider>
                                                     <CarouselProvider>
                                                         <PromotionsProvider>
-                                                            <Admin />
+                                                            <ProductTypeProvider>
+                                                                <RaritiesProvider>
+                                                                    <CardTypesProvider>
+                                                                        <VariantsProvider>
+                                                                            <Admin />
+                                                                        </VariantsProvider>
+                                                                    </CardTypesProvider>
+                                                                </RaritiesProvider>
+                                                            </ProductTypeProvider>
                                                         </PromotionsProvider>
                                                     </CarouselProvider>
                                                 </SetsProvider>

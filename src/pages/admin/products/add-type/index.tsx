@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
+import { useProductTypeContext } from '../../../../context/product-types';
 
 export const AddProductType = () => {
   const [productType, setProductType] = useState( { name: '' } );
@@ -10,7 +10,7 @@ export const AddProductType = () => {
   const [success, setSuccess] = useState( '' );
   const [isButtonDisabled, setIsButtonDisabled] = useState( false );
 
-  const { createProductType } = useAdminContext();
+  const { createProductType } = useProductTypeContext();
 
   const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
     const { id, value } = e.target;

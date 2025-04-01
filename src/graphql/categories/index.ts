@@ -55,6 +55,7 @@ export const GET_CATEGORIES = gql`
                     id
                     name
                     description
+                    slug
                 }
                 cardType {
                     id
@@ -83,56 +84,67 @@ export const GET_CATEGORIES = gql`
 `;
 
 export const GET_CATEGORY_BY_ID = gql`
-    query GetCategoryById($id: ID!, $page: Int, $limit: Int) {
-        getCategoryById(id: $id, page: $page, limit: $limit) {
-            id
-            name
-            description
-            products {
-                id
-                name
-                price
-                rrp
-                description
-                slug
-                preorder
-                stock {
-                    id
-                    amount
-                    sold
-                    instock
-                    soldout
-                    preorder
-                }
-                set {
-                    id
-                    setName
-                    setCode
-                    description
-                }
-                variant {
-                    id
-                    name
-                }
-                cardType {
-                    id
-                    name
-                    brandId
-            }
-            img {
-                id
-                url
-                key
-                fileName
-                contentType
-                createdAt
-           }
-            brand {
-              id
-              name
-              description
-          }
+  query GetCategoryById($id: ID!, $page: Int, $limit: Int, $filters: CategoryFilters) {
+    getCategoryById(id: $id, page: $page, limit: $limit, filters: $filters) {
+      id
+      name
+      description
+      brands {
+        id
+        name
+        description
+      }
+      products {
+        id
+        name
+        price
+        rrp
+        description
+        slug
+        preorder
+        category {
+          id
+          name
+          description
+          slug
         }
+        stock {
+          id
+          amount
+          sold
+          instock
+          soldout
+          preorder
+        }
+        set {
+          id
+          setName
+          setCode
+          description
+        }
+        variant {
+          id
+          name
+        }
+        cardType {
+          id
+          name
+          brandId
+        }
+        img {
+          id
+          url
+          key
+          fileName
+          contentType
+          createdAt
+        }
+        brand {
+          id
+          name
+          description
+        }
+      }
       totalCount
       totalPages
       currentPage

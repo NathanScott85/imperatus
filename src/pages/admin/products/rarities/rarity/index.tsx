@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
-import { useAdminContext } from '../../../../../context/admin';
+import { useRaritiesContext } from '../../../../../context/card-rarity';
 
 interface RarityDetailProps {
     rarity: {
@@ -13,7 +13,7 @@ interface RarityDetailProps {
 }
 
 export const Rarity: React.FC<RarityDetailProps> = ({ rarity, onBack }) => {
-    const { updateRarity } = useAdminContext();
+    const { updateRarity } = useRaritiesContext();
     const [name, setName] = useState(rarity.name);
 
     const [error, setError] = useState('');

@@ -4,19 +4,19 @@ import { useAdminContext } from '../../../../context/admin';
 import { FancyContainer } from '../../../../components/fancy-container';
 import { CardType } from './card-type';
 import { Search } from '../../../../components/search';
+import { useCardTypesContext } from '../../../../context/card-types';
 
 export const AdminCardTypes = () => {
     const {
-      cardTypes,
       loading,
       error,
-      fetchCardTypes,
       search,
       totalPages,
       page,
       setPage,
       setSearch,
     } = useAdminContext();
+    const { cardTypes, fetchCardTypes } = useCardTypesContext();
 
     const [selectedType, setSelectedType] = useState<any | null>(null);
 

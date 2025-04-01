@@ -72,7 +72,7 @@ const ProductsGrid = styled.div`
     gap: 1rem;
     & > div {
         flex: 0 0 200px;
-        max-width: 215px;
+        max-width: 250px;
     }
 `;
 

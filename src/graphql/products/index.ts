@@ -22,6 +22,7 @@ export const GET_ALL_PRODUCTS = gql`
                     id
                     name
                     description
+                    slug
                 }
                 brand {
                     id
@@ -81,6 +82,7 @@ export const GET_LATEST_PRODUCTS = gql`
                 id
                 name
                 description
+                slug
             }
             brand {
                 id
@@ -178,6 +180,7 @@ export const CREATE_PRODUCT = gql`
         $stock: StockInput!
         $preorder: Boolean!
         $rrp: Float
+        $rarityId: Int
     ) {
         createProduct(
             name: $name
@@ -192,6 +195,7 @@ export const CREATE_PRODUCT = gql`
             stock: $stock
             preorder: $preorder
             rrp: $rrp
+            rarityId: $rarityId
         ) {
             id
             name
@@ -218,9 +222,14 @@ export const CREATE_PRODUCT = gql`
             category {
                 name
             }
+            rarity {
+                id
+                name
+            }
         }
     }
 `;
+
 
 export const UPDATE_PRODUCT = gql`
     mutation UpdateProduct(

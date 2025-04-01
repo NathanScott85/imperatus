@@ -1,6 +1,21 @@
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
-import { useLazyQuery } from '@apollo/client';
-import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID, GET_LATEST_PRODUCTS } from '../../graphql/products';
+import React, {
+    createContext,
+    useContext,
+    useState,
+    ReactNode,
+    useMemo,
+    useEffect,
+    useCallback,
+} from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import {
+    GET_ALL_PRODUCTS,
+    GET_PRODUCT_BY_ID,
+    GET_LATEST_PRODUCTS,
+    CREATE_PRODUCT,
+    UPDATE_PRODUCT,
+    DELETE_PRODUCT,
+} from '../../graphql/products';
 
 interface Stock {
     amount: number;
@@ -35,6 +50,10 @@ interface Product {
         setCode: string;
         description: string;
     };
+    rarities?: {
+        id: number;
+        name: string;
+    }[];
     stock: Stock;
     img: {
         url: string;
@@ -58,6 +77,44 @@ interface ProductsContextProps {
     fetchProducts: () => void;
     fetchLatestProducts: () => void;
     fetchProductById: (id: string) => void;
+    createProduct: (variables: {
+        name: string;
+        price: string | number;
+        productTypeId: number;
+        cardTypeId?: number;
+        variantId?: number;
+        brandId: number;
+        setId: number;
+        img: File;
+        categoryId: number;
+        stock: {
+            amount: number;
+            sold: number;
+            instock: string;
+            soldout: string;
+            preorder: boolean;
+        };
+        preorder: boolean;
+        description: string;
+        rrp?: string | number;
+        rarityId?: number;
+    }) => Promise<{ success: boolean; message: string; product: Product | null }>;
+    updateProduct: (variables: {
+        id: number;
+        name: string;
+        price: number;
+        productTypeId: number;
+        description?: string;
+        img?: File;
+        categoryId: number;
+        stockAmount: number;
+        stockSold: number;
+        stockInstock: string;
+        stockSoldout: string;
+        preorder: boolean;
+        rrp?: number;
+    }) => Promise<{ success: boolean; message: string; product: Product | null }>;
+    deleteProduct: (id: number) => Promise<{ success: boolean; message: string }>;
 }
 
 const ProductsContext = createContext<ProductsContextProps | undefined>(undefined);
@@ -72,7 +129,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
 
-    const queryVariables = useMemo(() => ({ page, limit: 10, search }), [page, search]);
+    const queryVariables = useMemo(() => ({ page, limit: 8, search }), [page, search]);
 
     const [fetchProducts, { loading, error }] = useLazyQuery(GET_ALL_PRODUCTS, {
         variables: queryVariables,
@@ -111,6 +168,121 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         fetchLatestProductsQuery();
     }, [fetchLatestProductsQuery]);
 
+    const [createProductMutation] = useMutation(CREATE_PRODUCT);
+    const [updateProductMutation] = useMutation(UPDATE_PRODUCT);
+    const [deleteProductMutation] = useMutation(DELETE_PRODUCT);
+
+    const createProduct = async (variables: {
+        name: string;
+        price: string | number;
+        productTypeId: number;
+        cardTypeId?: number;
+        variantId?: number;
+        brandId: number;
+        setId: number;
+        img: File;
+        categoryId: number;
+        stock: {
+            amount: number;
+            sold: number;
+            instock: string;
+            soldout: string;
+            preorder: boolean;
+        };
+        preorder: boolean;
+        description: string;
+        rrp?: string | number;
+        rarityId?: number;
+    }): Promise<{ success: boolean; message: string; product: Product | null }> => {    
+        try {
+            const { data } = await createProductMutation({ variables });
+
+            if (data?.createProduct) {
+                return {
+                    success: true,
+                    message: 'Product created successfully!',
+                    product: data.createProduct,
+                };
+            } else {
+                throw new Error('Failed to create product.');
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            return {
+                success: false,
+                message: errorMessage,
+                product: null,
+            };
+        }
+    };
+
+    const updateProduct = async (variables: {
+        id: number;
+        name: string;
+        price: number;
+        productTypeId: number;
+        description?: string;
+        img?: File;
+        categoryId: number;
+        stockAmount: number;
+        stockSold: number;
+        stockInstock: string;
+        stockSoldout: string;
+        preorder: boolean;
+        rrp?: number;
+    }): Promise<{ success: boolean; message: string; product: Product | null }> => {
+        try {
+            const stock = {
+                amount: variables.stockAmount,
+                sold: variables.stockSold,
+                instock: variables.stockInstock,
+                soldout: variables.stockSoldout,
+            };
+
+            const { data } = await updateProductMutation({
+                variables: { ...variables, stock },
+            });
+
+            if (data?.updateProduct) {
+                return {
+                    success: true,
+                    message: 'Product updated successfully!',
+                    product: data.updateProduct,
+                };
+            } else {
+                throw new Error('Failed to update product.');
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            return {
+                success: false,
+                message: errorMessage,
+                product: null,
+            };
+        }
+    };
+
+    const deleteProduct = async (id: number): Promise<{ success: boolean; message: string }> => {
+        try {
+            const { data } = await deleteProductMutation({ variables: { id } });
+
+            if (data?.deleteProduct) {
+                return {
+                    success: true,
+                    message: 'Product deleted successfully!',
+                };
+            } else {
+                throw new Error('Failed to delete product.');
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            return {
+                success: false,
+                message: errorMessage,
+            };
+        }
+    };
+
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts, page, search]);
@@ -134,6 +306,9 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 latestLoading,
                 fetchLatestProducts,
                 fetchProductById,
+                createProduct,
+                updateProduct,
+                deleteProduct,
             }}
         >
             {children}

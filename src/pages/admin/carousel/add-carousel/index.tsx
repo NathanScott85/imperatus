@@ -4,13 +4,13 @@ import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
 import { useBrandsContext } from '../../../../context/brands';
-import { useAdminContext } from '../../../../context/admin';
+import { useProductsContext } from '../../../../context/products';
 
 export const AddCarousel = () => {
     const { addCarousel, loading } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
     const [buttonText, setButtonText] = useState('');
-    const { products, fetchProducts } = useAdminContext();
+    const { products, fetchProducts } = useProductsContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(undefined);

@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
 import { useCategoriesContext } from '../../../../context/categories';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useBrandsContext } from '../../../../context/brands';
 import { useSetsContext } from '../../../../context/sets';
 import { ProductDropdown } from './dropdown';
+import { useProductTypeContext } from '../../../../context/product-types';
+import { useVariantsContext } from '../../../../context/variants';
+import { useCardTypesContext } from '../../../../context/card-types';
+import { useProductsContext } from '../../../../context/products';
+import { useRaritiesContext } from '../../../../context/card-rarity';
 
 export const AddProduct = () => {
     const [addProduct, setAddProduct] = useState({
@@ -14,6 +18,7 @@ export const AddProduct = () => {
         productTypeId: null as number | null,
         cardTypeId: null as number | null,
         variantId: null as number | null,
+        selectedRarity: null as number | null,
         description: '',
         category: '',
         price: '',
@@ -45,9 +50,13 @@ export const AddProduct = () => {
     });
 
     const { categories, fetchCategories } = useCategoriesContext();
-    const { variants, cardTypes, fetchCardTypes, productTypes, fetchProductTypes, fetchVariants, createProduct } = useAdminContext();
+    const { createProduct } = useProductsContext();
+    const { cardTypes, fetchCardTypes } = useCardTypesContext()
+    const { variants, fetchVariants } = useVariantsContext();
+    const { productTypes, fetchProductTypes } = useProductTypeContext()
     const { brands, fetchBrands } = useBrandsContext();
     const { sets, fetchSets } = useSetsContext();
+    const { rarities, fetchRarities } = useRaritiesContext();
 
     useEffect(() => {
         fetchCategories();
@@ -56,12 +65,13 @@ export const AddProduct = () => {
         fetchSets();
         fetchVariants();
         fetchCardTypes();
+        fetchRarities();
         if (addProduct.selectedFile) {
             const objectUrl = URL.createObjectURL(addProduct.selectedFile);
             setPreviewUrl(objectUrl);
             return () => URL.revokeObjectURL(objectUrl);
         }
-    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets, fetchVariants, addProduct.selectedFile]);
+    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets, fetchVariants, fetchCardTypes, fetchRarities, addProduct.selectedFile]);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -121,6 +131,7 @@ export const AddProduct = () => {
             category: false,
             brand: false,
             set: false,
+            rarities: false
         });
     };
 
@@ -152,13 +163,13 @@ export const AddProduct = () => {
             selectedBrand,
             selectedSet,
         } = addProduct;
-    
+
         if (!productName || !productTypeId || !category || !price || !selectedFile || !selectedBrand) {
             setError('All fields are required, including an image, brand, and set.');
             setIsButtonDisabled(false);
             return;
         }
-    
+
         try {
             const { success, message } = await createProduct({
                 name: productName,
@@ -167,6 +178,7 @@ export const AddProduct = () => {
                 cardTypeId: addProduct.cardTypeId ? Number(addProduct.cardTypeId) : undefined,
                 brandId: Number(selectedBrand),
                 setId: Number(selectedSet),
+                rarityId: addProduct.selectedRarity ? Number(addProduct.selectedRarity) : undefined,
                 img: selectedFile,
                 categoryId: parseInt(category),
                 stock: {
@@ -180,7 +192,7 @@ export const AddProduct = () => {
                 description,
                 rrp: rrp ? parseFloat(rrp) : undefined,
             });
-    
+
             if (success) {
                 setSuccess(message);
                 clearFileInput();
@@ -203,6 +215,7 @@ export const AddProduct = () => {
                     selectedFile: null,
                     selectedBrand: null,
                     selectedSet: null,
+                    selectedRarity: null,
                 });
             } else {
                 setError(message);
@@ -369,6 +382,27 @@ export const AddProduct = () => {
                                     }
                                     values={cardTypes}
                                     selectedValue="cardTypeId"
+                                    displayField="name"
+                                />
+                            )}
+                        {['Single Cards'].includes(
+                            categories?.find((category: any) =>
+                                category.id.toString() === addProduct.category
+                            )?.name || ''
+                        ) && (
+                                <ProductDropdown
+                                    label="Rarity"
+                                    handleDropdownToggle={() => handleDropdownToggle('rarities')}
+                                    handleDropdownChange={handleDropdownChange}
+                                    toggleValue="rarities"
+                                    isDropdownOpen={dropdownStates.rarities}
+                                    header={
+                                        addProduct.selectedRarity
+                                            ? rarities?.find((r) => r.id === addProduct.selectedRarity)?.name
+                                            : 'Select Rarity'
+                                    }
+                                    values={rarities}
+                                    selectedValue="selectedRarity"
                                     displayField="name"
                                 />
                             )}
