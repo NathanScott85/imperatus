@@ -25,6 +25,17 @@ interface Stock {
     sold?: number;
 }
 
+export interface ProductFilters {
+    brandId?: number[];
+    setId?: number[];
+    rarityId?: number[];
+    inStockOnly?: boolean;
+    outOfStockOnly?: boolean;
+    preorderOnly?: boolean;
+    priceMin?: number;
+    priceMax?: number;
+}
+
 interface Product {
     id: number;
     name: string;
@@ -58,6 +69,24 @@ interface Product {
     img: {
         url: string;
     };
+}
+
+interface Brand {
+    id: number;
+    name: string;
+    description: string;
+}
+
+interface Set {
+    id: number;
+    setName: string;
+    setCode: string;
+    description: string;
+}
+
+interface Rarity {
+    id: number;
+    name: string;
 }
 
 interface ProductsContextProps {
@@ -115,6 +144,11 @@ interface ProductsContextProps {
         rrp?: number;
     }) => Promise<{ success: boolean; message: string; product: Product | null }>;
     deleteProduct: (id: number) => Promise<{ success: boolean; message: string }>;
+    filters: ProductFilters;
+    setFilters: React.Dispatch<React.SetStateAction<ProductFilters>>;
+    brands: Brand[];
+    sets: Set[];
+    rarities: Rarity[];
 }
 
 const ProductsContext = createContext<ProductsContextProps | undefined>(undefined);
@@ -127,19 +161,44 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
+    const [filters, setFilters] = useState<ProductFilters>({});
     const [search, setSearch] = useState('');
+    const [brands, setBrands] = useState<Brand[]>([]);
+    const [sets, setSets] = useState<Set[]>([]);
+    const [limit, setLimit] = useState(10);
+    const [rarities, setRarities] = useState<Rarity[]>([]);
 
-    const queryVariables = useMemo(() => ({ page, limit: 8, search }), [page, search]);
-
-    const [fetchProducts, { loading, error }] = useLazyQuery(GET_ALL_PRODUCTS, {
-        variables: queryVariables,
+    const queryVariables = useMemo(() => ({
+        page,
+        limit,
+        search,
+        filters,
+    }), [page, limit, search, filters]);
+    console.log(queryVariables, 'queryVariables');
+    const [fetchProductsQuery, { loading, error }] = useLazyQuery(GET_ALL_PRODUCTS, {
         fetchPolicy: 'cache-and-network',
+        variables: queryVariables,
         onCompleted: (data) => {
+            console.log('✅ Product data fetched:', data);
             setProducts(data?.getAllProducts?.products || []);
             setTotalCount(data?.getAllProducts?.totalCount || 0);
             setTotalPages(data?.getAllProducts?.totalPages || 1);
+            setBrands(data?.getAllProducts?.brands || []);
+            setSets(data?.getAllProducts?.sets || []);
+            setRarities(data?.getAllProducts?.rarities || []);
         },
     });
+
+    const fetchProducts = useCallback(() => {
+        fetchProductsQuery({
+            variables: {
+                page,
+                limit: 8,
+                search,
+                filters,
+            },
+        });
+    }, [page, search, filters, fetchProductsQuery]);
 
     const [fetchLatestProductsQuery] = useLazyQuery(GET_LATEST_PRODUCTS, {
         fetchPolicy: 'cache-and-network',
@@ -285,7 +344,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     useEffect(() => {
         fetchProducts();
-    }, [fetchProducts, page, search]);
+    }, [fetchProducts, page, search, filters]);
 
     return (
         <ProductsContext.Provider
@@ -300,6 +359,8 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 page,
                 setPage,
                 search,
+                filters,
+                setFilters,
                 setSearch,
                 setProduct,
                 fetchProducts,
@@ -309,6 +370,9 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 createProduct,
                 updateProduct,
                 deleteProduct,
+                brands,
+                sets,
+                rarities,
             }}
         >
             {children}

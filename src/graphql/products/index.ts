@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_ALL_PRODUCTS = gql`
-    query GetAllProducts($page: Int, $limit: Int, $search: String) {
-        getAllProducts(page: $page, limit: $limit, search: $search) {
+    query GetAllProducts($page: Int, $limit: Int, $search: String, $filters: ProductFilters) {
+        getAllProducts(page: $page, limit: $limit, search: $search, filters: $filters) {
             totalCount
             totalPages
             currentPage
@@ -59,6 +59,29 @@ export const GET_ALL_PRODUCTS = gql`
                     soldout
                     preorder
                 }
+            }
+            brands {
+                id
+                name
+                description
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+            }
+            sets {
+                id
+                setName
+                setCode
+                description
+            }
+            rarities {
+                id
+                name
             }
         }
     }

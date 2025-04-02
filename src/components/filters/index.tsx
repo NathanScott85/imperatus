@@ -5,59 +5,69 @@ import Button from '../button';
 import { BrandFilter } from './brand-filter';
 import { PriceSlider } from './price-filter';
 import { SetFilter } from './set-filters';
+import { RarityFilter } from './rarity-filter';
+import { PreorderFilter } from './preoder-filters';
 
-interface FiltersType {
+export interface FiltersType {
     brandId?: number[];
-    // setId?: number[];
-    // preorder?: boolean;
-    // priceMin?: number;
-    // priceMax?: number;
-    // stockMin?: number;
-    // stockMax?: number;
+    setId?: number[];
+    rarityId?: number[];
+    inStockOnly?: boolean;
+    outOfStockOnly?: boolean;
+    preorderOnly?: boolean;
+    priceMin?: number;
+    priceMax?: number;
 }
 
 interface FiltersProps {
-    // checkedStatus: { inStock: boolean; outOfStock: boolean };
-    // handleChecked: (status: "inStock" | "outOfStock") => void;
-    filters: any;
+    filters: FiltersType;
     brands: { id: number; name: string }[];
-    // sets: { id: number; setName: string }[];
-    // priceMin: number;
-    // priceMax: number;
+    sets: { id: number; setName: string; }[];
+    rarities: { id: number; name: string }[];
     categoryName: string;
-    // onPriceChange: (min: number, max: number) => void;
-    onFilterChange: (key: keyof FiltersType, value: any) => void;
+    onPriceChange: (min: number, max: number) => void;
+    onFilterChange: (key: keyof FiltersType | 'priceMin' | 'priceMax', value: any) => void;
     resetFilters: () => void;
+    priceMin: number;
+    priceMax: number;
 }
 
-
 export const Filters: React.FC<FiltersProps> = ({
-    // checkedStatus,
-    // handleChecked,
     filters,
     brands,
-    // sets,
+    sets,
+    rarities,
     onFilterChange,
     resetFilters,
-    // priceMin,
-    // priceMax,
+    priceMin,
+    priceMax,
     categoryName
 }) => {
     return (
         <FiltersContainer>
             <h1>Filters</h1>
-            {/* <StockStatus
-                handleChecked={handleChecked}
-                checkedStatus={checkedStatus}
-            /> */}
+            <StockStatus
+                filters={filters}
+                onFilterChange={onFilterChange}
+            />
+            <PreorderFilter
+                filters={filters}
+                onFilterChange={onFilterChange}
+            />
             <BrandFilter
                 brands={brands}
                 onFilterChange={onFilterChange}
                 filters={filters}
-
             />
-            {/* { categoryName !== "Board Games" && <SetFilter sets={sets} filters={filters} onFilterChange={onFilterChange} />} */}
-            {/* <PriceSlider
+            {categoryName !== "Board Games" && (
+                <SetFilter sets={sets} filters={filters} onFilterChange={onFilterChange} />
+              
+            )}
+            {categoryName !== "Board Games" &&  categoryName !== "Card Games" && (
+                <RarityFilter rarities={rarities} filters={filters} onFilterChange={onFilterChange} />
+            )}
+              
+            <PriceSlider
                 filters={filters}
                 priceMin={priceMin}
                 priceMax={priceMax}
@@ -67,7 +77,7 @@ export const Filters: React.FC<FiltersProps> = ({
                     onFilterChange("priceMin", min);
                     onFilterChange("priceMax", max);
                 }}
-            /> */}
+            />
             <Button variant='secondary' onClick={resetFilters}>Reset Filters</Button>
         </FiltersContainer>
     );
@@ -91,5 +101,3 @@ const FiltersContainer = styled.div`
         margin: 0;
     }
 `;
-
-

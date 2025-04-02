@@ -29,6 +29,19 @@ interface Brand {
     description: string;
 }
 
+interface Rarity {
+    id: number;
+    name: string;
+}
+
+interface Set {
+    id: number;
+    setName: string;
+    setCode: string;
+    description: string;
+    brandId: number;
+}
+
 interface Category {
     id: string;
     name: string;
@@ -36,7 +49,9 @@ interface Category {
     description: string;
     img?: File | null;
     products: any;
-    brands: Brand[]; // Adding brands directly to Category
+    brands: Brand[];
+    rarities?: Rarity[];
+    sets?: Set[];
 }
 
 interface UpdateCategoryInput {
@@ -48,6 +63,13 @@ interface UpdateCategoryInput {
 
 export interface CategoryFilters {
     brandId?: number[];
+    setId?: number[];
+    rarityId?: number[];
+    inStockOnly?: boolean;
+    outOfStockOnly?: boolean;
+    preorderOnly?: boolean;
+    priceMin?: number;
+    priceMax?: number;
 }
 
 interface CategoriesContextProps {
@@ -130,6 +152,8 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
             setCurrentCategory({
                 ...data?.getCategoryById,
                 brands: data?.getCategoryById?.brands || [],
+                rarities: data?.getCategoryById?.rarities || [],
+                sets: data?.getCategoryById?.sets || [],
             });
         }
     });

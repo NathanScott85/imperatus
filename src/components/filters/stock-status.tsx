@@ -4,35 +4,39 @@ import { Checkbox } from '../checkbox';
 import { FancyContainer } from '../../components/fancy-container';
 
 interface StockStatusProps {
-    handleChecked: (status: 'inStock' | 'outOfStock') => void;
-    checkedStatus: {
-        inStock: boolean;
-        outOfStock: boolean;
+    filters: {
+        inStockOnly?: boolean;
+        outOfStockOnly?: boolean;
     };
+    onFilterChange: (key: 'inStockOnly' | 'outOfStockOnly', value: boolean) => void;
 }
 
 export const StockStatus: React.FC<StockStatusProps> = ({
-    handleChecked,
-    checkedStatus,
+    filters,
+    onFilterChange,
 }) => {
     return (
         <FilterSection>
             <FilterTitle>Stock Status</FilterTitle>
             <FancyContainer variant="stock" size="stock">
                 <FilterOption display>
-                <Checkbox
+                    <Checkbox
                         type="checkbox"
-                        checked={checkedStatus.inStock}
-                        onChange={() => handleChecked('inStock')}
+                        checked={filters.inStockOnly || false}
+                        onChange={() =>
+                            onFilterChange('inStockOnly', !filters.inStockOnly)
+                        }
                         id="inStock"
                     />
                     <label htmlFor="inStock">In Stock</label>
                 </FilterOption>
                 <FilterOption display={false}>
-                <Checkbox
-                        checked={checkedStatus.outOfStock}
+                    <Checkbox
                         type="checkbox"
-                        onChange={() => handleChecked('outOfStock')}
+                        checked={filters.outOfStockOnly || false}
+                        onChange={() =>
+                            onFilterChange('outOfStockOnly', !filters.outOfStockOnly)
+                        }
                         id="outOfStock"
                     />
                     <label htmlFor="outOfStock">Out of Stock</label>
@@ -47,7 +51,7 @@ const FilterSection = styled.div`
 `;
 
 const FilterTitle = styled.p`
-   font-family: Cinzel, serif;
+    font-family: Cinzel, serif;
     font-size: 16.2px;
     font-weight: 400;
     margin-bottom: 2rem;

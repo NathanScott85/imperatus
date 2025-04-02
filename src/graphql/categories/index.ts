@@ -94,6 +94,22 @@ export const GET_CATEGORY_BY_ID = gql`
         name
         description
       }
+      rarities {
+        id
+        name
+      }
+      sets {
+        id
+        setName
+        setCode
+        description
+        brandId
+      }
+        stockStatus {
+        hasInStock
+        hasPreorder
+        hasOutOfStock
+      }
       products {
         id
         name
@@ -151,7 +167,6 @@ export const GET_CATEGORY_BY_ID = gql`
     }
   }
 `;
-
 
 export const CREATE_CATEGORY = gql`
 mutation CreateCategory($name: String!, $description: String!, $img: Upload!) {

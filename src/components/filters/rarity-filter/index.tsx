@@ -1,39 +1,38 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
-interface SetFilterProps {
-    sets: { id: number; setName: string }[];
-    filters: any;
-    onFilterChange: (key: "setId", value: number[]) => void;
-}
+export const RarityFilter = ({ filters, rarities, onFilterChange }: any) => {
+    const handleCheckboxChange = (rarityId: number) => {
+        let updated = filters.rarityId ?? [];
+        const idx = updated.indexOf(rarityId);
 
-export const SetFilter: React.FC<SetFilterProps> = ({ sets, filters, onFilterChange }) => {
-    const handleCheckboxChange = (setId: number) => {
-        const current = filters.setId ?? [];
-        const exists = current.includes(setId);
-        const updated = exists ? current.filter((id: number) => id !== setId) : [...current, setId];
+        if (idx !== -1) {
+            updated.splice(idx, 1);
+        } else {
+            updated.push(rarityId);
+        }
 
-        onFilterChange("setId", updated.length > 0 ? updated : null);
+        onFilterChange('rarityId', updated.length > 0 ? updated : null);
     };
 
     return (
         <FilterSection>
-            <FilterTitle>Set</FilterTitle>
+            <FilterTitle>Rarity</FilterTitle>
             <ScrollableList>
-                {sets.map((set) => (
-                    <CheckboxLabel key={set.id}>
+                {rarities.map((rarity: any) => (
+                    <CheckboxLabel key={rarity.id}>
                         <CheckboxContainer>
                             <HiddenCheckbox
-                                checked={filters.setId?.includes(set.id) || false}
-                                onChange={() => handleCheckboxChange(set.id)}
+                                checked={filters.rarityId?.includes(rarity.id)}
+                                onChange={() => handleCheckboxChange(rarity.id)}
                             />
-                            <StyledCheckbox checked={filters.setId?.includes(set.id) || false}>
+                            <StyledCheckbox checked={filters.rarityId?.includes(rarity.id)}>
                                 <Icon viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12" />
                                 </Icon>
                             </StyledCheckbox>
                         </CheckboxContainer>
-                        {set.setName}
+                        {rarity.name}
                     </CheckboxLabel>
                 ))}
             </ScrollableList>

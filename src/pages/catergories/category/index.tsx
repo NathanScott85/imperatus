@@ -3,22 +3,24 @@ import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../../components/header';
 import { Navigation } from '../../../components/navigation';
-import { Filters } from '../../../components/filters';
+import { Filters, FiltersType } from '../../../components/filters';
 import { Products } from '../../../components/products';
 import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
 import { BreadCrumb } from '../../../components/breadcrumbs';
 import { mediaQueries } from '../../../styled/breakpoints';
 
-interface CategoryFilters {
-    brandId?: number[];
-}
+interface CategoryFilters extends FiltersType {}
 
 export const Category = () => {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
     const [selectedFilters, setSelectedFilters] = useState<CategoryFilters>({});
-    const [filterOptions, setFilterOptions] = useState<{ brands: { id: number; name: string }[] }>({ brands: [] });
+    const [filterOptions, setFilterOptions] = useState<{
+        brands: { id: number; name: string }[];
+        sets: { id: number; setName: string; }[];
+        rarities: { id: number; name: string }[];
+    }>({ brands: [], sets: [], rarities: [] });
 
     const {
         currentCategory,
@@ -34,7 +36,6 @@ export const Category = () => {
 
     const hasFetched = useRef(false);
 
-    // Initial category fetch
     useEffect(() => {
         if (location.state?.category) {
             setCurrentCategory(location.state.category);
@@ -44,7 +45,6 @@ export const Category = () => {
         }
     }, [id, setCurrentCategory]);
 
-    // Re-fetch category when filters change
     useEffect(() => {
         if (id) {
             setPage(1);
@@ -56,20 +56,44 @@ export const Category = () => {
         if (currentCategory) {
             const transformedBrands = (currentCategory.brands || []).map((brand: any) => ({
                 ...brand,
-                id: Number(brand.id), // Convert 'id' to a number here
+                id: Number(brand.id),
             }));
 
-            setFilterOptions({ brands: transformedBrands });
+            const transformedSets = (currentCategory.sets || []).map((set: any) => ({
+                ...set,
+                id: Number(set.id),
+            }));
+
+            const transformedRarities = (currentCategory.rarities || []).map((rarity: any) => ({
+                ...rarity,
+                id: Number(rarity.id),
+            }));
+
+            setFilterOptions({
+                brands: transformedBrands,
+                sets: transformedSets,
+                rarities: transformedRarities,
+            });
         }
     }, [currentCategory]);
 
-    const handleFilterChange = (key: string, value: any) => {
-        if (key === 'brandId') {
-            const updatedBrands = value.map((brand: any) => Number(brand));
-
+    const handleFilterChange = (key: keyof CategoryFilters, value: any) => {
+        if (key === 'brandId' || key === 'setId' || key === 'rarityId') {
+            const updated = Array.isArray(value) ? value.map(Number) : [];
             setSelectedFilters((prev) => ({
                 ...prev,
-                brandId: updatedBrands.length > 0 ? updatedBrands : null,
+                [key]: updated.length > 0 ? updated : undefined,
+            }));
+        } else if (
+            key === 'inStockOnly' ||
+            key === 'outOfStockOnly' ||
+            key === 'preorderOnly' ||
+            key === 'priceMin' ||
+            key === 'priceMax'
+        ) {
+            setSelectedFilters((prev) => ({
+                ...prev,
+                [key]: value,
             }));
         }
     };
@@ -104,9 +128,17 @@ export const Category = () => {
                             <Filters
                                 categoryName={currentCategory.name}
                                 filters={selectedFilters}
-                                brands={filterOptions.brands}  // Brands now come directly from currentCategory
-                                onFilterChange={handleFilterChange}  // Use handleFilterChange for brand filtering
+                                brands={filterOptions.brands}
+                                sets={filterOptions.sets}
+                                rarities={filterOptions.rarities}
+                                onFilterChange={handleFilterChange}
                                 resetFilters={resetFilters}
+                                onPriceChange={(min: number, max: number) => {
+                                    handleFilterChange('priceMin', min);
+                                    handleFilterChange('priceMax', max);
+                                }}
+                                priceMin={0}
+                                priceMax={1000}
                             />
                         )}
                     </CategoriesFilterContainer>
@@ -145,8 +177,6 @@ export const Category = () => {
     );
 };
 
-
-
 const PaginationWrapper = styled.div`
     display: flex;
     justify-content: center;
@@ -179,7 +209,6 @@ const PageButton = styled.button<{ disabled?: boolean }>`
     }
 `;
 
-
 const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: row;
@@ -192,7 +221,7 @@ const CategoriesContainer = styled.section`
 
 const CategoriesMain = styled.main<{ background: any }>`
     background-color: ${({ background }) => (background ? 'white' : '#130a30')};
-   display: flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     align-content: center;
@@ -209,29 +238,27 @@ const CategoriesFilterContainer = styled.div`
 `;
 
 const CategoriesListContainer = styled.div`
-       display: flex;
-       flex-wrap: wrap;
-       justify-content: flex-start;
-       gap: 1.5rem;
-       width: 100%;
-       min-width: 600px;
-       max-width: 1000px;
-   
-       /* Add a min-height to stabilize the layout */
-       min-height: 675px;
-       position: relative;
-   
-       ${mediaQueries('md')`
-            min-width: 300px;
-        `}
-       
-        ${mediaQueries('lg')`
-           min-height: 675px;
-        `}     
-       
-        ${mediaQueries('xl')`
-            min-height: 675px;
-        `}    
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+    min-width: 600px;
+    max-width: 1000px;
+    min-height: 675px;
+    position: relative;
+
+    ${mediaQueries('md')`
+        min-width: 300px;
+    `}
+
+    ${mediaQueries('lg')`
+        min-height: 675px;
+    `}
+
+    ${mediaQueries('xl')`
+        min-height: 675px;
+    `}
 `;
 
 const ProductsWrapper = styled.div`
@@ -250,6 +277,7 @@ const ImageWrapper = styled.div`
     align-items: center;
     height: 200px;
     background-color: #130a30;
+
     p {
         color: #c79d0a;
         font-family: Cinzel;
