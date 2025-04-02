@@ -39,14 +39,14 @@ export const SearchResults = () => {
             hasFetched.current = true;
             fetchProducts();
         }
-    }, [filters]);
+    }, [fetchProducts, filters]);
 
     useEffect(() => {
         if (query) {
             setSearch(query);
             fetchProducts();
         }
-    }, [query]);
+    }, [fetchProducts, query, setSearch]);
 
     useEffect(() => {
         const transformedBrands = (brands || []).map((b: any) => ({ ...b, id: Number(b.id) }));
@@ -145,32 +145,6 @@ export const SearchResults = () => {
         </>
     );
 };
-
-
-const NoResultsMessage = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-width: 600px;
-    text-align: center;
-    font-size: 18px;
-    color: #777;
-
-    p {
-        height: 100%;
-        color: black;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: Cinzel, serif;
-        font-size: 24px;
-        font-weight: 700;
-        padding: 6rem;
-        width: 100%;
-    }
-`;
 
 const ImageWrapper = styled.div`
     width: 100%;

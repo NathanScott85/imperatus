@@ -146,7 +146,6 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
         fetchPolicy: "cache-and-network",
         variables: queryVariables,
         onCompleted: (data) => {
-            console.log('✅ Category data fetched:', data);
             setTotalCount(data?.getCategoryById?.totalCount || 0);
             setTotalPages(data?.getCategoryById?.totalPages || 1);
             setCurrentCategory({

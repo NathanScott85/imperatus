@@ -100,6 +100,8 @@ interface ProductsContextProps {
     totalPages: number;
     page: number;
     setPage: (page: number) => void;
+    limit: number;
+    setLimit: (limit: number) => void;
     search: string;
     setSearch: (search: string) => void;
     setProduct: (product: any) => void;
@@ -174,12 +176,11 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         search,
         filters,
     }), [page, limit, search, filters]);
-    console.log(queryVariables, 'queryVariables');
+
     const [fetchProductsQuery, { loading, error }] = useLazyQuery(GET_ALL_PRODUCTS, {
         fetchPolicy: 'cache-and-network',
         variables: queryVariables,
         onCompleted: (data) => {
-            console.log('✅ Product data fetched:', data);
             setProducts(data?.getAllProducts?.products || []);
             setTotalCount(data?.getAllProducts?.totalCount || 0);
             setTotalPages(data?.getAllProducts?.totalPages || 1);
@@ -358,6 +359,8 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
                 totalPages,
                 page,
                 setPage,
+                limit, 
+                setLimit,
                 search,
                 filters,
                 setFilters,

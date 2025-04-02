@@ -44,7 +44,7 @@ export const DeliveryInformation = () => {
     const handleSaveClick = async (e: any) => {
         e.preventDefault();
         try {
-            const userDetails = await updateUserAddress({
+            await updateUserAddress({
                 variables: {
                     id: user?.id,
                     phone: formData.phone,
@@ -53,7 +53,6 @@ export const DeliveryInformation = () => {
                     postcode: formData.postcode,
                 },
             });
-            console.log('User address updated successfully:', userDetails);
         } catch (error) {
             console.error('Error updating address:', error);
         }
