@@ -54,19 +54,27 @@ export const Filters: React.FC<FiltersProps> = ({
                 filters={filters}
                 onFilterChange={onFilterChange}
             />
-            <BrandFilter
-                brands={brands}
-                onFilterChange={onFilterChange}
-                filters={filters}
-            />
-            {categoryName !== "Board Games" && (
-                <SetFilter sets={sets} filters={filters} onFilterChange={onFilterChange} />
-              
+            {brands.length > 0 && (
+                <BrandFilter
+                    brands={brands}
+                    onFilterChange={onFilterChange}
+                    filters={filters}
+                />
             )}
-            {categoryName !== "Board Games" &&  categoryName !== "Card Games" && (
-                <RarityFilter rarities={rarities} filters={filters} onFilterChange={onFilterChange} />
+            {categoryName !== "Board Games" && sets.length > 0 && (
+                <SetFilter
+                    sets={sets}
+                    filters={filters}
+                    onFilterChange={onFilterChange}
+                />
             )}
-              
+            {categoryName !== "Board Games" && categoryName !== "Card Games" && rarities.length > 0 && (
+                <RarityFilter
+                    rarities={rarities}
+                    filters={filters}
+                    onFilterChange={onFilterChange}
+                />
+            )}
             <PriceSlider
                 filters={filters}
                 priceMin={priceMin}

@@ -41,8 +41,11 @@ export const SearchResults = () => {
         }
     }, [fetchProducts, filters]);
 
+    const hasSetInitialSearch = useRef(false);
+
     useEffect(() => {
-        if (query) {
+        if (!hasSetInitialSearch.current && query) {
+            hasSetInitialSearch.current = true;
             setSearch(query);
             fetchProducts();
         }

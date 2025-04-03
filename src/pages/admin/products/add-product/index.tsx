@@ -59,19 +59,38 @@ export const AddProduct = () => {
     const { rarities, fetchRarities } = useRaritiesContext();
 
     useEffect(() => {
-        fetchCategories();
-        fetchProductTypes();
-        fetchBrands();
-        fetchSets();
-        fetchVariants();
-        fetchCardTypes();
-        fetchRarities();
+        if (!categories || categories.length === 0) fetchCategories();
+        if (!productTypes || productTypes.length === 0) fetchProductTypes();
+        if (!brands || brands.length === 0) fetchBrands();
+        if (!variants || variants.length === 0) fetchVariants();
+    
         if (addProduct.selectedFile) {
             const objectUrl = URL.createObjectURL(addProduct.selectedFile);
             setPreviewUrl(objectUrl);
             return () => URL.revokeObjectURL(objectUrl);
         }
-    }, [fetchCategories, fetchProductTypes, fetchBrands, fetchSets, fetchVariants, fetchCardTypes, fetchRarities, addProduct.selectedFile]);
+    }, [addProduct.selectedFile]);
+
+    useEffect(() => {
+        const selectedCategoryName = categories?.find(
+            (category) => category.id.toString() === addProduct.category
+        )?.name;
+    
+        const isCardGame = selectedCategoryName === 'Card Games' || selectedCategoryName === 'Single Cards';
+        const isSingleCard = selectedCategoryName === 'Single Cards';
+    
+        if (isCardGame && (!sets || sets.length === 0)) {
+            fetchSets();
+        }
+    
+        if (isCardGame && (!cardTypes || cardTypes.length === 0)) {
+            fetchCardTypes();
+        }
+    
+        if (isSingleCard && (!rarities || rarities.length === 0)) {
+            fetchRarities();
+        }
+    }, [addProduct.category, categories]);
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
