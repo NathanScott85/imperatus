@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
-import { useAdminContext } from '../../../../../context/admin';
 import { useBrandsContext } from '../../../../../context/brands';
 import { ProductDropdown } from '../../add-product/dropdown'; // Ensure correct import path
+import { useCardTypesContext } from '../../../../../context/card-types';
 
 export interface CardTypeDetailProps {
     type: {
@@ -19,11 +19,11 @@ export interface CardTypeDetailProps {
 }
 
 export const CardType: React.FC<CardTypeDetailProps> = ({ type, onBack }) => {
-    const { updateCardType } = useAdminContext();
+    const { updateCardType } = useCardTypesContext();
     const { brands } = useBrandsContext();
 
     const [name, setName] = useState(type.name);
-    const [selectedBrand, setSelectedBrand] = useState<number>(Number(type.brand.id)); // Store selected brand ID
+    const [selectedBrand, setSelectedBrand] = useState<number>(Number(type.brand.id));
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');

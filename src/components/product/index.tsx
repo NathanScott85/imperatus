@@ -36,7 +36,7 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
                     state={{ product: productToUse }}
                 >
                     <ImageWrapper>
-                        <ProductImage src={productToUse.img.url} alt={productToUse.name} />
+                        {productToUse.img?.url && <ProductImage src={productToUse.img?.url} alt={productToUse.name} />}
                     </ImageWrapper>
                     <ProductName>{productToUse.name}</ProductName>
                     <ProductPriceWrapper>
@@ -56,8 +56,6 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
 const ProductContainer = styled.div`
     border: 1px solid #ac8fff;
     border-radius: 12px;
-    display: flex;
-    flex-direction: row;
     width: 200px;
     margin: 0.5rem;
     padding: 0.9rem;

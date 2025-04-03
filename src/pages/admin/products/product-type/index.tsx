@@ -1,4 +1,4 @@
-import React, { useDeferredValue, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAdminContext } from '../../../../context/admin';
 import { FancyContainer } from '../../../../components/fancy-container';
@@ -6,6 +6,7 @@ import { TypeDetail } from './type-detail';
 
 import { Input } from '../../../../components/input';
 import { Search } from '../../../../components/search';
+import { useProductTypeContext } from '../../../../context/product-types';
 
 export const AdminProductTypes = () => {
     const {
@@ -18,14 +19,14 @@ export const AdminProductTypes = () => {
       page,
       setPage,
       setSearch,
-    } = useAdminContext();
+    } = useProductTypeContext();
 
     const [selectedType, setSelectedType] = useState<any | null>( null );
 
 
-    useEffect( () => {
+    useEffect(() => {
       fetchProductTypes();
-    }, [setSearch, fetchProductTypes] )
+  }, [page, search, fetchProductTypes]);
 
     const handlePageChange = ( newPage: number ) => {
       if ( newPage >= 1 && newPage <= totalPages ) {
@@ -325,7 +326,3 @@ const ViewButton = styled.button`
     }
 `;
 
-const TypeDetailContainer = styled.div`
-    // Add your styling for the product type detail view here
-    color: white;
-`;

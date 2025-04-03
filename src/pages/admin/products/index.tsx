@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../context/admin';
 import { Product } from './product';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Search } from '../../../components/search';
+import { useProductsContext } from '../../../context/products';
 
 export const AdminProducts = () => {
-    const {
-        products,
-        loading,
+    const { loading,
         error,
         search,
         setSearch,
-        fetchProducts,
         totalPages,
         page,
-        setPage,
-    } = useAdminContext();
+        setPage, products, fetchProducts } = useProductsContext();
 
     const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 

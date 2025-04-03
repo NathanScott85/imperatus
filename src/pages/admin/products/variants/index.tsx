@@ -4,11 +4,11 @@ import styled from "styled-components";
 import { Search } from '../../../../components/search';
 import { FancyContainer } from "../../../../components/fancy-container";
 import { Variant } from './variant';
+import { useVariantsContext } from "../../../../context/variants";
 
 export const AdminVariants = () => {
     const { 
-      variants, 
-      fetchVariants, 
+
       loading,
       error,
       totalPages,
@@ -17,6 +17,7 @@ export const AdminVariants = () => {
       page, 
       setSearch 
     } = useAdminContext();
+    const { variants, fetchVariants } = useVariantsContext();
 
     const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
 

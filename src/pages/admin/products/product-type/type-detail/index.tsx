@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
 import { useAdminContext } from '../../../../../context/admin';
+import { useProductTypeContext } from '../../../../../context/product-types';
 
 export interface TypeDetailProps {
     type: {
@@ -13,7 +14,7 @@ export interface TypeDetailProps {
 }
 
 export const TypeDetail: React.FC<TypeDetailProps> = ({ type, onBack }) => {
-    const { updateProductType } = useAdminContext();
+    const { updateProductType } = useProductTypeContext();
     const [name, setName] = useState(type.name);
 
     const [error, setError] = useState('');

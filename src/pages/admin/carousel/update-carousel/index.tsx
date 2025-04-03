@@ -4,8 +4,8 @@ import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
 import { useCarouselContext } from '../../../../context/carousel';
 import { useBrandsContext } from '../../../../context/brands';
-import { useAdminContext } from '../../../../context/admin';
 import { Modal } from '../../../../components/modal';
+import { useProductsContext } from '../../../../context/products';
 
 export interface CarouselDetailProps {
     carousel: any;
@@ -15,7 +15,7 @@ export interface CarouselDetailProps {
 export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack }) => {
     const { updateCarousel, deleteCarousel } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
-    const { products, fetchProducts } = useAdminContext();
+    const { products, fetchProducts } = useProductsContext();
 
     const [title, setTitle] = useState(carousel.title);
     const [description, setDescription] = useState(carousel.description);
@@ -74,7 +74,6 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
     };
 
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const productId = e.target.value;
         setSelectedProductId(e.target.value);
     }
 

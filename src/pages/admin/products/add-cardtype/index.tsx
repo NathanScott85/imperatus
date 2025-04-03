@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
 import { useBrandsContext } from '../../../../context/brands';
 import Button from '../../../../components/button';
 import { Input } from '../../../../components/input';
+import { useCardTypesContext } from '../../../../context/card-types';
 
 export const AddCardType = () => {
     const [cardType, setCardType] = useState({
@@ -15,7 +15,7 @@ export const AddCardType = () => {
     const [success, setSuccess] = useState('');
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-    const { createCardType } = useAdminContext();
+    const { createCardType } = useCardTypesContext();
     const { brands, fetchBrands } = useBrandsContext();
 
     useEffect(() => {

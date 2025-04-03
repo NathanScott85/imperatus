@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
-import { useAdminContext } from '../../../../../context/admin';
+import { useVariantsContext } from '../../../../../context/variants';
 
 export interface VariantDetailProps {
   variant: {
@@ -13,7 +13,7 @@ export interface VariantDetailProps {
 }
 
 export const Variant: React.FC<VariantDetailProps> = ({ variant, onBack }) => {
-  const { updateVariant } = useAdminContext();
+  const { updateVariant } = useVariantsContext();
   const [name, setName] = useState(variant.name);
 
   const [error, setError] = useState('');

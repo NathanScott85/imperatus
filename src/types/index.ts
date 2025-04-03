@@ -50,6 +50,7 @@ export interface Product {
     category: {
         id: string;
         name: string;
+        slug: string;
     };
     stock: Stock;
     preorder: boolean;

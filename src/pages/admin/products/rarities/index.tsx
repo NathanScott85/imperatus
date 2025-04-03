@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useAdminContext } from "../../../../context/admin";
 import styled from "styled-components";
 import { Search } from '../../../../components/search';
 import { FancyContainer } from "../../../../components/fancy-container";
 import { Rarity } from './rarity';
+import { useRaritiesContext } from "../../../../context/card-rarity";
 
 export const AdminRarities = () => {
     const { 
@@ -16,7 +16,7 @@ export const AdminRarities = () => {
       search,
       page, 
       setSearch 
-    } = useAdminContext();
+    } = useRaritiesContext();
 
     const [selectedRarity, setSelectedRarity] = useState<any | null>(null);
 

@@ -12,34 +12,45 @@ export const ProductDropdown = ({
     values,
     selectedValue,
     displayField,
+    showClearOption = true,
 }: any) => {
     return (
-        <FormGroup>
-            <Label htmlFor={label}>{label}</Label>
-            <Select onClick={() => handleDropdownToggle(toggleValue)}>
-                <DropdownHeader>
-                    {header}
-                    <ChevronContainer isDropdownOpen={isDropdownOpen}>
-                        <ChevronUp stroke="#C79D0A" />
-                    </ChevronContainer>
-                </DropdownHeader>
-                {isDropdownOpen && (
-                    <DropdownList>
-                        {values.map((value: any) => (
-                            <DropDownOption
-                                key={value.id}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDropdownChange(selectedValue, value.id);
-                                }}
-                            >
-                                {value[displayField]}
-                            </DropDownOption>
-                        ))}
-                    </DropdownList>
-                )}
-            </Select>
-        </FormGroup>
+            <FormGroup>
+                <Label htmlFor={label}>{label}</Label>
+                <Select onClick={() => handleDropdownToggle(toggleValue)}>
+                    <DropdownHeader>
+                        {header}
+                        <ChevronContainer isDropdownOpen={isDropdownOpen}>
+                            <ChevronUp stroke="#C79D0A" />
+                        </ChevronContainer>
+                    </DropdownHeader>
+                    {isDropdownOpen && (
+                        <DropdownList>
+                            {showClearOption && (
+                                <DropDownOption
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDropdownChange(selectedValue, null);
+                                    }}
+                                >
+                                    Clear Selection
+                                </DropDownOption>
+                            )}
+                            {values.map((value: any) => (
+                                <DropDownOption
+                                    key={value.id}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDropdownChange(selectedValue, value.id);
+                                    }}
+                                >
+                                    {value[displayField]}
+                                </DropDownOption>
+                            ))}
+                        </DropdownList>
+                    )}
+                </Select>
+            </FormGroup>
     );
 };
 

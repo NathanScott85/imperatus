@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input } from '../../../../components/input';
 import Button from '../../../../components/button';
-import { useAdminContext } from '../../../../context/admin';
+import { useVariantsContext } from '../../../../context/variants';
 
 export const AddVariant = () => {
   const [variant, setVariant] = useState({ name: '' });
@@ -10,7 +10,7 @@ export const AddVariant = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const { createVariant } = useAdminContext();
+  const { createVariant } = useVariantsContext();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
