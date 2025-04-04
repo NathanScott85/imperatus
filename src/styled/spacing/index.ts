@@ -1,4 +1,3 @@
-
 export interface Spacing {
     0: string;
     8: string;
@@ -14,4 +13,4 @@ export const spacing: Spacing = {
     24: '1.5rem',
     32: '2rem',
     40: '2.5rem',
-}
+};

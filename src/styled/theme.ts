@@ -1,18 +1,17 @@
-import { PaletteOptions } from '@mui/material';
 import { createTheme } from '@mui/system';
 import { createGlobalStyle } from 'styled-components';
-import { Colors, colors } from "./colors";
-import { Spacing, spacing } from "./spacing";
-import { Typography, typography } from "./typography";
-import { LineHeights, lineHeights } from "./line-heights";
-import { Breakpoints, breakpoints } from "./breakpoints";
+import { Colors, colors } from './colors';
+import { Spacing, spacing } from './spacing';
+import { Typography, typography } from './typography';
+import { LineHeights, lineHeights } from './line-heights';
+import { Breakpoints, breakpoints } from './breakpoints';
 
-export interface Palette extends PaletteOptions {
-    colors: Colors,
-    spacing: Spacing,
-    typography: Typography,
-    breakpoints: Breakpoints,
-    lineHeights: LineHeights,
+export interface Palette {
+    colors: Colors;
+    spacing: Spacing;
+    typography: Typography;
+    breakpoints: Breakpoints;
+    lineHeights: LineHeights;
 }
 
 const palette: Palette = {
@@ -20,12 +19,11 @@ const palette: Palette = {
     spacing,
     typography,
     breakpoints,
-    lineHeights
+    lineHeights,
 };
 const theme = createTheme({
-   palette,
+    palette,
 });
-
 
 const GlobalStyle = createGlobalStyle`
     * {
@@ -44,15 +42,12 @@ const GlobalStyle = createGlobalStyle`
 
     h1, h2, h3, h4, h5, h6 {
         font-size: 1rem;
-        color: white; // change to theme and add to palette, remove from here later.
     }
 
     a {
         text-decoration: none;
         color: inherit;
     }
-    p {
-        color: white; // remove from here later
 `;
 
 export { theme, GlobalStyle };

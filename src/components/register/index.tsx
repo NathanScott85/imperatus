@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { styled } from 'styled-components';
 import { RegisterIcon } from '../svg';
 import { Link } from 'react-router-dom';
 
@@ -10,10 +10,9 @@ export const Register = () => (
             Register
         </RegisterContainer>
     </Link>
-
 );
 
-const RegisterContainer = styled('span')`
+const RegisterContainer = styled.span`
     display: flex;
     flex-direction: row;
     align-items: center;

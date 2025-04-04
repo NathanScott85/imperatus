@@ -2,14 +2,19 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { PercentageIncrease } from '../percentage-increase';
 
-interface AccountStats {
+interface AccountStatsProps {
     currentMonth: number;
     lastMonth: number;
 }
 
-export const AccountStats: React.FC<AccountStats> = ({ currentMonth, lastMonth }) => {
+export const AccountStats: React.FC<AccountStatsProps> = ({
+    currentMonth,
+    lastMonth,
+}) => {
     const [increase, setIncrease] = useState<number | null>(null);
-    const [percentageIncrease, setPercentageIncrease] = useState<number | null>(null);
+    const [percentageIncrease, setPercentageIncrease] = useState<number | null>(
+        null,
+    );
 
     useEffect(() => {
         if (lastMonth !== 0) {
@@ -21,40 +26,93 @@ export const AccountStats: React.FC<AccountStats> = ({ currentMonth, lastMonth }
     }, [currentMonth, lastMonth]);
 
     return (
-        <AccountStatsContainer>
-            <StatTitle>Account Statistics</StatTitle>
-            <StatTitle>
-                Accounts created this month: <strong>{currentMonth}</strong>
-            </StatTitle>
+        <AccountStatsContainerCenter>
+            <Title>Account Statistics</Title>
+            <StatTitle>Accounts created </StatTitle>
+            <Strong>{currentMonth}</Strong>
             {lastMonth !== 0 && (
-                <p>
-                    Compared to last month:{' '}
-                    <StatValue isIncrease={increase && increase > 0 as any}>
-                        {increase && increase > 0 ? `Increase: +${increase}` : `Decrease: ${increase}`}
+                <>
+                    <p>Compared to last month:</p>
+                    <StatValue
+                        increase={(
+                            increase !== null && increase > 0
+                        ).toString()}
+                    >
+                        {increase !== null && increase > 0
+                            ? `Increase: +${increase}`
+                            : `Decrease: ${increase}`}
                     </StatValue>
-                    {' '}
-                    <PercentageIncrease percentageIncrease={percentageIncrease as any} />
-                </p>
+                    <PercentageIncrease
+                        percentageIncrease={percentageIncrease as any}
+                    />
+                </>
             )}
-        </AccountStatsContainer>
+        </AccountStatsContainerCenter>
     );
 };
 
-const AccountStatsContainer = styled.div`
+const Strong = styled.strong`
+    color: white;
+    font-family: Barlow;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; /* For Firefox (macOS) */
+    text-align: center;
+`;
+
+const AccountStatsContainerCenter = styled.div`
     width: 300px;
     padding: 20px;
-    border: 1px solid #4D3C7B;
+    border: 1px solid #4d3c7b;
     border-radius: 8px;
     margin: 20px auto;
-    background-color: #fff;
+    background-color: #130a30;
+    text-align: center;
+    p {
+        font-size: 14px;
+        padding: 0.5rem;
+        margin: 0.5rem;
+        color: white;
+    }
 `;
 
-const StatTitle = styled.h2`
-    margin-bottom: 10px;
-    color: black;
-`;
-
-const StatValue = styled.div<{ isIncrease: boolean }>`
+const Title = styled.h2`
+    color: white;
+    font-family: Cinzel;
     font-size: 18px;
-    color: ${(props) => (props.isIncrease ? 'green' : 'red')};
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
+    text-overflow: ellipsis;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+`;
+
+const StatTitle = styled.h3`
+    color: white;
+    font-family: Cinzel;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-top: 0.5rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+`;
+
+const StatValue = styled.div<{ increase: string }>`
+    color: ${(props) => (props.increase === 'true' ? '#15B170' : '#E74949')};
+    -webkit-font-smoothing: antialiased; /* For WebKit (macOS, iOS) */
+    -moz-osx-font-smoothing: grayscale; /* For Firefox (macOS) */
+    text-align: center;
+    font-family: Barlow;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
 `;

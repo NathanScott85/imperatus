@@ -1,0 +1,14 @@
+# Ignore artifacts:
+build
+coverage
+node_modules
+dist
+public
+
+# Ignore all JavaScript minified and bundled files:
+*.min.js
+*.bundle.js
+
+# Ignore specific directories:
+src/assets
+src/vendor

@@ -1,41 +1,42 @@
-import styled from "@emotion/styled";
-import HomeIMG from '../../components/svg/website-images/0_10.png';
+import styled from 'styled-components';
 
-export const MainContainer = styled('main')`
+export const MainContainer = styled.main`
+    background-color: #130a30;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    color: #10000E;
-    height: calc(100vh - 80px);
-    padding: 2.5rem;
+    width: 100%;
 `;
 
 export const ContactHeader = styled('header')`
-    background-color: #05030F;    
+    background-color: #05030f;
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: #D4B05F;
+    color: #c79d0a;
     height: 38px;
     width: 100%;
     padding: 0 1.75rem;
 `;
 
-export const Container = styled('div')`
-    color: #10000E;
-    height: 625px;
+export const ImageContainer = styled.div<{ img?: any }>`
     width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -2;
-    background-image: linear-gradient(to bottom, black, #05030F);
-`;
-
-export const ImageContainer = styled('div')`
-    background-image: url(${HomeIMG});
+    height: 100%;
+    padding: 7rem 0;
+    background-image: ${({ img }) => `url(${img})`};
     background-repeat: no-repeat;
     background-size: cover;
-    height: 100%;
+    z-index: -1;
+    background-position: top center;
+`;
+
+export const Container = styled.div`
+    color: #10000e;
+    height: auto;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;

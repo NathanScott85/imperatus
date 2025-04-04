@@ -1,15 +1,25 @@
-import React from "react";
-import { UserIcon } from "../svg";
-import { styled } from '@mui/material';
-import { Link } from "react-router-dom";
+import React from 'react';
+import { UserIcon } from '../svg';
+import { styled } from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useAppContext } from '../../context';
 
-export const Login = () => (
-    <Link to="/account/login">
+export const Login = () => {
+    const { isAuthenticated } = useAppContext();
+    return (
         <LoginContainer>
-            <UserIcon />
+            {isAuthenticated ? (
+                <Link to="/account/my-account">
+                    <UserIcon isAuthenticated={isAuthenticated} />
+                </Link>
+            ) : (
+                <Link to="/account/login">
+                    <UserIcon isAuthenticated={isAuthenticated} />
+                </Link>
+            )}
         </LoginContainer>
-    </Link>
-);
+    );
+};
 
 const LoginContainer = styled('span')`
     display: flex;

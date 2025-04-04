@@ -1,35 +1,21 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/system';
 import { GlobalStyle, theme } from './styled';
-// import { AppRoutes } from './App-routes';
-import styled from 'styled-components';
-import { Imperatus } from './components/svg';
+import { AppRoutes } from './app-routes';
+import { AppProvider } from './context';
+import { ScrollToTop } from './components/scroll-to-top';
+
 
 const App = (): React.ReactElement => {
-  return (
-    <ThemeProvider theme={theme}>
-       <GlobalStyle />
-       {/* <AppRoutes /> */}
-       <AppContainer >
-        <Imperatus width={500} height={250} />
-        <p>
-          Website currently under construction
-        </p>
-      </AppContainer>
-    </ThemeProvider>
-  );
-}
+    return (
+        <AppProvider>
+            <ThemeProvider theme={theme}>
+                <GlobalStyle />
+                <ScrollToTop />
+                <AppRoutes />
+            </ThemeProvider>
+        </AppProvider>
+    );
+};
 
 export default App;
-
-const AppContainer = styled.div`
-  background-color: #10000E;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  p{ 
-    color: white;
-  }
-`;

@@ -9,5 +9,15 @@ import ParadoxRift from '../website-images/paradox-rift.png';
 import AgeofOverlord from '../website-images/AOV-Yugioh.png';
 import FinalFantasy from '../website-images/final-fantasy.png';
 
-
-export { Lorcana, Dragonball, Magic, Yugioh, Digimon, Pokemon, DoctorWho, ParadoxRift, AgeofOverlord, FinalFantasy }
+export {
+    Lorcana,
+    Dragonball,
+    Magic,
+    Yugioh,
+    Digimon,
+    Pokemon,
+    DoctorWho,
+    ParadoxRift,
+    AgeofOverlord,
+    FinalFantasy,
+};
