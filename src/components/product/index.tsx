@@ -35,7 +35,9 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
                     to={`/shop/categories/category/${productToUse.category.id}/${productToUse.category.slug}/${productToUse.id}/${productToUse.slug}`}
                     state={{ product: productToUse }}
                 >
+                    {/* {productToUse.preorder && <PreorderBadge>Pre-Order</PreorderBadge>} */}
                     <ImageWrapper>
+                    {productToUse.preorder && <PreorderBadge>Pre-Order</PreorderBadge>}
                         {productToUse.img?.url && <ProductImage src={productToUse.img?.url} alt={productToUse.name} />}
                     </ImageWrapper>
                     <ProductName>{productToUse.name}</ProductName>
@@ -76,7 +78,22 @@ const ProductWrapper = styled.div`
     }
 `;
 
+const PreorderBadge = styled.div`
+    position: absolute;
+    top: -0.75rem;
+    left: -2rem;
+    background-color: #c79d0a;
+    color: white;
+    font-family: Cinzel;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    z-index: 2;
+`;
+
 const ImageWrapper = styled.div`
+    position: relative;
     padding: 1rem;
     width: 100%;
     height: 200px;

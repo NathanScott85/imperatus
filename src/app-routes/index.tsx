@@ -51,6 +51,7 @@ import { ProductTypeProvider } from '../context/product-types';
 import { RaritiesProvider } from '../context/card-rarity';
 import { CardTypesProvider } from '../context/card-types';
 import { VariantsProvider } from '../context/variants';
+import { PreordersProvider } from '../context/pre-order';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -121,6 +122,19 @@ export const AppRoutes = () => {
                     }
                 />
 
+                <Route
+                    path="/shop/coming-soon/*"
+                    element={
+                        <PreordersProvider>
+                            <Routes>
+                                <Route path="" element={<Preorders />} />
+                                <Route path="/:id/:name" element={<Orders />} />
+                                <Route path="/:id/:name/:productid/:productname" element={<ProductPage />} />
+                            </Routes>
+                        </PreordersProvider>
+                    }
+                />
+
                 {/* Other routes */}
                 <Route path="/shop/card-games" element={<CardGames />} />
                 <Route path="/shop/card-games/cardgame/:id/:name" element={<CardGame />} />
@@ -128,7 +142,6 @@ export const AppRoutes = () => {
                 <Route path="/shop/accessories" element={<Accessories />} />
                 <Route path="/shop/accessories/accessory/:id/:name" element={<Accessory />} />
                 <Route path="/shop/accessories/accessory/:id/:name/:productid/:productname" element={<ProductPage />} />
-                <Route path="/shop/coming-soon" element={<Preorders />} />
                 <Route path="/shop/coming-soon/new/:id/:name" element={<Orders />} />
                 <Route path="/shop/coming-soon/new/:id/:name/:productid/:productname" element={<ProductPage />} />
                 <Route path="/shop/board-games" element={<BoardGames />} />

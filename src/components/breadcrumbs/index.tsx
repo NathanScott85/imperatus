@@ -32,9 +32,9 @@ export const BreadCrumb = ({
             <BreadCrumbNav background={background}>
                 <BreadcrumbList>
                     <BreadCrumbWrapper>
-                        <Link to="/">
+                        <StyledLink to="/" isActive={fullPath === location.pathname}>
                             <HomeIcon />
-                        </Link>
+                        </StyledLink>
                     </BreadCrumbWrapper>
                     <BreadCrumbWrapper>
                         <ChevronRight stroke="white" />
@@ -72,6 +72,7 @@ const StyledLink = styled(Link) <{ isActive: boolean }>`
     font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
     color: ${({ isActive }) => (isActive ? '#c79d0a' : 'white')};
     font-size: ${({ isActive }) => (isActive ? '1.2rem' : '1.2rem')};
+    z-index: 10;
 `;
 
 const Text = styled.p<{ text: any }>`
@@ -101,6 +102,7 @@ const BreadCrumbNav = styled.nav<BreadCrumbProps>`
     padding: 1.5rem;
     ${(background) =>
         background ? 'background-color: #130A30' : 'background-color: none'};
+        z-index: 25;
 `;
 
 const BreadcrumbList = styled.ul`
