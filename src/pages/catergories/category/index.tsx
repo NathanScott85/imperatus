@@ -9,6 +9,7 @@ import { Footer } from '../../../components/footer';
 import { useCategoriesContext } from '../../../context/categories';
 import { BreadCrumb } from '../../../components/breadcrumbs';
 import { mediaQueries } from '../../../styled/breakpoints';
+import { useDebouncedEffect } from '../../../lib';
 
 interface CategoryFilters extends FiltersType {}
 
@@ -45,12 +46,12 @@ export const Category = () => {
         }
     }, [id, setCurrentCategory]);
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         if (id) {
             setPage(1);
             fetchCategoryById(Number(id), 1, limit, selectedFilters);
         }
-    }, [selectedFilters]);
+    }, [selectedFilters, id, limit], 300);
 
     useEffect(() => {
         if (currentCategory) {

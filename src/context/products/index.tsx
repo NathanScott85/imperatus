@@ -16,6 +16,7 @@ import {
     UPDATE_PRODUCT,
     DELETE_PRODUCT,
 } from '../../graphql/products';
+import { useDebouncedEffect } from '../../lib';
 
 interface Stock {
     amount: number;
@@ -343,9 +344,9 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
     };
 
-    useEffect(() => {
+    useDebouncedEffect(() => {
         fetchProducts();
-    }, [fetchProducts, page, search, filters]);
+    }, [fetchProducts, page, search, filters], 1500);
 
     return (
         <ProductsContext.Provider

@@ -50,10 +50,13 @@ export const Filters: React.FC<FiltersProps> = ({
                 filters={filters}
                 onFilterChange={onFilterChange}
             />
-            <PreorderFilter
+           
+             {categoryName !== "Coming Soon" && (
+                <PreorderFilter
                 filters={filters}
                 onFilterChange={onFilterChange}
             />
+            )}
             {brands.length > 0 && (
                 <BrandFilter
                     brands={brands}
