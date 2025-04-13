@@ -25,4 +25,6 @@ export { Icon as Visa} from './visa';
 export { Icon as Mastercard} from './mastercard';
 export { Icon as Discover } from './discover';
 export { Icon as AmericanExpress} from './american-express';
-export { Icon as Timer } from './time'
+export { Icon as Timer } from './time';
+export { Icon as RegisterUser } from './new-user';
+export { Icon as Login } from './login';

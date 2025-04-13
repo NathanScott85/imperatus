@@ -1,8 +1,7 @@
-// src/context/register.tsx
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { REGISTER_USER } from '../../graphql/register';
-import { SEND_VERIFICATION_EMAIL } from '../../graphql/verification-email';
+import { SEND_VERIFICATION_EMAIL } from '../../graphql/verification';
 
 type RegisterContextProps = {
     data: any;
@@ -19,10 +18,9 @@ type RegisterContextProps = {
         postcode: string;
         roles?: string[];
     }) => Promise<any>;
-    clearError: () => void; // Add the clearError function to the context type
+    clearError: () => void;
 };
 
-// Create a context with default values
 const RegisterContext = createContext<RegisterContextProps | undefined>(
     undefined,
 );
@@ -30,9 +28,8 @@ const RegisterContext = createContext<RegisterContextProps | undefined>(
 export const RegisterProvider = ({ children }: { children: ReactNode }) => {
     const [registerUser, { data, loading, error }] = useMutation(REGISTER_USER);
     const [sendVerificationEmail] = useMutation(SEND_VERIFICATION_EMAIL);
-    const [localError, setLocalError] = useState<string | null>(null); // Local state for error
+    const [localError, setLocalError] = useState<string | null>(null);
 
-    // Handles the user registration process
     const handleRegisterUser = async (input: {
         fullname: string;
         email: string;
@@ -49,7 +46,7 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
                 const userId = data.registerUser.id;
                 await sendVerificationEmail({ variables: { userId } });
             }
-            setLocalError(null); // Clear local error on success
+            setLocalError(null);
             return data.registerUser;
         } catch (err: any) {
             console.error('Mutation error:', err);
@@ -63,7 +60,6 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    // Method to clear error
     const clearError = () => {
         setLocalError(null);
     };
@@ -73,9 +69,9 @@ export const RegisterProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 data,
                 loading,
-                error: localError, // Use localError instead of mutation error
+                error: localError,
                 handleRegisterUser,
-                clearError, // Provide the clearError function to the context
+                clearError,
             }}
         >
             {children}

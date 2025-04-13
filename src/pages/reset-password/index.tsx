@@ -1,4 +1,3 @@
-// src/components/ResetPassword.tsx
 import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
@@ -14,8 +13,10 @@ import { useAppContext } from '../../context';
 export const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState<{ newPassword?: string; confirmPassword?: string }>({});
     const [successMessage, setSuccessMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
     const { resetPassword } = useAppContext();
@@ -24,48 +25,89 @@ export const ResetPassword = () => {
     const token = queryParams.get('token');
     const email = queryParams.get('email');
 
-    // Redirect if token or email is missing
     useEffect(() => {
         if (!token || !email) {
-            navigate('/account/forgot-password'); // Redirect if token/email is missing
+            navigate('/account/forgot-password');
         }
     }, [token, email, navigate]);
 
+    const validateField = (field: string, value: string): string => {
+        if (field === 'newPassword') {
+            return value.length >= 8 ? '' : 'Password must be at least 8 characters';
+        }
+        if (field === 'confirmPassword') {
+            return value === newPassword ? '' : 'Passwords do not match';
+        }
+        return '';
+    };
+
     const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
         if (name === 'newPassword') setNewPassword(value);
         if (name === 'confirmPassword') setConfirmPassword(value);
-        setError('');
+
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: validateField(name, value),
+        }));
+
         setSuccessMessage('');
     };
 
-    // Handle password form submission
     const handlePasswordSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (newPassword !== confirmPassword) {
-            setError('Passwords do not match.');
+
+        const newPasswordError = validateField('newPassword', newPassword);
+        const confirmPasswordError = validateField('confirmPassword', confirmPassword);
+
+        if (newPasswordError || confirmPasswordError) {
+            setErrors({ newPassword: newPasswordError, confirmPassword: confirmPasswordError });
             return;
         }
 
+        setLoading(true);
         try {
-            const message = await resetPassword(
-                token as string,
-                newPassword,
-                email as string,
-            );
+            const message = await resetPassword(token as string, newPassword, email as string);
+
             if (message) {
                 setSuccessMessage(message);
-                setTimeout(() => navigate('/account/login'), 3000); // Redirect after 3 seconds
+                setTimeout(() => navigate('/account/login'), 3000);
             } else {
-                setError(
-                    'An error occurred while resetting the password. Please try again later.',
-                );
+                setErrors({ newPassword: 'An error occurred. Please try again later.' });
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error('Password reset error:', err);
-            setError('An unexpected error occurred. Please try again.');
+            const errorMessage = err instanceof Error && err.message.includes('expired')
+                ? 'This reset link has expired. Please request a new one.'
+                : 'An unexpected error occurred. Please try again.';
+            setErrors({ newPassword: errorMessage });
         }
+        setLoading(false);
     };
+
+    if (successMessage) {
+        return (
+            <>
+                <TopHeader />
+                <Header background />
+                <Navigation background />
+                <BreadCrumb label="Reset Password" />
+                <MainContainer>
+                    <Section>
+                        <FancyContainer variant="login" size="login">
+                            <FancyContainerSubWrapper>
+                                <h1>Password Reset Successful</h1>
+                                <p>{successMessage}</p>
+                                <p>Redirecting you to login...</p>
+                            </FancyContainerSubWrapper>
+                        </FancyContainer>
+                    </Section>
+                </MainContainer>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>
@@ -78,9 +120,7 @@ export const ResetPassword = () => {
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
                             <Form onSubmit={handlePasswordSubmit}>
-                                <Label htmlFor="newPassword">
-                                    New Password
-                                </Label>
+                                <Label htmlFor="newPassword">New Password</Label>
                                 <Input
                                     type="password"
                                     id="newPassword"
@@ -90,10 +130,11 @@ export const ResetPassword = () => {
                                     onChange={handlePasswordChange}
                                     placeholder="Enter your new password"
                                     required
+                                    showToggle
                                 />
-                                <Label htmlFor="confirmPassword">
-                                    Confirm Password
-                                </Label>
+                                {errors.newPassword && <ErrorMessage>{errors.newPassword}</ErrorMessage>}
+
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
                                 <Input
                                     type="password"
                                     id="confirmPassword"
@@ -103,22 +144,21 @@ export const ResetPassword = () => {
                                     onChange={handlePasswordChange}
                                     placeholder="Confirm your new password"
                                     required
+                                    showToggle
                                 />
-                                {error && <ErrorMessage>{error}</ErrorMessage>}
-                                {successMessage && (
-                                    <SuccessMessage>
-                                        {successMessage}
-                                    </SuccessMessage>
-                                )}
+                                {errors.confirmPassword && <ErrorMessage>{errors.confirmPassword}</ErrorMessage>}
+
                                 <Button
-                                    label="Reset Password"
+                                    label={loading ? 'Resetting...' : 'Reset Password'}
                                     variant="primary"
                                     size="small"
                                     type="submit"
                                     disabled={
+                                        loading ||
                                         !newPassword ||
                                         !confirmPassword ||
-                                        newPassword !== confirmPassword
+                                        !!errors.newPassword ||
+                                        !!errors.confirmPassword
                                     }
                                 />
                             </Form>
@@ -176,39 +216,25 @@ const Form = styled.form`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-
-    label {
-        font-family: Barlow;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
-        text-align: left;
-        margin-bottom: 0.5rem;
-        margin-top: 0.5rem;
-        color: white;
-    }
-
+    width: 350px;
     input {
         margin-bottom: 1rem;
     }
+
     z-index: 50;
 `;
 
 const Label = styled.label`
     margin-bottom: 1rem;
     font-size: 1.2rem;
-    color: #333;
+    color: #fff;
 `;
 
 const ErrorMessage = styled.p`
     color: red;
-    margin-top: 0.5rem;
-`;
-
-const SuccessMessage = styled.p`
-    color: green;
-    margin-top: 0.5rem;
+    font-size: 12px;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
 `;
 
 export default ResetPassword;

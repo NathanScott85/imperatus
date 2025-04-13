@@ -1,6 +1,5 @@
-// src/components/ForgotPassword.tsx
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -10,17 +9,17 @@ import { FancyContainer } from '../../components/fancy-container';
 import { Input } from '../../components/input';
 import Button from '../../components/button';
 import { useAppContext } from '../../context';
+import { HomeIcon } from '../../components/svg/home';
 
-// Email validation regex
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const ForgotPassword = () => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const { requestPasswordReset } = useAppContext();
-    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value);
@@ -31,30 +30,51 @@ export const ForgotPassword = () => {
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Validate email format
         if (!emailRegex.test(email)) {
             setError('Please enter a valid email address.');
             return;
         }
 
+        setLoading(true);
         try {
-            // Call the password reset function from the context
             const message = await requestPasswordReset(email);
-
             if (message) {
                 setSuccessMessage(message);
-                // Redirect to the reset password form with email in state
-                navigate('/account/reset-password', { state: { email } }); // Pass email in the navigation state
             } else {
-                setError(
-                    'An error occurred while attempting to reset the password. Please try again later.',
-                );
+                setError('An error occurred while attempting to reset the password. Please try again later.');
             }
         } catch (err) {
             console.error('Password reset error:', err);
             setError('An unexpected error occurred. Please try again.');
         }
+        setLoading(false);
     };
+
+    if (successMessage) {
+        return (
+            <>
+                <TopHeader />
+                <Header background />
+                <Navigation background />
+                <BreadCrumb label="Forgot Password" />
+                <MainContainer>
+                    <Section>
+                        <FancyContainer variant="login" size="login">
+                            <FancyContainerSubWrapper>
+                                <h1>Check Your Email</h1>
+                                <SuccessMessage>{successMessage}</SuccessMessage>
+                                <Link to="/" aria-label="Go to Home Page">
+                                <p>You can close this page or go to:</p>
+                                    <HomeIcon aria-hidden="true" />
+                                </Link>
+                            </FancyContainerSubWrapper>
+                        </FancyContainer>
+                    </Section>
+                </MainContainer>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>
@@ -76,19 +96,15 @@ export const ForgotPassword = () => {
                                     value={email}
                                     onChange={handleInputChange}
                                     placeholder="Enter your email"
+                                    required
                                 />
                                 {error && <ErrorMessage>{error}</ErrorMessage>}
-                                {successMessage && (
-                                    <SuccessMessage>
-                                        {successMessage}
-                                    </SuccessMessage>
-                                )}
                                 <Button
-                                    label="Verify"
+                                    label={loading ? 'Sending...' : 'Verify'}
                                     variant="primary"
                                     size="small"
                                     type="submit"
-                                    disabled={!email || !emailRegex.test(email)}
+                                    disabled={loading || !email || !emailRegex.test(email)}
                                 />
                             </Form>
                         </FancyContainerSubWrapper>
@@ -100,7 +116,6 @@ export const ForgotPassword = () => {
     );
 };
 
-// Styled components
 const MainContainer = styled.main`
     display: flex;
     flex-direction: column;
@@ -129,6 +144,7 @@ const FancyContainerSubWrapper = styled.div`
         font-family: 'Barlow', sans-serif;
         font-size: 14px;
     }
+        z-index: 10;
 `;
 
 const Section = styled.section`
@@ -148,27 +164,17 @@ const Form = styled.form`
     align-items: center;
     width: 100%;
 
-    label {
-        font-family: Barlow;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 24px;
-        text-align: left;
-        margin-bottom: 0.5rem;
-        margin-top: 0.5rem;
-        color: white;
-    }
-
     input {
         margin-bottom: 1rem;
     }
+
     z-index: 50;
 `;
 
 const Label = styled.label`
     margin-bottom: 1rem;
     font-size: 1.2rem;
-    color: #333;
+    color: #fff;
 `;
 
 const ErrorMessage = styled.p`
@@ -176,9 +182,11 @@ const ErrorMessage = styled.p`
     margin-top: 0.5rem;
 `;
 
-const SuccessMessage = styled.p`
+const SuccessMessage = styled.div`
     color: green;
-    margin-top: 0.5rem;
+    font-size: 14px;
+    margin-bottom: 1rem;
+    text-align: center;
 `;
 
 export default ForgotPassword;

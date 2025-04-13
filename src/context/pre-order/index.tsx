@@ -143,7 +143,6 @@ export const PreordersProvider: React.FC<{ children: ReactNode }> = ({ children 
     }, [fetchPreordersByIdQuery, page, limit, filters]);
 
     useEffect(() => {
-        console.log(preorders, 'preorders use Effect context');
         fetchPreorders();
     }, [fetchPreorders]);
 

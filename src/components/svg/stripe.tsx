@@ -14,7 +14,7 @@ export const Icon = () => (
                 rx="14.5521"
                 fill="white"
                 stroke="#D9D9D9"
-                stroke-width="2.64583"
+                strokeWidth="2.64583"
             />
             <path
                 fill-rule="evenodd"

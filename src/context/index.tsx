@@ -29,6 +29,7 @@ interface User {
     phone: string;
     password: string;
     userRoles: Roles[];
+    emailVerified: any;
 }
 
 interface AppContextProps {

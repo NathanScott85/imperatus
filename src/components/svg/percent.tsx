@@ -15,8 +15,8 @@ export const Icon = () => {
                 d="M20 4L4 20"
                 stroke="#C79D0A"
                 strokeWidth="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
         </svg>
     );

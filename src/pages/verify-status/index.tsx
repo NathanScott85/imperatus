@@ -1,7 +1,5 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_VERIFICATION_STATUS } from '../../graphql/verification-status';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -11,27 +9,25 @@ import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { useAppContext } from '../../context';
 import { Unauthorized } from '../404/unauthorized';
+import { useVerificationContext } from '../../context/verification';
 
 export const VerificationStatus = () => {
     const { user, isAuthenticated } = useAppContext();
+    const { getVerificationStatus, loading } = useVerificationContext();
+    const hasFetched = useRef(false);
 
-    const userId = user ? user.id : null;
-
-    const { data, loading, error } = useQuery(GET_VERIFICATION_STATUS, {
-        variables: { userId },
-        skip: !userId,
-    });
+    useEffect(() => {
+        if (user?.id && !hasFetched.current) {
+            hasFetched.current = true;
+            getVerificationStatus(user.id);
+        }
+    }, [user, getVerificationStatus]);
 
     if (!isAuthenticated) {
         return <Unauthorized />;
     }
 
     if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
-
-    const verificationStatus = data?.getVerificationStatus;
-
-    const { emailVerified, message } = verificationStatus || {};
 
     return (
         <>
@@ -44,16 +40,12 @@ export const VerificationStatus = () => {
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
                             <h1>Verification Status</h1>
-                            {message ? (
-                                <p>{message}</p>
+                            {user?.emailVerified ? (
+                                <SuccessParagraph>Your email is already verified.</SuccessParagraph>
                             ) : (
-                                <p>No verification status available.</p>
-                            )}
-                            {!emailVerified && (
-                                <p>
-                                    Please verify your email address to access
-                                    your account.
-                                </p>
+                                <ErrorParagraph>
+                                    Your email is not verified. Please check your inbox or request a new verification email.
+                                </ErrorParagraph>
                             )}
                             <FancyLinkContainer>
                                 <p>Home</p>
@@ -111,6 +103,7 @@ const FancyContainerSubWrapper = styled.div`
         font-family: Cinzel;
         font-size: 24px;
     }
+
     z-index: 50;
 `;
 
@@ -133,4 +126,18 @@ const Section = styled.section`
     height: 100%;
     color: white;
     font-size: 1.5rem;
+`;
+
+const SuccessParagraph = styled.p`
+    color: #4caf50;
+    font-size: 14px;
+    font-family: 'Barlow', sans-serif;
+    margin: 1rem 0;
+`;
+
+const ErrorParagraph = styled.p`
+    color: #f44336;
+    font-size: 14px;
+    font-family: 'Barlow', sans-serif;
+    margin: 1rem 0;
 `;

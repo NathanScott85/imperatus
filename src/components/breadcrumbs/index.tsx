@@ -32,25 +32,25 @@ export const BreadCrumb = ({
             <BreadCrumbNav background={background}>
                 <BreadcrumbList>
                     <BreadCrumbWrapper>
-                        <StyledLink to="/" isActive={fullPath === location.pathname}>
-                            <HomeIcon />
-                        </StyledLink>
+                    <StyledLink to="/" $isactive={fullPath === location.pathname}>
+                        <HomeIcon />
+                    </StyledLink>
                     </BreadCrumbWrapper>
                     <BreadCrumbWrapper>
                         <ChevronRight stroke="white" />
                     </BreadCrumbWrapper>
                     {pathSegments.map((segment: string, index: number) => {
-                        fullPath += `/${segment}`; // Always build full route for navigation
+                        fullPath += `/${segment}`;
 
                         const displaySegment =
                             !['shop', 'account', 'category'].includes(segment.toLowerCase()) &&
-                                isNaN(Number(segment)) // Removes numbers
+                                isNaN(Number(segment))
                                 ? decodeURIComponent(segment.replace(/-/g, ' '))
                                 : null;
 
                         return displaySegment ? (
                             <BreadCrumbWrapper key={segment}>
-                                <StyledLink to={fullPath} isActive={fullPath === location.pathname}>
+                                <StyledLink to={fullPath} $isactive={fullPath === location.pathname}>
                                     {displaySegment
                                         .split(' ')
                                         .map(word => word.replace(/^\w/, (c) => c.toUpperCase()))
@@ -68,10 +68,10 @@ export const BreadCrumb = ({
     );
 };
 
-const StyledLink = styled(Link) <{ isActive: boolean }>`
-    font-weight: ${({ isActive }) => (isActive ? 'bold' : 'normal')};
-    color: ${({ isActive }) => (isActive ? '#c79d0a' : 'white')};
-    font-size: ${({ isActive }) => (isActive ? '1.2rem' : '1.2rem')};
+const StyledLink = styled(Link) <{ $isactive: boolean }>`
+    font-weight: ${({ $isactive }) => ($isactive ? 'bold' : 'normal')};
+    color: ${({ $isactive }) => ($isactive ? '#c79d0a' : 'white')};
+    font-size: ${({ $isactive }) => ($isactive ? '1.2rem' : '1.2rem')};
     z-index: 10;
 `;
 

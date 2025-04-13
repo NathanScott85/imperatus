@@ -32,7 +32,6 @@ import { Account } from '../pages/account';
 import { ForgotPassword } from '../pages/forgot-password';
 import { SignOut } from '../pages/sign-out';
 import { VerifyEmail } from '../pages/verify-email';
-import { VerificationSuccess } from '../pages/verify-success';
 import { RegisterProvider } from '../context/register';
 import { VerificationProvider } from '../context/verification';
 import { useAppContext } from '../context';
@@ -52,6 +51,7 @@ import { RaritiesProvider } from '../context/card-rarity';
 import { CardTypesProvider } from '../context/card-types';
 import { VariantsProvider } from '../context/variants';
 import { PreordersProvider } from '../context/pre-order';
+import { CheckYourEmail } from '../pages/check-email';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -165,9 +165,9 @@ export const AppRoutes = () => {
                 <Route path="/account/my-account" element={<ProtectedRoute redirectPath={isAuthenticated ? '/account/my-account' : '/'} element={<Account />} />} />
                 <Route path="/account/reset-password" element={<ResetPassword />} />
                 <Route path="/account/login" element={<Login isAuthenticated={isAuthenticated} />} />
-                <Route path="/account/verification-success" element={<VerificationSuccess />} />
-                <Route path="/account/verification-status" element={<VerificationStatus />} />
+                <Route path="/account/verification-status" element={<VerificationProvider><VerificationStatus /></VerificationProvider>} />
                 <Route path="/account/verify-email" element={<VerificationProvider><VerifyEmail /></VerificationProvider>} />
+                <Route path="/account/check-your-email" element={<VerificationProvider> <CheckYourEmail /> </VerificationProvider>} />
                 <Route path="/account/register" element={<RegisterProvider><Register /></RegisterProvider>} />
                 <Route path="/account/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account/sign-out" element={<SignOut />} />
