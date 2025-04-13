@@ -7,7 +7,7 @@ export const LOGIN_MUTATION = gql`
             refreshToken
             user {
                 email
-                password
+                emailVerified 
                 fullname
                 address
                 postcode

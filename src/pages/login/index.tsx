@@ -29,7 +29,6 @@ export const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
     const navigate = useNavigate();
     const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION);
 
-    // ✅ Redirect if already authenticated BEFORE rendering the component
     useEffect(() => {
         if (isAuthenticated) {
             navigate('/account/my-account', { replace: true });
@@ -78,11 +77,17 @@ export const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
 
                 if (data && data.loginUser) {
                     const { accessToken, refreshToken, user } = data.loginUser;
-
+                
+                    if (!user.emailVerified) {
+                        navigate('/account/check-your-email', {
+                            state: { userId: user.id }
+                        });
+                        return;
+                    }
+                
                     login(accessToken, refreshToken, user);
-
                     navigate('/account/my-account');
-                }
+                }                
             } catch (err) {
                 console.error('Login failed:', err);
             }
@@ -101,12 +106,15 @@ export const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
                         <Form onSubmit={handleSubmit}>
                             <FormContents>
                                 <label>Email Address</label>
-                                <Input
-                                    value={formData.email}
-                                    name="email"
-                                    variant="secondary"
-                                    onChange={handleInputChange}
-                                />
+                                      <Input
+                                        type='email'
+                                        value={formData.email}
+                                        name="email"
+                                        variant="secondary"
+                                        onChange={handleInputChange}
+                                        required
+                                        placeholder="Enter Your Email"
+                                        />
                                 {errors.email && (
                                     <StyledParagraph>{errors.email}</StyledParagraph>
                                 )}
@@ -117,7 +125,9 @@ export const Login = ({ isAuthenticated }: { isAuthenticated: boolean }) => {
                                     name="password"
                                     variant="secondary"
                                     type="password"
+                                    showToggle
                                     onChange={handleInputChange}
+                                    placeholder="Enter Your Password"
                                 />
                                 {errors.password && (
                                     <StyledParagraph>{errors.password}</StyledParagraph>

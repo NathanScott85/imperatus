@@ -111,6 +111,8 @@ export const PasswordChange = () => {
                             onChange={handleInputChange}
                             variant="secondary"
                             type="password"
+                            required
+                            showToggle
                         />
                         {errors.oldPassword && (
                             <StyledParagraph>
@@ -124,6 +126,8 @@ export const PasswordChange = () => {
                             onChange={handleInputChange}
                             variant="secondary"
                             type="password"
+                            required
+                            showToggle
                         />
                         {errors.password && (
                             <StyledParagraph>{errors.password}</StyledParagraph>
@@ -135,6 +139,7 @@ export const PasswordChange = () => {
                             onChange={handleInputChange}
                             variant="secondary"
                             type="password"
+                            showToggle
                         />
                         {errors.confirmPassword && (
                             <StyledParagraph>

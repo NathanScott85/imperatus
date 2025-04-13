@@ -1,6 +1,7 @@
-import React, { KeyboardEvent, forwardRef } from 'react';
+import React, { KeyboardEvent, forwardRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { mediaQueries } from '../../styled/breakpoints';
+import { Eye } from '../svg';
 
 interface InputProps {
     label?: string;
@@ -27,6 +28,7 @@ interface InputProps {
     id?: string;
     required?: boolean;
     onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+    showToggle?: boolean;
 }
 
 export const Input = forwardRef<
@@ -48,61 +50,98 @@ export const Input = forwardRef<
             required,
             onKeyDown,
             onClick,
+            showToggle,
         },
         ref,
     ) => {
-        return (
-            <>
-                {variant === 'upload' ? (
-                    <Wrapper>
-                        <ImageUploadWrapper>
-                            <StyledInput
-                                ref={ref as React.Ref<HTMLInputElement>}
-                                type="file"
-                                name={name}
-                                className={className}
-                                variant={variant}
-                                onChange={onChange}
-                                id={id}
-                                required={required}
-                                onKeyDown={onKeyDown}
-                            />
-                            <UploadButton onClick={onClick}>
-                                Upload Image
-                            </UploadButton>
-                        </ImageUploadWrapper>
-                    </Wrapper>
-                ) : variant === 'description' ? (
-                    <StyledTextArea
-                        ref={ref as React.Ref<HTMLTextAreaElement>}
-                        name={name}
-                        className={className}
-                        variant={variant}
-                        placeholder={placeholder}
-                        onChange={onChange}
-                        value={value}
-                        id={id}
-                        required={required}
-                        onKeyDown={onKeyDown}
-                    />
-                ) : (
+        const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+        const inputType =
+            showToggle && type === 'password'
+                ? isPasswordVisible
+                    ? 'text'
+                    : 'password'
+                : type;
+
+        const togglePasswordVisibility = () =>
+            setIsPasswordVisible((prev) => !prev);
+
+        if (variant === 'upload') {
+            return (
+                <Wrapper>
+                    <ImageUploadWrapper>
+                        <StyledInput
+                            ref={ref as React.Ref<HTMLInputElement>}
+                            type="file"
+                            name={name}
+                            className={className}
+                            variant={variant}
+                            onChange={onChange}
+                            id={id}
+                            required={required}
+                            onKeyDown={onKeyDown}
+                        />
+                        <UploadButton onClick={onClick}>Upload Image</UploadButton>
+                    </ImageUploadWrapper>
+                </Wrapper>
+            );
+        }
+
+        if (variant === 'description') {
+            return (
+                <StyledTextArea
+                    ref={ref as React.Ref<HTMLTextAreaElement>}
+                    name={name}
+                    className={className}
+                    variant={variant}
+                    placeholder={placeholder}
+                    onChange={onChange}
+                    value={value}
+                    id={id}
+                    required={required}
+                    onKeyDown={onKeyDown}
+                />
+            );
+        }
+
+        if (showToggle && type === 'password') {
+            return (
+                <PasswordWrapper>
                     <StyledInput
                         ref={ref as React.Ref<HTMLInputElement>}
-                        type={radio ? 'radio' : type}
+                        type={inputType}
                         value={value}
                         name={name}
                         className={className}
                         variant={variant}
                         placeholder={placeholder}
                         onChange={onChange}
-                        checked={checked}
-                        radio={radio}
                         id={id}
                         required={required}
                         onKeyDown={onKeyDown}
                     />
-                )}
-            </>
+                    <ToggleButton type="button" onClick={togglePasswordVisibility}>
+                        {isPasswordVisible ? <Eye show={isPasswordVisible} /> : <Eye />}
+                    </ToggleButton>
+                </PasswordWrapper>
+            );
+        }
+
+        return (
+            <StyledInput
+                ref={ref as React.Ref<HTMLInputElement>}
+                type={radio ? 'radio' : type}
+                value={value}
+                name={name}
+                className={className}
+                variant={variant}
+                placeholder={placeholder}
+                onChange={onChange}
+                checked={checked}
+                radio={radio}
+                id={id}
+                required={required}
+                onKeyDown={onKeyDown}
+            />
         );
     },
 );
@@ -133,6 +172,24 @@ const UploadButton = styled.button`
     &:hover {
         background-color: #2a1f51;
     }
+`;
+
+const PasswordWrapper = styled.div`
+    position: relative;
+    width: fit-content;
+`;
+
+const ToggleButton = styled.button`
+    position: absolute;
+    right: 10px;
+    top: 17px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 100;
 `;
 
 const StyledInput = styled.input<InputProps>`
@@ -314,17 +371,15 @@ const StyledInput = styled.input<InputProps>`
             border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             color: white;
-
+    
             &:focus {
                 outline: none;
                 border: 1px solid #c79d0a;
             }
             font-family: Barlow, serif;
-
             &::placeholder {
                 color: white;
                 font-size: 12px;
-                padding-left: 5px;
             }
 
             text-indent: 5px;
@@ -337,6 +392,11 @@ const StyledInput = styled.input<InputProps>`
         css`
             display: none;
         `
+    }
+    &:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px #130a30 inset !important;
+        -webkit-text-fill-color: white !important;
+        transition: background-color 5000s ease-in-out 0s;
     }
 `;
 
@@ -357,7 +417,6 @@ const StyledTextArea = styled.textarea<InputProps>`
         outline: none;
         border: 1px solid #c79d0a;
     }
-
     font-family: Barlow, serif;
 
     &::placeholder {
