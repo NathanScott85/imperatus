@@ -1,8 +1,7 @@
 import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 
-const apiUri =
-    process.env.REACT_APP_API_URL || 'http://localhost:4000/graphql';
+const apiUri = process.env.REACT_APP_API_URL || 'http://localhost:4000/graphql';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const credentialsPolicy = isProduction ? 'include' : 'same-origin';

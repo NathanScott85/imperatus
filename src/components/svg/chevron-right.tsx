@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const ChevronRight: React.FC<React.SVGProps<SVGSVGElement>> = (
     props,
     stroke = '#ac8fff',

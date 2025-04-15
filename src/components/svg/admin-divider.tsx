@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const Icon = () => (
     <svg
         width="176"
@@ -21,12 +23,12 @@ export const Icon = () => (
         <path
             d="M0 9.17144L80 9.17144"
             stroke="url(#paint1_linear_361_196)"
-            stroke-opacity="0.7"
+            strokeOpacity="0.7"
         />
         <path
             d="M176 9.17145L96 9.17145"
             stroke="url(#paint2_linear_361_196)"
-            stroke-opacity="0.7"
+            strokeOpacity="0.7"
         />
         <defs>
             <linearGradient
@@ -37,8 +39,8 @@ export const Icon = () => (
                 y2="8.32843"
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stop-color="#C79D0A" />
-                <stop offset="1" stop-color="#C79D0A" stop-opacity="0" />
+                <stop stopColor="#C79D0A" />
+                <stop offset="1" stopColor="#C79D0A" stopOpacity="0" />
             </linearGradient>
             <linearGradient
                 id="paint1_linear_361_196"
@@ -48,8 +50,8 @@ export const Icon = () => (
                 y2="9.17144"
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stop-color="#C79D0A" />
-                <stop offset="1" stop-color="#4D3C7B" stop-opacity="0" />
+                <stop stopColor="#C79D0A" />
+                <stop offset="1" stopColor="#4D3C7B" stopOpacity="0" />
             </linearGradient>
             <linearGradient
                 id="paint2_linear_361_196"
@@ -59,8 +61,8 @@ export const Icon = () => (
                 y2="23.5817"
                 gradientUnits="userSpaceOnUse"
             >
-                <stop stop-color="#C79D0A" />
-                <stop offset="1" stop-color="#4D3C7B" stop-opacity="0" />
+                <stop stopColor="#C79D0A" />
+                <stop offset="1" stopColor="#4D3C7B" stopOpacity="0" />
             </linearGradient>
         </defs>
     </svg>
