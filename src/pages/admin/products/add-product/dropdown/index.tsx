@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ChevronUp } from '../../../../../components/svg/chevron-up';
+import { Tooltip } from '../../../../../components/tooltip';
 
 export const ProductDropdown = ({
     label,
@@ -13,44 +14,52 @@ export const ProductDropdown = ({
     selectedValue,
     displayField,
     showClearOption = true,
+    tooltip,
+    tooltipMessage,
 }: any) => {
     return (
-            <FormGroup>
+        <FormGroup>
+            <LabelWrapper>
                 <Label htmlFor={label}>{label}</Label>
-                <Select onClick={() => handleDropdownToggle(toggleValue)}>
-                    <DropdownHeader>
-                        {header}
-                        <ChevronContainer isDropdownOpen={isDropdownOpen}>
-                            <ChevronUp stroke="#C79D0A" />
-                        </ChevronContainer>
-                    </DropdownHeader>
-                    {isDropdownOpen && (
-                        <DropdownList>
-                            {showClearOption && (
-                                <DropDownOption
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDropdownChange(selectedValue, null);
-                                    }}
-                                >
-                                    Clear Selection
-                                </DropDownOption>
-                            )}
-                            {values.map((value: any) => (
-                                <DropDownOption
-                                    key={value.id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDropdownChange(selectedValue, value.id);
-                                    }}
-                                >
-                                    {value[displayField]}
-                                </DropDownOption>
-                            ))}
-                        </DropdownList>
-                    )}
-                </Select>
-            </FormGroup>
+                {tooltip && <Tooltip message={tooltipMessage} />}
+            </LabelWrapper>
+            <Select onClick={() => handleDropdownToggle(toggleValue)}>
+                <DropdownHeader>
+                    {header}
+                    <ChevronContainer isDropdownOpen={isDropdownOpen}>
+                        <ChevronUp stroke="#C79D0A" />
+                    </ChevronContainer>
+                </DropdownHeader>
+                {isDropdownOpen && (
+                    <DropdownList>
+                        {showClearOption && (
+                            <DropDownOption
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDropdownChange(selectedValue, null);
+                                }}
+                            >
+                                Clear Selection
+                            </DropDownOption>
+                        )}
+                        {values.map((value: any) => (
+                            <DropDownOption
+                                key={value.id}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDropdownChange(
+                                        selectedValue,
+                                        value.id,
+                                    );
+                                }}
+                            >
+                                {value[displayField]}
+                            </DropDownOption>
+                        ))}
+                    </DropdownList>
+                )}
+            </Select>
+        </FormGroup>
     );
 };
 
@@ -70,6 +79,13 @@ const Select = styled.div`
     width: 100%;
 `;
 
+const LabelWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+`;
+
 const DropdownHeader = styled.div`
     font-family: Barlow, sans-serif;
     font-size: 14px;
@@ -85,7 +101,8 @@ const DropdownHeader = styled.div`
 
 const ChevronContainer = styled.div<{ isDropdownOpen: boolean }>`
     transition: transform 0.3s ease;
-    transform: ${(props) => (props.isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+    transform: ${(props) =>
+        props.isDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)'};
 `;
 
 const DropdownList = styled.ul`

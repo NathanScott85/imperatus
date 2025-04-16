@@ -1,4 +1,4 @@
-import React, { useEffect, useState, KeyboardEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FancyContainer } from '../../../components/fancy-container';
 import { useAdminContext } from '../../../context/admin';
@@ -35,7 +35,9 @@ export const Customers: React.FC = () => {
 
     const [selectedCustomer, setSelectedCustomer] =
         useState<CustomerType | null>(null);
-    const [visibleDetails, setVisibleDetails] = useState<{ [key: string]: boolean }>({});
+    const [visibleDetails, setVisibleDetails] = useState<{
+        [key: string]: boolean;
+    }>({});
 
     useEffect(() => {
         fetchUsers();
@@ -115,7 +117,9 @@ export const Customers: React.FC = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={7}>Loading...</CenteredCell>
+                                    <CenteredCell colSpan={7}>
+                                        Loading...
+                                    </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
@@ -125,12 +129,17 @@ export const Customers: React.FC = () => {
                                 </tr>
                             ) : (
                                 users?.map((user: any, index: number) => (
-                                    <TableRow key={user.id} isOdd={index % 2 === 1}>
+                                    <TableRow
+                                        key={user.id}
+                                        isOdd={index % 2 === 1}
+                                    >
                                         <td>{user.fullname}</td>
                                         <td>
                                             <EyeIcon
                                                 onClick={() =>
-                                                    toggleVisibility(user.id.toString())
+                                                    toggleVisibility(
+                                                        user.id.toString(),
+                                                    )
                                                 }
                                             >
                                                 <Eye />
@@ -146,9 +155,7 @@ export const Customers: React.FC = () => {
                                         <td>
                                             {visibleDetails[user.id] ? (
                                                 user.dob ? (
-                                                    <span>
-                                                        {user.dob}
-                                                    </span>
+                                                    <span>{user.dob}</span>
                                                 ) : (
                                                     <span>N/A</span>
                                                 )
@@ -174,7 +181,11 @@ export const Customers: React.FC = () => {
                                             )}
                                         </td>
                                         <td>
-                                            <ViewButton onClick={() => handleViewCustomer(user)}>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    handleViewCustomer(user)
+                                                }
+                                            >
                                                 View
                                             </ViewButton>
                                         </td>
@@ -221,7 +232,6 @@ export const Customers: React.FC = () => {
         </ProductsContainer>
     );
 };
-
 
 const ProductsContainer = styled.div`
     flex-direction: column;
@@ -291,8 +301,6 @@ const ViewButton = styled.button`
         background-color: #2a1f51;
     }
 `;
-
-
 
 const CustomersWrapper = styled.div`
     display: flex;
@@ -393,9 +401,8 @@ const NoResultsMessage = styled.div`
     }
 `;
 
-
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`

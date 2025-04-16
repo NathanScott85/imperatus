@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useOrdersContext } from '../../../context/orders';
+import { useDiscountCodesContext } from '../../../context/discount';
 import { Search } from '../../../components/search';
 import { FancyContainer } from '../../../components/fancy-container';
 
-export const Orders = () => {
+export const Discount: React.FC = () => {
     const {
-        orders,
+        discountCodes,
         loading,
         error,
         page,
@@ -14,12 +14,12 @@ export const Orders = () => {
         search,
         setSearch,
         totalPages,
-        fetchOrders,
-    } = useOrdersContext();
+        fetchDiscountCodes,
+    } = useDiscountCodesContext();
 
     useEffect(() => {
-        fetchOrders();
-    }, [fetchOrders]);
+        fetchDiscountCodes();
+    }, [fetchDiscountCodes]);
 
     const triggerSearch = () => {
         setSearch(search);
@@ -37,66 +37,65 @@ export const Orders = () => {
     };
 
     return (
-        <OrdersContainer>
+        <DiscountContainer>
             <TitleRow>
-                <OrdersTitle>Orders</OrdersTitle>
+                <DiscountTitle>Discount Codes</DiscountTitle>
                 <SearchContainer>
                     <Search
                         type="text"
                         variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        placeholder="Search Orders..."
+                        placeholder="Search Discount Codes..."
                         onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
                 </SearchContainer>
             </TitleRow>
 
-            {orders?.length !== 0 ? (
+            {discountCodes?.length !== 0 ? (
                 <TableWrapper>
                     <Table>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Customer</th>
-                                <th>Status</th>
-                                <th>Subtotal</th>
-                                <th>Date</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Active</th>
+                                <th>Expires At</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>
+                                    <CenteredCell colSpan={6}>
                                         Loading...
                                     </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>
+                                    <CenteredCell colSpan={6}>
                                         Error: {error.message}
                                     </CenteredCell>
                                 </tr>
                             ) : (
-                                orders.map((order, index) => (
+                                discountCodes.map((code, index) => (
                                     <TableRow
-                                        key={order.id}
+                                        key={code.id}
                                         isOdd={index % 2 === 1}
                                     >
-                                        <td>{order.id}</td>
-                                        {/* <td>{order!?.user?.email || '—'}</td> */}
-                                        <td>{order.status}</td>
-                                        {/* <td>
-                                            £
-                                            {parseFloat(order.subtotal).toFixed(
-                                                2,
-                                            )}
-                                        </td> */}
+                                        <td>{code.code}</td>
+                                        <td>{code.description || '—'}</td>
+                                        <td>{code.type}</td>
+                                        <td>{code.value}</td>
+                                        <td>{code.active ? 'Yes' : 'No'}</td>
                                         <td>
-                                            {new Date(
-                                                order.createdAt,
-                                            ).toLocaleDateString()}
+                                            {code.expiresAt
+                                                ? new Date(
+                                                      code.expiresAt,
+                                                  ).toLocaleDateString()
+                                                : '—'}
                                         </td>
                                     </TableRow>
                                 ))
@@ -133,17 +132,17 @@ export const Orders = () => {
                             {search ? (
                                 <p>No results found for &quot;{search}&quot;</p>
                             ) : (
-                                <p>No orders placed at the moment</p>
+                                <p>No discount codes added at the moment.</p>
                             )}
                         </NoResultsMessage>
                     </FancyContainer>
                 </FancyContainerWrapper>
             )}
-        </OrdersContainer>
+        </DiscountContainer>
     );
 };
 
-const OrdersContainer = styled.div`
+const DiscountContainer = styled.div`
     color: white;
     display: grid;
     flex-direction: column;
@@ -170,7 +169,7 @@ const TitleRow = styled.div`
     margin-bottom: 0.75rem;
 `;
 
-const OrdersTitle = styled.h2`
+const DiscountTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;

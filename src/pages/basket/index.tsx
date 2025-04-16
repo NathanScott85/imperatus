@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -6,14 +7,14 @@ import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
 import { products as initialProducts } from '../../lib/product-mocks';
 import { useState } from 'react';
-import { BasketHeader } from './basket-header';
+// import { BasketHeader } from './basket-header';
 import { ProductItem } from './product-item';
 import { OrderSummary } from './summary';
 import { RadioButtonGroup } from './radio-button-group';
 
 export const Basket = () => {
     const [basketProducts, setBasketProducts] = useState(initialProducts);
-    const [wishlistProducts, setWishlistProducts] = useState(initialProducts);
+    // const [wishlistProducts, setWishlistProducts] = useState(initialProducts);
     const [activeTab, setActiveTab] = useState('Delivery');
     const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
 
@@ -29,43 +30,43 @@ export const Basket = () => {
     //     );
     // };
 
-    const handleMoveToWishlist = (product: any) => {
-        if (!wishlistProducts.some((p) => p.id === product.id)) {
-            setWishlistProducts([...wishlistProducts, product]);
-        }
-        setBasketProducts(basketProducts.filter((p) => p.id !== product.id));
-    };
+    // const handleMoveToWishlist = (product: any) => {
+    //     if (!wishlistProducts.some((p) => p.id === product.id)) {
+    //         setWishlistProducts([...wishlistProducts, product]);
+    //     }
+    //     setBasketProducts(basketProducts.filter((p) => p.id !== product.id));
+    // };
 
-    const handleMoveToBasket = (product: any) => {
-        if (!basketProducts.some((p) => p.id === product.id)) {
-            setBasketProducts([...basketProducts, product]);
-        }
-        setWishlistProducts(
-            wishlistProducts.filter((p) => p.id !== product.id),
-        );
-    };
+    // const handleMoveToBasket = (product: any) => {
+    //     if (!basketProducts.some((p) => p.id === product.id)) {
+    //         setBasketProducts([...basketProducts, product]);
+    //     }
+    //     setWishlistProducts(
+    //         wishlistProducts.filter((p) => p.id !== product.id),
+    //     );
+    // };
 
-    const handleMoveAllToWishlist = () => {
-        const newWishlistProducts = [...wishlistProducts];
-        basketProducts.forEach((product) => {
-            if (!newWishlistProducts.some((p) => p.id === product.id)) {
-                newWishlistProducts.push(product);
-            }
-        });
-        setWishlistProducts(newWishlistProducts);
-        setBasketProducts([]);
-    };
+    // const handleMoveAllToWishlist = () => {
+    //     const newWishlistProducts = [...wishlistProducts];
+    //     basketProducts.forEach((product) => {
+    //         if (!newWishlistProducts.some((p) => p.id === product.id)) {
+    //             newWishlistProducts.push(product);
+    //         }
+    //     });
+    //     setWishlistProducts(newWishlistProducts);
+    //     setBasketProducts([]);
+    // };
 
-    const handleMoveAllToBasket = () => {
-        const newBasketProducts = [...basketProducts];
-        wishlistProducts.forEach((product) => {
-            if (!newBasketProducts.some((p) => p.id === product.id)) {
-                newBasketProducts.push(product);
-            }
-        });
-        setBasketProducts(newBasketProducts);
-        setWishlistProducts([]);
-    };
+    // const handleMoveAllToBasket = () => {
+    //     const newBasketProducts = [...basketProducts];
+    //     wishlistProducts.forEach((product) => {
+    //         if (!newBasketProducts.some((p) => p.id === product.id)) {
+    //             newBasketProducts.push(product);
+    //         }
+    //     });
+    //     setBasketProducts(newBasketProducts);
+    //     setWishlistProducts([]);
+    // };
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedRadio(event.target.value);
@@ -133,9 +134,9 @@ export const Basket = () => {
                                             key={product.id}
                                             product={product}
                                             onRemove={handleRemoveFromBasket}
-                                            onMove={() =>
-                                                handleMoveToWishlist(product)
-                                            }
+                                            // onMove={() =>
+                                            //     handleMoveToWishlist(product)
+                                            // }
                                             moveLabel="Move to Wishlist"
                                         />
                                     ))}

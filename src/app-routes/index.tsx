@@ -38,20 +38,13 @@ import { useAppContext } from '../context';
 import { VerificationStatus } from '../pages/verify-status';
 import { ProtectedRoute } from './protected-routes';
 import { ResetPassword } from '../pages/reset-password';
-import { AdminProvider } from '../context/admin';
 import { CategoriesProvider } from '../context/categories';
-import { BrandsProvider } from '../context/brands';
-import { SetsProvider } from '../context/sets';
 import { CarouselProvider } from '../context/carousel';
-import { PromotionsProvider } from '../context/promotions';
 import { ProductsProvider } from '../context/products';
 import { SearchResults } from '../pages/search';
-import { ProductTypeProvider } from '../context/product-types';
-import { RaritiesProvider } from '../context/card-rarity';
-import { CardTypesProvider } from '../context/card-types';
-import { VariantsProvider } from '../context/variants';
 import { PreordersProvider } from '../context/pre-order';
 import { CheckYourEmail } from '../pages/check-email';
+import AdminProviders from '../context/admin/admin-providers';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -76,27 +69,9 @@ export const AppRoutes = () => {
                         element={
                             <ProtectedRoute
                                 element={
-                                    <AdminProvider>
-                                        <CategoriesProvider>
-                                            <BrandsProvider>
-                                                <SetsProvider>
-                                                    <CarouselProvider>
-                                                        <PromotionsProvider>
-                                                            <ProductTypeProvider>
-                                                                <RaritiesProvider>
-                                                                    <CardTypesProvider>
-                                                                        <VariantsProvider>
-                                                                            <Admin />
-                                                                        </VariantsProvider>
-                                                                    </CardTypesProvider>
-                                                                </RaritiesProvider>
-                                                            </ProductTypeProvider>
-                                                        </PromotionsProvider>
-                                                    </CarouselProvider>
-                                                </SetsProvider>
-                                            </BrandsProvider>
-                                        </CategoriesProvider>
-                                    </AdminProvider>
+                                    <AdminProviders>
+                                        <Admin />
+                                    </AdminProviders>
                                 }
                             />
                         }
@@ -106,7 +81,10 @@ export const AppRoutes = () => {
                 {/* Search route */}
                 <Route path="/shop/search" element={<SearchResults />} />
                 <Route path="/shop/search/:query" element={<SearchResults />} />
-                <Route path="/shop/search/:query/:id/:productname" element={<ProductPage />} />
+                <Route
+                    path="/shop/search/:query/:id/:productname"
+                    element={<ProductPage />}
+                />
 
                 {/* Categories route */}
                 <Route
@@ -115,8 +93,14 @@ export const AppRoutes = () => {
                         <CategoriesProvider>
                             <Routes>
                                 <Route path="" element={<Categories />} />
-                                <Route path="category/:id/:name" element={<Category />} />
-                                <Route path="category/:id/:name/:productid/:productname" element={<ProductPage />} />
+                                <Route
+                                    path="category/:id/:name"
+                                    element={<Category />}
+                                />
+                                <Route
+                                    path="category/:id/:name/:productid/:productname"
+                                    element={<ProductPage />}
+                                />
                             </Routes>
                         </CategoriesProvider>
                     }
@@ -129,7 +113,10 @@ export const AppRoutes = () => {
                             <Routes>
                                 <Route path="" element={<Preorders />} />
                                 <Route path="/:id/:name" element={<Orders />} />
-                                <Route path="/:id/:name/:productid/:productname" element={<ProductPage />} />
+                                <Route
+                                    path="/:id/:name/:productid/:productname"
+                                    element={<ProductPage />}
+                                />
                             </Routes>
                         </PreordersProvider>
                     }
@@ -137,16 +124,40 @@ export const AppRoutes = () => {
 
                 {/* Other routes */}
                 <Route path="/shop/card-games" element={<CardGames />} />
-                <Route path="/shop/card-games/cardgame/:id/:name" element={<CardGame />} />
-                <Route path="/shop/card-games/cardgame/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route
+                    path="/shop/card-games/cardgame/:id/:name"
+                    element={<CardGame />}
+                />
+                <Route
+                    path="/shop/card-games/cardgame/:id/:name/:productid/:productname"
+                    element={<ProductPage />}
+                />
                 <Route path="/shop/accessories" element={<Accessories />} />
-                <Route path="/shop/accessories/accessory/:id/:name" element={<Accessory />} />
-                <Route path="/shop/accessories/accessory/:id/:name/:productid/:productname" element={<ProductPage />} />
-                <Route path="/shop/coming-soon/new/:id/:name" element={<Orders />} />
-                <Route path="/shop/coming-soon/new/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route
+                    path="/shop/accessories/accessory/:id/:name"
+                    element={<Accessory />}
+                />
+                <Route
+                    path="/shop/accessories/accessory/:id/:name/:productid/:productname"
+                    element={<ProductPage />}
+                />
+                <Route
+                    path="/shop/coming-soon/new/:id/:name"
+                    element={<Orders />}
+                />
+                <Route
+                    path="/shop/coming-soon/new/:id/:name/:productid/:productname"
+                    element={<ProductPage />}
+                />
                 <Route path="/shop/board-games" element={<BoardGames />} />
-                <Route path="/shop/board-games/boardgame/:id/:name" element={<BoardGame />} />
-                <Route path="/shop/board-games/boardgame/:id/:name/:productid/:productname" element={<ProductPage />} />
+                <Route
+                    path="/shop/board-games/boardgame/:id/:name"
+                    element={<BoardGame />}
+                />
+                <Route
+                    path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
+                    element={<ProductPage />}
+                />
                 <Route path="/shop/offers" element={<Offers />} />
 
                 {/* Informational pages */}
@@ -155,21 +166,72 @@ export const AppRoutes = () => {
                 <Route path="/news-&-events" element={<NewsAndEvents />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/cookie-policy" element={<CookiePolicy />} />
-                <Route path="/terms-&-conditions" element={<TermsAndConditions />} />
+                <Route
+                    path="/terms-&-conditions"
+                    element={<TermsAndConditions />}
+                />
                 <Route path="/payment-methods" element={<PaymentMethods />} />
                 <Route path="/delivery" element={<Delivery />} />
                 <Route path="/returns-policy" element={<ReturnsPolicy />} />
                 <Route path="/discount-codes" element={<DiscountCodes />} />
 
                 {/* Account and authentication routes */}
-                <Route path="/account/my-account" element={<ProtectedRoute redirectPath={isAuthenticated ? '/account/my-account' : '/'} element={<Account />} />} />
-                <Route path="/account/reset-password" element={<ResetPassword />} />
-                <Route path="/account/login" element={<Login isAuthenticated={isAuthenticated} />} />
-                <Route path="/account/verification-status" element={<VerificationProvider><VerificationStatus /></VerificationProvider>} />
-                <Route path="/account/verify-email" element={<VerificationProvider><VerifyEmail /></VerificationProvider>} />
-                <Route path="/account/check-your-email" element={<VerificationProvider> <CheckYourEmail /> </VerificationProvider>} />
-                <Route path="/account/register" element={<RegisterProvider><Register /></RegisterProvider>} />
-                <Route path="/account/forgot-password" element={<ForgotPassword />} />
+                <Route
+                    path="/account/my-account"
+                    element={
+                        <ProtectedRoute
+                            redirectPath={
+                                isAuthenticated ? '/account/my-account' : '/'
+                            }
+                            element={<Account />}
+                        />
+                    }
+                />
+                <Route
+                    path="/account/reset-password"
+                    element={<ResetPassword />}
+                />
+                <Route
+                    path="/account/login"
+                    element={<Login isAuthenticated={isAuthenticated} />}
+                />
+                <Route
+                    path="/account/verification-status"
+                    element={
+                        <VerificationProvider>
+                            <VerificationStatus />
+                        </VerificationProvider>
+                    }
+                />
+                <Route
+                    path="/account/verify-email"
+                    element={
+                        <VerificationProvider>
+                            <VerifyEmail />
+                        </VerificationProvider>
+                    }
+                />
+                <Route
+                    path="/account/check-your-email"
+                    element={
+                        <VerificationProvider>
+                            {' '}
+                            <CheckYourEmail />{' '}
+                        </VerificationProvider>
+                    }
+                />
+                <Route
+                    path="/account/register"
+                    element={
+                        <RegisterProvider>
+                            <Register />
+                        </RegisterProvider>
+                    }
+                />
+                <Route
+                    path="/account/forgot-password"
+                    element={<ForgotPassword />}
+                />
                 <Route path="/account/sign-out" element={<SignOut />} />
 
                 {/* Basket */}
