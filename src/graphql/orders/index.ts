@@ -23,3 +23,42 @@ export const GET_ALL_ORDERS = gql`
         }
     }
 `;
+
+export const GET_ALL_STATUS = gql`
+    query GetAllStatus {
+        getAllStatus {
+            id
+            value
+            label
+        }
+    }
+`;
+
+export const CREATE_ORDER_STATUS = gql`
+    mutation createStatus($value: String!, $label: String!) {
+        createStatus(value: $value, label: $label) {
+            id
+            value
+            label
+        }
+    }
+`;
+
+export const UPDATE_ORDER_STATUS = gql`
+    mutation updateOrderStatus($id: Int!, $value: String!, $label: String!) {
+        updateOrderStatus(id: $id, value: $value, label: $label) {
+            id
+            value
+            label
+        }
+    }
+`;
+
+export const DELETE_ORDER_STATUS = gql`
+    mutation DeleteOrderStatus($id: Int!) {
+        deleteOrderStatus(id: $id) {
+            success
+            message
+        }
+    }
+`;

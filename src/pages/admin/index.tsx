@@ -32,7 +32,9 @@ import { AddRarity } from './products/add-rarity';
 import { AddVariant } from './products/add-variant';
 import { AdminCardTypes } from './products/card-types';
 import { AddCardType } from './products/add-cardtype';
-import { AddDiscountCode } from './discounts/discount';
+import { AddDiscountCode } from './discounts/add-discount-code';
+import { OrderStatus } from './orders/order-status';
+import { AddOrderStatus } from './orders/add-status';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -45,6 +47,10 @@ export const Admin = () => {
                 return <Analytics />;
             case 'Orders':
                 return <Orders />;
+            case 'OrderStatus':
+                return <OrderStatus />;
+            case 'AddOrderStatus':
+                return <AddOrderStatus />;
             case 'AdminDiscount':
                 return <Discount />;
             case 'AddDiscount':

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useDiscountCodesContext } from '../../../context/discount';
-import { Search } from '../../../components/search';
-import { FancyContainer } from '../../../components/fancy-container';
-import moment from 'moment';
-import { DiscountCodeDetail } from './discount';
+import { useOrdersContext } from '../../../../context/orders';
+import { Search } from '../../../../components/search';
+import { FancyContainer } from '../../../../components/fancy-container';
+import { OrderStatusDetail } from './status';
 
-export const Discount: React.FC = () => {
+export const OrderStatus = () => {
     const {
-        discountCodes,
+        orderStatus,
         loading,
         error,
         page,
@@ -16,14 +15,22 @@ export const Discount: React.FC = () => {
         search,
         setSearch,
         totalPages,
-        fetchDiscountCodes,
-    } = useDiscountCodesContext();
+        fetchOrderStatus,
+    } = useOrdersContext();
 
-    const [selectedCode, setSelectedCode] = useState<any | null>(null);
+    const [selectedStatus, setSelectedStatus] = useState<any | null>(null);
 
     useEffect(() => {
-        fetchDiscountCodes();
-    }, [fetchDiscountCodes]);
+        fetchOrderStatus();
+    }, [fetchOrderStatus]);
+
+    const handleViewStatus = (status: {
+        id: number;
+        value: string;
+        label: string;
+    }) => {
+        setSelectedStatus(status);
+    };
 
     const triggerSearch = () => {
         setSearch(search);
@@ -41,105 +48,79 @@ export const Discount: React.FC = () => {
     };
 
     const handleBackToList = () => {
-        setSelectedCode(null);
+        setSelectedStatus(null);
     };
 
-    const handleViewCode = (code: any) => {
-        setSelectedCode(code);
-    };
-
-    if (selectedCode) {
+    if (selectedStatus) {
         return (
-            <DiscountCodeDetail code={selectedCode} onBack={handleBackToList} />
+            <OrderStatusDetail
+                onBack={handleBackToList}
+                status={selectedStatus}
+            />
         );
     }
 
     return (
-        <DiscountContainer>
+        <Container>
             <TitleRow>
-                <DiscountTitle>Discount Codes</DiscountTitle>
+                <Title>Order Statuses</Title>
                 <SearchContainer>
                     <Search
                         type="text"
                         variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        placeholder="Search Discount Codes..."
+                        placeholder="Search Status..."
                         onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
                 </SearchContainer>
             </TitleRow>
 
-            {discountCodes?.length !== 0 ? (
+            {orderStatus?.length !== 0 ? (
                 <TableWrapper>
                     <Table>
                         <thead>
                             <tr>
-                                <th>Code</th>
-                                <th>Description</th>
-                                <th>Type</th>
                                 <th>Value</th>
-                                <th>Active</th>
-                                <th>Expires At</th>
+                                <th>Label</th>
                                 <th>View</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={6}>
+                                    <CenteredCell colSpan={3}>
                                         Loading...
                                     </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <CenteredCell colSpan={6}>
+                                    <CenteredCell colSpan={3}>
                                         Error: {error.message}
                                     </CenteredCell>
                                 </tr>
                             ) : (
-                                discountCodes.map((code, index) => (
-                                    <TableRow
-                                        key={code.id}
-                                        isOdd={index % 2 === 1}
-                                    >
-                                        <td>{code.code}</td>
-                                        <td>{code.description || '—'}</td>
-                                        <td>{code.type}</td>
-                                        <td>
-                                            {code.type === 'percentage'
-                                                ? `${code.value}%`
-                                                : `£${code.value.toFixed(2)}`}
-                                        </td>
-                                        <td>
-                                            <StatusBadge
-                                                isDisabled={code.active}
-                                            >
-                                                {code.active ? 'Yes' : 'No'}
-                                            </StatusBadge>
-                                        </td>
-                                        <td>
-                                            {code.expiresAt &&
-                                            moment(
-                                                Number(code.expiresAt),
-                                            ).isValid()
-                                                ? moment(
-                                                      Number(code.expiresAt),
-                                                  ).format('DD-MM-YYYY')
-                                                : '—'}
-                                        </td>
-                                        <td>
-                                            <ViewButton
-                                                onClick={() =>
-                                                    handleViewCode(code)
-                                                }
-                                            >
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
+                                orderStatus.map(
+                                    (status: any, index: number) => (
+                                        <TableRow
+                                            key={status.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{status.value}</td>
+                                            <td>{status.label}</td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewStatus(status)
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ),
+                                )
                             )}
                         </tbody>
                     </Table>
@@ -173,17 +154,17 @@ export const Discount: React.FC = () => {
                             {search ? (
                                 <p>No results found for &quot;{search}&quot;</p>
                             ) : (
-                                <p>No discount codes added at the moment.</p>
+                                <p>No order statuses available.</p>
                             )}
                         </NoResultsMessage>
                     </FancyContainer>
                 </FancyContainerWrapper>
             )}
-        </DiscountContainer>
+        </Container>
     );
 };
 
-const DiscountContainer = styled.div`
+const Container = styled.div`
     color: white;
     display: grid;
     flex-direction: column;
@@ -193,24 +174,6 @@ const DiscountContainer = styled.div`
     border-radius: 8px;
     width: 100%;
     margin: 0 auto;
-`;
-
-const StatusBadge = styled.span<{ isDisabled: boolean }>`
-    display: inline-block;
-    width: 100px;
-    text-align: center;
-    padding: 0.5rem 1rem;
-    font-size: 14px;
-    font-family: Barlow, sans-serif;
-    border-radius: 5px;
-    color: white;
-    background-color: #4d3c7b;
-    border: none;
-    cursor: default;
-    &:hover {
-        background-color: ${({ isDisabled }) =>
-            isDisabled ? '#146b14' : '#c0392b'};
-    }
 `;
 
 const ViewButton = styled.button`
@@ -242,7 +205,7 @@ const TitleRow = styled.div`
     margin-bottom: 0.75rem;
 `;
 
-const DiscountTitle = styled.h2`
+const Title = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;

@@ -9,7 +9,10 @@ import React, {
 import {
     GET_DISCOUNT_CODES,
     CREATE_DISCOUNT_CODE,
+    UPDATE_DISCOUNT_CODE,
+    DELETE_DISCOUNT_CODE,
 } from '../../graphql/discount';
+import moment from 'moment';
 
 interface DiscountCode {
     id: number;
@@ -31,13 +34,25 @@ interface DiscountCodesContext {
         description?: string;
         type: 'percentage' | 'fixed';
         value: number;
-        expiresAt?: Date;
+        expiresAt?: string;
         active?: boolean;
     }) => Promise<{
         success: boolean;
         message: string;
         discountCode: DiscountCode | null;
     }>;
+    updateDiscountCode: (
+        id: number,
+        input: {
+            code?: string;
+            description?: string;
+            type?: 'percentage' | 'fixed';
+            value?: number;
+            expiresAt?: Date;
+            active?: boolean;
+        },
+    ) => Promise<{ success: boolean; message: string }>;
+    deleteDiscountCode: (id: number) => Promise<void>;
     loading: boolean;
     error: ApolloError | undefined;
     page: number;
@@ -70,6 +85,10 @@ export const DiscountCodesProvider = ({
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [createDiscountCodeMutation] = useMutation(CREATE_DISCOUNT_CODE);
+    const [updateDiscountCodeMutation] = useMutation(UPDATE_DISCOUNT_CODE);
+    const [deleteDiscountCodeMutation] = useMutation(DELETE_DISCOUNT_CODE);
+
     const queryVariables = useMemo(
         () => ({ page: currentPage, limit, search }),
         [currentPage, limit, search],
@@ -95,8 +114,6 @@ export const DiscountCodesProvider = ({
         },
     );
 
-    const [createDiscountCodeMutation] = useMutation(CREATE_DISCOUNT_CODE);
-
     const createDiscountCode = async ({
         code,
         description,
@@ -109,18 +126,23 @@ export const DiscountCodesProvider = ({
         description?: string;
         type: 'percentage' | 'fixed';
         value: number;
-        expiresAt?: Date;
+        expiresAt?: string;
         active?: boolean;
     }) => {
         try {
             const { data } = await createDiscountCodeMutation({
                 variables: {
-                    code,
-                    description,
-                    type,
-                    value,
-                    expiresAt: expiresAt?.toISOString(),
-                    active,
+                    input: {
+                        code,
+                        description,
+                        type,
+                        value,
+                        expiresAt: moment(
+                            expiresAt,
+                            'DD-MM-YYYY',
+                        ).toISOString(),
+                        active,
+                    },
                 },
             });
 
@@ -145,12 +167,54 @@ export const DiscountCodesProvider = ({
         }
     };
 
+    const updateDiscountCode = async (
+        id: number,
+        input: {
+            code?: string;
+            description?: string;
+            type?: 'percentage' | 'fixed';
+            value?: number;
+            expiresAt?: Date;
+            active?: boolean;
+        },
+    ) => {
+        try {
+            const { data } = await updateDiscountCodeMutation({
+                variables: {
+                    id,
+                    ...input,
+                },
+            });
+
+            if (data?.updateDiscountCode) {
+                return {
+                    success: true,
+                    message: 'Discount code updated successfully',
+                };
+            } else {
+                return {
+                    success: false,
+                    message: 'Failed to update discount code',
+                };
+            }
+        } catch (error) {
+            console.error('Error updating discount code:', error);
+            return { success: false, message: 'Something went wrong' };
+        }
+    };
+
+    const deleteDiscountCode = async (id: number) => {
+        await deleteDiscountCodeMutation({ variables: { id } });
+    };
+
     return (
         <DiscountCodesContext.Provider
             value={{
                 discountCodes,
                 fetchDiscountCodes,
                 createDiscountCode,
+                updateDiscountCode,
+                deleteDiscountCode,
                 loading,
                 error,
                 page,

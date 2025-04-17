@@ -221,7 +221,7 @@ export const Customers: React.FC = () => {
                     <FancyContainer>
                         <NoResultsMessage>
                             {search ? (
-                                <p>No results found for "{search}"</p>
+                                <p>No results found for &quot;{search}&quot;</p>
                             ) : (
                                 <p>No customers added at the moment.</p>
                             )}

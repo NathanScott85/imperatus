@@ -2,47 +2,123 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input } from '../../../../components/input';
 import Button from '../../../../components/button';
+import { Modal } from '../../../../components/modal';
 import { useDiscountCodesContext } from '../../../../context/discount';
 import moment from 'moment';
 import { ProductDropdown } from '../../products/add-product/dropdown';
+
+export interface DiscountCodeDetailProps {
+    code: {
+        id: number;
+        code: string;
+        description?: string;
+        type: 'percentage' | 'fixed';
+        value: number;
+        expiresAt?: string;
+        active: boolean;
+    };
+    onBack: () => void;
+}
 
 const discountTypes = [
     { id: 'percentage', name: 'Percentage' },
     { id: 'fixed', name: 'Fixed' },
 ];
 
-export const AddDiscountCode = () => {
+export const DiscountCodeDetail: React.FC<DiscountCodeDetailProps> = ({
+    code,
+    onBack,
+}) => {
+    const { updateDiscountCode, deleteDiscountCode, fetchDiscountCodes } =
+        useDiscountCodesContext();
+
     const [form, setForm] = useState({
-        code: '',
-        description: '',
-        type: '',
-        value: '',
-        expiresAt: '',
-        active: true,
+        code: code.code,
+        description: code.description || '',
+        type: code.type,
+        value: code.value,
+        expiresAt: code.expiresAt
+            ? moment(code.expiresAt).format('YYYY-MM-DD')
+            : '',
+        active: code.active,
     });
 
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
     const [dropdownStates, setDropdownStates] = useState<
         Record<string, boolean>
     >({
         discountType: false,
     });
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const { createDiscountCode, fetchDiscountCodes } =
-        useDiscountCodesContext();
-
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     ) => {
-        const { id, value, type } = e.target;
-        const val =
-            type === 'checkbox'
-                ? (e.target as HTMLInputElement).checked
-                : value;
-        setForm((prev) => ({ ...prev, [id]: val }));
+        const target = e.target as HTMLInputElement;
+        const { id, value, type } = target;
+        const checked = target.checked;
+        setForm((prev) => ({
+            ...prev,
+            [id]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const handleUpdate = async () => {
+        setError('');
+        setSuccess('');
+        setIsUpdating(true);
+
+        try {
+            await updateDiscountCode(code.id, {
+                ...form,
+                value: parseFloat(form.value.toString()),
+                expiresAt: form.expiresAt
+                    ? moment(form.expiresAt).toDate()
+                    : undefined,
+            });
+            fetchDiscountCodes();
+            setSuccess('Discount code updated successfully!');
+        } catch {
+            setError('Failed to update discount code.');
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
+    const handleOpenModal = () => {
+        setIsModalVisible(true);
+        setError('');
+        setSuccess('');
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false);
+        setConfirmationText('');
+        setError('');
+        setSuccess('');
+    };
+
+    const handleDelete = async () => {
+        if (confirmationText !== 'DELETE') {
+            setError('Please type "DELETE" to confirm.');
+            return;
+        }
+
+        try {
+            await deleteDiscountCode(code.id);
+            setSuccess('Discount code deleted successfully!');
+            fetchDiscountCodes();
+            handleCloseModal();
+            onBack();
+        } catch {
+            setError('Failed to delete discount code.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const handleDropdownToggle = (dropdown: string) => {
@@ -66,190 +142,147 @@ export const AddDiscountCode = () => {
         setDropdownStates({ discountType: false });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        setSuccess('');
-        setIsSubmitting(true);
-
-        const { code, description, type, value, expiresAt, active } = form;
-
-        if (!code || !type || !value) {
-            setError('Code, type, and value are required.');
-            setIsSubmitting(false);
-            return;
-        }
-
-        try {
-            const result = await createDiscountCode({
-                code,
-                description,
-                type: type as 'percentage' | 'fixed',
-                value: parseFloat(value),
-                expiresAt: expiresAt ? new Date(expiresAt) : undefined,
-                active,
-            });
-
-            if (result.success) {
-                setSuccess('Discount code created successfully!');
-                setForm({
-                    code: '',
-                    description: '',
-                    type: '',
-                    value: '',
-                    expiresAt: '',
-                    active: true,
-                });
-                fetchDiscountCodes();
-            } else {
-                setError(result.message || 'Failed to create discount code.');
-            }
-        } catch {
-            setError('An unexpected error occurred.');
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
-
     return (
-        <AddDiscountCodeContainer>
-            <Title>Add Discount Code</Title>
-            <FormContainer>
-                <Form onSubmit={handleSubmit}>
-                    <FormWrapper>
-                        <FormGroup>
-                            <Label>Code</Label>
-                            <Input
-                                id="code"
-                                value={form.code}
-                                onChange={handleChange}
-                                required
-                                variant="secondary"
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Description</Label>
-                            <Input
-                                id="description"
-                                value={form.description}
-                                onChange={handleChange}
-                                variant="description"
-                            />
-                        </FormGroup>
-                        <ProductDropdown
-                            label="Discount Type"
-                            handleDropdownToggle={handleDropdownToggle}
-                            handleDropdownChange={handleDropdownChange}
-                            toggleValue="discountType"
-                            isDropdownOpen={dropdownStates.discountType}
-                            header={
-                                form.type
-                                    ? discountTypes.find(
-                                          (t) => t.id === form.type,
-                                      )?.name
-                                    : 'Select Type'
-                            }
-                            values={discountTypes}
-                            selectedValue="type"
-                            displayField="name"
-                            tooltip
-                            tooltipMessage={`Percentage: Applies a percentage-based discount (e.g. 10% off).\n\nFixed: Applies a fixed monetary amount (e.g. £5 off the total).`}
+        <Container>
+            <FormTitle>Edit Discount Code</FormTitle>
+            <BackButton onClick={onBack}>Back to Discount Codes</BackButton>
+            <Wrapper>
+                <FormGroup>
+                    <Label>Code</Label>
+                    <Input
+                        id="code"
+                        variant="secondary"
+                        value={form.code}
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Description</Label>
+                    <Input
+                        id="description"
+                        variant="secondary"
+                        value={form.description}
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <ProductDropdown
+                    label="Discount Type"
+                    handleDropdownToggle={handleDropdownToggle}
+                    handleDropdownChange={handleDropdownChange}
+                    toggleValue="discountType"
+                    isDropdownOpen={dropdownStates.discountType}
+                    header={
+                        form.type
+                            ? discountTypes.find((t) => t.id === form.type)
+                                  ?.name
+                            : 'Select Type'
+                    }
+                    values={discountTypes}
+                    selectedValue="type"
+                    displayField="name"
+                    tooltip
+                    tooltipMessage={`Percentage: Applies a percentage-based discount (e.g. 10% off).\n\nFixed: Applies a fixed monetary amount (e.g. £5 off the total).`}
+                />
+                <FormGroup>
+                    <Label>Value</Label>
+                    <Input
+                        id="value"
+                        type="number"
+                        variant="secondary"
+                        value={form.value}
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Expires At</Label>
+                    <Input
+                        id="expiresAt"
+                        type="date"
+                        variant="secondary"
+                        value={form.expiresAt}
+                        onChange={handleChange}
+                    />
+                </FormGroup>
+                <FormGroup>
+                    <label>
+                        <input
+                            type="checkbox"
+                            id="active"
+                            checked={form.active}
+                            onChange={handleChange}
                         />
-                        <FormGroup>
-                            <Label>Value</Label>
-                            <Input
-                                id="value"
-                                value={form.value}
-                                onChange={handleChange}
-                                required
-                                variant="secondary"
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Expires At</Label>
-                            <DateInput
-                                id="expiresAt"
-                                type="date"
-                                min={moment().format('YYYY-MM-DD')}
-                                value={form.expiresAt}
-                                onChange={handleChange}
-                            />
-                        </FormGroup>
-                        <FormGroupCheckbox>
-                            <input
-                                type="checkbox"
-                                id="active"
-                                checked={form.active}
-                                onChange={handleChange}
-                            />
-                            <Label htmlFor="active">Active</Label>
-                        </FormGroupCheckbox>
-                        <ButtonContainer>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting
-                                    ? 'Creating...'
-                                    : 'Create Discount'}
-                            </Button>
-                        </ButtonContainer>
-                    </FormWrapper>
-                </Form>
-            </FormContainer>
-            {error && <ErrorMessage>{error}</ErrorMessage>}
-            {success && <SuccessMessage>{success}</SuccessMessage>}
-        </AddDiscountCodeContainer>
+                        Active
+                    </label>
+                </FormGroup>
+                <ButtonContainer>
+                    <Button
+                        variant="primary"
+                        onClick={handleUpdate}
+                        disabled={isUpdating}
+                    >
+                        {isUpdating ? 'Updating...' : 'Update Discount'}
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={handleOpenModal}
+                        disabled={isDeleting}
+                    >
+                        Delete Discount
+                    </Button>
+                </ButtonContainer>
+                {error && <ErrorMessage>{error}</ErrorMessage>}
+                {success && <SuccessMessage>{success}</SuccessMessage>}
+            </Wrapper>
+
+            {isModalVisible && (
+                <Modal
+                    title="Delete Discount Code"
+                    content="Are you sure you want to delete this discount code? This action cannot be undone."
+                    label='To confirm this, type "DELETE"'
+                    confirmationText={confirmationText}
+                    errorMessage={error}
+                    successMessage={success}
+                    setConfirmationText={setConfirmationText}
+                    handleDeleteAccount={handleDelete}
+                    handleCloseModal={handleCloseModal}
+                />
+            )}
+        </Container>
     );
 };
 
-const AddDiscountCodeContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2rem;
-    background-color: #160d35;
+const Container = styled.div`
     color: white;
-    border: 1px solid #4d3c7b;
-    border-radius: 8px;
     width: 100%;
-    margin: 0 auto;
 `;
 
-const Title = styled.h2`
+const Wrapper = styled.div`
+    border: 1px solid #ac8fff;
+    border-radius: 4px;
+    background-color: #160d35;
+    padding: 1.5rem;
+`;
+
+const FormTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
 `;
 
-const FormContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    justify-content: space-between;
-`;
-
-const FormWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-`;
-
 const FormGroup = styled.div`
     margin-bottom: 1rem;
-`;
 
-const FormGroupCheckbox = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    select {
+        width: 100%;
+        padding: 0.5rem;
+        font-family: Barlow;
+        font-size: 14px;
+        background-color: #2a1f51;
+        color: white;
+        border: 1px solid #4d3c7b;
+        border-radius: 4px;
+    }
 `;
 
 const Label = styled.label`
@@ -259,45 +292,37 @@ const Label = styled.label`
     display: block;
 `;
 
-const DateInput = styled.input`
-    padding: 0.5rem;
-    border-radius: 5px;
-    border: 1px solid #4d3c7b;
-    font-size: 16px;
-    background-color: #2a1f51;
-    color: white;
-    outline: none;
-    width: 50%;
-    text-align: center;
-    text-transform: uppercase;
-
-    &::-webkit-calendar-picker-indicator {
-        filter: invert(1);
-    }
-
-    &:focus {
-        border-color: #e6b800;
-        box-shadow: 0px 0px 5px #e6b800;
-    }
-`;
-
 const ButtonContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     margin-top: 1rem;
+    gap: 1rem;
+`;
+
+const BackButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 0.75rem;
+    &:hover {
+        background-color: #2a1f51;
+    }
 `;
 
 const ErrorMessage = styled.p`
-    color: red;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    margin-top: 1rem;
+    color: #e74c3c;
+    font-size: 16px;
+    font-family: Barlow;
 `;
 
 const SuccessMessage = styled.p`
     color: green;
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    margin-top: 1rem;
+    font-size: 16px;
+    font-family: Barlow;
 `;

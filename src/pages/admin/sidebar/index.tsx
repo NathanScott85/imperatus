@@ -52,6 +52,27 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                     <Cart stroke="#C79D0A" />
                     ORDERS
                 </MenuItem>
+                {expandedMenu === 'Orders' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('Orders')}
+                        >
+                            MANAGE ORDERS
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AddOrderStatus')
+                            }
+                        >
+                            ADD ORDER STATUS
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('OrderStatus')}
+                        >
+                            MANAGE ORDER STATUS
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
                 <MenuItem onClick={() => toggleMenu('Discount', 'AddDiscount')}>
                     <Percent />
                     DISCOUNT

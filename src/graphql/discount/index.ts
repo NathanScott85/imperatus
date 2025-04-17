@@ -22,15 +22,33 @@ export const GET_DISCOUNT_CODES = gql`
 `;
 
 export const CREATE_DISCOUNT_CODE = gql`
-    mutation CreateDiscountCode(
-        $code: String!
+    mutation CreateDiscountCode($input: CreateDiscountCodeInput!) {
+        createDiscountCode(input: $input) {
+            id
+            code
+            description
+            type
+            value
+            active
+            expiresAt
+            createdAt
+            updatedAt
+        }
+    }
+`;
+
+export const UPDATE_DISCOUNT_CODE = gql`
+    mutation UpdateDiscountCode(
+        $id: Int!
+        $code: String
         $description: String
-        $type: String!
-        $value: Float!
+        $type: String
+        $value: Float
         $expiresAt: String
         $active: Boolean
     ) {
-        createDiscountCode(
+        updateDiscountCode(
+            id: $id
             code: $code
             description: $description
             type: $type
@@ -45,8 +63,12 @@ export const CREATE_DISCOUNT_CODE = gql`
             value
             active
             expiresAt
-            createdAt
-            updatedAt
         }
+    }
+`;
+
+export const DELETE_DISCOUNT_CODE = gql`
+    mutation DeleteDiscountCode($id: Int!) {
+        deleteDiscountCode(id: $id)
     }
 `;
