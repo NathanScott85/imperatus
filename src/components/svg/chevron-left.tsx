@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const ChevronLeft: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg
         {...props}

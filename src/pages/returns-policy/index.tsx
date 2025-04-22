@@ -17,8 +17,10 @@ export const ReturnsPolicy = () => (
                 <Content>
                     <Subtitle>Returns Eligibility</Subtitle>
                     <Paragraph>
-                        Customers can return items within <strong>30 days</strong> of receiving them, provided they are
-                        unused, unopened, and in their original packaging.
+                        Customers can return items within{' '}
+                        <strong>30 days</strong> of receiving them, provided
+                        they are unused, unopened, and in their original
+                        packaging.
                     </Paragraph>
                 </Content>
             </Section>
@@ -27,11 +29,14 @@ export const ReturnsPolicy = () => (
                 <Content>
                     <Subtitle>How to Return an Item</Subtitle>
                     <Paragraph>
-                        To initiate a return, please contact our support team at <span>Manager@imperatusgames.co.uk</span> or on the contact details below with your order
-                        number and return request details.
+                        To initiate a return, please contact our support team at{' '}
+                        <span>Manager@imperatusgames.co.uk</span> or on the
+                        contact details below with your order number and return
+                        request details.
                     </Paragraph>
                     <Paragraph>
-                        Items must be securely packaged and shipped to our designated returns address at the customer's cost unless
+                        Items must be securely packaged and shipped to our
+                        designated returns address at the customer's cost unless
                         the item is faulty or incorrect.
                     </Paragraph>
                 </Content>
@@ -40,12 +45,22 @@ export const ReturnsPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>Non-Returnable Items</Subtitle>
-                    <Paragraph>The following items cannot be returned unless faulty:</Paragraph>
+                    <Paragraph>
+                        The following items cannot be returned unless faulty:
+                    </Paragraph>
                     <List>
-                        <ListItem>Opened trading card products <span>(e.g., booster packs, single cards) </span></ListItem>
+                        <ListItem>
+                            Opened trading card products{' '}
+                            <span>(e.g., booster packs, single cards) </span>
+                        </ListItem>
                         <ListItem>Personalized or custom-made items</ListItem>
-                        <ListItem>Perishable goods <span> (e.g., food, drinks)  </span></ListItem>
-                        <ListItem>Items with broken hygiene seals <span> (e.g., cosmetics, toiletries)</span></ListItem>
+                        <ListItem>
+                            Perishable goods <span> (e.g., food, drinks) </span>
+                        </ListItem>
+                        <ListItem>
+                            Items with broken hygiene seals{' '}
+                            <span> (e.g., cosmetics, toiletries)</span>
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
@@ -54,11 +69,13 @@ export const ReturnsPolicy = () => (
                 <Content>
                     <Subtitle>Damaged or Faulty Items</Subtitle>
                     <Paragraph>
-                        If you receive a faulty or damaged item, please notify us within <strong>30 days</strong> of
-                        receiving your order.
+                        If you receive a faulty or damaged item, please notify
+                        us within <strong>30 days</strong> of receiving your
+                        order.
                     </Paragraph>
                     <Paragraph>
-                        We will offer a replacement, refund, or repair at no additional cost.
+                        We will offer a replacement, refund, or repair at no
+                        additional cost.
                     </Paragraph>
                 </Content>
             </Section>
@@ -67,10 +84,13 @@ export const ReturnsPolicy = () => (
                 <Content>
                     <Subtitle>Refund Processing</Subtitle>
                     <Paragraph>
-                        Refunds will be processed within <strong>14 days</strong> after we receive the returned goods.
+                        Refunds will be processed within{' '}
+                        <strong>14 days</strong> after we receive the returned
+                        goods.
                     </Paragraph>
                     <Paragraph>
-                        Refunds will be issued to the original payment method. Store credit purchases will be refunded as store credit.
+                        Refunds will be issued to the original payment method.
+                        Store credit purchases will be refunded as store credit.
                     </Paragraph>
                 </Content>
             </Section>
@@ -79,10 +99,12 @@ export const ReturnsPolicy = () => (
                 <Content>
                     <Subtitle>Pre-Order Cancellations</Subtitle>
                     <Paragraph>
-                        Customers may cancel a pre-order at any time before dispatch for a full refund.
+                        Customers may cancel a pre-order at any time before
+                        dispatch for a full refund.
                     </Paragraph>
                     <Paragraph>
-                        If a pre-ordered item decreases in price before shipment, we will refund the difference upon request.
+                        If a pre-ordered item decreases in price before
+                        shipment, we will refund the difference upon request.
                     </Paragraph>
                 </Content>
             </Section>
@@ -94,14 +116,18 @@ export const ReturnsPolicy = () => (
                         For any return-related queries, contact us at:
                     </Paragraph>
                     <List>
-                        <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                        <ListItem>Telephone: <span>07542490573</span></ListItem>
+                        <ListItem>
+                            Email: <span> manager@imperatusgames.co.uk</span>
+                        </ListItem>
+                        <ListItem>
+                            Telephone: <span>07542490573</span>
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
             <br />
             {/* <Reviews /> */}
-            <p>Replace with Latest Products</p>
+            {/* <p>Replace with Latest Products</p> */}
         </MainContainer>
         <Footer />
     </>

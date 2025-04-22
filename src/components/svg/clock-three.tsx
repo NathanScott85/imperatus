@@ -1,4 +1,6 @@
-export const Icon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+import React from 'react';
+
+export const Icon: React.FC<React.SVGProps<SVGSVGElement>> = () => (
     <svg
         width="24"
         height="24"

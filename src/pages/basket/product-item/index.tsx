@@ -4,6 +4,7 @@ import { Delete } from '../../../components/svg';
 import Button from '../../../components/button';
 
 interface ProductItemProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     product: any;
     onRemove: (id: number) => void;
     onMove?: () => void;

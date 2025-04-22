@@ -16,9 +16,7 @@ export const FourOFour = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            <BreadCrumb
-                label='404 Error, Page not found'
-            />
+            <BreadCrumb label="404 Error, Page not found" />
             <MainContainer>
                 <Section>
                     <FancyContainer variant="login" size="login">
@@ -33,7 +31,7 @@ export const FourOFour = () => {
                 </Section>
 
                 {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
+                {/* <p>Replace with Latest Products</p> */}
             </MainContainer>
             <Footer />
         </>

@@ -1,5 +1,6 @@
 import React from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Icon = ({ width = '175', height = '24' }: any) => (
     <svg width={width} height={height} viewBox="0 0 52 5" fill="none">
         <path

@@ -5,7 +5,7 @@ import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { Container } from '../../components/styled';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 
 export const PrivacyPolicy = () => (
     <>
@@ -20,12 +20,25 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>Personal Data We Collect</Subtitle>
-                    <Paragraph>We collect various types of personal data, including:</Paragraph>
+                    <Paragraph>
+                        We collect various types of personal data, including:
+                    </Paragraph>
                     <List>
-                        <ListItem>Identity Data (e.g., name, username, date of birth)</ListItem>
-                        <ListItem>Contact Data (e.g., email address, phone number, billing and shipping addresses)</ListItem>
-                        <ListItem>Transaction Data (e.g., details of payments and purchases)</ListItem>
-                        <ListItem>Technical Data (e.g., IP address, browser type, device type, cookies)</ListItem>
+                        <ListItem>
+                            Identity Data (e.g., name, username, date of birth)
+                        </ListItem>
+                        <ListItem>
+                            Contact Data (e.g., email address, phone number,
+                            billing and shipping addresses)
+                        </ListItem>
+                        <ListItem>
+                            Transaction Data (e.g., details of payments and
+                            purchases)
+                        </ListItem>
+                        <ListItem>
+                            Technical Data (e.g., IP address, browser type,
+                            device type, cookies)
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
@@ -33,11 +46,23 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>How We Collect Data</Subtitle>
-                    <Paragraph>We use different methods to collect data from and about you, including:</Paragraph>
+                    <Paragraph>
+                        We use different methods to collect data from and about
+                        you, including:
+                    </Paragraph>
                     <List>
-                        <ListItem>Direct interactions (e.g., signing up, purchasing products, subscribing to newsletters)</ListItem>
-                        <ListItem>Automated technologies (e.g., cookies, analytics tracking)</ListItem>
-                        <ListItem>Third-party sources (e.g., payment processors, social media integrations)</ListItem>
+                        <ListItem>
+                            Direct interactions (e.g., signing up, purchasing
+                            products, subscribing to newsletters)
+                        </ListItem>
+                        <ListItem>
+                            Automated technologies (e.g., cookies, analytics
+                            tracking)
+                        </ListItem>
+                        <ListItem>
+                            Third-party sources (e.g., payment processors,
+                            social media integrations)
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
@@ -45,11 +70,19 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>How We Use Your Data</Subtitle>
-                    <Paragraph>We process personal data for various purposes, including:</Paragraph>
+                    <Paragraph>
+                        We process personal data for various purposes,
+                        including:
+                    </Paragraph>
                     <List>
                         <ListItem>Fulfilling and managing orders</ListItem>
-                        <ListItem>Customer support and service improvements</ListItem>
-                        <ListItem>Marketing and promotional communications (with consent)</ListItem>
+                        <ListItem>
+                            Customer support and service improvements
+                        </ListItem>
+                        <ListItem>
+                            Marketing and promotional communications (with
+                            consent)
+                        </ListItem>
                         <ListItem>Compliance with legal obligations</ListItem>
                     </List>
                 </Content>
@@ -58,7 +91,10 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>Data Retention Policy</Subtitle>
-                    <Paragraph>We retain personal data only as long as necessary for legal, accounting, or business purposes.</Paragraph>
+                    <Paragraph>
+                        We retain personal data only as long as necessary for
+                        legal, accounting, or business purposes.
+                    </Paragraph>
                 </Content>
             </Section>
 
@@ -77,7 +113,11 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>Cookies & Tracking Technologies</Subtitle>
-                    <Paragraph>We use cookies and similar tracking technologies to improve user experience. Read our Cookie Policy for more details.</Paragraph>
+                    <Paragraph>
+                        We use cookies and similar tracking technologies to
+                        improve user experience. Read our Cookie Policy for more
+                        details.
+                    </Paragraph>
                 </Content>
             </Section>
 
@@ -98,30 +138,43 @@ export const PrivacyPolicy = () => (
             <Section>
                 <Content>
                     <Subtitle>Security Measures</Subtitle>
-                    <Paragraph>We implement technical and organizational measures to protect personal data from unauthorized access or breaches.</Paragraph>
+                    <Paragraph>
+                        We implement technical and organizational measures to
+                        protect personal data from unauthorized access or
+                        breaches.
+                    </Paragraph>
                 </Content>
             </Section>
 
             <Section>
                 <Content>
                     <Subtitle>Changes to the Policy</Subtitle>
-                    <Paragraph>We may update this policy periodically. Users will be notified of significant changes.</Paragraph>
+                    <Paragraph>
+                        We may update this policy periodically. Users will be
+                        notified of significant changes.
+                    </Paragraph>
                 </Content>
             </Section>
 
             <Section>
                 <Content>
                     <Subtitle>Contact Information</Subtitle>
-                    <Paragraph>For any privacy-related queries, contact us at:</Paragraph>
+                    <Paragraph>
+                        For any privacy-related queries, contact us at:
+                    </Paragraph>
                     <List>
-                        <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                        <ListItem>Telephone: <span>07542490573</span></ListItem>
+                        <ListItem>
+                            Email: <span> manager@imperatusgames.co.uk</span>
+                        </ListItem>
+                        <ListItem>
+                            Telephone: <span>07542490573</span>
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
 
             {/* <Reviews /> */}
-            <p>Replace with Latest Products</p>
+            {/* <p>Replace with Latest Products</p> */}
         </MainContainer>
         <Footer />
     </>
@@ -133,7 +186,6 @@ const MainContainer = styled.main`
     justify-content: center;
     align-items: center;
     width: 100%;
-
 `;
 
 const Background = styled.div`
@@ -144,15 +196,6 @@ const Background = styled.div`
     top: 0;
     left: 0;
     z-index: -2;
-`;
-
-const Title = styled.h1`
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-family: Cinzel;
-    text-align: center;
-    color: white;
 `;
 
 const Subtitle = styled.h2`
@@ -192,7 +235,6 @@ const List = styled.ul`
     margin-left: 8px;
     padding-left: 8px;
 `;
-
 
 const ListItem = styled.li`
     margin-bottom: 5px;

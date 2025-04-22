@@ -5,8 +5,7 @@ import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import Reviews from '../../components/reviews';
-
+// import Reviews from '../../components/reviews';
 
 export const Delivery = () => (
     <>
@@ -32,10 +31,18 @@ export const Delivery = () => (
                         We offer the following shipping methods:
                     </Paragraph>
                     <List>
-                        <ListItem>1st Class Letter: £1.25 (up to 100g)</ListItem>
-                        <ListItem>2nd Class Letter: £0.75 (up to 100g)</ListItem>
-                        <ListItem>1st Class Large Letter: £1.95 (up to 250g)</ListItem>
-                        <ListItem>2nd Class Large Letter: £1.55 (up to 250g)</ListItem>
+                        <ListItem>
+                            1st Class Letter: £1.25 (up to 100g)
+                        </ListItem>
+                        <ListItem>
+                            2nd Class Letter: £0.75 (up to 100g)
+                        </ListItem>
+                        <ListItem>
+                            1st Class Large Letter: £1.95 (up to 250g)
+                        </ListItem>
+                        <ListItem>
+                            2nd Class Large Letter: £1.55 (up to 250g)
+                        </ListItem>
                         <br />
                         <ListItem>
                             Royal Mail 1st Class: From £3.69 (Small Parcel, up
@@ -63,11 +70,13 @@ export const Delivery = () => (
                         certain value threshold.
                     </Paragraph>
                     <Paragraph>
-                        Shipping costs are subject to change based on carrier rate adjustments,
+                        Shipping costs are subject to change based on carrier
+                        rate adjustments,
                         <br />
                         seasonal demand, and promotional offers.
                         <br />
-                        We recommend checking our checkout page for the most up-to-date shipping fees.
+                        We recommend checking our checkout page for the most
+                        up-to-date shipping fees.
                     </Paragraph>
                 </Content>
             </Section>
@@ -89,8 +98,10 @@ export const Delivery = () => (
                 <Content>
                     <Subtitle>Shipping Locations</Subtitle>
                     <Paragraph>
-                        We currently deliver within the UK. In the future, <br />
-                        we plan to expand our shipping options to include other destinations such as the EU.
+                        We currently deliver within the UK. In the future,{' '}
+                        <br />
+                        we plan to expand our shipping options to include other
+                        destinations such as the EU.
                     </Paragraph>
                 </Content>
             </Section>
@@ -99,7 +110,8 @@ export const Delivery = () => (
                 <Content>
                     <Subtitle>International Shipping</Subtitle>
                     <Paragraph>
-                        At this time, we only deliver within the UK. International shipping, <br />
+                        At this time, we only deliver within the UK.
+                        International shipping, <br />
                         including to the EU, will be introduced in the future.
                     </Paragraph>
                 </Content>
@@ -153,16 +165,22 @@ export const Delivery = () => (
             <Section>
                 <Content>
                     <Subtitle>Contact Information</Subtitle>
-                    <Paragraph>For any delivery related queries, contact us at:</Paragraph>
+                    <Paragraph>
+                        For any delivery related queries, contact us at:
+                    </Paragraph>
                     <List>
-                        <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                        <ListItem>Telephone: <span>07542490573</span></ListItem>
+                        <ListItem>
+                            Email: <span> manager@imperatusgames.co.uk</span>
+                        </ListItem>
+                        <ListItem>
+                            Telephone: <span>07542490573</span>
+                        </ListItem>
                     </List>
                 </Content>
             </Section>
             <br />
             {/* <Reviews /> */}
-            <p>Replace with Latest Products</p>
+            {/* <p>Replace with Latest Products</p> */}
         </MainContainer>
         <Footer />
     </>
@@ -189,16 +207,6 @@ const MainContainer = styled.main`
     align-items: center;
     width: 100%;
     margin: 0 auto;
-`;
-
-const Background = styled.div`
-    background: #130a30;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -2;
 `;
 
 const Subtitle = styled.h2`

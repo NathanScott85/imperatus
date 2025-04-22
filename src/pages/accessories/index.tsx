@@ -76,8 +76,8 @@ export const Accessories = () => {
                         })}
                     </AccessoriesListContainer>
                 </AccessoriesContainer>
-                                {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
+                {/* <Reviews /> */}
+                {/* <p>Replace with Latest Products</p> */}
             </AccessoriesMain>
             <Footer />
         </>
