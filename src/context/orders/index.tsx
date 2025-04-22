@@ -8,6 +8,8 @@ import React, {
 } from 'react';
 import {
     GET_ALL_ORDERS,
+    CREATE_ORDER,
+    UPDATE_ORDER,
     GET_ALL_STATUS,
     CREATE_ORDER_STATUS,
     UPDATE_ORDER_STATUS,
@@ -19,21 +21,38 @@ type DiscountCode = {
     code: string;
 };
 
-interface Order {
+interface OrderItem {
+    productId: number;
+    quantity: number;
+    price: number;
+}
+
+export interface Order {
     id: number;
     orderNumber: string;
+    name: string;
+    address: string;
+    city: string;
+    phone: string;
+    postcode: string;
     email: string;
-    total: number;
+    shippingCost: number;
     subtotal: number;
+    total: number;
     status: string;
+    vat: number;
     createdAt: string;
     updatedAt: string;
     discountCode?: DiscountCode;
+    trackingNumber?: string;
+    trackingProvider?: string;
+    items: OrderItem[];
 }
 
 interface OrderStatus {
     id: number;
-    name: string;
+    value: string;
+    label: string;
 }
 
 interface OrdersContextProps {
@@ -41,6 +60,34 @@ interface OrdersContextProps {
     loading: boolean;
     error: ApolloError | undefined;
     fetchOrders: () => void;
+    createOrder: (input: {
+        email: string;
+        name: string;
+        address: string;
+        city: string;
+        postcode: string;
+        phone: string;
+        shippingCost: number;
+        items: { productId: number; quantity: number; price: number }[];
+        discountCode?: string;
+    }) => Promise<{ success: boolean; message: string; order: Order | null }>;
+    updateOrder: (
+        id: number,
+        input: {
+            name?: string;
+            address?: string;
+            city?: string;
+            postcode?: string;
+            phone?: string;
+            email?: string;
+            shippingCost?: number;
+            discountCode?: string;
+            status?: string;
+            trackingNumber?: string;
+            trackingProvider?: string;
+            items?: { productId: number; quantity: number; price: number }[];
+        },
+    ) => Promise<{ success: boolean; message: string; order: Order | null }>;
     page: number;
     setPage: (page: number) => void;
     search: string;
@@ -89,6 +136,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
     const [createOrderStatusMutation] = useMutation(CREATE_ORDER_STATUS);
     const [updateOrderStatusMutation] = useMutation(UPDATE_ORDER_STATUS);
     const [deleteOrderStatusMutation] = useMutation(DELETE_ORDER_STATUS);
+    const [createOrderMutation] = useMutation(CREATE_ORDER);
+    const [updateOrderMutation] = useMutation(UPDATE_ORDER);
 
     const queryVariables = useMemo(
         () => ({ page: currentPage, limit, search }),
@@ -109,6 +158,88 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
             }
         },
     });
+
+    const createOrder = async (input: {
+        email: string;
+        name: string;
+        address: string;
+        city: string;
+        postcode: string;
+        phone: string;
+        shippingCost: number;
+        items: { productId: number; quantity: number; price: number }[];
+        discountCode?: string;
+    }) => {
+        try {
+            const { data } = await createOrderMutation({
+                variables: { input },
+            });
+
+            if (data?.createOrder) {
+                fetchOrders();
+                return {
+                    success: true,
+                    message: 'Order created successfully!',
+                    order: data.createOrder,
+                };
+            }
+
+            throw new Error('Order creation failed.');
+        } catch (error) {
+            return {
+                success: false,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'Unknown error occurred.',
+                order: null,
+            };
+        }
+    };
+
+    const updateOrder = async (
+        id: number,
+        input: {
+            name?: string;
+            address?: string;
+            city?: string;
+            postcode?: string;
+            phone?: string;
+            email?: string;
+            shippingCost?: number;
+            discountCode?: string;
+            status?: string;
+            trackingNumber?: string;
+            trackingProvider?: string;
+            items?: { productId: number; quantity: number; price: number }[];
+        },
+    ): Promise<{ success: boolean; message: string; order: Order | null }> => {
+        try {
+            const { data } = await updateOrderMutation({
+                variables: { id, input },
+            });
+
+            if (data?.updateOrder) {
+                fetchOrders();
+                return {
+                    success: true,
+                    message: 'Order updated successfully!',
+                    order: data.updateOrder,
+                };
+            }
+
+            throw new Error('Order update failed.');
+        } catch (error) {
+            return {
+                success: false,
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : 'Unknown error occurred.',
+                order: null,
+            };
+        }
+    };
 
     const [fetchOrderStatus] = useLazyQuery(GET_ALL_STATUS, {
         fetchPolicy: 'cache-and-network',
@@ -234,6 +365,8 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
                 orderStatus,
                 fetchOrderStatus,
                 createStatus,
+                createOrder,
+                updateOrder,
                 updateOrderStatus,
                 deleteOrderStatus,
             }}

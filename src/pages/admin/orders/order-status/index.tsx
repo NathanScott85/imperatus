@@ -4,6 +4,7 @@ import { useOrdersContext } from '../../../../context/orders';
 import { Search } from '../../../../components/search';
 import { FancyContainer } from '../../../../components/fancy-container';
 import { OrderStatusDetail } from './status';
+import StatusTag from '../../../../components/status';
 
 export const OrderStatus = () => {
     const {
@@ -108,7 +109,13 @@ export const OrderStatus = () => {
                                             isOdd={index % 2 === 1}
                                         >
                                             <td>{status.value}</td>
-                                            <td>{status.label}</td>
+                                            <td>
+                                                {
+                                                    <StatusTag
+                                                        status={status.label}
+                                                    />
+                                                }
+                                            </td>
                                             <td>
                                                 <ViewButton
                                                     onClick={() =>

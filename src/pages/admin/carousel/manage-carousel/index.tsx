@@ -16,11 +16,15 @@ export const ManageCarousel = () => {
         search,
         setSearch,
         page,
-        setPage
+        setPage,
     } = useCarouselContext();
 
-    const [selectedCarouselPage, setSelectedCarouselPage] = useState<any | null>(null);
-    const [selectedThumbnail, setSelectedThumbnail] = useState<string | null>(null);
+    const [selectedCarouselPage, setSelectedCarouselPage] = useState<
+        any | null
+    >(null);
+    const [selectedThumbnail, setSelectedThumbnail] = useState<string | null>(
+        null,
+    );
 
     useEffect(() => {
         fetchCarousel();
@@ -58,9 +62,15 @@ export const ManageCarousel = () => {
     };
 
     if (selectedCarouselPage) {
-        return <UpdateCarousel carousel={selectedCarouselPage} onBack={handleBackToList} />;
+        return (
+            <UpdateCarousel
+                carousel={selectedCarouselPage}
+                onBack={handleBackToList}
+            />
+        );
     }
-    const allPages = carousel?.flatMap((carouselPage: any) => carouselPage.pages) || [];
+    const allPages =
+        carousel?.flatMap((carouselPage: any) => carouselPage.pages) || [];
 
     return (
         <CarouselContainer>
@@ -69,10 +79,10 @@ export const ManageCarousel = () => {
                 <SearchContainer>
                     <Search
                         type="text"
-                        variant='small'
+                        variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        placeholder='Search Carousel'
+                        placeholder="Search Carousel"
                         onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
@@ -93,40 +103,67 @@ export const ManageCarousel = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>Loading...</CenteredCell>
+                                    <CenteredCell colSpan={5}>
+                                        Loading...
+                                    </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>Error: {error.message}</CenteredCell>
+                                    <CenteredCell colSpan={5}>
+                                        Error: {error.message}
+                                    </CenteredCell>
                                 </tr>
                             ) : (
-                                allPages.map((page: any, index: number) => (  // ✅ Iterate over all pages directly
-                                    <TableRow key={page.id} isOdd={index % 2 === 1}>
-                                        <td>{page.title}</td>
-                                        <td>{page.description}</td>
-                                        <td>
-                                            {page.img ? (
-                                                <Thumbnail
-                                                    src={page.img.url}
-                                                    alt={page.img.title || 'Thumbnail'}
-                                                    onClick={() => handleThumbnailClick(page.img.url)}
-                                                />
-                                            ) : (
-                                                'No Image Available'
-                                            )}
-                                        </td>
-                                        <td>
-                                            <StatusBadge isDisabled={page.disabled}>
-                                                {page.disabled ? 'Disabled' : 'Active'}
-                                            </StatusBadge>
-                                        </td>
-                                        <td>
-                                            <ViewButton onClick={() => handleViewPage(page)}>
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
+                                allPages.map(
+                                    (
+                                        page: any,
+                                        index: number, // ✅ Iterate over all pages directly
+                                    ) => (
+                                        <TableRow
+                                            key={page.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{page.title}</td>
+                                            <td>{page.description}</td>
+                                            <td>
+                                                {page.img ? (
+                                                    <Thumbnail
+                                                        src={page.img.url}
+                                                        alt={
+                                                            page.img.title ||
+                                                            'Thumbnail'
+                                                        }
+                                                        onClick={() =>
+                                                            handleThumbnailClick(
+                                                                page.img.url,
+                                                            )
+                                                        }
+                                                    />
+                                                ) : (
+                                                    'No Image Available'
+                                                )}
+                                            </td>
+                                            <td>
+                                                <StatusBadge
+                                                    isDisabled={page.disabled}
+                                                >
+                                                    {page.disabled
+                                                        ? 'Disabled'
+                                                        : 'Active'}
+                                                </StatusBadge>
+                                            </td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewPage(page)
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ),
+                                )
                             )}
                         </tbody>
                     </Table>
@@ -165,12 +202,14 @@ export const ManageCarousel = () => {
                 </FancyContainer>
             )}
 
-
             {selectedThumbnail && (
                 <Modal
                     title="Image Preview"
                     content={
-                        <ThumbnailPreview src={selectedThumbnail} alt="Full Preview" />
+                        <ThumbnailPreview
+                            src={selectedThumbnail}
+                            alt="Full Preview"
+                        />
                     }
                     handleCloseModal={handleCloseThumbnailModal}
                     preview
@@ -207,7 +246,6 @@ const CarouselContainer = styled.div`
     flex-direction: column;
     padding: 1rem;
 `;
-
 
 const ViewButton = styled.button`
     background-color: #4d3c7b;
@@ -261,7 +299,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -284,7 +322,8 @@ const StatusBadge = styled.span<{ isDisabled: boolean }>`
     border: none;
     cursor: default;
     &:hover {
-        background-color: ${({ isDisabled }) => (isDisabled ? '#c0392b' : '#146b14')}; 
+        background-color: ${({ isDisabled }) =>
+            isDisabled ? '#c0392b' : '#146b14'};
     }
 `;
 
@@ -343,7 +382,7 @@ const PaginationControls = styled.div`
     align-items: center;
     justify-content: center;
     margin: 1rem;
-    
+
     span {
         color: white;
         text-align: center;

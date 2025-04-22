@@ -7,8 +7,15 @@ export const GET_ALL_ORDERS = gql`
                 id
                 orderNumber
                 email
-                total
+                name
+                address
+                city
+                postcode
+                phone
                 subtotal
+                shippingCost
+                vat
+                total
                 status
                 createdAt
                 updatedAt
@@ -20,6 +27,59 @@ export const GET_ALL_ORDERS = gql`
             totalCount
             totalPages
             currentPage
+        }
+    }
+`;
+
+export const CREATE_ORDER = gql`
+    mutation CreateOrder($input: CreateOrderInput!) {
+        createOrder(input: $input) {
+            id
+            orderNumber
+            email
+            name
+            address
+            city
+            postcode
+            phone
+            subtotal
+            shippingCost
+            vat
+            total
+            firstOrder
+            discountCode {
+                id
+                code
+            }
+            createdAt
+        }
+    }
+`;
+
+export const UPDATE_ORDER = gql`
+    mutation UpdateOrder($id: Int!, $input: UpdateOrderInput!) {
+        updateOrder(id: $id, input: $input) {
+            id
+            orderNumber
+            name
+            email
+            address
+            city
+            postcode
+            phone
+            shippingCost
+            subtotal
+            vat
+            total
+            status
+            trackingNumber
+            trackingProvider
+            discountCode {
+                id
+                code
+            }
+            createdAt
+            updatedAt
         }
     }
 `;

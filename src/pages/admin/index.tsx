@@ -35,6 +35,7 @@ import { AddCardType } from './products/add-cardtype';
 import { AddDiscountCode } from './discounts/add-discount-code';
 import { OrderStatus } from './orders/order-status';
 import { AddOrderStatus } from './orders/add-status';
+import { AddOrder } from './orders/add-order';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -47,6 +48,8 @@ export const Admin = () => {
                 return <Analytics />;
             case 'Orders':
                 return <Orders />;
+            case 'CreateOrder':
+                return <AddOrder />;
             case 'OrderStatus':
                 return <OrderStatus />;
             case 'AddOrderStatus':

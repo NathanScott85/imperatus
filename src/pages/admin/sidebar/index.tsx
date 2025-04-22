@@ -55,10 +55,16 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                 {expandedMenu === 'Orders' && (
                     <SubMenu>
                         <SubMenuItem
+                            onClick={() => setSelectedComponent('CreateOrder')}
+                        >
+                            ADD ORDER
+                        </SubMenuItem>
+                        <SubMenuItem
                             onClick={() => setSelectedComponent('Orders')}
                         >
                             MANAGE ORDERS
                         </SubMenuItem>
+
                         <SubMenuItem
                             onClick={() =>
                                 setSelectedComponent('AddOrderStatus')

@@ -4,15 +4,17 @@ import styled from 'styled-components';
 import Button from '../button';
 import { Input } from '../input';
 
-interface ModalProps {
-    confirmationText?: any;
-    errorMessage?: any;
-    successMessage?: any;
-    setConfirmationText?: any;
-    handleDeleteAccount?: any;
-    handleCloseModal?: any;
+import { ReactNode, Dispatch, SetStateAction } from 'react';
+
+export interface ModalProps {
+    confirmationText?: string;
+    errorMessage?: string;
+    successMessage?: string;
+    setConfirmationText?: Dispatch<SetStateAction<string>>;
+    handleDeleteAccount?: () => void;
+    handleCloseModal?: () => void;
     title?: string;
-    content: string | React.ReactNode;
+    content: string | ReactNode;
     label?: string;
     preview?: boolean;
 }
@@ -45,7 +47,9 @@ export const Modal = ({
                             variant="secondary"
                             size="medium"
                             value={confirmationText}
-                            onChange={(e) => setConfirmationText(e.target.value)}
+                            onChange={(e) =>
+                                setConfirmationText?.(e.target.value)
+                            }
                         />
                     </>
                 )}
@@ -62,7 +66,7 @@ export const Modal = ({
                         onClick={handleCloseModal}
                         variant="secondary"
                         size="small"
-                        label={preview ? "Close" : "Cancel"}
+                        label={preview ? 'Close' : 'Cancel'}
                     />
                 </ButtonWrapper>
             </ModalContent>
@@ -107,7 +111,6 @@ const ModalContent = styled.div<{ preview?: boolean }>`
         margin-bottom: 1rem;
     }
 `;
-
 
 const ButtonWrapper = styled.div`
     display: flex;

@@ -1,8 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useOrdersContext } from '../../../context/orders';
+import {
+    Order as OrderContextProps,
+    useOrdersContext,
+} from '../../../context/orders';
 import { Search } from '../../../components/search';
 import { FancyContainer } from '../../../components/fancy-container';
+import { DeliveryModal } from './order-modal';
+import { Order } from './order';
+import moment from 'moment';
+import StatusTag from '../../../components/status';
+
+type DeliveryInfo = Pick<
+    OrderContextProps,
+    'name' | 'address' | 'city' | 'postcode' | 'phone' | 'email'
+>;
 
 export const Orders = () => {
     const {
@@ -16,6 +28,11 @@ export const Orders = () => {
         totalPages,
         fetchOrders,
     } = useOrdersContext();
+
+    const [selectedOrder, setSelectedOrder] =
+        useState<OrderContextProps | null>(null);
+    const [selectedDelivery, setSelectedDelivery] =
+        useState<DeliveryInfo | null>(null);
 
     useEffect(() => {
         fetchOrders();
@@ -36,6 +53,18 @@ export const Orders = () => {
         }
     };
 
+    const handleViewOrder = (order: OrderContextProps) => {
+        setSelectedOrder(order);
+    };
+
+    const handleBackToList = () => {
+        setSelectedOrder(null);
+    };
+
+    if (selectedOrder) {
+        return <Order order={selectedOrder} onBack={handleBackToList} />;
+    }
+    console.log(orders, 'orders');
     return (
         <OrdersContainer>
             <TitleRow>
@@ -58,23 +87,30 @@ export const Orders = () => {
                     <Table>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Customer</th>
+                                <th>Order Number</th>
+                                <th>Name</th>
                                 <th>Status</th>
-                                <th>Subtotal</th>
+                                <th>Total(Inc. VAT)</th>
+                                <th>Total</th>
+                                <th>Discount Code</th>
                                 <th>Date</th>
+                                <th>
+                                    Delivery <br />
+                                    Information
+                                </th>
+                                <th>View</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>
+                                    <CenteredCell colSpan={10}>
                                         Loading...
                                     </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>
+                                    <CenteredCell colSpan={10}>
                                         Error: {error.message}
                                     </CenteredCell>
                                 </tr>
@@ -84,19 +120,43 @@ export const Orders = () => {
                                         key={order.id}
                                         isOdd={index % 2 === 1}
                                     >
-                                        <td>{order.id}</td>
-                                        {/* <td>{order!?.user?.email || '—'}</td> */}
-                                        <td>{order.status}</td>
-                                        {/* <td>
-                                            £
-                                            {parseFloat(order.subtotal).toFixed(
-                                                2,
-                                            )}
-                                        </td> */}
+                                        <td>{order.orderNumber}</td>
+                                        <td>{order.name || '—'}</td>
                                         <td>
-                                            {new Date(
-                                                order.createdAt,
-                                            ).toLocaleDateString()}
+                                            <StatusTag status={order.status} />
+                                        </td>
+                                        <td>£{order.subtotal}</td>
+                                        <td>£{order.total}</td>
+                                        <td>
+                                            {order.discountCode?.code || '-'}
+                                        </td>
+                                        <td>
+                                            {order.createdAt &&
+                                            moment(
+                                                Number(order.createdAt),
+                                            ).isValid()
+                                                ? moment(
+                                                      Number(order.createdAt),
+                                                  ).format('DD-MM-YYYY')
+                                                : '—'}
+                                        </td>
+                                        <td>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    setSelectedDelivery(order)
+                                                }
+                                            >
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                        <td>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    handleViewOrder(order)
+                                                }
+                                            >
+                                                View
+                                            </ViewButton>
                                         </td>
                                     </TableRow>
                                 ))
@@ -139,6 +199,10 @@ export const Orders = () => {
                     </FancyContainer>
                 </FancyContainerWrapper>
             )}
+            <DeliveryModal
+                delivery={selectedDelivery}
+                onClose={() => setSelectedDelivery(null)}
+            />
         </OrdersContainer>
     );
 };
@@ -153,6 +217,20 @@ const OrdersContainer = styled.div`
     border-radius: 8px;
     width: 100%;
     margin: 0 auto;
+`;
+
+const ViewButton = styled.button`
+    background-color: #4d3c7b;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: Barlow, sans-serif;
+    font-size: 14px;
+    border-radius: 5px;
+    &:hover {
+        background-color: #2a1f51;
+    }
 `;
 
 const FancyContainerWrapper = styled.div`

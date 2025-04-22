@@ -272,17 +272,6 @@ const FormTitle = styled.h2`
 
 const FormGroup = styled.div`
     margin-bottom: 1rem;
-
-    select {
-        width: 100%;
-        padding: 0.5rem;
-        font-family: Barlow;
-        font-size: 14px;
-        background-color: #2a1f51;
-        color: white;
-        border: 1px solid #4d3c7b;
-        border-radius: 4px;
-    }
 `;
 
 const Label = styled.label`
