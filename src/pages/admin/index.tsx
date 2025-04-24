@@ -36,6 +36,7 @@ import { AddDiscountCode } from './discounts/add-discount-code';
 import { OrderStatus } from './orders/order-status';
 import { AddOrderStatus } from './orders/add-status';
 import { AddOrder } from './orders/add-order';
+import { AdminVAT } from './vat';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -106,6 +107,8 @@ export const Admin = () => {
                 return <AddCardType />;
             case 'AdminCardTypes':
                 return <AdminCardTypes />;
+            case 'AdminVAT':
+                return <AdminVAT />;
             default:
                 return <Overview />;
         }

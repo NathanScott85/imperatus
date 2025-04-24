@@ -23,6 +23,41 @@ export const GET_ALL_ORDERS = gql`
                     id
                     code
                 }
+                items {
+                    id
+                    productId
+                    quantity
+                    price
+                    product {
+                        id
+                        name
+                        price
+                        rrp
+                        description
+                        slug
+                        preorder
+                        rarity {
+                            id
+                            name
+                        }
+                        variant {
+                            id
+                            name
+                        }
+                        cardType {
+                            id
+                            name
+                            brandId
+                        }
+                        set {
+                            id
+                            setName
+                            setCode
+                            description
+                            brandId
+                        }
+                    }
+                }
             }
             totalCount
             totalPages

@@ -64,7 +64,6 @@ export const Orders = () => {
     if (selectedOrder) {
         return <Order order={selectedOrder} onBack={handleBackToList} />;
     }
-    console.log(orders, 'orders');
     return (
         <OrdersContainer>
             <TitleRow>
@@ -90,8 +89,9 @@ export const Orders = () => {
                                 <th>Order Number</th>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>Total(Inc. VAT)</th>
-                                <th>Total</th>
+                                <th>Subtotal</th>
+                                <th>Total & Shipping</th>
+                                <th>VAT</th>
                                 <th>Discount Code</th>
                                 <th>Date</th>
                                 <th>
@@ -125,8 +125,14 @@ export const Orders = () => {
                                         <td>
                                             <StatusTag status={order.status} />
                                         </td>
-                                        <td>£{order.subtotal}</td>
-                                        <td>£{order.total}</td>
+                                        <td>
+                                            £{(order.subtotal || 0).toFixed(2)}
+                                        </td>
+
+                                        <td>
+                                            £{(order.total || 0).toFixed(2)}
+                                        </td>
+                                        <td>£{(order.vat || 0).toFixed(2)}</td>
                                         <td>
                                             {order.discountCode?.code || '-'}
                                         </td>
