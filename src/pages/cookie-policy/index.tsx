@@ -152,7 +152,7 @@ export const CookiePolicy = () => (
                     </Paragraph>
                     <List>
                         <ListItem>
-                            Email: <span>manager@imperatusgames.co.uk</span>
+                            Email: <span>support@imperatusgames.co.uk</span>
                         </ListItem>
                         <ListItem>
                             Telephone: <span>07542490573</span>

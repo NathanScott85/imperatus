@@ -41,7 +41,7 @@ export const TermsAndConditions = () => (
                         <strong>Imperatus Games Ltd.</strong>
                     </Paragraph>
                     <Paragraph>
-                        <strong>Email:</strong> manager@imperatusgames.co.uk
+                        <strong>Email:</strong> support@imperatusgames.co.uk
                     </Paragraph>
                     <Paragraph>
                         <strong>Telephone:</strong> 07542490573
@@ -289,7 +289,7 @@ export const TermsAndConditions = () => (
                     <Paragraph>For any questions, contact us at:</Paragraph>
                     <List>
                         <ListItem>
-                            Email: <span>Manager@imperatusgames.co.uk</span>
+                            Email: <span>support@imperatusgames.co.uk</span>
                         </ListItem>
                         <ListItem>
                             Telephone: <span>07542490573</span>

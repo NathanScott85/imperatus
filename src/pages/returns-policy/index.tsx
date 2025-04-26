@@ -30,14 +30,14 @@ export const ReturnsPolicy = () => (
                     <Subtitle>How to Return an Item</Subtitle>
                     <Paragraph>
                         To initiate a return, please contact our support team at{' '}
-                        <span>Manager@imperatusgames.co.uk</span> or on the
+                        <span>support@imperatusgames.co.uk</span> or on the
                         contact details below with your order number and return
                         request details.
                     </Paragraph>
                     <Paragraph>
                         Items must be securely packaged and shipped to our
-                        designated returns address at the customer's cost unless
-                        the item is faulty or incorrect.
+                        designated returns address at the customer&#39;s cost
+                        unless the item is faulty or incorrect.
                     </Paragraph>
                 </Content>
             </Section>
@@ -117,7 +117,7 @@ export const ReturnsPolicy = () => (
                     </Paragraph>
                     <List>
                         <ListItem>
-                            Email: <span> manager@imperatusgames.co.uk</span>
+                            Email: <span> support@imperatusgames.co.uk</span>
                         </ListItem>
                         <ListItem>
                             Telephone: <span>07542490573</span>

@@ -15,6 +15,7 @@ export const GET_ALL_ORDERS = gql`
                 subtotal
                 shippingCost
                 vat
+                firstOrder
                 total
                 status
                 createdAt
