@@ -9,6 +9,7 @@ import {
     AmericanExpress,
     Discover,
     Mastercard,
+    Paypal,
     Stripe,
     Visa,
 } from '../../components/svg';
@@ -38,8 +39,8 @@ export const PaymentMethods = () => (
                     <Paragraph>
                         We process all major credit and debit cards securely
                         through{' '}
-                        <StyledLink target="_blank" to="https://stripe.com/gb">
-                            <Stripe />
+                        <StyledLink target="_blank" to="https://paypal.com/">
+                            <Paypal />{' '}
                         </StyledLink>{' '}
                         a trusted global payment provider.
                     </Paragraph>
@@ -88,7 +89,7 @@ export const PaymentMethods = () => (
                     </Paragraph>
                     <List>
                         <ListItem>
-                            PayPal – for fast and secure transactions.
+                            Stripe – for fast and secure transactions.
                         </ListItem>
                         <ListItem>
                             Apple Pay & Google Pay – for convenient one-tap
@@ -158,7 +159,7 @@ export const PaymentMethods = () => (
                     </Paragraph>
                     <List>
                         <ListItem>
-                            Email: <span>Manager@imperatusgames.co.uk</span>
+                            Email: <span>support@imperatusgames.co.uk</span>
                         </ListItem>
                         <ListItem>
                             Telephone: <span>07542490573</span>

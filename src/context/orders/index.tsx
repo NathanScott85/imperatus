@@ -46,6 +46,7 @@ export interface Order {
     orderNumber: string;
     name: string;
     address: string;
+    firstOrder: boolean;
     city: string;
     phone: string;
     postcode: string;

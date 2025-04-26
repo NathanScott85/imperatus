@@ -29,3 +29,4 @@ export { Icon as Timer } from './time';
 export { Icon as RegisterUser } from './new-user';
 export { Icon as Login } from './login';
 export { Icon as Pound } from './pound';
+export { Icon as Paypal } from './paypal';

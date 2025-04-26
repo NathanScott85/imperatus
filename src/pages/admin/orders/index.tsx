@@ -64,6 +64,7 @@ export const Orders = () => {
     if (selectedOrder) {
         return <Order order={selectedOrder} onBack={handleBackToList} />;
     }
+    console.log(orders, 'orders');
     return (
         <OrdersContainer>
             <TitleRow>
@@ -89,6 +90,7 @@ export const Orders = () => {
                                 <th>Order Number</th>
                                 <th>Name</th>
                                 <th>Status</th>
+                                <th>First Order</th>
                                 <th>Subtotal</th>
                                 <th>Total & Shipping</th>
                                 <th>VAT</th>
@@ -125,6 +127,12 @@ export const Orders = () => {
                                         <td>
                                             <StatusTag status={order.status} />
                                         </td>
+                                        <FirstOrderCell
+                                            $first={order.firstOrder}
+                                        >
+                                            {order.firstOrder ? 'YES' : 'NO'}
+                                        </FirstOrderCell>
+
                                         <td>
                                             £{(order.subtotal || 0).toFixed(2)}
                                         </td>
@@ -239,6 +247,12 @@ const ViewButton = styled.button`
     }
 `;
 
+const FirstOrderCell = styled.td<{ $first: boolean }>`
+    text-transform: uppercase;
+    font-weight: bold;
+    color: ${({ $first }) => ($first ? '#4CAF50' : '#FF4D4F')};
+`;
+
 const FancyContainerWrapper = styled.div`
     width: 100%;
     display: flex;
@@ -297,7 +311,6 @@ const Table = styled.table`
     }
 
     td {
-        color: white;
         font-family: Barlow;
         font-size: 14px;
     }
