@@ -229,7 +229,8 @@ const StyledLink = styled(Link)`
 const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: column;
-    margin-bottom: 2.5rem;
+    margin: 2.5rem;
+    min-height: 50vh;
 `;
 
 const ImageWrapper = styled.div`
@@ -243,6 +244,11 @@ const ImageWrapper = styled.div`
     align-items: center;
     width: 260px;
     height: 200px;
+
+    ${mediaQueries('sm')`
+        width: 200px;
+        height: 175px;
+    `};
 `;
 
 const CategoryImage = styled.img`

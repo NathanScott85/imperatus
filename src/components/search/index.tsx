@@ -78,7 +78,9 @@ export const Search: React.FC<SearchProps> = ({
                         onChange={onChange}
                         onKeyDown={handleKeyDown}
                     />
-                    {search && <ClearButton onClick={buttonReset}>✕</ClearButton>}
+                    {search && (
+                        <ClearButton onClick={buttonReset}>✕</ClearButton>
+                    )}
                 </SearchContainer>
             )}
         </>
@@ -89,7 +91,7 @@ const SearchContainer = styled.div<{ variant?: 'small' | 'large' }>`
     display: flex;
     align-items: center;
     color: #c79d0a;
-    margin: 0 3.5rem;
+    margin: 0 2.5rem;
     position: relative;
 
     ${mediaQueries('md')`
@@ -120,7 +122,7 @@ const SearchContainer = styled.div<{ variant?: 'small' | 'large' }>`
             max-width: 325px;
             width: 100%;
             margin: 0;
-    `}
+        `}
 `;
 
 export const SearchButton = styled.button`
