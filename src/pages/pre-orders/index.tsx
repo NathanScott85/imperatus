@@ -36,17 +36,16 @@ export const Preorders: React.FC = () => {
         }
     };
 
-    if (!preorders) return null
+    if (!preorders) return null;
 
     const sortedBrands = preorders.brands
-    .filter((brand: any) =>
-        preorders.products?.some(
-            (product: any) =>
-                product.preorder === true &&
-                product.brand?.id === brand.id
+        .filter((brand: any) =>
+            preorders.products?.some(
+                (product: any) =>
+                    product.preorder === true && product.brand?.id === brand.id,
+            ),
         )
-    )
-    .sort((a: any, b: any) => a.name.localeCompare(b.name))
+        .sort((a: any, b: any) => a.name.localeCompare(b.name));
 
     return (
         <>
@@ -76,63 +75,75 @@ export const Preorders: React.FC = () => {
                         <FiltersAndPreordersContainer>
                             <PreordersFilterContainer>
                                 <h1>Coming Soon</h1>
-                                <FancyContainer variant="filters" size="filters">
+                                <FancyContainer
+                                    variant="filters"
+                                    size="filters"
+                                >
                                     <PreordersFilter>
-                                        {sortedBrands
-                                            .map((brand: any) => (
-                                                <PreorderWrapper key={brand.id}>
-                                                    <StyledLink
-                                                        to={`/shop/coming-soon/${brand.id}/${brand.name.replace(/\s+/g, '-').toLowerCase()}`}
-                                                        state={{
-                                                            brand,
-                                                            products: preorders.products?.filter(
-                                                                (product: any) =>
-                                                                    product.preorder === true &&
-                                                                    product.brand?.id === brand.id
+                                        {sortedBrands.map((brand: any) => (
+                                            <PreorderWrapper key={brand.id}>
+                                                <StyledLink
+                                                    to={`/shop/coming-soon/${brand.id}/${brand.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                                    state={{
+                                                        brand,
+                                                        products:
+                                                            preorders.products?.filter(
+                                                                (
+                                                                    product: any,
+                                                                ) =>
+                                                                    product.preorder ===
+                                                                        true &&
+                                                                    product
+                                                                        .brand
+                                                                        ?.id ===
+                                                                        brand.id,
                                                             ),
-                                                        }}
-                                                    >
-                                                        {brand.name}
-                                                    </StyledLink>
-                                                </PreorderWrapper>
-                                            ))}
+                                                    }}
+                                                >
+                                                    {brand.name}
+                                                </StyledLink>
+                                            </PreorderWrapper>
+                                        ))}
                                     </PreordersFilter>
                                 </FancyContainer>
-
                             </PreordersFilterContainer>
                             <PreordersListContainer>
-                                {sortedBrands
-                                    .map((brand: any) => (
-                                        <Link
-                                            key={brand.id}
-                                            to={`/shop/coming-soon/${brand.id}/${brand.name.replace(/\s+/g, '-').toLowerCase()}`}
-                                            state={{
-                                                brand,
-                                                products: preorders.products?.filter(
+                                {sortedBrands.map((brand: any) => (
+                                    <Link
+                                        key={brand.id}
+                                        to={`/shop/coming-soon/${brand.id}/${brand.name.replace(/\s+/g, '-').toLowerCase()}`}
+                                        state={{
+                                            brand,
+                                            products:
+                                                preorders.products?.filter(
                                                     (product: any) =>
-                                                        product.preorder === true &&
-                                                        product.brand?.id === brand.id
+                                                        product.preorder ===
+                                                            true &&
+                                                        product.brand?.id ===
+                                                            brand.id,
                                                 ),
-                                            }}
-                                        >
-                                            <PreorderItem>
-                                                <ImageWrapper>
-                                                    <PreorderImage
-                                                        src={brand.img?.url}
-                                                        alt={brand.name}
-                                                    />
-                                                </ImageWrapper>
-                                                <p>{brand.name}</p>
-                                            </PreorderItem>
-                                        </Link>
-                                    ))}
+                                        }}
+                                    >
+                                        <PreorderItem>
+                                            <ImageWrapper>
+                                                <PreorderImage
+                                                    src={brand.img?.url}
+                                                    alt={brand.name}
+                                                />
+                                            </ImageWrapper>
+                                            <p>{brand.name}</p>
+                                        </PreorderItem>
+                                    </Link>
+                                ))}
                             </PreordersListContainer>
                         </FiltersAndPreordersContainer>
                         {totalPages > 1 && (
                             <PaginationContainer>
                                 <PaginationControls>
                                     <PageButton
-                                        onClick={() => handlePageChange(page - 1)}
+                                        onClick={() =>
+                                            handlePageChange(page - 1)
+                                        }
                                         disabled={page === 1}
                                     >
                                         Previous
@@ -141,7 +152,9 @@ export const Preorders: React.FC = () => {
                                         Page {page} of {totalPages}
                                     </span>
                                     <PageButton
-                                        onClick={() => handlePageChange(page + 1)}
+                                        onClick={() =>
+                                            handlePageChange(page + 1)
+                                        }
                                         disabled={page >= totalPages}
                                     >
                                         Next
@@ -164,7 +177,8 @@ const PreordersMain = styled(MainContainer)`
 const PreordersContainer = styled.section`
     display: flex;
     flex-direction: column;
-    margin-bottom: 2.5rem;
+    margin: 2.5rem;
+    min-height: 50vh;
 `;
 
 const FiltersAndPreordersContainer = styled.div`
@@ -261,6 +275,10 @@ const ImageWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    ${mediaQueries('sm')`
+        width: 200px;
+        height: 175px;
+    `};
 `;
 
 const PreorderImage = styled.img`
