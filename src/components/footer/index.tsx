@@ -11,30 +11,49 @@ export const Footer = () => {
                 <FooterWrapper>
                     <FooterSections>
                         <FooterSection>
-                            <SectionTitle>
+                            <span>
                                 <ImperatusLink />
-                                <p>1 Address Land</p>
-                                <p> Address,</p>
-                                <p>Address City</p>
-                                <p>Address County</p>
-                                <p>AD1S 1PS</p>
-                                <p>manager@imperatusgames.co.uk </p>
-                                <p>07542490573</p>
-                            </SectionTitle>
+                            </span>
                         </FooterSection>
                         <FooterSection>
-                            <SectionTitle>
-                                Resources
-                            </SectionTitle>
+                            <SectionTitle>Follow us</SectionTitle>
                             <ContentItem>
-                                <FooterLink to="/about-us">
-                                    About us
-                                </FooterLink>
+                                <p></p>
                             </ContentItem>
                             <ContentItem>
-                                <FooterLink to="/faqs">
-                                    FAQS
+                                <FooterLink to="/facebook">Facebook</FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/twitter">Twitter</FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/instagram">
+                                    Instagram
                                 </FooterLink>
+                            </ContentItem>
+                        </FooterSection>
+
+                        <FooterSection>
+                            <SectionTitle>Contact us</SectionTitle>
+                            <ContentItem>
+                                <p>Imperatus Games</p>
+                                <p>1234 Street Name</p>
+                                <p>City, State, Zip</p>
+                                <p>Country</p>
+                                <p>Phone: 01234 567 890</p>
+                                <p>Email: support@imperatusgames.co.uk</p>
+                            </ContentItem>
+                            <ContentItem>
+                                <p>Mon - Fri 9:00am - 5:00pm</p>
+                            </ContentItem>
+                        </FooterSection>
+                        <FooterSection>
+                            <SectionTitle>Resources</SectionTitle>
+                            <ContentItem>
+                                <FooterLink to="/about-us">About us</FooterLink>
+                            </ContentItem>
+                            <ContentItem>
+                                <FooterLink to="/faqs">FAQS</FooterLink>
                             </ContentItem>
                             <ContentItem>
                                 <FooterLink to="/news-&-events">
@@ -43,9 +62,7 @@ export const Footer = () => {
                             </ContentItem>
                         </FooterSection>
                         <FooterSection>
-                            <SectionTitle>
-                            Legal
-                            </SectionTitle>
+                            <SectionTitle>Legal</SectionTitle>
                             <ContentItem>
                                 <FooterLink to="/privacy-policy">
                                     Privacy Policy
@@ -63,18 +80,14 @@ export const Footer = () => {
                             </ContentItem>
                         </FooterSection>
                         <FooterSection>
-                            <SectionTitle>
-                                Ordering
-                            </SectionTitle>
+                            <SectionTitle>Ordering</SectionTitle>
                             <ContentItem>
                                 <FooterLink to="/payment-methods">
                                     Payment Methods
                                 </FooterLink>
                             </ContentItem>
                             <ContentItem>
-                                <FooterLink to="/delivery">
-                                    Delivery
-                                </FooterLink>
+                                <FooterLink to="/delivery">Delivery</FooterLink>
                             </ContentItem>
                             <ContentItem>
                                 <FooterLink to="/returns-policy">
@@ -90,11 +103,11 @@ export const Footer = () => {
                     </FooterSections>
                     <CompanyInfo>
                         <p>
-                            Imperatus Games Ltd is a registered company in England & Wales.
-                            Company Registration Number: <strong>12345678</strong>
+                            Imperatus Games Ltd is a registered company in
+                            England & Wales. Company Registration Number:{' '}
+                            <strong>12345678</strong>
                         </p>
                     </CompanyInfo>
-
                 </FooterWrapper>
             </ImageContainer>
         </FooterContainer>
@@ -134,14 +147,25 @@ const FooterWrapper = styled.div`
 
 const FooterSections = styled.div`
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
+    gap: 1.5rem;
     width: 100%;
     flex-wrap: wrap;
+    margin-bottom: 2rem;
+    span {
+        margin-top: -4.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
 `;
 
-const FooterSection = styled.section`
+const FooterSection = styled.div`
     margin-bottom: 2rem;
     text-align: center;
+    color: white;
 `;
 
 const SectionTitle = styled.h2`

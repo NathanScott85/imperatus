@@ -15,48 +15,65 @@ export const DiscountCodes = () => (
         <BreadCrumb label="Discount Codes" />
 
         <MainContainer>
-        <Title>Discounts</Title>
-        <Paragraph>
-                        At Imperatus Games, we believe in rewarding our customers. Whether you're a first-time buyer <br /> or a loyal returning customer, we offer discount codes to help you save on your favorite games.
-                    </Paragraph>
+            <Title>Discounts</Title>
+            <Paragraph>
+                At Imperatus Games, we believe in rewarding our customers.
+                Whether you&#39;re a first-time buyer <br /> or a loyal
+                returning customer, we offer discount codes to help you save on
+                your favorite games.
+            </Paragraph>
             <Section>
-    
                 <LeftContent>
                     <Title>Save on Your First Purchase</Title>
                     <Image src={DiscountImage} alt="5% Off Your First Order" />
-               
                 </LeftContent>
 
                 {/* Right Side */}
                 <RightContent>
                     <Subtitle>First Order Discount</Subtitle>
                     <Paragraph>
-                        Get <strong>5% off</strong> your first order when you shop with us! Your discount will be applied automatically at checkout—no code needed.
+                        Get <strong>5% off</strong> your first order when you
+                        shop with us! Your discount will be applied
+                        automatically at checkout—no code needed.
                     </Paragraph>
 
                     <Subtitle>How to Use Discount Codes</Subtitle>
                     <Paragraph>
-                        If you have a discount code, simply enter it at checkout, and the discount will be applied to your total. Be sure to check the terms of the code, as some discounts may have specific conditions.
+                        If you have a discount code, simply enter it at
+                        checkout, and the discount will be applied to your
+                        total. Be sure to check the terms of the code, as some
+                        discounts may have specific conditions.
                     </Paragraph>
 
                     <Subtitle>Stay Updated on New Discounts</Subtitle>
                     <Paragraph>
-                        We regularly offer special promotions and exclusive discounts. Sign up for our newsletter to be the first to hear about new deals and upcoming offers!
+                        We regularly offer special promotions and exclusive
+                        discounts. Sign up for our newsletter to be the first to
+                        hear about new deals and upcoming offers!
                     </Paragraph>
 
                     <Subtitle>Terms & Conditions</Subtitle>
                     <Paragraph>
-                        Discounts cannot be combined unless stated otherwise. Some exclusions may apply, such as pre-orders, exclusive items, or limited edition products. Check each promotion for full details.
+                        Discounts cannot be combined unless stated otherwise.
+                        Some exclusions may apply, such as pre-orders, exclusive
+                        items, or limited edition products. Check each promotion
+                        for full details.
                     </Paragraph>
                 </RightContent>
             </Section>
             <Section>
                 <Content>
                     <Subtitle>Contact Information</Subtitle>
-                    <Paragraph>For any discount related queries, contact us at:</Paragraph>
+                    <Paragraph>
+                        For any discount related queries, contact us at:
+                    </Paragraph>
                     <List>
-                    <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                    <ListItem>Telephone: <span>07542490573</span></ListItem>
+                        <ListItem>
+                            Email: <span> support@imperatusgames.co.uk</span>
+                        </ListItem>
+                        <ListItem>
+                            Telephone: <span>07542490573</span>
+                        </ListItem>
                     </List>
                 </Content>
             </Section>

@@ -12,6 +12,7 @@ import {
     Percent,
     Carousel,
     Promotion,
+    Pound,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
@@ -258,6 +259,10 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                 <MenuItem onClick={() => toggleMenu('Customers')}>
                     <UserIcon />
                     CUSTOMERS
+                </MenuItem>
+                <MenuItem onClick={() => toggleMenu('VAT', 'AdminVAT')}>
+                    <Pound />
+                    VAT
                 </MenuItem>
             </Menu>
             <BottomContainer>

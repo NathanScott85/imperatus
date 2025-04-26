@@ -90,8 +90,10 @@ export const Orders = () => {
                                 <th>Order Number</th>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>Total(Inc. VAT)</th>
-                                <th>Total</th>
+                                <th>First Order</th>
+                                <th>Subtotal</th>
+                                <th>Total & Shipping</th>
+                                <th>VAT</th>
                                 <th>Discount Code</th>
                                 <th>Date</th>
                                 <th>
@@ -125,8 +127,20 @@ export const Orders = () => {
                                         <td>
                                             <StatusTag status={order.status} />
                                         </td>
-                                        <td>£{order.subtotal}</td>
-                                        <td>£{order.total}</td>
+                                        <FirstOrderCell
+                                            $first={order.firstOrder}
+                                        >
+                                            {order.firstOrder ? 'YES' : 'NO'}
+                                        </FirstOrderCell>
+
+                                        <td>
+                                            £{(order.subtotal || 0).toFixed(2)}
+                                        </td>
+
+                                        <td>
+                                            £{(order.total || 0).toFixed(2)}
+                                        </td>
+                                        <td>£{(order.vat || 0).toFixed(2)}</td>
                                         <td>
                                             {order.discountCode?.code || '-'}
                                         </td>
@@ -233,6 +247,12 @@ const ViewButton = styled.button`
     }
 `;
 
+const FirstOrderCell = styled.td<{ $first: boolean }>`
+    text-transform: uppercase;
+    font-weight: bold;
+    color: ${({ $first }) => ($first ? '#4CAF50' : '#FF4D4F')};
+`;
+
 const FancyContainerWrapper = styled.div`
     width: 100%;
     display: flex;
@@ -291,7 +311,6 @@ const Table = styled.table`
     }
 
     td {
-        color: white;
         font-family: Barlow;
         font-size: 14px;
     }

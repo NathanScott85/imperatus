@@ -20,9 +20,9 @@ interface OrderItem {
     productId: number;
     quantity: number;
     price: number;
+    product?: any;
 }
 
-type FormField = keyof Form;
 type Form = {
     name: string;
     address: string;
@@ -50,14 +50,23 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
     });
 
     const [status, setStatus] = useState(order.status);
-
-    const [items, setItems] = useState<OrderItem[]>(
-        order.items?.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-        })) || [],
-    );
+    const [items, setItems] = useState<OrderItem[]>(() => {
+        const merged: Record<number, OrderItem> = {};
+        for (const item of order.items) {
+            if (!merged[item.productId]) {
+                merged[item.productId] = {
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    price: item.price,
+                    product: item.product,
+                };
+            } else {
+                merged[item.productId].quantity += item.quantity;
+                merged[item.productId].quantity += item.quantity;
+            }
+        }
+        return Object.values(merged);
+    });
 
     const [dropdownStates, setDropdownStates] = useState<
         Record<string, boolean>
@@ -67,8 +76,8 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
     const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
-        if (!products || products.length === 0) fetchProducts();
-        if (!orderStatus || orderStatus.length === 0) fetchOrderStatus();
+        if (!products?.length) fetchProducts();
+        if (!orderStatus?.length) fetchOrderStatus();
     }, []);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,7 +85,7 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
         setForm((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleItemInputChange = (
+    const handleItemChange = (
         index: number,
         field: keyof OrderItem,
         value: number,
@@ -86,29 +95,28 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
         setItems(updated);
     };
 
-    const handleDropdownChange = (
-        index: number,
-        field: keyof OrderItem,
-        value: number,
-    ) => {
-        handleItemInputChange(index, field, value);
-        if (field === 'productId') {
-            const selected = products?.find((p) => p.id === value);
-            if (selected) handleItemInputChange(index, 'price', selected.price);
-        }
-        setDropdownStates((prev) => ({
-            ...prev,
-            [`product-${index}`]: false,
-        }));
-    };
+    const handleAddProduct = (productId: number) => {
+        const selected = products!.find((p) => p.id === productId);
+        if (!selected) return;
 
-    const handleRemoveItem = (index: number) => {
-        const updated = items.filter((_, i) => i !== index);
-        setItems(updated);
-        setDropdownStates((prev) => {
-            const next = { ...prev };
-            delete next[`product-${index}`];
-            return next;
+        setItems((prev) => {
+            const index = prev.findIndex(
+                (item) => item.productId === productId,
+            );
+            if (index !== -1) {
+                const updated = [...prev];
+                updated[index].quantity += 1;
+                return updated;
+            }
+            return [
+                ...prev,
+                {
+                    productId,
+                    quantity: 1,
+                    price: selected.price,
+                    product: selected,
+                },
+            ];
         });
     };
 
@@ -117,48 +125,53 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
         setSuccess('');
         setIsUpdating(true);
 
-        const validItems = items.filter(
-            (item) => item.productId !== 0 && item.quantity > 0,
-        );
-
-        const mergedItemsMap = new Map<number, OrderItem>();
-        for (const item of validItems) {
-            const existing = mergedItemsMap.get(item.productId);
-            if (existing) {
-                existing.quantity += item.quantity;
-            } else {
-                mergedItemsMap.set(item.productId, { ...item });
-            }
-        }
-
-        const mergedItems = Array.from(mergedItemsMap.values());
+        const validItems = items.filter((item) => item.quantity > 0);
 
         const payload = {
             ...form,
             status,
             shippingCost: parseFloat(form.shippingCost),
-            items:
-                mergedItems.length > 0
-                    ? mergedItems.map((item) => ({
-                          productId: Number(item.productId),
-                          quantity: item.quantity,
-                          price: item.price,
-                      }))
-                    : undefined,
+            items: validItems.map((item) => ({
+                productId: Number(item.productId),
+                quantity: item.quantity,
+                price: item.product?.price ?? item.price,
+            })),
             discountCode: form.discountCode || undefined,
         };
 
         try {
-            await updateOrder(order.id, payload);
-            setSuccess('Order updated successfully.');
-        } catch {
-            setError('Failed to update order.');
-        } finally {
-            setIsUpdating(false);
+            const response = await updateOrder(order.id, payload);
+            console.log('Update response:', response);
+            if (!response.success) {
+                setError(response.message);
+                setIsUpdating(false);
+            } else {
+                setSuccess(response.message);
+            }
+        } catch (err: any) {
+            setError(err.message || 'Unexpected error updating order.');
         }
     };
 
-    const selectedProductIds = items.map((item) => item.productId);
+    const visibleItems = items.filter((item) => item.quantity > 0);
+    const estimatedSubtotal = visibleItems.reduce(
+        (sum, i) => sum + i.quantity * i.price,
+        0,
+    );
+    const estimatedVat = estimatedSubtotal * 0.2;
+    const estimatedTotal =
+        estimatedSubtotal + parseFloat(form.shippingCost || '0') + estimatedVat;
+
+    const isDirty = items.some(
+        (item) =>
+            !order.items.find(
+                (i) =>
+                    i.productId === item.productId &&
+                    i.quantity === item.quantity,
+            ),
+    );
+
+    const selectedProductIds = visibleItems.map((i) => i.productId);
 
     return (
         <DeliveryContainer>
@@ -166,7 +179,7 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
             <BackButton onClick={onBack}>Back to Orders</BackButton>
             <DeliveryWrapper>
                 <DeliveryDetailsWrapper>
-                    {Object.keys(form).map((field) => (
+                    {Object.entries(form).map(([field, value]) => (
                         <FormGroup key={field}>
                             <Label>
                                 {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -174,7 +187,7 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
                             <Input
                                 id={field}
                                 variant="secondary"
-                                value={form[field as FormField]}
+                                value={value}
                                 onChange={handleFormChange}
                             />
                         </FormGroup>
@@ -224,122 +237,117 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
                         />
                     </FormGroup>
 
-                    {items.map((item, index) => {
-                        const selected = products?.find(
-                            (p) => p.id === items[index].productId,
-                        );
-                        return (
-                            <ItemGroup key={index}>
-                                <ProductDropdown
-                                    label="Product"
-                                    handleDropdownToggle={() =>
-                                        setDropdownStates((prev) => ({
-                                            ...Object.keys(prev).reduce(
-                                                (acc, key) => {
-                                                    acc[key] = false;
-                                                    return acc;
-                                                },
-                                                {} as Record<string, boolean>,
-                                            ),
-                                            [`product-${index}`]:
-                                                !prev[`product-${index}`],
-                                        }))
-                                    }
-                                    handleDropdownChange={(
-                                        field: unknown,
-                                        value: number,
-                                    ) =>
-                                        handleDropdownChange(
-                                            index,
-                                            field as keyof OrderItem,
-                                            value,
-                                        )
-                                    }
-                                    onClear={() => {
-                                        handleItemInputChange(
-                                            index,
-                                            'productId',
-                                            0,
-                                        );
-                                        handleItemInputChange(
-                                            index,
-                                            'quantity',
-                                            1,
-                                        );
-                                        handleItemInputChange(
-                                            index,
-                                            'price',
-                                            0,
-                                        );
-                                    }}
-                                    toggleValue={`product-${index}`}
-                                    isDropdownOpen={
-                                        dropdownStates[`product-${index}`] ||
-                                        false
-                                    }
-                                    header={
-                                        selected
-                                            ? `${selected.name} (${selected.stock} in stock)`
-                                            : 'Select Product'
-                                    }
-                                    values={products}
-                                    selectedValue="productId"
-                                    displayField="name"
-                                    disabledOptions={selectedProductIds.filter(
-                                        (id) => id !== item.productId,
-                                    )}
-                                />
-                                <Label>Quantity</Label>
-                                <Input
-                                    type="number"
-                                    variant="secondary"
-                                    value={item.quantity}
-                                    onChange={(e) =>
-                                        handleItemInputChange(
-                                            index,
-                                            'quantity',
-                                            parseInt(e.target.value, 10),
-                                        )
-                                    }
-                                />
-                                <Label>Price</Label>
-                                <Input
-                                    type="number"
-                                    variant="secondary"
-                                    value={item.price}
-                                    onChange={(e) =>
-                                        handleItemInputChange(
-                                            index,
-                                            'price',
-                                            parseFloat(e.target.value),
-                                        )
-                                    }
-                                />
-                                {items.length > 1 && (
-                                    <RemoveButton
-                                        type="button"
-                                        className="remove-btn"
-                                        onClick={() => handleRemoveItem(index)}
-                                    >
-                                        ✕
-                                    </RemoveButton>
-                                )}
-                            </ItemGroup>
-                        );
-                    })}
+                    <FormGroup>
+                        <ProductDropdown
+                            label="Add Product"
+                            handleDropdownToggle={() =>
+                                setDropdownStates((prev) => ({
+                                    ...prev,
+                                    add: !prev['add'],
+                                }))
+                            }
+                            handleDropdownChange={(
+                                _: unknown,
+                                value: number,
+                            ) => {
+                                handleAddProduct(value);
+                                setDropdownStates((prev) => ({
+                                    ...prev,
+                                    add: false,
+                                }));
+                            }}
+                            onClear={() => {}}
+                            toggleValue="add"
+                            isDropdownOpen={dropdownStates['add'] || false}
+                            header="Select Product"
+                            values={products}
+                            selectedValue="id"
+                            displayField="name"
+                            disabledOptions={selectedProductIds}
+                        />
+                    </FormGroup>
 
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() =>
-                            setItems([
-                                ...items,
-                                { productId: 0, quantity: 1, price: 0 },
-                            ])
-                        }
-                    >
-                        Add Item
-                    </Button>
+                    {items.map((item, index) => (
+                        <ItemGroup key={item.productId}>
+                            <Label>{item.product?.name || 'Product'}</Label>
+
+                            {item.quantity > 0 ? (
+                                <>
+                                    <QuantityControls>
+                                        <StepButton
+                                            onClick={() =>
+                                                handleItemChange(
+                                                    index,
+                                                    'quantity',
+                                                    Math.max(
+                                                        0,
+                                                        item.quantity - 1,
+                                                    ),
+                                                )
+                                            }
+                                            disabled={item.quantity <= 0}
+                                        >
+                                            –
+                                        </StepButton>
+                                        <QuantityDisplay>
+                                            {item.quantity}
+                                        </QuantityDisplay>
+                                        <StepButton
+                                            onClick={() =>
+                                                handleItemChange(
+                                                    index,
+                                                    'quantity',
+                                                    item.quantity + 1,
+                                                )
+                                            }
+                                        >
+                                            +
+                                        </StepButton>
+                                    </QuantityControls>
+
+                                    <Label>Price</Label>
+                                    <Input
+                                        type="number"
+                                        variant="secondary"
+                                        value={item.price}
+                                        onChange={(e) =>
+                                            handleItemChange(
+                                                index,
+                                                'price',
+                                                parseFloat(e.target.value),
+                                            )
+                                        }
+                                    />
+
+                                    <TotalDisplay>
+                                        Line Total: £
+                                        {(item.price * item.quantity).toFixed(
+                                            2,
+                                        )}
+                                    </TotalDisplay>
+                                    <RemoveButton
+                                        onClick={() =>
+                                            handleItemChange(
+                                                index,
+                                                'quantity',
+                                                0,
+                                            )
+                                        }
+                                    >
+                                        ✕ Remove
+                                    </RemoveButton>
+                                </>
+                            ) : (
+                                <UndoRemove
+                                    onClick={() =>
+                                        handleItemChange(index, 'quantity', 1)
+                                    }
+                                >
+                                    ↺ Undo Remove {item.product?.name}
+                                </UndoRemove>
+                            )}
+                        </ItemGroup>
+                    ))}
 
                     <ButtonContainer>
                         <Button
@@ -361,63 +369,129 @@ export const Order: React.FC<OrderDetailsProps> = ({ order, onBack }) => {
                         <strong>Order Number:</strong> {order.orderNumber}
                     </ReadonlyInfo>
                     <ReadonlyInfo>
-                        <strong>Status:</strong>
-                        <StatusTag status={order.status} />
+                        <strong>Status:</strong> <StatusTag status={status} />
                     </ReadonlyInfo>
                     <ReadonlyInfo>
-                        <strong>Subtotal:</strong> £{order.subtotal.toFixed(2)}
+                        <strong>Subtotal:</strong> £
+                        {(isDirty ? estimatedSubtotal : order.subtotal).toFixed(
+                            2,
+                        )}{' '}
+                        {isDirty && '(est.)'}
                     </ReadonlyInfo>
                     <ReadonlyInfo>
                         <strong>Shipping:</strong> £
-                        {order.shippingCost.toFixed(2)}
+                        {parseFloat(form.shippingCost).toFixed(2)}
                     </ReadonlyInfo>
                     <ReadonlyInfo>
-                        <strong>VAT:</strong> £{order.vat.toFixed(2)}
+                        <strong>VAT:</strong> £
+                        {(isDirty ? estimatedVat : order.vat).toFixed(2)}{' '}
+                        {isDirty && '(est.)'}
                     </ReadonlyInfo>
                     <ReadonlyInfo>
-                        <strong>Total:</strong> £{order.total.toFixed(2)}
+                        <strong>Total:</strong> £
+                        {(isDirty ? estimatedTotal : order.total).toFixed(2)}{' '}
+                        {isDirty && '(est.)'}
                     </ReadonlyInfo>
                     <ReadonlyInfo>
                         <strong>Created At:</strong>{' '}
-                        {moment(Number(order.createdAt)).isValid()
-                            ? moment(Number(order.createdAt)).format(
-                                  'DD-MM-YYYY',
-                              )
-                            : '—'}
+                        {moment(Number(order.createdAt)).format('DD-MM-YYYY')}
                     </ReadonlyInfo>
+
+                    <ReadonlyInfoTitle>Items Ordered</ReadonlyInfoTitle>
+                    {visibleItems.map((item, index) => {
+                        const product = item.product;
+                        return (
+                            <ReadonlyInfo key={index}>
+                                <strong>
+                                    {product?.name || 'Unknown Product'}:
+                                </strong>
+                                <br />
+                                Quantity: {item.quantity}
+                                <br />
+                                Price: £{item.price.toFixed(2)}
+                                {product?.rarity?.name && (
+                                    <>
+                                        <br />
+                                        Rarity: {product.rarity.name}
+                                    </>
+                                )}
+                                {product?.variant?.name && (
+                                    <>
+                                        <br />
+                                        Variant: {product.variant.name}
+                                    </>
+                                )}
+                                {product?.cardType?.name && (
+                                    <>
+                                        <br />
+                                        Card Type: {product.cardType.name}
+                                    </>
+                                )}
+                                {product?.set?.setName && (
+                                    <>
+                                        <br />
+                                        Set: {product.set.setName} (
+                                        {product.set.setCode})
+                                    </>
+                                )}
+                            </ReadonlyInfo>
+                        );
+                    })}
                 </SummaryWrapper>
             </DeliveryWrapper>
         </DeliveryContainer>
     );
 };
 
-const ItemGroup = styled.div`
+const QuantityControls = styled.div`
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
-    max-width: 325px;
-    position: relative;
+`;
 
-    &:hover .remove-btn {
-        opacity: 1;
+const StepButton = styled.button`
+    background-color: #4d3c7b;
+    border: none;
+    color: white;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+
+    &:hover:not(:disabled) {
+        background-color: #2a1f51;
     }
 `;
 
-const RemoveButton = styled.button`
-    position: absolute;
-    top: 0;
-    right: -30px;
-    opacity: 0;
-    transition: opacity 0.2s;
+const QuantityDisplay = styled.span`
+    font-size: 16px;
+    min-width: 20px;
+    text-align: center;
+`;
+
+const TotalDisplay = styled.div`
+    font-size: 14px;
+    color: #ccc;
+    margin-top: 0.25rem;
+`;
+
+const UndoRemove = styled.button`
+    color: #ffd166;
     background: transparent;
-    color: red;
     border: none;
-    font-size: 20px;
+    font-size: 14px;
     cursor: pointer;
+    padding: 0;
+    margin-top: 0.25rem;
 
     &:hover {
-        color: #ff4d4f;
+        color: #ffe299;
     }
 `;
 
@@ -425,7 +499,6 @@ const DeliveryContainer = styled.div`
     color: white;
     width: 100%;
 `;
-
 const DeliveryWrapper = styled.div`
     border: 1px solid #ac8fff;
     border-radius: 4px;
@@ -437,7 +510,6 @@ const DeliveryWrapper = styled.div`
     gap: 2rem;
     flex-wrap: wrap;
 `;
-
 const DeliveryDetailsWrapper = styled.div`
     font-family: Barlow;
     font-size: 16px;
@@ -445,7 +517,6 @@ const DeliveryDetailsWrapper = styled.div`
     flex: 1;
     min-width: 300px;
 `;
-
 const SummaryWrapper = styled.div`
     font-family: Barlow;
     font-size: 16px;
@@ -457,19 +528,16 @@ const SummaryWrapper = styled.div`
     border-radius: 8px;
     padding: 1.5rem;
 `;
-
 const ReadonlyInfo = styled.p`
     font-family: Barlow;
     font-size: 16px;
     color: white;
     margin-bottom: 0.5rem;
-
     strong {
         color: white;
         font-size: 14px;
     }
 `;
-
 const ReadonlyInfoTitle = styled.h3`
     font-family: Cinzel;
     font-size: 18px;
@@ -477,14 +545,12 @@ const ReadonlyInfoTitle = styled.h3`
     margin-top: 1rem;
     margin-bottom: 0.75rem;
 `;
-
 const FormTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
     margin-bottom: 1rem;
     color: white;
 `;
-
 const BackButton = styled.button`
     background-color: #4d3c7b;
     color: #fff;
@@ -495,35 +561,50 @@ const BackButton = styled.button`
     font-size: 14px;
     border-radius: 4px;
     padding: 0.75rem;
-
     &:hover {
         background-color: #2a1f51;
     }
 `;
-
 const FormGroup = styled.div`
     margin-bottom: 1rem;
 `;
-
 const Label = styled.label`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     margin-bottom: 0.5rem;
     display: block;
 `;
-
 const ButtonContainer = styled.div`
     margin-top: 1rem;
 `;
-
 const ErrorMessage = styled.p`
     color: #e74c3c;
     font-size: 16px;
     font-family: Barlow;
 `;
-
 const SuccessMessage = styled.p`
     color: green;
     font-size: 16px;
     font-family: Barlow;
+`;
+const ItemGroup = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    align-items: center;
+`;
+const RemoveButton = styled.button`
+    background: transparent;
+    color: red;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.25rem;
+    &:hover {
+        color: #ff4d4f;
+    }
 `;

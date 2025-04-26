@@ -22,9 +22,23 @@ type DiscountCode = {
 };
 
 interface OrderItem {
+    id: string;
     productId: number;
     quantity: number;
     price: number;
+    product?: {
+        id: string;
+        name: string;
+        price: number;
+        rrp: number;
+        description: string;
+        slug: string;
+        preorder: boolean;
+        rarity: any;
+        variant: any;
+        cardType: any;
+        set: any;
+    };
 }
 
 export interface Order {
@@ -32,6 +46,7 @@ export interface Order {
     orderNumber: string;
     name: string;
     address: string;
+    firstOrder: boolean;
     city: string;
     phone: string;
     postcode: string;

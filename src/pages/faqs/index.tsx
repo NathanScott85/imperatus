@@ -13,49 +13,40 @@ interface FAQItem {
 const faqs: FAQItem[] = [
     {
         question: 'What payment methods do you accept?',
-        answer:
-            'We primarily process payments through Stripe, allowing us to accept Visa, Mastercard, American Express, and Discover. We also support PayPal, Apple Pay, and Google Pay. Additionally, we offer buy now, pay later options via Klarna or Clearpay. More payment options may be added in the future.'
+        answer: 'We primarily process payments through Stripe, allowing us to accept Visa, Mastercard, American Express, and Discover. We also support PayPal, Apple Pay, and Google Pay. Additionally, we offer buy now, pay later options via Klarna or Clearpay. More payment options may be added in the future.',
     },
     {
         question: 'How long does delivery take?',
-        answer:
-            'Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days. Delivery times may vary depending on location and carrier delays.'
+        answer: 'Standard shipping typically takes 5-7 business days, while express shipping takes 2-3 business days. Delivery times may vary depending on location and carrier delays.',
     },
     {
         question: 'Do you offer international shipping?',
-        answer:
-            'Currently, we only deliver within the UK. However, we plan to expand our shipping options to include international destinations such as the EU in the future.'
+        answer: 'Currently, we only deliver within the UK. However, we plan to expand our shipping options to include international destinations such as the EU in the future.',
     },
     {
         question: 'Can I track my order?',
-        answer:
-            'Yes, once your order has been shipped, you will receive an email with a tracking number and a link to track your order.'
+        answer: 'Yes, once your order has been shipped, you will receive an email with a tracking number and a link to track your order.',
     },
     {
         question: 'What is your return policy?',
-        answer:
-            'Customers can return items within 30 days of receiving them, provided they are unused, unopened, and in their original packaging. For more details, visit our Returns Policy page.'
+        answer: 'Customers can return items within 30 days of receiving them, provided they are unused, unopened, and in their original packaging. For more details, visit our Returns Policy page.',
     },
     {
         question: 'Can I cancel a pre-order?',
-        answer:
-            'Yes, you may cancel a pre-order at any time before dispatch for a full refund. Once the order has been shipped, standard return policies apply.'
+        answer: 'Yes, you may cancel a pre-order at any time before dispatch for a full refund. Once the order has been shipped, standard return policies apply.',
     },
     {
         question: 'What happens if my order arrives damaged?',
-        answer:
-            'If your order arrives damaged, please contact us within 7 days of delivery, and we will arrange a replacement or refund as appropriate.'
+        answer: 'If your order arrives damaged, please contact us within 7 days of delivery, and we will arrange a replacement or refund as appropriate.',
     },
     {
         question: 'What is your policy for damaged cards inside booster packs?',
-        answer:
-            'If a sealed booster pack contains a damaged card, we can only replace the booster pack itself and not individual cards inside. We recommend reaching out to the manufacturer directly, as they may offer a replacement service for damaged cards.'
+        answer: 'If a sealed booster pack contains a damaged card, we can only replace the booster pack itself and not individual cards inside. We recommend reaching out to the manufacturer directly, as they may offer a replacement service for damaged cards.',
     },
     {
         question: 'What happens one day before a pre-order is released?',
-        answer:
-            'We begin finalizing and preparing all pre-orders for dispatch the day before the official release. At that stage, cancellations may no longer be available, and the order will proceed to shipment.'
-    }
+        answer: 'We begin finalizing and preparing all pre-orders for dispatch the day before the official release. At that stage, cancellations may no longer be available, and the order will proceed to shipment.',
+    },
 ];
 
 export const FrequentlyAskedQuestions: React.FC = () => {
@@ -77,9 +68,14 @@ export const FrequentlyAskedQuestions: React.FC = () => {
                     {faqs.map((faq, index) => (
                         <div key={index}>
                             <AccordionItem>
-                                <AccordionHeader onClick={() => toggleAccordion(index)} isOpen={openIndex === index}>
+                                <AccordionHeader
+                                    onClick={() => toggleAccordion(index)}
+                                    isOpen={openIndex === index}
+                                >
                                     {faq.question}
-                                    <ToggleIcon isOpen={openIndex === index}>{openIndex === index ? '−' : '+'}</ToggleIcon>
+                                    <ToggleIcon isOpen={openIndex === index}>
+                                        {openIndex === index ? '−' : '+'}
+                                    </ToggleIcon>
                                 </AccordionHeader>
                                 <AccordionContent isOpen={openIndex === index}>
                                     <p>{faq.answer}</p>
@@ -90,15 +86,22 @@ export const FrequentlyAskedQuestions: React.FC = () => {
                     ))}
                 </AccordionContainer>
                 <Section>
-                <Content>
-                    <Subtitle>Contact Information</Subtitle>
-                    <Paragraph>For any additional queries, contact us at:</Paragraph>
-                    <List>
-                    <ListItem>Email: <span> manager@imperatusgames.co.uk</span></ListItem>
-                    <ListItem>Telephone: <span>07542490573</span></ListItem>
-                    </List>
-                </Content>
-            </Section>
+                    <Content>
+                        <Subtitle>Contact Information</Subtitle>
+                        <Paragraph>
+                            For any additional queries, contact us at:
+                        </Paragraph>
+                        <List>
+                            <ListItem>
+                                Email:{' '}
+                                <span> support@imperatusgames.co.uk</span>
+                            </ListItem>
+                            <ListItem>
+                                Telephone: <span>07542490573</span>
+                            </ListItem>
+                        </List>
+                    </Content>
+                </Section>
             </MainContainer>
             <Footer />
         </>
@@ -218,7 +221,7 @@ const AccordionHeader = styled.div<{ isOpen: boolean }>`
     align-items: center;
     transition: background-color 0.2s;
     &:hover {
-          background-color: #4d3c7b;
+        background-color: #4d3c7b;
     }
 `;
 
