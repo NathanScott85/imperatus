@@ -12,7 +12,8 @@ import { useVerificationContext } from '../../context/verification';
 export const CheckYourEmail = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { resendVerificationEmail, loading, resendError } = useVerificationContext();
+    const { resendVerificationEmail, loading, resendError } =
+        useVerificationContext();
     const [message, setMessage] = useState('');
 
     const userId = location.state?.userId;
@@ -27,7 +28,9 @@ export const CheckYourEmail = () => {
         setMessage('');
 
         if (!userId) {
-            setMessage('Unable to resend verification email — please register again.');
+            setMessage(
+                'Unable to resend verification email — please register again.',
+            );
             return;
         }
 
@@ -56,11 +59,23 @@ export const CheckYourEmail = () => {
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
                             <h1>Check Your Email</h1>
-                            <p>Thank you for registering with Imperatus Games!</p>
-                            <p>Please check your inbox (and spam folder) for an email with a verification link.</p>
-                            <p>If you haven't received the email yet, make sure to check your spam or junk folder.</p>
+                            <p>
+                                Thank you for registering with Imperatus Games!
+                            </p>
+                            <p>
+                                Please check your inbox (and spam folder) for an
+                                email with a verification link.
+                            </p>
+                            <p>
+                                If you haven&apos;t received the email yet, make
+                                sure to check your spam or junk folder.
+                            </p>
                             <Button
-                                label={loading ? 'Resending...' : 'Resend Verification Email'}
+                                label={
+                                    loading
+                                        ? 'Resending...'
+                                        : 'Resend Verification Email'
+                                }
                                 variant="primary"
                                 size="medium"
                                 type="submit"

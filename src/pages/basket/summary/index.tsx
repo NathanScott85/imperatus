@@ -45,7 +45,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 <p>Delivery: $5.00</p>
                 <p>Price without VAT: ${calculatePriceWithoutVAT()}</p>
                 <p>Total (inc VAT): ${calculateTotal()}</p>
-                <Button label="Checkout" size="small" variant="primary" />
+                <Button
+                    link
+                    pathname="/shop/checkout"
+                    label="Checkout"
+                    size="small"
+                    variant="secondary"
+                />
             </Details>
         </SummaryContainer>
     );

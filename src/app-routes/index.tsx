@@ -45,6 +45,8 @@ import { SearchResults } from '../pages/search';
 import { PreordersProvider } from '../context/pre-order';
 import { CheckYourEmail } from '../pages/check-email';
 import AdminProviders from '../context/admin/admin-providers';
+import { Checkout } from '../pages/checkout';
+import { OrdersProvider } from '../context/orders';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -183,7 +185,11 @@ export const AppRoutes = () => {
                             redirectPath={
                                 isAuthenticated ? '/account/my-account' : '/'
                             }
-                            element={<Account />}
+                            element={
+                                <OrdersProvider>
+                                    <Account />
+                                </OrdersProvider>
+                            }
                         />
                     }
                 />
@@ -236,7 +242,7 @@ export const AppRoutes = () => {
 
                 {/* Basket */}
                 <Route path="/shop/basket" element={<Basket />} />
-
+                <Route path="/shop/checkout" element={<Checkout />} />
                 {/* Fallback route */}
                 <Route path="/404" element={<FourOFour />} />
                 <Route path="*" element={<FourOFour />} />

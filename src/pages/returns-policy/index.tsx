@@ -4,7 +4,7 @@ import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 
 export const ReturnsPolicy = () => (
     <>

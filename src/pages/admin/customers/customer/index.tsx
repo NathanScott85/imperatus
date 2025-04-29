@@ -110,7 +110,6 @@ export const Customer: React.FC<{
                         setConfirmationText={setConfirmationText}
                         handleDeleteAccount={handleDeleteAccount}
                         handleCloseModal={handleCloseModal}
-                        preview
                     />
                 )}
             </CustomerContainer>

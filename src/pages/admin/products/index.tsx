@@ -4,15 +4,20 @@ import { Product } from './product';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Search } from '../../../components/search';
 import { useProductsContext } from '../../../context/products';
+import Pagination from '../../../components/pagination';
 
 export const AdminProducts = () => {
-    const { loading,
+    const {
+        loading,
         error,
         search,
         setSearch,
         totalPages,
         page,
-        setPage, products, fetchProducts } = useProductsContext();
+        setPage,
+        products,
+        fetchProducts,
+    } = useProductsContext();
 
     const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
@@ -82,7 +87,7 @@ export const AdminProducts = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell >Loading...</CenteredCell>
+                                    <CenteredCell>Loading...</CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
@@ -92,15 +97,26 @@ export const AdminProducts = () => {
                                 </tr>
                             ) : (
                                 products?.map((product, index) => (
-                                    <TableRow key={product.id} isOdd={index % 2 === 1}>
+                                    <TableRow
+                                        key={product.id}
+                                        isOdd={index % 2 === 1}
+                                    >
                                         <td>{product.name}</td>
-                                        <td>{product.category?.name || 'N/A'}</td>
+                                        <td>
+                                            {product.category?.name || 'N/A'}
+                                        </td>
                                         <td>{product?.brand?.name || 'N/A'}</td>
                                         <td>{product.set?.setName || 'N/A'}</td>
                                         <td>£{product.price}</td>
-                                        <td>{product.stock?.amount ?? 'N/A'}</td>
                                         <td>
-                                            <ViewButton onClick={() => handleViewProduct(product)}>
+                                            {product.stock?.amount ?? 'N/A'}
+                                        </td>
+                                        <td>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    handleViewProduct(product)
+                                                }
+                                            >
                                                 View
                                             </ViewButton>
                                         </td>
@@ -110,21 +126,22 @@ export const AdminProducts = () => {
                         </tbody>
                     </Table>
                     {totalPages > 1 && (
-                        <Pagination>
-                            <PageButton onClick={() => handlePageChange(page - 1)} disabled={page === 1}>
-                                Previous
-                            </PageButton>
-                            <PageButton onClick={() => handlePageChange(page + 1)} disabled={page === totalPages}>
-                                Next
-                            </PageButton>
-                        </Pagination>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
                 </ProductsWrapper>
             ) : (
                 <ProductsContainer>
                     <FancyContainer>
                         <NoProductsMessage>
-                            {search ? <p>No results found for "{search}"</p> : <p>No Products added at the moment.</p>}
+                            {search ? (
+                                <p>No results found for &quot;{search}&quot;</p>
+                            ) : (
+                                <p>No Products added at the moment.</p>
+                            )}
                         </NoProductsMessage>
                     </FancyContainer>
                 </ProductsContainer>
@@ -183,6 +200,8 @@ const ProductsTitle = styled.h2`
 
 const ProductsContainer = styled.div`
     flex-direction: column;
+    padding: 1rem;
+    border: 1px solid #4d3c7b;
     p {
         font-size: 16px;
         color: white;
@@ -192,10 +211,8 @@ const ProductsContainer = styled.div`
 const ProductsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -242,7 +259,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -250,27 +267,6 @@ const CenteredCell = styled.td`
     color: #999;
     font-size: 14px;
     padding: 2rem 0;
-`;
-
-const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;
 
 const ViewButton = styled.button`

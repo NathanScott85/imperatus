@@ -5,6 +5,7 @@ import { useVatContext } from '../../../context/vat';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Input } from '../../../components/input';
 import StatusTag from '../../../components/status';
+import Pagination from '../../../components/pagination';
 
 export const AdminVAT = () => {
     const {
@@ -108,28 +109,11 @@ export const AdminVAT = () => {
                             )}
                         </tbody>
                     </Table>
-
-                    {totalPages > 1 && (
-                        <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(page + 1)}
-                                    disabled={page >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
-                    )}
+                    <Pagination
+                        currentPage={page}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                    />
                 </VATWrapper>
             ) : (
                 <FancyContainer>
@@ -148,7 +132,15 @@ export const AdminVAT = () => {
     );
 };
 const VATContainer = styled.div`
+    color: white;
+    display: grid;
     flex-direction: column;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
     p {
         font-size: 16px;
         color: white;
@@ -201,10 +193,8 @@ const ClearButton = styled.button`
 const VATWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -251,43 +241,6 @@ const CenteredCell = styled.td`
     color: #999;
     font-size: 14px;
     padding: 2rem 0;
-`;
-
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 26rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem 0rem 1rem 1rem;
-
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;
 
 const NoVATMessage = styled.div`

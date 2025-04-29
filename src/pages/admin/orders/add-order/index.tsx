@@ -32,14 +32,13 @@ export const AddOrder = () => {
     ]);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [dropdownStates, setDropdownStates] = useState<
         Record<string, boolean>
     >({});
 
     useEffect(() => {
         if (!products || products.length === 0) fetchProducts();
-    }, []);
+    }, [products, fetchProducts]);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -87,11 +86,10 @@ export const AddOrder = () => {
         }));
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         setError('');
         setSuccess('');
-        setIsSubmitting(true);
-
         try {
             const payload = {
                 ...form,
@@ -119,8 +117,6 @@ export const AddOrder = () => {
             setItems([{ productId: 0, quantity: 1, price: 0 }]);
         } catch (err) {
             setError('Failed to create order.');
-        } finally {
-            setIsSubmitting(false);
         }
     };
 
@@ -274,7 +270,7 @@ export const AddOrder = () => {
                     ))}
 
                     <Button
-                        variant="secondary"
+                        variant="primary"
                         size="small"
                         onClick={() =>
                             setItems([
@@ -300,12 +296,11 @@ export const AddOrder = () => {
 
             <SubmitWrapper>
                 <Button
+                    label="Create Order"
+                    type="button"
                     variant="primary"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                >
-                    {isSubmitting ? 'Submitting...' : 'Create Order'}
-                </Button>
+                    onClick={(e) => handleSubmit(e)}
+                />
                 {error && <ErrorText>{error}</ErrorText>}
                 {success && <SuccessText>{success}</SuccessText>}
             </SubmitWrapper>

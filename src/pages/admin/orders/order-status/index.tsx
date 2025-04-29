@@ -5,6 +5,7 @@ import { Search } from '../../../../components/search';
 import { FancyContainer } from '../../../../components/fancy-container';
 import { OrderStatusDetail } from './status';
 import StatusTag from '../../../../components/status';
+import Pagination from '../../../../components/pagination';
 
 export const OrderStatus = () => {
     const {
@@ -133,25 +134,11 @@ export const OrderStatus = () => {
                     </Table>
 
                     {totalPages > 1 && (
-                        <Pagination>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(page + 1)}
-                                    disabled={page >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </Pagination>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
                 </TableWrapper>
             ) : (
@@ -276,35 +263,6 @@ const CenteredCell = styled.td`
     color: #999;
     font-size: 14px;
     padding: 2rem 0;
-`;
-
-const Pagination = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 1rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    align-items: center;
-    margin: 1rem;
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;
 
 const NoResultsMessage = styled.div`
