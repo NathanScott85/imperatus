@@ -51,6 +51,7 @@ export const Checkout = () => {
                             <ArrowDown type="small" fill="#c79d0a" /> Back to
                             Basket
                         </StyledLink>
+                        <h1>Checkout</h1>
                         <CheckoutGrid>
                             <LeftSection>
                                 <Section>
@@ -119,16 +120,16 @@ export const Checkout = () => {
                                         <span>Total to Pay:</span>
                                         <span>£{calculateTotal()}</span>
                                     </SummaryTotal>
-                                </SummaryBox>
 
-                                <ButtonWrapper>
-                                    <Button
-                                        onClick={handleCheckout}
-                                        variant="primary"
-                                        size="medium"
-                                        label="Confirm Order"
-                                    />
-                                </ButtonWrapper>
+                                    <ButtonWrapper>
+                                        <Button
+                                            onClick={handleCheckout}
+                                            variant="primary"
+                                            size="small"
+                                            label="Confirm Order"
+                                        />
+                                    </ButtonWrapper>
+                                </SummaryBox>
                             </RightSection>
                         </CheckoutGrid>
                     </CheckoutCard>
@@ -161,12 +162,23 @@ const CenteredContainer = styled.div`
 `;
 
 const CheckoutCard = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     background-color: #1b133d;
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     width: 100%;
     border: 2px solid #4d3c7b;
+    h1 {
+        font-family: Cinzel;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 35.05px;
+        color: #c79d0a;
+        padding: 1rem 1rem 1rem 0rem;
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -243,7 +255,7 @@ const Option = styled.div`
 `;
 
 const SummaryBox = styled.div`
-    background: #221745;
+    background-color: #130a30;
     padding: 20px;
     border-radius: 8px;
     color: white;
@@ -270,11 +282,14 @@ const SummaryRow = styled.div`
         color: white;
         font-size: 1.2rem;
         font-weight: bold;
+        color: #c79d0a;
+        font-family: Cinzel, sans-serif;
     }
 
     span:last-child {
         color: #ffffff;
         font-size: 1.2rem;
+        font-family: Cinzel, sans-serif;
     }
 
     span:last-child:hover {
