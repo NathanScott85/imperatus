@@ -67,6 +67,59 @@ export const GET_ALL_ORDERS = gql`
     }
 `;
 
+export const GET_USER_ORDERS = gql`
+    query GetUserOrders($email: String, $userId: Int, $page: Int, $limit: Int) {
+        getUserOrders(
+            email: $email
+            userId: $userId
+            page: $page
+            limit: $limit
+        ) {
+            orders {
+                id
+                orderNumber
+                name
+                address
+                firstOrder
+                city
+                phone
+                postcode
+                email
+                shippingCost
+                subtotal
+                total
+                status
+                vat
+                createdAt
+                updatedAt
+                items {
+                    id
+                    productId
+                    quantity
+                    price
+                    product {
+                        id
+                        name
+                        price
+                        slug
+                        rarity {
+                            id
+                            name
+                        }
+                        set {
+                            id
+                            setName
+                        }
+                    }
+                }
+            }
+            totalCount
+            totalPages
+            currentPage
+        }
+    }
+`;
+
 export const CREATE_ORDER = gql`
     mutation CreateOrder($input: CreateOrderInput!) {
         createOrder(input: $input) {

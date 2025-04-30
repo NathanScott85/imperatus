@@ -18,7 +18,6 @@ export const Wishlist = () => {
                             product={product}
                             onRemove={() => console.log('here')}
                             onMove={() => console.log('here')}
-                            moveLabel="Move to Basket"
                         />
                     ))
                 ) : (

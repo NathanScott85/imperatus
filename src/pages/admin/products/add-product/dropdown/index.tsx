@@ -24,6 +24,11 @@ export const ProductDropdown = ({
                 <Label htmlFor={label}>{label}</Label>
                 {tooltip && <Tooltip message={tooltipMessage} />}
             </LabelWrapper>
+            {isDropdownOpen && (
+                <DropdownBackdrop
+                    onClick={() => handleDropdownToggle(toggleValue)}
+                />
+            )}
             <Select onClick={() => handleDropdownToggle(toggleValue)}>
                 <DropdownHeader>
                     {header}

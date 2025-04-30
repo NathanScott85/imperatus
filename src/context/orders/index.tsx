@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {
     GET_ALL_ORDERS,
+    GET_USER_ORDERS,
     CREATE_ORDER,
     UPDATE_ORDER,
     GET_ALL_STATUS,
@@ -21,24 +22,49 @@ type DiscountCode = {
     code: string;
 };
 
-interface OrderItem {
+export interface Rarity {
+    id: string;
+    name: string;
+}
+
+export interface Variant {
+    id: string;
+    name: string;
+}
+
+export interface CardType {
+    id: string;
+    name: string;
+    brandId: string;
+}
+
+export interface ProductSet {
+    id: string;
+    setName: string;
+    setCode: string;
+    description: string;
+}
+
+export interface Product {
+    id: string;
+    name: string;
+    price: number;
+    rrp: number;
+    description: string;
+    slug: string;
+    preorder: boolean;
+    rarity?: Rarity;
+    variant?: Variant;
+    cardType?: CardType;
+    set?: ProductSet;
+}
+
+export interface OrderItem {
     id: string;
     productId: number;
     quantity: number;
     price: number;
-    product?: {
-        id: string;
-        name: string;
-        price: number;
-        rrp: number;
-        description: string;
-        slug: string;
-        preorder: boolean;
-        rarity: any;
-        variant: any;
-        cardType: any;
-        set: any;
-    };
+    product?: Product;
 }
 
 export interface Order {
@@ -74,7 +100,17 @@ interface OrdersContextProps {
     orders: Order[];
     loading: boolean;
     error: ApolloError | undefined;
-    fetchOrders: () => void;
+    fetchOrders: (params?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+    }) => void;
+    fetchUserOrders: (options: {
+        email?: string;
+        userId?: number;
+        page?: number;
+        limit?: number;
+    }) => void;
     createOrder: (input: {
         email: string;
         name: string;
@@ -161,18 +197,60 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
 
     const resetPagination = () => setCurrentPage(1);
 
-    const [fetchOrders, { loading, error }] = useLazyQuery(GET_ALL_ORDERS, {
+    const [fetchOrdersQuery, { loading, error }] = useLazyQuery(
+        GET_ALL_ORDERS,
+        {
+            fetchPolicy: 'cache-and-network',
+            variables: queryVariables,
+            onCompleted: (data) => {
+                if (data?.getAllOrders) {
+                    setOrders(data.getAllOrders.orders || []);
+                    setTotalPages(data.getAllOrders.totalPages || 1);
+                    setTotalCount(data.getAllOrders.totalCount || 0);
+                    setCurrentPage(data.getAllOrders.currentPage || 1);
+                }
+            },
+            onError: (error) => {
+                console.error('Error fetching orders:', error.message);
+            },
+        },
+    );
+
+    const fetchOrders = (params?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+    }) => {
+        fetchOrdersQuery({
+            variables: params,
+        });
+    };
+
+    const [fetchUserOrdersQuery] = useLazyQuery(GET_USER_ORDERS, {
         fetchPolicy: 'cache-and-network',
-        variables: queryVariables,
         onCompleted: (data) => {
-            if (data?.getAllOrders) {
-                setOrders(data.getAllOrders.orders || []);
-                setTotalPages(data.getAllOrders.totalPages || 1);
-                setTotalCount(data.getAllOrders.totalCount || 0);
-                setCurrentPage(data.getAllOrders.currentPage || 1);
+            if (data?.getUserOrders) {
+                setOrders(data.getUserOrders.orders || []);
+                setTotalPages(data.getUserOrders.totalPages || 1);
+                setTotalCount(data.getUserOrders.totalCount || 0);
+                setCurrentPage(data.getUserOrders.currentPage || 1);
             }
         },
+        onError: (error) => {
+            console.error('Error fetching user orders:', error.message);
+        },
     });
+
+    const fetchUserOrders = (options: {
+        email?: string;
+        userId?: number;
+        page?: number;
+        limit?: number;
+    }) => {
+        fetchUserOrdersQuery({
+            variables: options,
+        });
+    };
 
     const createOrder = async (input: {
         email: string;
@@ -362,6 +440,7 @@ export const OrdersProvider = ({ children }: { children: ReactNode }) => {
             value={{
                 orders,
                 fetchOrders,
+                fetchUserOrders,
                 loading,
                 error,
                 page,

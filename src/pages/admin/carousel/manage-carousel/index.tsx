@@ -5,6 +5,7 @@ import { FancyContainer } from '../../../../components/fancy-container';
 import { UpdateCarousel } from '../update-carousel';
 import { Modal } from '../../../../components/modal';
 import { Search } from '../../../../components/search';
+import Pagination from '../../../../components/pagination';
 
 export const ManageCarousel = () => {
     const {
@@ -28,7 +29,7 @@ export const ManageCarousel = () => {
 
     useEffect(() => {
         fetchCarousel();
-    }, [search, page]);
+    }, [search, page, fetchCarousel]);
 
     const handleViewPage = (page: any) => {
         setSelectedCarouselPage(page);
@@ -169,32 +170,18 @@ export const ManageCarousel = () => {
                     </Table>
 
                     {totalPages > 1 && (
-                        <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(page + 1)}
-                                    disabled={page >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
                 </CarouselWrapper>
             ) : (
                 <FancyContainer>
                     <NoCarouselMessage>
                         {search ? (
-                            <p>No results found for "{search}"</p>
+                            <p>No results found for &quot;{search}&quot;</p>
                         ) : (
                             <p>No carousel pages added at the moment.</p>
                         )}
@@ -243,8 +230,15 @@ const CarouselTitle = styled.h2`
 `;
 
 const CarouselContainer = styled.div`
+    color: white;
+    display: grid;
     flex-direction: column;
-    padding: 1rem;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
 `;
 
 const ViewButton = styled.button`
@@ -266,8 +260,6 @@ const CarouselWrapper = styled.div`
     flex-direction: column;
     align-items: flex-end;
     padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -367,39 +359,4 @@ const ThumbnailPreview = styled.img`
     height: auto;
     border-radius: 8px;
     object-fit: contain;
-`;
-
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;

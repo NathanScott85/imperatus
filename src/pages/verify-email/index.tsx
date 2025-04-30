@@ -1,4 +1,10 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
+import React, {
+    useState,
+    useEffect,
+    ChangeEvent,
+    FormEvent,
+    useRef,
+} from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useVerificationContext } from '../../context/verification';
@@ -10,7 +16,6 @@ import { BreadCrumb } from '../../components/breadcrumbs';
 import { Input } from '../../components/input';
 import Button from '../../components/button';
 import { Footer } from '../../components/footer';
-import { HomeIcon } from '../../components/svg/home';
 import { Login } from '../../components/svg';
 
 function useQueryParam() {
@@ -19,7 +24,13 @@ function useQueryParam() {
 
 export const VerifyEmail = () => {
     const [verificationCode, setVerificationCode] = useState('');
-    const { verifyEmail, getVerificationStatus, loading, verifyError, setVerifyError } = useVerificationContext();
+    const {
+        verifyEmail,
+        getVerificationStatus,
+        loading,
+        verifyError,
+        setVerifyError,
+    } = useVerificationContext();
     const navigate = useNavigate();
     const { user, isAuthenticated } = useAppContext();
     const [autoNavigate, setAutoNavigate] = useState(true);
@@ -57,7 +68,9 @@ export const VerifyEmail = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!token) {
-            setVerifyError('Verification token is missing or you have entered an invalid token');
+            setVerifyError(
+                'Verification token is missing or you have entered an invalid token',
+            );
             return;
         }
 
@@ -66,10 +79,11 @@ export const VerifyEmail = () => {
             setIsVerifiedNow(true);
             setCountdown(5);
         } catch (err) {
-            setVerifyError('Invalid or expired verification code. Please try again.');
+            setVerifyError(
+                'Invalid or expired verification code. Please try again.',
+            );
         }
     };
-
 
     useEffect(() => {
         if (!isVerifiedNow || !autoNavigate || verifyError) return;
@@ -106,14 +120,24 @@ export const VerifyEmail = () => {
                 <Section>
                     <FancyContainer variant="login" size="login">
                         <FancyContainerSubWrapper>
-                        <h1>{verifyError ? <h1>Email Verification Error</h1> : <h1>Email Verification </h1>}</h1>
+                            <h1>
+                                {verifyError ? (
+                                    <h1>Email Verification Error</h1>
+                                ) : (
+                                    <h1>Email Verification </h1>
+                                )}
+                            </h1>
                             {!isVerifiedNow && !isAuthenticated && (
                                 <>
                                     <p>
-                                        Please enter the verification code sent to your email to complete your registration.
+                                        Please enter the verification code sent
+                                        to your email to complete your
+                                        registration.
                                     </p>
                                     <Form onSubmit={handleSubmit}>
-                                        <label htmlFor="verificationCode">Verification Code</label>
+                                        <label htmlFor="verificationCode">
+                                            Verification Code
+                                        </label>
                                         <Input
                                             variant="secondary"
                                             type="text"
@@ -127,40 +151,52 @@ export const VerifyEmail = () => {
                                             variant="primary"
                                             size="small"
                                             type="submit"
-                                            disabled={!verificationCode || loading}
+                                            disabled={
+                                                !verificationCode || loading
+                                            }
                                         />
                                     </Form>
                                     {loading && <p>Loading...</p>}
-
                                 </>
                             )}
 
                             {isVerifiedNow && !verifyError && (
                                 <CheckboxContainer>
-                                    <SuccessParagraph>Your email has been successfully verified!</SuccessParagraph>
+                                    <SuccessParagraph>
+                                        Your email has been successfully
+                                        verified!
+                                    </SuccessParagraph>
                                     {autoNavigate && (
-                                        <p>Redirecting to login in {countdown} seconds...</p>
+                                        <p>
+                                            Redirecting to login in {countdown}{' '}
+                                            seconds...
+                                        </p>
                                     )}
                                     <label htmlFor="disableAutoNavigate">
                                         <input
                                             type="checkbox"
                                             checked={!autoNavigate}
-                                            onChange={() => setAutoNavigate(!autoNavigate)}
+                                            onChange={() =>
+                                                setAutoNavigate(!autoNavigate)
+                                            }
                                         />
                                         Disable Auto-Navigate
                                     </label>
-                                    <p>
-                                        Go to login now:
-                                    </p>
-                                    <Login />
+                                    <p>Go to login now:</p>
+                                    <Link to="/account/login">
+                                        {' '}
+                                        <Login />
+                                    </Link>
                                 </CheckboxContainer>
                             )}
 
-                        {verifyError && (
-                            <>
-                                <ErrorParagraph>{verifyError}</ErrorParagraph>
-                            </>
-                        )}
+                            {verifyError && (
+                                <>
+                                    <ErrorParagraph>
+                                        {verifyError}
+                                    </ErrorParagraph>
+                                </>
+                            )}
                         </FancyContainerSubWrapper>
                     </FancyContainer>
                 </Section>

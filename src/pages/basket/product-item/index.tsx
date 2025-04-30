@@ -1,120 +1,195 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Delete } from '../../../components/svg';
 import Button from '../../../components/button';
+import { Input } from '../../../components/input';
+
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    img: {
+        url: string;
+    };
+}
 
 interface ProductItemProps {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    product: any;
+    product: Product;
     onRemove: (id: number) => void;
     onMove?: () => void;
-    moveLabel?: string;
     variant?: boolean;
 }
 
 export const ProductItem: React.FC<ProductItemProps> = ({
     product,
     onRemove,
-    // onMove,
-    // moveLabel,
     variant = false,
 }) => {
+    const [quantity, setQuantity] = useState({
+        initial: 1,
+        minQuantity: 1,
+    });
+
+    const increase = () => {
+        setQuantity((prev) => ({ ...prev, initial: prev.initial + 1 }));
+    };
+
+    const decrease = () => {
+        setQuantity((prev) => {
+            if (prev.initial > prev.minQuantity) {
+                return { ...prev, initial: prev.initial - 1 };
+            }
+            return prev;
+        });
+    };
+
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const parsed = parseInt(e.target.value, 10);
+        if (!isNaN(parsed) && parsed >= quantity.minQuantity) {
+            setQuantity({ ...quantity, initial: parsed });
+        }
+    };
+
     return (
-        <ItemContainer variant={variant}>
-            <img src={product.img.url} alt={product.name} />
-            <ProductInfo variant={variant}>
+        <BasketItemContainer>
+            <img src={product.img.url} alt={product.name || 'Product image'} />
+            <BasketItem>
                 <div>
-                    <p>{product.name}</p>
-                    <p>£{product.price.toFixed(2)}</p>
-                    {/* <Button size="small" variant="none" onClick={onMove}>
-                        {moveLabel}
-                    </Button> */}
+                    <ProductName>{product.name}</ProductName>
+                    <ProductPrice>
+                        £{(product.price * quantity.initial).toFixed(2)}
+                    </ProductPrice>
                 </div>
-                {!variant && (
-                    <StyledInput type="number" defaultValue={1} min={1} />
-                )}
-            </ProductInfo>
+
+                <QuantityWrapper>
+                    <ButtonGroup>
+                        <ArrowButton onClick={decrease}>−</ArrowButton>
+                        <ArrowButton onClick={increase}>+</ArrowButton>
+                    </ButtonGroup>
+                    <Input
+                        type="text"
+                        name={`quantity-${product.id}`}
+                        id={`quantity-${product.id}`}
+                        label="Quantity"
+                        variant="secondary"
+                        size="small"
+                        value={quantity.initial}
+                        onChange={handleQuantityChange}
+                    />
+                </QuantityWrapper>
+            </BasketItem>
             <ProductBasketListButtons variant={variant}>
-                <Button variant="none" onClick={() => onRemove(product.id)}>
+                <Button
+                    variant="none"
+                    onClick={() => onRemove(product.id)}
+                    aria-label="Remove item"
+                >
                     <Delete stroke="white" />
                 </Button>
             </ProductBasketListButtons>
-        </ItemContainer>
+        </BasketItemContainer>
     );
 };
+const ButtonGroup = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+`;
+const QuantityWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    input {
+        width: 50px;
+        text-align: center;
+        font-size: 1.2rem;
+        background-color: #2a1f51;
+        border: 2px solid #4d3c7b;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.75rem;
+    }
+    input:hover {
+        background-color: #4d3c7b;
+    }
+`;
 
-const ItemContainer = styled.div<{ variant: boolean }>`
+const ArrowButton = styled.button`
+    background-color: #2a1f51;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 0.9rem;
+    margin: 0 0.2rem;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 2px solid #4d3c7b;
+    &:hover {
+        background-color: #4d3c7b;
+        border: 2px solid #c79d0a;
+    }
+`;
+
+const BasketItemContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
     width: 100%;
     color: white;
-    padding: ${(props) => (props.variant ? '1.5rem' : '1rem')};
-    margin: ${(props) => (props.variant ? '4px' : '15px')};
-
-    border: ${(props) =>
-        props.variant ? '1px solid #ac8fff;' : ' 1px solid #4d3c7b;'};
+    padding: 1rem;
+    margin: 15px;
+    border: 1px solid #4d3c7b;
     border-radius: 8px;
+
     img {
-        width: ${(props) => (props.variant ? '50px' : '75px')};
+        width: 75px;
         height: auto;
         border-radius: 8px;
     }
+
     &:hover {
         color: #c79d0a;
         border: 1px solid #c79d0a;
     }
 `;
 
-const ProductInfo = styled.div<{ variant: boolean }>`
+const BasketItem = styled.div`
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    p {
-        font-size: ${(props) => (props.variant ? '14px' : '16px')};
-        word-wrap: break-word;
-        max-width: 100%;
-        overflow-wrap: break-word;
-        font-weight: 400;
-        margin: ${(props) => (props.variant ? '3px' : '5px')};
-    }
     justify-content: space-between;
+    align-items: center;
+    flex: 1;
     margin-left: 10px;
     text-align: left;
-    flex: 1;
+
+    p {
+        font-size: 16px;
+        font-weight: 400;
+        margin: 5px;
+    }
+`;
+
+const ProductName = styled.p`
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+`;
+
+const ProductPrice = styled.p`
+    font-size: 14px;
+    font-weight: 400;
+    margin: 4px 0 0 0;
+    color: #c79d0a;
 `;
 
 const ProductBasketListButtons = styled.div<{ variant: boolean }>`
     display: flex;
     flex-direction: column;
-    align-items: right;
+    align-items: flex-end;
+
     button {
         padding: ${(props) => (props.variant ? '2px' : '5px')};
-    }
-`;
-
-const StyledInput = styled.input`
-    width: 30px;
-    padding: 5px;
-    font-size: 14px;
-    border: 1px solid #4d3c7b;
-    border-radius: 4px;
-    background-color: white;
-    color: black;
-    margin-right: 10px;
-    text-align: center;
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    &:focus {
-        outline: none;
-        border: 2px solid #c79d0a;
-    }
-    &[type='number'] {
-        -moz-appearance: textfield;
     }
 `;

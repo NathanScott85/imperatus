@@ -151,7 +151,6 @@ const StyledButton = styled.button<{
     z-index: 1;
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-
     &:hover {
         ${({ variant, disabled }) => getHoverStyles(variant, disabled)}
     }

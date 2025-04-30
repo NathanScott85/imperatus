@@ -4,7 +4,6 @@ import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import { Container } from '../../components/styled';
 import DiscountImage from '../../components/svg/website-images/discount-image.png';
 
 export const DiscountCodes = () => (

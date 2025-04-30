@@ -7,7 +7,6 @@ import { Footer } from '../../components/footer';
 import { Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
 import {
-    Heart,
     AdminIcon,
     ClockThree,
     CreditCard,
@@ -22,21 +21,36 @@ import { PaymentDetails } from './payment-details';
 import { DeliveryInformation } from './delivery-addresses';
 import { OrderHistory } from './order-history';
 import { OrderDetails } from './order-details';
-import { Wishlist } from './wishlist';
 import { AccountManagement } from './account-management';
+import { Order } from '../../context/orders';
 
 export const Account = () => {
     const { logout } = useAppContext();
     const [selectedComponent, setSelectedComponent] =
         useState('PersonalDetails');
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const handleMenuClick = (componentName: string) => {
         setSelectedOrder(null);
         setSelectedComponent(componentName);
     };
 
-    const renderComponent = () => {
+    const renderStandardComponent = () => {
+        switch (selectedComponent) {
+            case 'PersonalDetails':
+                return <PersonalDetails />;
+            case 'DeliveryAddresses':
+                return <DeliveryInformation />;
+            case 'PaymentInfo':
+                return <PaymentDetails />;
+            case 'AccountManagement':
+                return <AccountManagement />;
+            default:
+                return <PersonalDetails />;
+        }
+    };
+
+    const renderOrderComponent = () => {
         if (selectedOrder) {
             return (
                 <OrderDetails
@@ -46,23 +60,31 @@ export const Account = () => {
             );
         }
 
-        switch (selectedComponent) {
-            case 'PersonalDetails':
-                return <PersonalDetails />;
-            case 'DeliveryAddresses':
-                return <DeliveryInformation />;
-            case 'PaymentInfo':
-                return <PaymentDetails />;
-            case 'OrderHistory':
-                return <OrderHistory onViewOrder={setSelectedOrder} />;
-            // case 'Wishlist':
-            //     return <Wishlist />;
-            case 'AccountManagement':
-                return <AccountManagement />;
-            default:
-                return <PersonalDetails />;
-        }
+        return <OrderHistory onViewOrder={setSelectedOrder} />;
     };
+
+    const SidebarLinks = () => (
+        <>
+            <StyledWrapper onClick={() => handleMenuClick('PersonalDetails')}>
+                <UserIcon /> Personal Details
+            </StyledWrapper>
+            <StyledWrapper onClick={() => handleMenuClick('DeliveryAddresses')}>
+                <Van stroke="#C79D0A" /> Delivery Address
+            </StyledWrapper>
+            <StyledWrapper onClick={() => handleMenuClick('PaymentInfo')}>
+                <CreditCard /> Payment Details
+            </StyledWrapper>
+            <StyledWrapper onClick={() => handleMenuClick('OrderHistory')}>
+                <ClockThree /> Order history
+            </StyledWrapper>
+            <StyledWrapper onClick={() => handleMenuClick('AccountManagement')}>
+                <AdminIcon /> Account Management
+            </StyledWrapper>
+            <StyledLink onClick={logout} to="/account/sign-out">
+                <SignOut /> Sign out
+            </StyledLink>
+        </>
+    );
 
     return (
         <>
@@ -70,63 +92,48 @@ export const Account = () => {
             <Header background />
             <Navigation background />
             <BreadCrumb label="Account" />
-            <AccountMain>
-                <Section>
-                    <h1>My Account</h1>
-                    <FancyContainer variant="account" size="account">
-                        <AccountLinksContainer>
-                            <StyledWrapper
-                                onClick={() =>
-                                    handleMenuClick('PersonalDetails')
-                                }
-                            >
-                                <UserIcon />
-                                Personal Details
-                            </StyledWrapper>
-                            <StyledWrapper
-                                onClick={() =>
-                                    handleMenuClick('DeliveryAddresses')
-                                }
-                            >
-                                <Van stroke='#C79D0A' />
-                                Delivery Address
-                            </StyledWrapper>
-                            <StyledWrapper
-                                onClick={() => handleMenuClick('PaymentInfo')}
-                            >
-                                <CreditCard /> Payment Details
-                            </StyledWrapper>
-                            <StyledWrapper
-                                onClick={() => handleMenuClick('OrderHistory')}
-                            >
-                                <ClockThree /> Order history
-                            </StyledWrapper>
-                            {/* <StyledWrapper
-                                onClick={() => handleMenuClick('Wishlist')}
-                            >
-                                <Heart /> Wishlist
-                            </StyledWrapper> */}
-                            <StyledWrapper
-                                onClick={() =>
-                                    handleMenuClick('AccountManagement')
-                                }
-                            >
-                                <AdminIcon /> Account Management
-                            </StyledWrapper>
-                            <StyledLink onClick={logout} to="/account/sign-out">
-                                <SignOut /> Sign out
-                            </StyledLink>
-                        </AccountLinksContainer>
-                    </FancyContainer>
-                </Section>
-                <AccountContainer>{renderComponent()}</AccountContainer>
-            </AccountMain>
+
+            {selectedComponent === 'OrderHistory' ? (
+                <OrderMain>
+                    <OrderLayout>
+                        <SidebarSection>
+                            <h1>My Account</h1>
+                            <FancyContainer variant="account" size="account">
+                                <AccountLinksContainer>
+                                    <SidebarLinks />
+                                </AccountLinksContainer>
+                            </FancyContainer>
+                        </SidebarSection>
+                        <OrderContent>{renderOrderComponent()}</OrderContent>
+                    </OrderLayout>
+                </OrderMain>
+            ) : (
+                <StandardMain>
+                    <NonOrderLayout>
+                        <AccountContainer>
+                            <StandardMainWrapper>
+                                <h1>My Account</h1>
+                                <FancyContainer
+                                    variant="account"
+                                    size="account"
+                                >
+                                    <AccountLinksContainer>
+                                        <SidebarLinks />
+                                    </AccountLinksContainer>
+                                </FancyContainer>
+                            </StandardMainWrapper>
+                            {renderStandardComponent()}
+                        </AccountContainer>
+                    </NonOrderLayout>
+                </StandardMain>
+            )}
+
             <Footer />
         </>
     );
 };
 
-const Section = styled.section`
+const StandardMainWrapper = styled.div`
     h1 {
         color: white;
         letter-spacing: 0.02em;
@@ -199,18 +206,59 @@ const StyledLink = styled(Link)`
     z-index: 50;
 `;
 
-const AccountContainer = styled.section`
-    display: flex;
-    flex-direction: row;
-    margin: 0.75rem 0rem 0rem 2rem;
-`;
-
-const AccountMain = styled.main`
+const AccountContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: center;
-    align-items: flex-start;
+    margin: 0.75rem 0rem 0rem 2rem;
+    width: 100%;
+`;
+
+const StandardMain = styled.main`
+    display: flex;
+    justify-content: center;
+    align-content: center;
     background-color: #130a30;
     padding: 2rem;
     min-height: 800px;
+`;
+
+const OrderMain = styled.main`
+    background-color: #130a30;
+    padding: 2rem;
+    min-height: 800px;
+    h1 {
+        color: white;
+        letter-spacing: 0.02em;
+        font-family: Cinzel;
+        font-size: 34px;
+        font-weight: 400;
+        line-height: 50px;
+        text-align: left;
+        margin-left: 20px;
+    }
+`;
+
+const OrderLayout = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 2rem;
+`;
+
+const SidebarSection = styled.div`
+    flex-shrink: 0;
+`;
+
+const OrderContent = styled.div`
+    flex-grow: 1;
+    width: 100%;
+`;
+
+const NonOrderLayout = styled.section`
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
 `;

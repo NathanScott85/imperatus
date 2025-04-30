@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Header } from '../../components/header';
+import { Header, TopHeader } from '../../components/header';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import { Sidebar } from './sidebar';
@@ -116,6 +116,8 @@ export const Admin = () => {
 
     return (
         <>
+            <TopHeader />
+
             <Header background />
             <BreadCrumb label="Admin" />
             <AdminMain>
