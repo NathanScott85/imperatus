@@ -295,47 +295,18 @@ export const AddOrder = () => {
             </FormGroup>
 
             <SubmitWrapper>
-                <StyledButton
+                <Button
+                    label="Create Order"
                     type="button"
+                    variant="primary"
                     onClick={(e) => handleSubmit(e)}
-                    disabled={!form.email || !form.name || items.length === 0}
-                >
-                    Create Order
-                </StyledButton>
+                />
                 {error && <ErrorText>{error}</ErrorText>}
                 {success && <SuccessText>{success}</SuccessText>}
             </SubmitWrapper>
         </Container>
     );
 };
-
-const StyledButton = styled.button`
-    font-family: Cinzel, serif;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    border: none;
-    border-radius: 3px;
-    padding: 0.75rem;
-    z-index: 1;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 150px;
-    height: 40px;
-
-    background-color: #ac8fff;
-    color: white;
-
-    cursor: default;
-
-    &:disabled {
-        background-color: #d3d3d3;
-        color: #a9a9a9;
-        cursor: none;
-        opacity: 0.6;
-    }
-`;
 
 const Container = styled.div`
     padding: 2rem;
