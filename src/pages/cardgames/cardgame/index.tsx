@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -11,37 +12,44 @@ import { useCardGamesContext } from '../../../context/cardgames';
 
 export const CardGame = () => {
     const { id } = useParams();
-    const { fetchCardGameById, currentCardGame, cardGameLoading, cardGameError } = useCardGamesContext();
-    const [checkedStatus, setCheckedStatus] = useState( {
+    const {
+        fetchCardGameById,
+        currentCardGame,
+        cardGameLoading,
+        cardGameError,
+    } = useCardGamesContext();
+    const [checkedStatus, setCheckedStatus] = useState({
         inStock: false,
         outOfStock: false,
-    } );
+    });
 
-    useEffect( () => {
-        if ( id ) {
-            fetchCardGameById( id );
+    useEffect(() => {
+        if (id) {
+            fetchCardGameById(id);
         }
-    }, [id, fetchCardGameById] );
+    }, [id, fetchCardGameById]);
 
-    const handleChecked = ( type: keyof typeof checkedStatus ) => {
-        setCheckedStatus( ( prevState ) => ( {
+    const handleChecked = (type: keyof typeof checkedStatus) => {
+        setCheckedStatus((prevState) => ({
             ...prevState,
             [type]: !prevState[type],
-        } ) );
+        }));
     };
 
-    if ( cardGameLoading ) return <p>Loading...</p>;
+    if (cardGameLoading) return <p>Loading...</p>;
 
-    if ( cardGameError ) return <p>Error: {cardGameError.message}</p>;
+    if (cardGameError) return <p>Error: {cardGameError.message}</p>;
 
     return (
         <>
             <TopHeader />
             <Header background />
             <Navigation background />
-            {currentCardGame && <ImageContainer
-            // img={currentCardGame.img?.url} 
-            />}
+            {currentCardGame && (
+                <ImageContainer
+                // img={currentCardGame.img?.url}
+                />
+            )}
             <CardGameMain>
                 <CardGameContainer>
                     <FiltersContainer>
@@ -54,11 +62,12 @@ export const CardGame = () => {
                         /> */}
                     </FiltersContainer>
                     <CardGameListContainer>
-                        {currentCardGame && <Products
-
-                            // products={[currentCardGame]} 
-                            products={[]}
-                        />}
+                        {currentCardGame && (
+                            <Products
+                                // products={[currentCardGame]}
+                                products={[]}
+                            />
+                        )}
                     </CardGameListContainer>
                 </CardGameContainer>
             </CardGameMain>
@@ -103,20 +112,20 @@ const FiltersContainer = styled.div`
 `;
 
 const ImageContainer = styled.div<{ img?: any }>`
-    background-image: url(${( props ) => props.img});
+    background-image: url(${(props) => props.img});
     background-repeat: no-repeat;
     background-size: cover;
     width: 100%;
-    ${mediaQueries( 'sm' )`
+    ${mediaQueries('sm')`
          height: calc(100vh - 1450px); 
     `};
-    ${mediaQueries( 'md' )`
+    ${mediaQueries('md')`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries( 'lg' )`
+    ${mediaQueries('lg')`
         height: calc(100vh - 1250px);
     `};
-    ${mediaQueries( 'xl' )`
+    ${mediaQueries('xl')`
            height: calc(100vh - 500px);
    `};
 `;

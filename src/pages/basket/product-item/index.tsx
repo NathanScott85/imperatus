@@ -1,87 +1,80 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Delete } from '../../../components/svg';
 import Button from '../../../components/button';
 import { Input } from '../../../components/input';
+import { useBasketContext } from '../../../context/basket';
 
 interface Product {
-    id: number;
+    productId: number;
     name: string;
     price: number;
-    img: {
+    quantity: number;
+    img?: {
         url: string;
     };
 }
 
 interface ProductItemProps {
     product: Product;
-    onRemove: (id: number) => void;
-    onMove?: () => void;
     variant?: boolean;
 }
 
 export const ProductItem: React.FC<ProductItemProps> = ({
     product,
-    onRemove,
     variant = false,
 }) => {
-    const [quantity, setQuantity] = useState({
-        initial: 1,
-        minQuantity: 1,
-    });
+    const { removeFromBasket, updateQuantity } = useBasketContext();
 
     const increase = () => {
-        setQuantity((prev) => ({ ...prev, initial: prev.initial + 1 }));
+        updateQuantity(product.productId, product.quantity + 1);
     };
 
     const decrease = () => {
-        setQuantity((prev) => {
-            if (prev.initial > prev.minQuantity) {
-                return { ...prev, initial: prev.initial - 1 };
-            }
-            return prev;
-        });
+        if (product.quantity > 1) {
+            updateQuantity(product.productId, product.quantity - 1);
+        }
     };
 
     const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const parsed = parseInt(e.target.value, 10);
-        if (!isNaN(parsed) && parsed >= quantity.minQuantity) {
-            setQuantity({ ...quantity, initial: parsed });
+        if (!isNaN(parsed) && parsed >= 1) {
+            updateQuantity(product.productId, parsed);
         }
     };
 
     return (
         <BasketItemContainer>
-            <img src={product.img.url} alt={product.name || 'Product image'} />
+            <img src={product.img?.url} alt={product.name || 'Product image'} />
             <BasketItem>
                 <div>
                     <ProductName>{product.name}</ProductName>
                     <ProductPrice>
-                        £{(product.price * quantity.initial).toFixed(2)}
+                        £{(product.price * product.quantity).toFixed(2)}
                     </ProductPrice>
                 </div>
 
                 <QuantityWrapper>
                     <ButtonGroup>
                         <ArrowButton onClick={decrease}>−</ArrowButton>
+                        <Input
+                            type="text"
+                            name={`quantity-${product.productId}`}
+                            id={`quantity-${product.productId}`}
+                            label="Quantity"
+                            variant="secondary"
+                            size="small"
+                            value={product.quantity}
+                            onChange={handleQuantityChange}
+                        />
                         <ArrowButton onClick={increase}>+</ArrowButton>
                     </ButtonGroup>
-                    <Input
-                        type="text"
-                        name={`quantity-${product.id}`}
-                        id={`quantity-${product.id}`}
-                        label="Quantity"
-                        variant="secondary"
-                        size="small"
-                        value={quantity.initial}
-                        onChange={handleQuantityChange}
-                    />
                 </QuantityWrapper>
             </BasketItem>
             <ProductBasketListButtons variant={variant}>
                 <Button
                     variant="none"
-                    onClick={() => onRemove(product.id)}
+                    onClick={() => removeFromBasket(product.productId)}
                     aria-label="Remove item"
                 >
                     <Delete stroke="white" />
@@ -90,11 +83,13 @@ export const ProductItem: React.FC<ProductItemProps> = ({
         </BasketItemContainer>
     );
 };
+
 const ButtonGroup = styled.div`
     display: flex;
     flex-direction: row;
     gap: 2px;
 `;
+
 const QuantityWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -142,7 +137,7 @@ const BasketItemContainer = styled.div`
     margin: 15px;
     border: 1px solid #4d3c7b;
     border-radius: 8px;
-
+    min-height: 120px;
     img {
         width: 75px;
         height: auto;

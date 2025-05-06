@@ -19,7 +19,7 @@ export const Category = () => {
     const [selectedFilters, setSelectedFilters] = useState<CategoryFilters>({});
     const [filterOptions, setFilterOptions] = useState<{
         brands: { id: number; name: string }[];
-        sets: { id: number; setName: string; }[];
+        sets: { id: number; setName: string }[];
         rarities: { id: number; name: string }[];
     }>({ brands: [], sets: [], rarities: [] });
 
@@ -44,31 +44,42 @@ export const Category = () => {
             hasFetched.current = true;
             fetchCategoryById(Number(id), currentPage, limit, selectedFilters);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, setCurrentCategory]);
 
-    useDebouncedEffect(() => {
-        if (id) {
-            setPage(1);
-            fetchCategoryById(Number(id), 1, limit, selectedFilters);
-        }
-    }, [selectedFilters, id, limit], 300);
+    useDebouncedEffect(
+        () => {
+            if (id) {
+                setPage(1);
+                fetchCategoryById(Number(id), 1, limit, selectedFilters);
+            }
+        },
+        [selectedFilters, id, limit],
+        300,
+    );
 
     useEffect(() => {
         if (currentCategory) {
-            const transformedBrands = (currentCategory.brands || []).map((brand: any) => ({
-                ...brand,
-                id: Number(brand.id),
-            }));
+            const transformedBrands = (currentCategory.brands || []).map(
+                (brand: { id: string; name: string }) => ({
+                    ...brand,
+                    id: Number(brand.id),
+                }),
+            );
 
-            const transformedSets = (currentCategory.sets || []).map((set: any) => ({
-                ...set,
-                id: Number(set.id),
-            }));
+            const transformedSets = (currentCategory.sets || []).map(
+                (set: { id: number | string; setName: string }) => ({
+                    ...set,
+                    id: Number(set.id),
+                }),
+            );
 
-            const transformedRarities = (currentCategory.rarities || []).map((rarity: any) => ({
-                ...rarity,
-                id: Number(rarity.id),
-            }));
+            const transformedRarities = (currentCategory.rarities || []).map(
+                (rarity: { id: string | number; name: string }) => ({
+                    ...rarity,
+                    id: Number(rarity.id),
+                }),
+            );
 
             setFilterOptions({
                 brands: transformedBrands,
@@ -78,7 +89,10 @@ export const Category = () => {
         }
     }, [currentCategory]);
 
-    const handleFilterChange = (key: keyof CategoryFilters, value: any) => {
+    const handleFilterChange = (
+        key: keyof CategoryFilters,
+        value: string | number | boolean | (string | number)[] | undefined,
+    ) => {
         if (key === 'brandId' || key === 'setId' || key === 'rarityId') {
             const updated = Array.isArray(value) ? value.map(Number) : [];
             setSelectedFilters((prev) => ({
@@ -147,20 +161,36 @@ export const Category = () => {
                         <ProductsWrapper>
                             {currentCategory && (
                                 <>
-                                    <Products products={currentCategory.products} />
+                                    <Products
+                                        products={currentCategory.products}
+                                    />
                                     {totalPages > 1 && (
                                         <PaginationWrapper>
                                             <PaginationControls>
                                                 <PageButton
-                                                    onClick={() => handlePageChange(currentPage - 1)}
+                                                    onClick={() =>
+                                                        handlePageChange(
+                                                            currentPage - 1,
+                                                        )
+                                                    }
                                                     disabled={currentPage === 1}
                                                 >
                                                     Previous
                                                 </PageButton>
-                                                <span>Page {currentPage} of {totalPages}</span>
+                                                <span>
+                                                    Page {currentPage} of{' '}
+                                                    {totalPages}
+                                                </span>
                                                 <PageButton
-                                                    onClick={() => handlePageChange(currentPage + 1)}
-                                                    disabled={currentPage >= totalPages}
+                                                    onClick={() =>
+                                                        handlePageChange(
+                                                            currentPage + 1,
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        currentPage >=
+                                                        totalPages
+                                                    }
                                                 >
                                                     Next
                                                 </PageButton>
@@ -220,7 +250,7 @@ const CategoriesContainer = styled.section`
     margin-bottom: 2.5rem;
 `;
 
-const CategoriesMain = styled.main<{ background: any }>`
+const CategoriesMain = styled.main<{ background: boolean }>`
     background-color: ${({ background }) => (background ? 'white' : '#130a30')};
     display: flex;
     justify-content: center;

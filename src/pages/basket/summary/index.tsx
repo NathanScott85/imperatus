@@ -8,11 +8,13 @@ interface OrderSummaryProps {
     calculateSubtotal: () => string;
     calculatePriceWithoutVAT: () => string;
     calculateTotal: () => string;
+    calculateVat: () => string;
 }
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
     basketProductsLength,
     calculateSubtotal,
+    calculateVat,
     calculatePriceWithoutVAT,
     calculateTotal,
 }) => {
@@ -36,9 +38,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                 </p>
                 <p>
                     <span>VAT:</span>
-                    <span>
-                        ${(parseFloat(calculateSubtotal()) * 0.2).toFixed(2)}
-                    </span>
+                    <span>£{calculateVat()}</span>
                 </p>
                 <p>
                     <span>Price without VAT:</span>

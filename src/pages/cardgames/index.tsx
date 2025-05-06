@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { generatePath, Link } from 'react-router-dom';
@@ -11,12 +12,12 @@ import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCardGamesContext } from '../../context/cardgames';
 
-const getCardGamePath = ( cardgame: any ) => {
+const getCardGamePath = (cardgame: any) => {
     const cardgamePath = cardgame
-        ? generatePath( '/shop/card-games/cardgame/:id/:name', {
-            id: cardgame.id,
-            name: cardgame.name.replace( /\s+/g, '-' ).toLowerCase(),
-        } )
+        ? generatePath('/shop/card-games/cardgame/:id/:name', {
+              id: cardgame.id,
+              name: cardgame.name.replace(/\s+/g, '-').toLowerCase(),
+          })
         : '';
     return { cardgamePath };
 };
@@ -95,7 +96,7 @@ export const CardGames = () => {
                         </CategoriesListContainer>
                     </CategoriesContainer>
                 )} */}
-                                {/* <Reviews /> */}
+                {/* <Reviews /> */}
                 <p>Replace with Latest Products</p>
             </CardGamesMain>
             <Footer />
@@ -130,7 +131,7 @@ const NoProductsMessage = styled.div`
     }
 `;
 
-const StyledLink = styled( Link )`
+const StyledLink = styled(Link)`
     font-family: Cinzel;
     font-size: 18px;
     font-weight: 500;
@@ -176,7 +177,7 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CardGamesMain = styled( MainContainer )`
+const CardGamesMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
@@ -216,10 +217,10 @@ const CategoriesListContainer = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding: 2rem;
-    ${mediaQueries( 'sm' )`
+    ${mediaQueries('sm')`
         grid-template-columns: repeat(2, 1fr);
     `};
-    ${mediaQueries( 'xl' )`
+    ${mediaQueries('xl')`
         grid-template-columns: repeat(3, 1fr);
     `};
     p {

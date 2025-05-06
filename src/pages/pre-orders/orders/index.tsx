@@ -20,7 +20,7 @@ export const Orders = () => {
     const [selectedFilters, setSelectedFilters] = useState<OrdersFilters>({});
     const [filterOptions, setFilterOptions] = useState<{
         brands: { id: number; name: string }[];
-        sets: { id: number; setName: string; }[];
+        sets: { id: number; setName: string }[];
         rarities: { id: number; name: string }[];
     }>({ brands: [], sets: [], rarities: [] });
 
@@ -42,29 +42,39 @@ export const Orders = () => {
             hasFetched.current = true;
             fetchPreordersById(id, selectedFilters, page, limit);
         }
-    }, [id]);
+    }, [id, selectedFilters, page, limit, fetchPreordersById]);
 
-    useDebouncedEffect(() => {
-        if (id) {
-            setPage(1);
-            fetchPreordersById(id, selectedFilters, 1, limit);
-        }
-    }, [selectedFilters, id, limit], 300);
+    useDebouncedEffect(
+        () => {
+            if (id) {
+                setPage(1);
+                fetchPreordersById(id, selectedFilters, 1, limit);
+            }
+        },
+        [selectedFilters, id, limit],
+        300,
+    );
 
     useEffect(() => {
         if (currentPreorders) {
-            const transformedBrands = (currentPreorders.brands || []).map((brand) => ({
-                ...brand,
-                id: Number(brand.id),
-            }));
-            const transformedSets = (currentPreorders.sets || []).map((set) => ({
-                ...set,
-                id: Number(set.id),
-            }));
-            const transformedRarities = (currentPreorders.rarities || []).map((rarity) => ({
-                ...rarity,
-                id: Number(rarity.id),
-            }));
+            const transformedBrands = (currentPreorders.brands || []).map(
+                (brand) => ({
+                    ...brand,
+                    id: Number(brand.id),
+                }),
+            );
+            const transformedSets = (currentPreorders.sets || []).map(
+                (set) => ({
+                    ...set,
+                    id: Number(set.id),
+                }),
+            );
+            const transformedRarities = (currentPreorders.rarities || []).map(
+                (rarity) => ({
+                    ...rarity,
+                    id: Number(rarity.id),
+                }),
+            );
             setFilterOptions({
                 brands: transformedBrands as any,
                 sets: transformedSets as any,
@@ -114,14 +124,19 @@ export const Orders = () => {
             <BreadCrumb />
             <ImageWrapper>
                 {location.state?.brand?.img?.url && (
-                    <BrandImage src={location.state.brand.img.url} alt={location.state.brand.name} />
+                    <BrandImage
+                        src={location.state.brand.img.url}
+                        alt={location.state.brand.name}
+                    />
                 )}
             </ImageWrapper>
             <OrdersMain>
                 <OrdersContainer>
                     <OrdersFilterContainer>
                         <Filters
-                            categoryName={location.state?.brand?.name || 'Coming Soon'}
+                            categoryName={
+                                location.state?.brand?.name || 'Coming Soon'
+                            }
                             filters={selectedFilters}
                             sets={filterOptions.sets}
                             rarities={filterOptions.rarities}
@@ -138,19 +153,27 @@ export const Orders = () => {
                     </OrdersFilterContainer>
                     <OrdersListContainer>
                         <ProductsWrapper>
-                            <Products products={currentPreorders?.products || []} />
+                            <Products
+                                products={currentPreorders?.products || []}
+                            />
                             {totalPages > 1 && (
                                 <PaginationWrapper>
                                     <PaginationControls>
                                         <PageButton
-                                            onClick={() => handlePageChange(page - 1)}
+                                            onClick={() =>
+                                                handlePageChange(page - 1)
+                                            }
                                             disabled={page === 1}
                                         >
                                             Previous
                                         </PageButton>
-                                        <span>Page {page} of {totalPages}</span>
+                                        <span>
+                                            Page {page} of {totalPages}
+                                        </span>
                                         <PageButton
-                                            onClick={() => handlePageChange(page + 1)}
+                                            onClick={() =>
+                                                handlePageChange(page + 1)
+                                            }
                                             disabled={page >= totalPages}
                                         >
                                             Next
@@ -171,7 +194,7 @@ const BrandImage = styled.img`
     max-width: 300px;
     height: auto;
     object-fit: contain;
-            z-index: 0;
+    z-index: 0;
 `;
 
 const PaginationWrapper = styled.div`
