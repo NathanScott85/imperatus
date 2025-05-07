@@ -1,41 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import Button from '../../components/button';
+import { Input } from '../../components/input';
 import { Link } from 'react-router-dom';
 import { ArrowDown } from '../../components/svg/arrow';
+import { useDiscountCodesContext } from '../../context/discount';
+import { useBasketContext } from '../../context/basket';
+import { useAppContext } from '../../context';
+import { LoginSection } from './login-section';
+import { GuestCheckout } from './guest-checkout';
 
 export const Checkout = () => {
-    const shippingDetails = {
-        fullName: 'John Doe',
-        email: 'john@example.com',
-        phone: '0123456789',
-        address: '123 Main Street',
-        city: 'London',
-        postalCode: 'W1A 1AA',
-        country: 'United Kingdom',
+    const [discountCode, setDiscountCode] = useState('');
+    const [discountValue, setDiscountValue] = useState(0);
+    const [discountError, setDiscountError] = useState('');
+    const [discountApplied, setDiscountApplied] = useState(false);
+    const [appliedCode, setAppliedCode] = useState<null | {
+        code: string;
+        value: number;
+        type: string;
+    }>(null);
+
+    const { discountCodes, fetchDiscountCodes } = useDiscountCodesContext();
+    const { basket } = useBasketContext();
+    const { user, isAuthenticated } = useAppContext();
+
+    useEffect(() => {
+        fetchDiscountCodes();
+    }, []);
+
+    const calculateSubtotal = (): string => {
+        return basket
+            .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            .toFixed(2);
     };
 
-    const calculateSubtotal = () => '100.00';
-    const calculateDelivery = () => '5.00';
-    const calculateVAT = () =>
-        (
-            (parseFloat(calculateSubtotal()) +
-                parseFloat(calculateDelivery())) *
-            0.2
-        ).toFixed(2);
-    const calculateTotal = () =>
-        (
-            parseFloat(calculateSubtotal()) +
-            parseFloat(calculateDelivery()) +
-            parseFloat(calculateVAT())
-        ).toFixed(2);
+    const calculateVAT = (): string => {
+        const subtotal = Math.max(
+            parseFloat(calculateSubtotal()) - discountValue,
+            0,
+        );
+        return (subtotal - subtotal / 1.2).toFixed(2);
+    };
 
-    const handleCheckout = () => {
-        console.log('Checkout confirmed');
+    const calculateTotal = (): string => {
+        const discountedSubtotal = Math.max(
+            parseFloat(calculateSubtotal()) - discountValue,
+            0,
+        );
+        const vat = discountedSubtotal - discountedSubtotal / 1.2;
+        const delivery = 5; // need to fix this later.
+        const total = discountedSubtotal + vat + delivery;
+        return Math.max(0, total).toFixed(2);
+    };
+    const handleRemoveDiscount = () => {
+        setDiscountCode('');
+        setDiscountValue(0);
+        setDiscountApplied(false);
+        setDiscountError('');
+    };
+
+    const handleApplyDiscount = () => {
+        const found = discountCodes.find((d) => {
+            const expiry = d.expiresAt ? new Date(Number(d.expiresAt)) : null;
+            return (
+                d.code.toLowerCase() === discountCode.trim().toLowerCase() &&
+                d.active &&
+                (!expiry || expiry > new Date())
+            );
+        });
+
+        if (discountValue > 0) {
+            setDiscountError('Only one discount code can be applied.');
+            setTimeout(() => setDiscountError(''), 5000);
+            return;
+        }
+
+        if (found) {
+            const subtotal = parseFloat(calculateSubtotal());
+            const value =
+                found.type === 'percentage'
+                    ? (found.value / 100) * subtotal
+                    : found.value;
+
+            setDiscountValue(Math.min(value, subtotal));
+            setAppliedCode(found); // ✅ store for display
+            setDiscountError('');
+            setDiscountApplied(true);
+        } else {
+            setDiscountValue(0);
+            setAppliedCode(null);
+            setDiscountError('Code expired or is invalid.');
+            setDiscountApplied(false);
+            setTimeout(() => setDiscountError(''), 5000);
+        }
     };
 
     return (
@@ -54,80 +116,194 @@ export const Checkout = () => {
                         <h1>Checkout</h1>
                         <CheckoutGrid>
                             <LeftSection>
-                                <Section>
-                                    <SectionTitle>Email Address</SectionTitle>
-                                    <StaticInfo>
-                                        {shippingDetails.email}
-                                    </StaticInfo>
-                                </Section>
-                                <Section>
-                                    <SectionTitle>
-                                        Delivery Address
-                                    </SectionTitle>
-                                    <StaticInfo>
-                                        {shippingDetails.fullName}
-                                    </StaticInfo>
-                                    <StaticInfo>
-                                        {shippingDetails.address}
-                                    </StaticInfo>
-                                    <StaticInfo>
-                                        {shippingDetails.city}
-                                    </StaticInfo>
-                                    <StaticInfo>
-                                        {shippingDetails.postalCode}
-                                    </StaticInfo>
-                                    <StaticInfo>
-                                        {shippingDetails.country}
-                                    </StaticInfo>
-                                </Section>
-
-                                <Section>
-                                    <SectionTitle>
-                                        Delivery Options
-                                    </SectionTitle>
-                                    <Option>Standard Delivery - £5.00</Option>
-                                    <Option>Express Delivery - £10.00</Option>
-                                </Section>
-
-                                <Section>
-                                    <SectionTitle>Payment options</SectionTitle>
-                                    <StaticInfo>
-                                        Payment Method Here:
-                                    </StaticInfo>
-                                </Section>
+                                <>
+                                    {user ? (
+                                        <>
+                                            <Section>
+                                                <SectionTitle>
+                                                    Email Address
+                                                </SectionTitle>
+                                                <StaticInfo>
+                                                    {user.email}
+                                                </StaticInfo>
+                                            </Section>
+                                            <Section>
+                                                <SectionTitle>
+                                                    Delivery Address
+                                                </SectionTitle>
+                                                <StaticInfo>
+                                                    {user.fullname ||
+                                                        'Not provided'}
+                                                </StaticInfo>
+                                                <StaticInfo>
+                                                    {user.address ||
+                                                        'Not provided'}
+                                                </StaticInfo>
+                                                <StaticInfo>
+                                                    {user.city ||
+                                                        'Not provided'}
+                                                </StaticInfo>
+                                                <StaticInfo>
+                                                    {user.postcode ||
+                                                        'Not provided'}
+                                                </StaticInfo>
+                                                <StaticInfo>
+                                                    United Kingdom
+                                                </StaticInfo>
+                                                <StaticInfo>
+                                                    {user.phone ||
+                                                        'Not provided'}
+                                                </StaticInfo>
+                                            </Section>
+                                            <Section>
+                                                <SectionTitle>
+                                                    Delivery Options
+                                                </SectionTitle>
+                                                <Option>
+                                                    Standard Delivery - £5.00
+                                                </Option>
+                                                <Option>
+                                                    Express Delivery - £10.00
+                                                </Option>
+                                            </Section>
+                                            <Section>
+                                                <SectionTitle>
+                                                    Payment options
+                                                </SectionTitle>
+                                                <StaticInfo>
+                                                    Payment Method Here:
+                                                </StaticInfo>
+                                            </Section>
+                                        </>
+                                    ) : (
+                                        <LeftSection>
+                                            {' '}
+                                            <LoginSection />
+                                            {/* <GuestCheckout /> */}
+                                        </LeftSection>
+                                    )}
+                                </>
                             </LeftSection>
 
                             <RightSection>
                                 <SummaryBox>
                                     <SummaryTitle>Your Order</SummaryTitle>
+                                    {basket.map((item) => (
+                                        <SummaryRow key={item.productId}>
+                                            <span>
+                                                {item.name} x {item.quantity}
+                                            </span>
+                                            <span>
+                                                £
+                                                {(
+                                                    item.price * item.quantity
+                                                ).toFixed(2)}
+                                            </span>
+                                        </SummaryRow>
+                                    ))}
+
+                                    <Divider />
                                     <SummaryRow>
-                                        <span>Subtotal:</span>
+                                        <span>Original Subtotal:</span>
                                         <span>£{calculateSubtotal()}</span>
                                     </SummaryRow>
                                     <SummaryRow>
+                                        <span>Subtotal:</span>
+                                        <span>
+                                            £
+                                            {(
+                                                parseFloat(
+                                                    calculateSubtotal(),
+                                                ) - discountValue
+                                            ).toFixed(2)}
+                                        </span>
+                                    </SummaryRow>
+                                    <SummaryRow>
                                         <span>Delivery:</span>
-                                        <span>£{calculateDelivery()}</span>
+                                        {/* <span>£5.00</span> */}
                                     </SummaryRow>
                                     <SummaryRow>
                                         <span>VAT:</span>
                                         <span>£{calculateVAT()}</span>
                                     </SummaryRow>
                                     <SummaryRow>
-                                        <span>Postage:</span>
-                                        <span>£5</span>
+                                        <span>Discount:</span>
+                                        <span>
+                                            £{discountValue.toFixed(2)}
+                                            {appliedCode &&
+                                                discountValue <
+                                                    appliedCode.value &&
+                                                ` (of £${appliedCode.value.toFixed(2)})`}
+                                        </span>
                                     </SummaryRow>
                                     <SummaryTotal>
                                         <span>Total to Pay:</span>
                                         <span>£{calculateTotal()}</span>
                                     </SummaryTotal>
 
+                                    <DiscountWrapper>
+                                        <p>Have a discount code?</p>
+                                        <InputRow>
+                                            <Input
+                                                type="text"
+                                                placeholder="Enter discount code"
+                                                size="small"
+                                                variant="secondary"
+                                                label="Enter discount code"
+                                                name="discountCode"
+                                                id="discountCode"
+                                                value={discountCode}
+                                                onChange={(e) =>
+                                                    setDiscountCode(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                            {discountApplied ? (
+                                                <Button
+                                                    label="Remove"
+                                                    size="small"
+                                                    variant="secondary"
+                                                    onClick={
+                                                        handleRemoveDiscount
+                                                    }
+                                                />
+                                            ) : (
+                                                <Button
+                                                    label="Apply"
+                                                    size="small"
+                                                    variant="primary"
+                                                    onClick={
+                                                        handleApplyDiscount
+                                                    }
+                                                />
+                                            )}
+                                        </InputRow>
+                                        {discountError && (
+                                            <ErrorText>
+                                                {discountError}
+                                            </ErrorText>
+                                        )}
+                                    </DiscountWrapper>
+
                                     <ButtonWrapper>
-                                        <Button
-                                            onClick={handleCheckout}
-                                            variant="primary"
-                                            size="small"
-                                            label="Confirm Order"
-                                        />
+                                        {isAuthenticated ? (
+                                            <Button
+                                                onClick={() =>
+                                                    console.log(
+                                                        'Checkout confirmed',
+                                                    )
+                                                }
+                                                variant="primary"
+                                                size="small"
+                                                label="Confirm Order"
+                                            />
+                                        ) : (
+                                            <PromptText>
+                                                You must log in to complete
+                                                checkout.
+                                            </PromptText>
+                                        )}
                                     </ButtonWrapper>
                                 </SummaryBox>
                             </RightSection>
@@ -139,6 +315,52 @@ export const Checkout = () => {
         </>
     );
 };
+
+const PromptText = styled.div`
+    color: #c79d0a;
+    font-family: Cinzel, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 0.5rem;
+`;
+
+const ErrorText = styled.span`
+    color: red;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: Cinzel, serif;
+    margin-top: 0.5rem;
+`;
+
+const DiscountWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 1rem 0;
+
+    p {
+        margin: 0 0 0.5rem 0;
+        font-family: Cinzel, sans-serif;
+        font-size: 14px;
+        font-weight: bold;
+        color: #c79d0a;
+    }
+`;
+
+const InputRow = styled.div`
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    input {
+        max-width: 200px;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.85rem;
+        font-family: Cinzel, sans-serif;
+        font-size: 14px;
+        color: #c79d0a;
+    }
+`;
 
 const StyledMainContainer = styled.main`
     background-color: #130a30;
@@ -267,6 +489,13 @@ const SummaryTitle = styled.h2`
     font-size: 20px;
     margin-bottom: 10px;
     color: #c79d0a;
+`;
+
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background-color: #4d3c7b;
+    margin: 1rem 0;
 `;
 
 const SummaryRow = styled.div`

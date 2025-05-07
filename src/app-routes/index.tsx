@@ -48,6 +48,7 @@ import AdminProviders from '../context/admin/admin-providers';
 import { Checkout } from '../pages/checkout';
 import { OrdersProvider } from '../context/orders';
 import { BasketProvider } from '../context/basket';
+import { DiscountCodesProvider } from '../context/discount';
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -258,7 +259,14 @@ export const AppRoutes = () => {
 
                     {/* Basket */}
                     <Route path="/shop/basket" element={<Basket />} />
-                    <Route path="/shop/checkout" element={<Checkout />} />
+                    <Route
+                        path="/shop/checkout"
+                        element={
+                            <DiscountCodesProvider>
+                                <Checkout />
+                            </DiscountCodesProvider>
+                        }
+                    />
                     {/* Fallback route */}
                     <Route path="/404" element={<FourOFour />} />
                     <Route path="*" element={<FourOFour />} />

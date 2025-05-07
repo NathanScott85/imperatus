@@ -5,7 +5,7 @@ const StorageKeys = {
     LOCAL: 'basket_local',
 };
 
-type BasketItem = {
+export type BasketItem = {
     productId: number;
     name: string;
     price: number;
@@ -27,7 +27,7 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
     const [basket, setBasket] = useState<BasketItem[]>(() => {
         if (typeof window !== 'undefined') {
             const session = sessionStorage.getItem(StorageKeys.SESSION);
-            if (session) return JSON.parse(StorageKeys.SESSION);
+            if (session) return JSON.parse(session);
 
             const local = localStorage.getItem(StorageKeys.LOCAL);
             if (local) return JSON.parse(local);

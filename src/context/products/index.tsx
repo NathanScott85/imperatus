@@ -19,8 +19,6 @@ import { useDebouncedEffect } from '../../lib';
 
 interface Stock {
     amount: number;
-    instock: string;
-    soldout: string;
     preorder: boolean;
     sold?: number;
 }
@@ -102,8 +100,6 @@ interface CreateProductInput {
     stock: {
         amount: number;
         sold: number;
-        instock: string;
-        soldout: string;
         preorder: boolean;
     };
     preorder: boolean;
@@ -144,8 +140,6 @@ interface ProductsContextProps {
         stock: {
             amount: number;
             sold: number;
-            instock: string;
-            soldout: string;
             preorder: boolean;
         };
         preorder: boolean;
@@ -167,8 +161,6 @@ interface ProductsContextProps {
         categoryId: number;
         stockAmount: number;
         stockSold: number;
-        stockInstock: string;
-        stockSoldout: string;
         preorder: boolean;
         rrp?: number;
     }) => Promise<{
@@ -311,8 +303,6 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({
             categoryId: number;
             stockAmount: number;
             stockSold: number;
-            stockInstock: string;
-            stockSoldout: string;
             preorder: boolean;
             rrp?: number;
         }): Promise<{
@@ -324,8 +314,6 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({
                 const stock = {
                     amount: variables.stockAmount,
                     sold: variables.stockSold,
-                    instock: variables.stockInstock,
-                    soldout: variables.stockSoldout,
                 };
 
                 const { data } = await updateProductMutation({

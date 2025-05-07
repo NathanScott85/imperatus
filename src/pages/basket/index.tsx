@@ -22,7 +22,7 @@ export const Basket = () => {
 
     const calculatePriceWithoutVAT = (): string => {
         const subtotal = parseFloat(calculateSubtotal());
-        return (subtotal / 1.2).toFixed(2); // exclude delivery
+        return (subtotal / 1.2).toFixed(2);
     };
 
     const calculateVAT = (): string => {

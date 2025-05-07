@@ -79,6 +79,7 @@ export const AdminProducts = () => {
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Set</th>
+                                <th>Preorder</th>
                                 <th>Price</th>
                                 <th>Stock</th>
                                 <th>View</th>
@@ -107,6 +108,11 @@ export const AdminProducts = () => {
                                         </td>
                                         <td>{product?.brand?.name || 'N/A'}</td>
                                         <td>{product.set?.setName || 'N/A'}</td>
+                                        <PreOrderCell
+                                            $preorder={product.preorder}
+                                        >
+                                            {product.preorder ? 'YES' : 'NO'}
+                                        </PreOrderCell>
                                         <td>£{product.price}</td>
                                         <td>
                                             {product.stock?.amount ?? 'N/A'}
@@ -149,6 +155,12 @@ export const AdminProducts = () => {
         </ProductsContainer>
     );
 };
+
+const PreOrderCell = styled.td<{ $preorder: boolean }>`
+    text-transform: uppercase;
+    font-weight: bold;
+    color: ${({ $preorder }) => ($preorder ? '#4CAF50' : '#FF4D4F')} !important;
+`;
 
 const SearchContainer = styled.div`
     position: relative;

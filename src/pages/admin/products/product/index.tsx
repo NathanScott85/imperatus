@@ -17,16 +17,16 @@ export interface ProductDetailProps {
     onBack: () => void;
 }
 
-export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => {
+export const Product: React.FC<ProductDetailProps> = ({ product, onBack }) => {
     const { updateProduct, deleteProduct } = useProductsContext();
     const { cardTypes, fetchCardTypes } = useCardTypesContext();
     const { variants, fetchVariants } = useVariantsContext();
     const { categories, fetchCategories } = useCategoriesContext();
-    const { productTypes, fetchProductTypes} = useProductTypeContext();
+    const { productTypes, fetchProductTypes } = useProductTypeContext();
     const { brands, fetchBrands } = useBrandsContext();
     const { sets, fetchSets } = useSetsContext();
 
-    const [updateProductData, setUpdateProductData] = useState( {
+    const [updateProductData, setUpdateProductData] = useState({
         name: product.name,
         description: product.description,
         price: product.price,
@@ -40,77 +40,91 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
         preorder: product.preorder,
         stockAmount: product.stock?.amount,
         stockSold: product.stock?.sold,
-        stockInstock: product.stock?.instock === 'In Stock',
-        stockSoldout: product.stock?.soldout === 'Sold Out',
         selectedFile: null as File | null,
-    } );
-    
-    const [dropdownStates, setDropdownStates] = useState<Record<string, boolean>>({
-      type: false,
-      category: false,
-      brand: false,
-      set: false,
-      variant: false,
-      cardType: false,
     });
 
-    const [previewUrl, setPreviewUrl] = useState<string | null>( null );
-    const [error, setError] = useState( '' );
-    const [success, setSuccess] = useState( '' );
-    const [isUpdating, setIsUpdating] = useState( false );
-    const [isDeleting, setIsDeleting] = useState( false );
-    const [isModalVisible, setIsModalVisible] = useState( false );
-    const [confirmationText, setConfirmationText] = useState( '' );
+    const [dropdownStates, setDropdownStates] = useState<
+        Record<string, boolean>
+    >({
+        type: false,
+        category: false,
+        brand: false,
+        set: false,
+        variant: false,
+        cardType: false,
+    });
 
-    const fileInputRef = useRef<HTMLInputElement | null>( null );
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [confirmationText, setConfirmationText] = useState('');
 
-    useEffect( () => {
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
         fetchProductTypes();
         fetchCategories();
         fetchBrands();
         fetchCardTypes();
         fetchSets();
         fetchVariants();
-    }, [fetchProductTypes, fetchCategories, fetchVariants, fetchSets, fetchCardTypes, fetchBrands] );
+    }, [
+        fetchProductTypes,
+        fetchCategories,
+        fetchVariants,
+        fetchSets,
+        fetchCardTypes,
+        fetchBrands,
+    ]);
 
-    useEffect( () => {
-        if ( updateProductData.selectedFile ) {
-            const objectUrl = URL.createObjectURL( updateProductData.selectedFile );
-            setPreviewUrl( objectUrl );
-            return () => URL.revokeObjectURL( objectUrl );
+    useEffect(() => {
+        if (updateProductData.selectedFile) {
+            const objectUrl = URL.createObjectURL(
+                updateProductData.selectedFile,
+            );
+            setPreviewUrl(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
         }
-    }, [updateProductData.selectedFile] );
+    }, [updateProductData.selectedFile]);
 
-    const handleInputChange = ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) => {
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    ) => {
         const { id, value, type } = e.target;
-        const checked = type === 'checkbox' ? ( e.target as HTMLInputElement ).checked : undefined;
+        const checked =
+            type === 'checkbox'
+                ? (e.target as HTMLInputElement).checked
+                : undefined;
 
-        setUpdateProductData( ( prevState ) => ( {
+        setUpdateProductData((prevState) => ({
             ...prevState,
             [id]: type === 'checkbox' ? checked : value,
-        } ) );
+        }));
     };
 
-    const handleImageChange = ( e: React.ChangeEvent<HTMLInputElement> ) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target?.files?.[0];
-        if ( file ) {
-            setUpdateProductData( ( prevState ) => ( {
+        if (file) {
+            setUpdateProductData((prevState) => ({
                 ...prevState,
                 selectedFile: file,
-            } ) );
+            }));
         }
     };
 
     const handleDropdownToggle = (dropdown: string) => {
         setDropdownStates((prev) => ({
-          ...Object.keys(prev).reduce(
-            (acc, key) => {
-              acc[key] = false;
-              return acc;
-            },
-            {} as Record<string, boolean>
-          ),
-          [dropdown]: !prev[dropdown],
+            ...Object.keys(prev).reduce(
+                (acc, key) => {
+                    acc[key] = false;
+                    return acc;
+                },
+                {} as Record<string, boolean>,
+            ),
+            [dropdown]: !prev[dropdown],
         }));
     };
 
@@ -119,7 +133,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
             ...prev,
             [field]: value,
         }));
-    
+
         setDropdownStates({
             type: false,
             category: false,
@@ -128,23 +142,23 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
             variant: false,
             cardType: false,
         });
-    };    
+    };
 
     const clearFileInput = () => {
-        if ( fileInputRef.current ) {
+        if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
-        setUpdateProductData( ( prevState ) => ( {
+        setUpdateProductData((prevState) => ({
             ...prevState,
             selectedFile: null,
-        } ) );
-        setPreviewUrl( null );
+        }));
+        setPreviewUrl(null);
     };
 
     const handleUpdate = async () => {
-        setError( '' );
-        setSuccess( '' );
-        setIsUpdating( true );
+        setError('');
+        setSuccess('');
+        setIsUpdating(true);
 
         const {
             name,
@@ -157,70 +171,68 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
             stockAmount,
             stockSold,
             categoryId,
-            stockInstock,
-            stockSoldout,
         } = updateProductData;
 
-        if ( !name || !description || price == null || !type || !categoryId ) {
-            setError( 'Name, description, price, type, and category are required.' );
-            setIsUpdating( false );
+        if (!name || !description || price == null || !type || !categoryId) {
+            setError(
+                'Name, description, price, type, and category are required.',
+            );
+            setIsUpdating(false);
             return;
         }
 
         try {
-            await updateProduct( {
+            await updateProduct({
                 id: product.id,
                 name,
                 description,
-                price: parseFloat( price ),
-                productTypeId: parseInt( type ),
-                categoryId: parseInt( categoryId ),
-                rrp: rrp ? parseFloat( rrp ) : undefined,
+                price: parseFloat(price),
+                productTypeId: parseInt(type),
+                categoryId: parseInt(categoryId),
+                rrp: rrp ? parseFloat(rrp) : undefined,
                 preorder,
                 img: selectedFile || undefined,
-                stockAmount: parseInt( stockAmount ),
-                stockSold: parseInt( stockSold ),
-                stockInstock: stockInstock ? 'In Stock' : 'Not In Stock',
-                stockSoldout: stockSoldout ? 'Sold Out' : 'Not Sold Out',
-            } );
+                stockAmount: parseInt(stockAmount),
+                stockSold: parseInt(stockSold),
+            });
 
-            setSuccess( 'Product updated successfully!' );
+            setSuccess('Product updated successfully!');
             clearFileInput();
-        } catch ( err ) {
-            setError( 'Failed to update product.' );
+        } catch (err) {
+            setError('Failed to update product.');
         } finally {
-            setIsUpdating( false );
+            setIsUpdating(false);
         }
     };
 
     const handleOpenModal = () => {
-        setIsModalVisible( true );
-        setError( '' );
-        setSuccess( '' );
+        setIsModalVisible(true);
+        setError('');
+        setSuccess('');
     };
 
     const handleCloseModal = () => {
-        setIsModalVisible( false );
-        setConfirmationText( '' );
-        setError( '' );
-        setSuccess( '' );
+        setIsModalVisible(false);
+        setConfirmationText('');
+        setError('');
+        setSuccess('');
     };
 
     const handleDelete = async () => {
-        if ( confirmationText !== 'DELETE' ) {
-            setError( 'Please type "DELETE" to confirm' );
+        if (confirmationText !== 'DELETE') {
+            setError('Please type "DELETE" to confirm');
             return;
         }
 
         try {
-            await deleteProduct( product.id );
-            setSuccess( 'Product deleted successfully!' );
+            await deleteProduct(product.id);
+            setSuccess('Product deleted successfully!');
             handleCloseModal();
             onBack();
-        } catch ( err ) {
-            setError( 'Failed to delete product.' );
+        } catch (err) {
+            setError('Failed to delete product.');
         } finally {
-            setIsDeleting( false );
+            setIsDeleting(false);
         }
     };
 
@@ -239,13 +251,9 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                     <strong>Type:</strong>
                     <ProductDetail>{product.type.name}</ProductDetail>
                     <strong>Price:</strong>
-                    <ProductDetail>£{product.price.toFixed( 2 )}</ProductDetail>
+                    <ProductDetail>£{product.price.toFixed(2)}</ProductDetail>
                     <strong>RRP:</strong>
-                    <ProductDetail>£{product.rrp.toFixed( 2 )}</ProductDetail>
-                    <strong>Stock Amount:</strong>
-                    <ProductDetail>{product.stock?.amount}</ProductDetail>
-                    <strong>Stock Sold:</strong>
-                    <ProductDetail>{product.stock?.sold}</ProductDetail>
+                    <ProductDetail>£{product.rrp.toFixed(2)}</ProductDetail>
                     <strong>Status:</strong>
                     <ProductDetail>
                         {product.stock?.amount > 0 ? 'In Stock' : 'Sold Out'}
@@ -272,7 +280,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 variant="birthday"
                                 id="price"
                                 type="number"
-                                value={updateProductData.price.toFixed( 2 )}
+                                value={updateProductData.price.toFixed(2)}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
@@ -282,7 +290,7 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 variant="birthday"
                                 id="rrp"
                                 type="number"
-                                value={updateProductData.rrp?.toFixed( 2 ) || ''}
+                                value={updateProductData.rrp?.toFixed(2) || ''}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
@@ -296,9 +304,6 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                                 onChange={handleInputChange}
                             />
                         </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="stockAmount">Sold Stock</Label>
-                        </FormGroup>
                     </FormRow>
                     <FormRow>
                         <FormGroup>
@@ -311,112 +316,131 @@ export const Product: React.FC<ProductDetailProps> = ( { product, onBack } ) => 
                             />
                             <ProductDropdown
                                 label="Category"
-                                handleDropdownToggle={() => handleDropdownToggle("category")}
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('category')
+                                }
                                 handleDropdownChange={handleDropdownChange}
                                 toggleValue="category"
                                 isDropdownOpen={dropdownStates.category}
                                 header={
-                                  categories?.find((c: any) => c.id.toString() === updateProductData.categoryId)?.name ||
-                                  "Select Category"
+                                    categories?.find(
+                                        (c: any) =>
+                                            c.id.toString() ===
+                                            updateProductData.categoryId,
+                                    )?.name || 'Select Category'
                                 }
                                 values={categories}
                                 selectedValue="categoryId"
                                 displayField="name"
                             />
-                          <ProductDropdown
-                              label="Product Type"
-                              handleDropdownToggle={() => handleDropdownToggle("type")}
-                              handleDropdownChange={handleDropdownChange}
-                              toggleValue="type"
-                              isDropdownOpen={dropdownStates.type}
-                              header={
-                                productTypes?.find((pt: any) => pt.id === updateProductData.type)?.name ||
-                                "Select Product Type"
-                              }
-                              values={productTypes}
-                              selectedValue="type"
-                              displayField="name"
-                          />
-                          <ProductDropdown
-                            label="Brand"
-                            handleDropdownToggle={() => handleDropdownToggle("brand")}
-                            handleDropdownChange={handleDropdownChange}
-                            toggleValue="brand"
-                            isDropdownOpen={dropdownStates.brand}
-                            header={
-                                updateProductData.selectedBrand
-                                    ? brands?.find((b: any) => b.id === updateProductData.selectedBrand)?.name || "Select Brand"
-                                    : "Select Brand"
-                            }
-                            values={brands}
-                            selectedValue={updateProductData.selectedBrand}
-                            displayField="name"
-                        />
-
-                        <ProductDropdown
-                            label="Set"
-                            handleDropdownToggle={() => handleDropdownToggle("set")}
-                            handleDropdownChange={handleDropdownChange}
-                            toggleValue="set"
-                            isDropdownOpen={dropdownStates.set}
-                            header={
-                                updateProductData.selectedSet
-                                    ? sets?.find((s: any) => s.id === updateProductData.selectedSet)?.setName || "Select Set"
-                                    : "Select Set"
-                            }
-                            values={sets}
-                            selectedValue={updateProductData.selectedSet}
-                            displayField="setName"
-                        />
-
-                        <ProductDropdown
-                            label="Variant"
-                            handleDropdownToggle={() => handleDropdownToggle("variant")}
-                            handleDropdownChange={handleDropdownChange}
-                            toggleValue="variant"
-                            isDropdownOpen={dropdownStates.variant}
-                            header={
-                                updateProductData.selectedVariant
-                                    ? variants?.find((v: any) => v.id === updateProductData.selectedVariant)?.name || "Select Variant"
-                                    : "Select Variant"
-                            }
-                            values={variants}
-                            selectedValue={updateProductData.selectedVariant}
-                            displayField="name"
-                        />
-
-                        <ProductDropdown
-                            label="Card Type"
-                            handleDropdownToggle={() => handleDropdownToggle("cardType")}
-                            handleDropdownChange={handleDropdownChange}
-                            toggleValue="cardType"
-                            isDropdownOpen={dropdownStates.cardType}
-                            header={
-                                updateProductData.selectedCardType
-                                    ? cardTypes?.find((ct: any) => ct.id === updateProductData.selectedCardType)?.name || "Select Card Type"
-                                    : "Select Card Type"
-                            }
-                            values={cardTypes}
-                            selectedValue={updateProductData.selectedCardType}
-                            displayField="name"
-                        />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="stockInstock">In Stock</Label>
-                            <Input
-                                id="stockInstock"
-                                type="checkbox"
-                                checked={updateProductData.stockInstock}
-                                onChange={handleInputChange}
+                            <ProductDropdown
+                                label="Product Type"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('type')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="type"
+                                isDropdownOpen={dropdownStates.type}
+                                header={
+                                    productTypes?.find(
+                                        (pt: any) =>
+                                            pt.id === updateProductData.type,
+                                    )?.name || 'Select Product Type'
+                                }
+                                values={productTypes}
+                                selectedValue="type"
+                                displayField="name"
                             />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label htmlFor="stockSoldout">Sold Out</Label>
-                            <Input
-                                id="stockSoldout"
-                                type="checkbox"
-                                checked={updateProductData.stockSoldout}
-                                onChange={handleInputChange}
+                            <ProductDropdown
+                                label="Brand"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('brand')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="brand"
+                                isDropdownOpen={dropdownStates.brand}
+                                header={
+                                    updateProductData.selectedBrand
+                                        ? brands?.find(
+                                              (b: any) =>
+                                                  b.id ===
+                                                  updateProductData.selectedBrand,
+                                          )?.name || 'Select Brand'
+                                        : 'Select Brand'
+                                }
+                                values={brands}
+                                selectedValue={updateProductData.selectedBrand}
+                                displayField="name"
+                            />
+
+                            <ProductDropdown
+                                label="Set"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('set')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="set"
+                                isDropdownOpen={dropdownStates.set}
+                                header={
+                                    updateProductData.selectedSet
+                                        ? sets?.find(
+                                              (s: any) =>
+                                                  s.id ===
+                                                  updateProductData.selectedSet,
+                                          )?.setName || 'Select Set'
+                                        : 'Select Set'
+                                }
+                                values={sets}
+                                selectedValue={updateProductData.selectedSet}
+                                displayField="setName"
+                            />
+
+                            <ProductDropdown
+                                label="Variant"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('variant')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="variant"
+                                isDropdownOpen={dropdownStates.variant}
+                                header={
+                                    updateProductData.selectedVariant
+                                        ? variants?.find(
+                                              (v: any) =>
+                                                  v.id ===
+                                                  updateProductData.selectedVariant,
+                                          )?.name || 'Select Variant'
+                                        : 'Select Variant'
+                                }
+                                values={variants}
+                                selectedValue={
+                                    updateProductData.selectedVariant
+                                }
+                                displayField="name"
+                            />
+
+                            <ProductDropdown
+                                label="Card Type"
+                                handleDropdownToggle={() =>
+                                    handleDropdownToggle('cardType')
+                                }
+                                handleDropdownChange={handleDropdownChange}
+                                toggleValue="cardType"
+                                isDropdownOpen={dropdownStates.cardType}
+                                header={
+                                    updateProductData.selectedCardType
+                                        ? cardTypes?.find(
+                                              (ct: any) =>
+                                                  ct.id ===
+                                                  updateProductData.selectedCardType,
+                                          )?.name || 'Select Card Type'
+                                        : 'Select Card Type'
+                                }
+                                values={cardTypes}
+                                selectedValue={
+                                    updateProductData.selectedCardType
+                                }
+                                displayField="name"
                             />
                         </FormGroup>
                         <FormGroup>
