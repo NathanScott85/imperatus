@@ -1,149 +1,152 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAdminContext } from '../../../../context/admin';
 import { FancyContainer } from '../../../../components/fancy-container';
 import { TypeDetail } from './type-detail';
-
-import { Input } from '../../../../components/input';
 import { Search } from '../../../../components/search';
 import { useProductTypeContext } from '../../../../context/product-types';
 
 export const AdminProductTypes = () => {
     const {
-      productTypes,
-      loading,
-      error,
-      fetchProductTypes,
-      search,
-      totalPages,
-      page,
-      setPage,
-      setSearch,
+        productTypes,
+        loading,
+        error,
+        fetchProductTypes,
+        search,
+        totalPages,
+        page,
+        setPage,
+        setSearch,
     } = useProductTypeContext();
 
-    const [selectedType, setSelectedType] = useState<any | null>( null );
-
+    const [selectedType, setSelectedType] = useState<any | null>(null);
 
     useEffect(() => {
-      fetchProductTypes();
-  }, [page, search, fetchProductTypes]);
+        fetchProductTypes();
+    }, [page, search, fetchProductTypes]);
 
-    const handlePageChange = ( newPage: number ) => {
-      if ( newPage >= 1 && newPage <= totalPages ) {
-        setPage( newPage );
-      }
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
     };
 
     const triggerSearch = () => {
         setSearch(search);
     };
-    
+
     const handleReset = () => {
-      setSearch('');
-      setPage(1);
+        setSearch('');
+        setPage(1);
     };
 
-    const handleViewType = ( type: any ) => {
-      setSelectedType( type );
+    const handleViewType = (type: any) => {
+        setSelectedType(type);
     };
 
     const handleBackToList = () => {
-      setSelectedType( null );
+        setSelectedType(null);
     };
 
-    if ( selectedType ) {
-      return <TypeDetail type={selectedType} onBack={handleBackToList} />;
+    if (selectedType) {
+        return <TypeDetail type={selectedType} onBack={handleBackToList} />;
     }
 
     return (
-      <TypesContainer>
-        <TitleRow>
-          <TypesTitle>Product Types</TypesTitle>
-          <SearchContainer>
-          <Search
-              type="text"
-              variant="small"
-              onSearch={triggerSearch}
-              search={search}
-              placeholder="Search Product Types"
-              onChange={(e) => setSearch(e.target.value)}
-              handleReset={handleReset}
-          />   
-          </SearchContainer>
-        </TitleRow>
+        <TypesContainer>
+            <TitleRow>
+                <TypesTitle>Product Types</TypesTitle>
+                <SearchContainer>
+                    <Search
+                        type="text"
+                        variant="small"
+                        onSearch={triggerSearch}
+                        search={search}
+                        placeholder="Search Product Types"
+                        onChange={(e) => setSearch(e.target.value)}
+                        handleReset={handleReset}
+                    />
+                </SearchContainer>
+            </TitleRow>
 
-        {productTypes?.length !== 0 ? (
-          <TypesWrapper>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <CenteredCell>Loading...</CenteredCell>
-                  </tr>
-                ) : error ? (
-                  <tr>
-                    <CenteredCell>Error: {error.message}</CenteredCell>
-                  </tr>
-                ) : (
-                  productTypes?.map( ( type, index ) => (
-                    <TableRow key={type.id} isOdd={index % 2 === 1}>
-                      <td>{type.name}</td>
-                      <td>
-                        <ViewButton onClick={() => handleViewType( type )}>
-                          View
-                        </ViewButton>
-                      </td>
-                    </TableRow>
-                  ) )
-                )}
-              </tbody>
-            </Table>
-            {totalPages > 1 && (
-              <PaginationContainer>
-                <PaginationControls>
-                  <PageButton
-                    onClick={() => handlePageChange( page - 1 )}
-                    disabled={page === 1}
-                  >
-                    Previous
-                  </PageButton>
-                  <span>
-                    Page {page} of {totalPages}
-                  </span>
-                  <PageButton
-                    onClick={() => handlePageChange( page + 1 )}
-                    disabled={page >= totalPages}
-                  >
-                    Next
-                  </PageButton>
-                </PaginationControls>
-
-              </PaginationContainer>
+            {productTypes?.length !== 0 ? (
+                <TypesWrapper>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell>Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell>
+                                        Error: {error.message}
+                                    </CenteredCell>
+                                </tr>
+                            ) : (
+                                productTypes?.map((type, index) => (
+                                    <TableRow
+                                        key={type.id}
+                                        isOdd={index % 2 === 1}
+                                    >
+                                        <td>{type.name}</td>
+                                        <td>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    handleViewType(type)
+                                                }
+                                            >
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ))
+                            )}
+                        </tbody>
+                    </Table>
+                    {totalPages > 1 && (
+                        <PaginationContainer>
+                            <PaginationControls>
+                                <PageButton
+                                    onClick={() => handlePageChange(page - 1)}
+                                    disabled={page === 1}
+                                >
+                                    Previous
+                                </PageButton>
+                                <span>
+                                    Page {page} of {totalPages}
+                                </span>
+                                <PageButton
+                                    onClick={() => handlePageChange(page + 1)}
+                                    disabled={page >= totalPages}
+                                >
+                                    Next
+                                </PageButton>
+                            </PaginationControls>
+                        </PaginationContainer>
+                    )}
+                </TypesWrapper>
+            ) : (
+                <ProductsContainer>
+                    <FancyContainer>
+                        <NoTypesMessage>
+                            {search ? (
+                                <p>No results found for "{search}"</p>
+                            ) : (
+                                <p>No Types added at the moment.</p>
+                            )}
+                        </NoTypesMessage>
+                    </FancyContainer>
+                </ProductsContainer>
             )}
-          </TypesWrapper>
-        ) : (
-          <ProductsContainer>
-            <FancyContainer>
-              <NoTypesMessage>
-                {search ? (
-                  <p>No results found for "{search}"</p>
-                ) : (
-                  <p>No Types added at the moment.</p>
-                )}
-              </NoTypesMessage>
-            </FancyContainer>
-          </ProductsContainer>
-        )}
-      </TypesContainer>
+        </TypesContainer>
     );
 };
-
 
 const SearchContainer = styled.div`
     position: relative;
@@ -152,22 +155,14 @@ const SearchContainer = styled.div`
     margin-left: auto;
     max-width: 325px;
     width: 100%;
-
 `;
 
 const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 `;
-
-const StyledInput = styled( Input )`
-  margin-left: auto;
-  max-width: 300px;
-  border-radius: 3px;
-`;
-
 
 const NoTypesMessage = styled.div`
     display: flex;
@@ -264,7 +259,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -288,7 +283,7 @@ const PaginationControls = styled.div`
     align-items: center;
     justify-content: center;
     margin: 1rem 0rem 1rem 1rem;
-    
+
     span {
         color: white;
         text-align: center;
@@ -296,19 +291,18 @@ const PaginationControls = styled.div`
     }
 `;
 
-
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
     margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
 `;
 
@@ -325,4 +319,3 @@ const ViewButton = styled.button`
         background-color: #2a1f51;
     }
 `;
-

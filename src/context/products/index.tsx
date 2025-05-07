@@ -4,7 +4,6 @@ import React, {
     useState,
     ReactNode,
     useMemo,
-    useEffect,
     useCallback,
 } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -20,8 +19,6 @@ import { useDebouncedEffect } from '../../lib';
 
 interface Stock {
     amount: number;
-    instock: string;
-    soldout: string;
     preorder: boolean;
     sold?: number;
 }
@@ -90,6 +87,27 @@ interface Rarity {
     name: string;
 }
 
+interface CreateProductInput {
+    name: string;
+    price: string | number;
+    productTypeId: number;
+    cardTypeId?: number;
+    variantId?: number;
+    brandId: number;
+    setId: number;
+    img: File;
+    categoryId: number;
+    stock: {
+        amount: number;
+        sold: number;
+        preorder: boolean;
+    };
+    preorder: boolean;
+    description: string;
+    rrp?: string | number;
+    rarityId?: number;
+}
+
 interface ProductsContextProps {
     products: Product[] | null;
     latestProducts: Product[] | null;
@@ -122,15 +140,17 @@ interface ProductsContextProps {
         stock: {
             amount: number;
             sold: number;
-            instock: string;
-            soldout: string;
             preorder: boolean;
         };
         preorder: boolean;
         description: string;
         rrp?: string | number;
         rarityId?: number;
-    }) => Promise<{ success: boolean; message: string; product: Product | null }>;
+    }) => Promise<{
+        success: boolean;
+        message: string;
+        product: Product | null;
+    }>;
     updateProduct: (variables: {
         id: number;
         name: string;
@@ -141,12 +161,16 @@ interface ProductsContextProps {
         categoryId: number;
         stockAmount: number;
         stockSold: number;
-        stockInstock: string;
-        stockSoldout: string;
         preorder: boolean;
         rrp?: number;
-    }) => Promise<{ success: boolean; message: string; product: Product | null }>;
-    deleteProduct: (id: number) => Promise<{ success: boolean; message: string }>;
+    }) => Promise<{
+        success: boolean;
+        message: string;
+        product: Product | null;
+    }>;
+    deleteProduct: (
+        id: number,
+    ) => Promise<{ success: boolean; message: string }>;
     filters: ProductFilters;
     setFilters: React.Dispatch<React.SetStateAction<ProductFilters>>;
     brands: Brand[];
@@ -154,9 +178,13 @@ interface ProductsContextProps {
     rarities: Rarity[];
 }
 
-const ProductsContext = createContext<ProductsContextProps | undefined>(undefined);
+const ProductsContext = createContext<ProductsContextProps | undefined>(
+    undefined,
+);
 
-export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const ProductsProvider: React.FC<{ children: ReactNode }> = ({
+    children,
+}) => {
     const [products, setProducts] = useState<Product[]>([]);
     const [latestProducts, setLatestProducts] = useState<Product[]>([]);
     const [latestLoading, setLatestLoading] = useState(false);
@@ -171,25 +199,31 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [limit, setLimit] = useState(10);
     const [rarities, setRarities] = useState<Rarity[]>([]);
 
-    const queryVariables = useMemo(() => ({
-        page,
-        limit,
-        search,
-        filters,
-    }), [page, limit, search, filters]);
+    const queryVariables = useMemo(
+        () => ({
+            page,
+            limit,
+            search,
+            filters,
+        }),
+        [page, limit, search, filters],
+    );
 
-    const [fetchProductsQuery, { loading, error }] = useLazyQuery(GET_ALL_PRODUCTS, {
-        fetchPolicy: 'cache-and-network',
-        variables: queryVariables,
-        onCompleted: (data) => {
-            setProducts(data?.getAllProducts?.products || []);
-            setTotalCount(data?.getAllProducts?.totalCount || 0);
-            setTotalPages(data?.getAllProducts?.totalPages || 1);
-            setBrands(data?.getAllProducts?.brands || []);
-            setSets(data?.getAllProducts?.sets || []);
-            setRarities(data?.getAllProducts?.rarities || []);
+    const [fetchProductsQuery, { loading, error }] = useLazyQuery(
+        GET_ALL_PRODUCTS,
+        {
+            fetchPolicy: 'cache-and-network',
+            variables: queryVariables,
+            onCompleted: (data) => {
+                setProducts(data?.getAllProducts?.products || []);
+                setTotalCount(data?.getAllProducts?.totalCount || 0);
+                setTotalPages(data?.getAllProducts?.totalPages || 1);
+                setBrands(data?.getAllProducts?.brands || []);
+                setSets(data?.getAllProducts?.sets || []);
+                setRarities(data?.getAllProducts?.rarities || []);
+            },
         },
-    });
+    );
 
     const fetchProducts = useCallback(() => {
         fetchProductsQuery({
@@ -210,7 +244,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         },
         onError: () => {
             setLatestLoading(false);
-        }
+        },
     });
 
     const [getProductByIdQuery] = useLazyQuery(GET_PRODUCT_BY_ID, {
@@ -220,9 +254,12 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
         },
     });
 
-    const fetchProductById = (id: string) => {
-        getProductByIdQuery({ variables: { id } });
-    };
+    const fetchProductById = useCallback(
+        (id: string) => {
+            getProductByIdQuery({ variables: { id } });
+        },
+        [getProductByIdQuery],
+    );
 
     const fetchLatestProducts = useCallback(() => {
         setLatestLoading(true);
@@ -233,152 +270,174 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [updateProductMutation] = useMutation(UPDATE_PRODUCT);
     const [deleteProductMutation] = useMutation(DELETE_PRODUCT);
 
-    const createProduct = async (variables: {
-        name: string;
-        price: string | number;
-        productTypeId: number;
-        cardTypeId?: number;
-        variantId?: number;
-        brandId: number;
-        setId: number;
-        img: File;
-        categoryId: number;
-        stock: {
-            amount: number;
-            sold: number;
-            instock: string;
-            soldout: string;
+    const createProduct = useCallback(
+        async (variables: CreateProductInput) => {
+            try {
+                const { data } = await createProductMutation({ variables });
+                if (data?.createProduct) {
+                    return {
+                        success: true,
+                        message: 'Product created successfully!',
+                        product: data.createProduct,
+                    };
+                } else {
+                    throw new Error('Failed to create product.');
+                }
+            } catch (error) {
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown error';
+                return { success: false, message: errorMessage, product: null };
+            }
+        },
+        [createProductMutation],
+    );
+
+    const updateProduct = useCallback(
+        async (variables: {
+            id: number;
+            name: string;
+            price: number;
+            productTypeId: number;
+            description?: string;
+            img?: File;
+            categoryId: number;
+            stockAmount: number;
+            stockSold: number;
             preorder: boolean;
-        };
-        preorder: boolean;
-        description: string;
-        rrp?: string | number;
-        rarityId?: number;
-    }): Promise<{ success: boolean; message: string; product: Product | null }> => {    
-        try {
-            const { data } = await createProductMutation({ variables });
-
-            if (data?.createProduct) {
-                return {
-                    success: true,
-                    message: 'Product created successfully!',
-                    product: data.createProduct,
+            rrp?: number;
+        }): Promise<{
+            success: boolean;
+            message: string;
+            product: Product | null;
+        }> => {
+            try {
+                const stock = {
+                    amount: variables.stockAmount,
+                    sold: variables.stockSold,
                 };
-            } else {
-                throw new Error('Failed to create product.');
-            }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            return {
-                success: false,
-                message: errorMessage,
-                product: null,
-            };
-        }
-    };
 
-    const updateProduct = async (variables: {
-        id: number;
-        name: string;
-        price: number;
-        productTypeId: number;
-        description?: string;
-        img?: File;
-        categoryId: number;
-        stockAmount: number;
-        stockSold: number;
-        stockInstock: string;
-        stockSoldout: string;
-        preorder: boolean;
-        rrp?: number;
-    }): Promise<{ success: boolean; message: string; product: Product | null }> => {
-        try {
-            const stock = {
-                amount: variables.stockAmount,
-                sold: variables.stockSold,
-                instock: variables.stockInstock,
-                soldout: variables.stockSoldout,
-            };
+                const { data } = await updateProductMutation({
+                    variables: { ...variables, stock },
+                });
 
-            const { data } = await updateProductMutation({
-                variables: { ...variables, stock },
-            });
-
-            if (data?.updateProduct) {
+                if (data?.updateProduct) {
+                    return {
+                        success: true,
+                        message: 'Product updated successfully!',
+                        product: data.updateProduct,
+                    };
+                } else {
+                    throw new Error('Failed to update product.');
+                }
+            } catch (error) {
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown error';
                 return {
-                    success: true,
-                    message: 'Product updated successfully!',
-                    product: data.updateProduct,
+                    success: false,
+                    message: errorMessage,
+                    product: null,
                 };
-            } else {
-                throw new Error('Failed to update product.');
             }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            return {
-                success: false,
-                message: errorMessage,
-                product: null,
-            };
-        }
-    };
+        },
+        [updateProductMutation],
+    );
 
-    const deleteProduct = async (id: number): Promise<{ success: boolean; message: string }> => {
-        try {
-            const { data } = await deleteProductMutation({ variables: { id } });
+    const deleteProduct = useCallback(
+        async (id: number): Promise<{ success: boolean; message: string }> => {
+            try {
+                const { data } = await deleteProductMutation({
+                    variables: { id },
+                });
 
-            if (data?.deleteProduct) {
+                if (data?.deleteProduct) {
+                    return {
+                        success: true,
+                        message: 'Product deleted successfully!',
+                    };
+                } else {
+                    throw new Error('Failed to delete product.');
+                }
+            } catch (error) {
+                const errorMessage =
+                    error instanceof Error ? error.message : 'Unknown error';
                 return {
-                    success: true,
-                    message: 'Product deleted successfully!',
+                    success: false,
+                    message: errorMessage,
                 };
-            } else {
-                throw new Error('Failed to delete product.');
             }
-        } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            return {
-                success: false,
-                message: errorMessage,
-            };
-        }
-    };
+        },
+        [deleteProductMutation],
+    );
 
-    useDebouncedEffect(() => {
-        fetchProducts();
-    }, [fetchProducts, page, search, filters], 1500);
+    useDebouncedEffect(
+        () => {
+            fetchProducts();
+        },
+        [fetchProducts, page, search, filters],
+        1500,
+    );
+
+    const contextValue = useMemo(
+        () => ({
+            products,
+            latestProducts,
+            product,
+            loading,
+            error,
+            totalCount,
+            totalPages,
+            page,
+            setPage,
+            limit,
+            setLimit,
+            search,
+            filters,
+            setFilters,
+            setSearch,
+            setProduct,
+            fetchProducts,
+            latestLoading,
+            fetchLatestProducts,
+            fetchProductById,
+            createProduct,
+            updateProduct,
+            deleteProduct,
+            brands,
+            sets,
+            rarities,
+        }),
+        [
+            products,
+            latestProducts,
+            product,
+            loading,
+            error,
+            totalCount,
+            totalPages,
+            page,
+            setPage,
+            limit,
+            setLimit,
+            search,
+            filters,
+            setFilters,
+            setSearch,
+            setProduct,
+            fetchProducts,
+            latestLoading,
+            fetchLatestProducts,
+            fetchProductById,
+            createProduct,
+            updateProduct,
+            deleteProduct,
+            brands,
+            sets,
+            rarities,
+        ],
+    );
 
     return (
-        <ProductsContext.Provider
-            value={{
-                products,
-                latestProducts,
-                product,
-                loading,
-                error,
-                totalCount,
-                totalPages,
-                page,
-                setPage,
-                limit, 
-                setLimit,
-                search,
-                filters,
-                setFilters,
-                setSearch,
-                setProduct,
-                fetchProducts,
-                latestLoading,
-                fetchLatestProducts,
-                fetchProductById,
-                createProduct,
-                updateProduct,
-                deleteProduct,
-                brands,
-                sets,
-                rarities,
-            }}
-        >
+        <ProductsContext.Provider value={contextValue}>
             {children}
         </ProductsContext.Provider>
     );
@@ -387,7 +446,9 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
 export const useProductsContext = () => {
     const context = useContext(ProductsContext);
     if (!context) {
-        throw new Error('useProductsContext must be used within a ProductsProvider');
+        throw new Error(
+            'useProductsContext must be used within a ProductsProvider',
+        );
     }
     return context;
 };

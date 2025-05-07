@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../components/button';
-import { Input } from '../../../components/input';
 
 interface OrderSummaryProps {
     basketProductsLength: number;
     calculateSubtotal: () => string;
     calculatePriceWithoutVAT: () => string;
     calculateTotal: () => string;
+    calculateVat: () => string;
 }
 
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
     basketProductsLength,
     calculateSubtotal,
+    calculateVat,
     calculatePriceWithoutVAT,
     calculateTotal,
 }) => {
-    const [discountCode, setDiscountCode] = useState('');
-
     return (
         <SummaryContainer>
             <h2>Order Summary</h2>
@@ -31,14 +30,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     <span>${calculateSubtotal()}</span>
                 </p>
                 <p>
-                    <span>Delivery:</span>
-                    <span>$5.00</span>
-                </p>
-                <p>
                     <span>VAT:</span>
-                    <span>
-                        ${(parseFloat(calculateSubtotal()) * 0.2).toFixed(2)}
-                    </span>
+                    <span>£{calculateVat()}</span>
                 </p>
                 <p>
                     <span>Price without VAT:</span>
@@ -48,30 +41,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
                     <span>Total (inc VAT):</span>
                     <span>${calculateTotal()}</span>
                 </p>
-
-                <DiscountWrapper>
-                    <p>Have a discount code?</p>
-                    <InputRow>
-                        <Input
-                            type="text"
-                            placeholder="Enter discount code"
-                            size="small"
-                            variant="secondary"
-                            label="Enter discount code"
-                            name="discountCode"
-                            id="discountCode"
-                            value={discountCode}
-                            onChange={(e) => setDiscountCode(e.target.value)}
-                        />
-                        <Button
-                            label="Apply"
-                            size="small"
-                            variant="primary"
-                            onClick={() => {}}
-                        />
-                    </InputRow>
-                </DiscountWrapper>
-
                 <Button
                     link
                     pathname="/shop/checkout"
@@ -149,35 +118,5 @@ const Details = styled.div`
         font-weight: bold;
         font-size: 1.2rem;
         font-family: Cinzel, sans-serif;
-    }
-`;
-
-const DiscountWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 1rem 0;
-
-    p {
-        margin: 0 0 0.5rem 0;
-        font-family: Cinzel, sans-serif;
-        font-size: 14px;
-        font-weight: bold;
-        color: #c79d0a;
-    }
-`;
-
-const InputRow = styled.div`
-    display: flex;
-    gap: 0.5rem;
-    width: 100%;
-    input {
-        max-width: 200px;
-        padding: 0.3rem 0.5rem;
-        font-size: 0.85rem;
-        font-family: Cinzel, sans-serif;
-        font-size: 14px;
-        color: #c79d0a;
     }
 `;

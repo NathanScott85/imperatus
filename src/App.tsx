@@ -5,7 +5,6 @@ import { AppRoutes } from './app-routes';
 import { AppProvider } from './context';
 import { ScrollToTop } from './components/scroll-to-top';
 
-
 const App = (): React.ReactElement => {
     return (
         <AppProvider>

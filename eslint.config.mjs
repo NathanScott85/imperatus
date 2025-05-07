@@ -11,4 +11,10 @@ export default [
     pluginJs.configs.recommended,
     ...tseslint.configs.recommended,
     ...fixupConfigRules(pluginReactConfig),
+    {
+        rules: {
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
+        },
+    },
 ];
