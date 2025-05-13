@@ -13,12 +13,26 @@ export type BasketItem = {
     img: { url: string };
 };
 
+type DiscountCode = {
+    code: string;
+    value: number;
+    type: string;
+};
+
 type BasketContextType = {
     basket: BasketItem[];
     addToBasket: (item: BasketItem) => void;
     removeFromBasket: (productId: number) => void;
     updateQuantity: (productId: number, quantity: number) => void;
     clearBasket: () => void;
+    discountCode: string;
+    setDiscountCode: (code: string) => void;
+    discountValue: number;
+    setDiscountValue: (value: number) => void;
+    discountApplied: boolean;
+    setDiscountApplied: (value: boolean) => void;
+    appliedCode: DiscountCode | null;
+    setAppliedCode: (code: DiscountCode | null) => void;
 };
 
 const BasketContext = createContext<BasketContextType | undefined>(undefined);
@@ -34,6 +48,11 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
         }
         return [];
     });
+
+    const [discountCode, setDiscountCode] = useState('');
+    const [discountValue, setDiscountValue] = useState(0);
+    const [discountApplied, setDiscountApplied] = useState(false);
+    const [appliedCode, setAppliedCode] = useState<DiscountCode | null>(null);
 
     useEffect(() => {
         sessionStorage.setItem(StorageKeys.SESSION, JSON.stringify(basket));
@@ -75,6 +94,10 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
 
     const clearBasket = () => {
         setBasket([]);
+        setDiscountCode('');
+        setDiscountValue(0);
+        setDiscountApplied(false);
+        setAppliedCode(null);
     };
 
     return (
@@ -85,6 +108,14 @@ export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
                 removeFromBasket,
                 updateQuantity,
                 clearBasket,
+                discountCode,
+                setDiscountCode,
+                discountValue,
+                setDiscountValue,
+                discountApplied,
+                setDiscountApplied,
+                appliedCode,
+                setAppliedCode,
             }}
         >
             {children}

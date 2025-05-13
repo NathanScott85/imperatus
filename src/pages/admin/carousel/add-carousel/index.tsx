@@ -13,8 +13,12 @@ export const AddCarousel = () => {
     const { products, fetchProducts } = useProductsContext();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(undefined);
-    const [selectedProductId, setSelectedProductId] = useState<string | undefined>(undefined);
+    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(
+        undefined,
+    );
+    const [selectedProductId, setSelectedProductId] = useState<
+        string | undefined
+    >(undefined);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
@@ -39,7 +43,9 @@ export const AddCarousel = () => {
         setIsButtonDisabled(false);
     };
 
-    const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDescriptionChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         setDescription(e.target.value);
         setIsButtonDisabled(false);
     };
@@ -83,14 +89,22 @@ export const AddCarousel = () => {
         setSuccess('');
         setIsButtonDisabled(true);
 
-        if (!title || !selectedFile) {
-            setError('Title and an image are required.');
+        if (!selectedFile) {
+            setError('Image are required.');
             setIsButtonDisabled(false);
             return;
         }
 
         try {
-            await addCarousel(title, description, selectedFile, buttonText , Number(selectedBrandId), selectedProductId, disabled);
+            await addCarousel(
+                title,
+                description,
+                selectedFile,
+                buttonText,
+                Number(selectedBrandId),
+                selectedProductId,
+                disabled,
+            );
             setSuccess('Carousel page created successfully!');
             setError('');
             setTitle('');
@@ -101,7 +115,10 @@ export const AddCarousel = () => {
             clearFileInput();
         } catch (err) {
             const errorMessage = (err as Error).message;
-            setError(errorMessage || 'Failed to create carousel page. Please try again.');
+            setError(
+                errorMessage ||
+                    'Failed to create carousel page. Please try again.',
+            );
             setSuccess('');
         } finally {
             setIsButtonDisabled(false);
@@ -121,7 +138,6 @@ export const AddCarousel = () => {
                             id="title"
                             value={title}
                             onChange={handleTitleChange}
-                            required
                         />
                     </FormGroup>
                     <FormGroup>
@@ -201,10 +217,7 @@ export const AddCarousel = () => {
                             variant="primary"
                             type="submit"
                             disabled={
-                                !title ||
-                                !selectedFile ||
-                                isButtonDisabled ||
-                                loading
+                                !selectedFile || isButtonDisabled || loading
                             }
                         >
                             {loading ? 'Creating...' : 'Create Carousel'}
@@ -225,7 +238,9 @@ export const AddCarousel = () => {
             </div>
             <ImagePreviewContainer>
                 <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-                {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
+                {previewUrl && (
+                    <ImagePreview src={previewUrl} alt="Image preview" />
+                )}
             </ImagePreviewContainer>
         </CarouselContainer>
     );

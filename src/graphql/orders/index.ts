@@ -120,6 +120,12 @@ export const GET_USER_ORDERS = gql`
     }
 `;
 
+export const IS_FIRST_ORDER = gql`
+    query IsFirstOrder($email: String!) {
+        isFirstOrder(email: $email)
+    }
+`;
+
 export const CREATE_ORDER = gql`
     mutation CreateOrder($input: CreateOrderInput!) {
         createOrder(input: $input) {

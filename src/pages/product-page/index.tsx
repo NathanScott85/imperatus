@@ -47,7 +47,7 @@ export const ProductPage: React.FC = () => {
         const value = parseInt(e.target.value);
         if (!isNaN(value) && value > 0) setQuantity(value);
     };
-
+    console.log(product, 'product');
     return (
         <>
             <TopHeader />
@@ -95,7 +95,7 @@ export const ProductPage: React.FC = () => {
                             <CartWrapper>
                                 <Cart stroke="black" />
                             </CartWrapper>
-                            {product.stock.amount > 0 ? (
+                            {(product.stock?.amount ?? 0) > 0 ? (
                                 <p>In Stock</p>
                             ) : (
                                 <p>Sold out</p>
