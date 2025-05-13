@@ -72,15 +72,17 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     const [logoutTimer, setLogoutTimer] = useState<NodeJS.Timeout | null>(null);
     const navigate = useNavigate();
     const [logoutMutation] = useMutation(LOGOUT_MUTATION, {
-        onCompleted: () => {
+        onCompleted: async () => {
             clearSession();
-            client.resetStore();
+            await client.refetchQueries({ include: 'active' });
+            await client.resetStore();
             navigate('/account/sign-out');
         },
-        onError: (error) => {
+        onError: async (error) => {
             console.error('Logout error:', error);
             clearSession();
-            client.resetStore();
+            await client.refetchQueries({ include: 'active' });
+            await client.resetStore();
             navigate('/account/sign-out');
         },
     });

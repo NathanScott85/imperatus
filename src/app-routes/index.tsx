@@ -49,92 +49,106 @@ import { Checkout } from '../pages/checkout';
 import { OrdersProvider } from '../context/orders';
 import { BasketProvider } from '../context/basket';
 import { DiscountCodesProvider } from '../context/discount';
+import { CheckoutProvider } from '../context/checkout';
+import { OrderConfirmation } from '../pages/order';
 
 export const AppRoutes = () => {
     const location = useLocation();
     const { isAuthenticated, isAdminOrOwner } = useAppContext();
 
     return (
-        <BasketProvider>
-            <ProductsProvider>
-                <Routes location={location}>
-                    <Route
-                        path="/"
-                        element={
-                            <CarouselProvider>
-                                <Home />
-                            </CarouselProvider>
-                        }
-                    />
+        <DiscountCodesProvider>
+            <CheckoutProvider>
+                <BasketProvider>
+                    {' '}
+                    <ProductsProvider>
+                        <Routes location={location}>
+                            <Route
+                                path="/"
+                                element={
+                                    <CarouselProvider>
+                                        <Home />
+                                    </CarouselProvider>
+                                }
+                            />
 
-                    {/* Admin Route with CarouselProvider nested */}
-                    {isAdminOrOwner && (
-                        <Route
-                            path={`/account/admin`}
-                            element={
-                                <ProtectedRoute
+                            {/* Admin Route with CarouselProvider nested */}
+                            {isAdminOrOwner && (
+                                <Route
+                                    path={`/account/admin`}
                                     element={
-                                        <AdminProviders>
-                                            <Admin />
-                                        </AdminProviders>
+                                        <ProtectedRoute
+                                            element={
+                                                <AdminProviders>
+                                                    <Admin />
+                                                </AdminProviders>
+                                            }
+                                        />
                                     }
                                 />
-                            }
-                        />
-                    )}
+                            )}
 
-                    {/* Search route */}
-                    <Route path="/shop/search" element={<SearchResults />} />
-                    <Route
-                        path="/shop/search/:query"
-                        element={<SearchResults />}
-                    />
-                    <Route
-                        path="/shop/search/:query/:id/:productname"
-                        element={<ProductPage />}
-                    />
+                            {/* Search route */}
+                            <Route
+                                path="/shop/search"
+                                element={<SearchResults />}
+                            />
+                            <Route
+                                path="/shop/search/:query"
+                                element={<SearchResults />}
+                            />
+                            <Route
+                                path="/shop/search/:query/:id/:productname"
+                                element={<ProductPage />}
+                            />
 
-                    {/* Categories route */}
-                    <Route
-                        path="/shop/categories/*"
-                        element={
-                            <CategoriesProvider>
-                                <Routes>
-                                    <Route path="" element={<Categories />} />
-                                    <Route
-                                        path="category/:id/:name"
-                                        element={<Category />}
-                                    />
-                                    <Route
-                                        path="category/:id/:name/:productid/:productname"
-                                        element={<ProductPage />}
-                                    />
-                                </Routes>
-                            </CategoriesProvider>
-                        }
-                    />
+                            {/* Categories route */}
+                            <Route
+                                path="/shop/categories/*"
+                                element={
+                                    <CategoriesProvider>
+                                        <Routes>
+                                            <Route
+                                                path=""
+                                                element={<Categories />}
+                                            />
+                                            <Route
+                                                path="category/:id/:name"
+                                                element={<Category />}
+                                            />
+                                            <Route
+                                                path="category/:id/:name/:productid/:productname"
+                                                element={<ProductPage />}
+                                            />
+                                        </Routes>
+                                    </CategoriesProvider>
+                                }
+                            />
 
-                    <Route
-                        path="/shop/coming-soon/*"
-                        element={
-                            <PreordersProvider>
-                                <Routes>
-                                    <Route path="" element={<Preorders />} />
-                                    <Route
-                                        path="/:id/:name"
-                                        element={<Orders />}
-                                    />
-                                    <Route
-                                        path="/:id/:name/:productid/:productname"
-                                        element={<ProductPage />}
-                                    />
-                                </Routes>
-                            </PreordersProvider>
-                        }
-                    />
+                            <Route
+                                path="/shop/coming-soon/*"
+                                element={
+                                    <PreordersProvider>
+                                        <Routes>
+                                            <Route
+                                                path=""
+                                                element={<Preorders />}
+                                            />
+                                            <Route
+                                                path="/:id/:name"
+                                                element={<Orders />}
+                                            />
+                                            <Route
+                                                path="/:id/:name/:productid/:productname"
+                                                element={<ProductPage />}
+                                            />
+                                        </Routes>
+                                    </PreordersProvider>
+                                }
+                            />
 
-                    {/* Other routes */}
-                    {/* <Route path="/shop/card-games" element={<CardGames />} />
+                            {/* Other routes */}
+                            {/* <Route path="/shop/card-games" element={<CardGames />} />
                 <Route
                     path="/shop/card-games/cardgame/:id/:name"
                     element={<CardGame />}
@@ -152,16 +166,19 @@ export const AppRoutes = () => {
                     path="/shop/accessories/accessory/:id/:name/:productid/:productname"
                     element={<ProductPage />}
                 /> */}
-                    <Route
-                        path="/shop/coming-soon/new/:id/:name"
-                        element={<Orders />}
-                    />
-                    <Route
-                        path="/shop/coming-soon/new/:id/:name/:productid/:productname"
-                        element={<ProductPage />}
-                    />
-                    <Route path="/shop/board-games" element={<BoardGames />} />
-                    {/* <Route
+                            <Route
+                                path="/shop/coming-soon/new/:id/:name"
+                                element={<Orders />}
+                            />
+                            <Route
+                                path="/shop/coming-soon/new/:id/:name/:productid/:productname"
+                                element={<ProductPage />}
+                            />
+                            <Route
+                                path="/shop/board-games"
+                                element={<BoardGames />}
+                            />
+                            {/* <Route
                     path="/shop/board-games/boardgame/:id/:name"
                     element={<BoardGame />}
                 />
@@ -169,109 +186,131 @@ export const AppRoutes = () => {
                     path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
                     element={<ProductPage />}
                 /> */}
-                    <Route path="/shop/offers" element={<Offers />} />
+                            <Route path="/shop/offers" element={<Offers />} />
 
-                    {/* Informational pages */}
-                    <Route path="/about-us" element={<AboutUs />} />
-                    <Route
-                        path="/faqs"
-                        element={<FrequentlyAskedQuestions />}
-                    />
-                    <Route path="/news-&-events" element={<NewsAndEvents />} />
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/cookie-policy" element={<CookiePolicy />} />
-                    <Route
-                        path="/terms-&-conditions"
-                        element={<TermsAndConditions />}
-                    />
-                    <Route
-                        path="/payment-methods"
-                        element={<PaymentMethods />}
-                    />
-                    <Route path="/delivery" element={<Delivery />} />
-                    <Route path="/returns-policy" element={<ReturnsPolicy />} />
-                    <Route path="/discount-codes" element={<DiscountCodes />} />
+                            {/* Informational pages */}
+                            <Route path="/about-us" element={<AboutUs />} />
+                            <Route
+                                path="/faqs"
+                                element={<FrequentlyAskedQuestions />}
+                            />
+                            <Route
+                                path="/news-&-events"
+                                element={<NewsAndEvents />}
+                            />
+                            <Route
+                                path="/privacy-policy"
+                                element={<PrivacyPolicy />}
+                            />
+                            <Route
+                                path="/cookie-policy"
+                                element={<CookiePolicy />}
+                            />
+                            <Route
+                                path="/terms-&-conditions"
+                                element={<TermsAndConditions />}
+                            />
+                            <Route
+                                path="/payment-methods"
+                                element={<PaymentMethods />}
+                            />
+                            <Route path="/delivery" element={<Delivery />} />
+                            <Route
+                                path="/returns-policy"
+                                element={<ReturnsPolicy />}
+                            />
+                            <Route
+                                path="/discount-codes"
+                                element={<DiscountCodes />}
+                            />
 
-                    {/* Account and authentication routes */}
-                    <Route
-                        path="/account/my-account"
-                        element={
-                            <ProtectedRoute
-                                redirectPath={
-                                    isAuthenticated
-                                        ? '/account/my-account'
-                                        : '/'
-                                }
+                            {/* Account and authentication routes */}
+                            <Route
+                                path="/account/my-account"
                                 element={
-                                    <OrdersProvider>
-                                        <Account />
-                                    </OrdersProvider>
+                                    <ProtectedRoute
+                                        redirectPath={
+                                            isAuthenticated
+                                                ? '/account/my-account'
+                                                : '/'
+                                        }
+                                        element={
+                                            <OrdersProvider>
+                                                <Account />
+                                            </OrdersProvider>
+                                        }
+                                    />
                                 }
                             />
-                        }
-                    />
-                    <Route
-                        path="/account/reset-password"
-                        element={<ResetPassword />}
-                    />
-                    <Route
-                        path="/account/login"
-                        element={<Login isAuthenticated={isAuthenticated} />}
-                    />
-                    <Route
-                        path="/account/verification-status"
-                        element={
-                            <VerificationProvider>
-                                <VerificationStatus />
-                            </VerificationProvider>
-                        }
-                    />
-                    <Route
-                        path="/account/verify-email"
-                        element={
-                            <VerificationProvider>
-                                <VerifyEmail />
-                            </VerificationProvider>
-                        }
-                    />
-                    <Route
-                        path="/account/check-your-email"
-                        element={
-                            <VerificationProvider>
-                                {' '}
-                                <CheckYourEmail />{' '}
-                            </VerificationProvider>
-                        }
-                    />
-                    <Route
-                        path="/account/register"
-                        element={
-                            <RegisterProvider>
-                                <Register />
-                            </RegisterProvider>
-                        }
-                    />
-                    <Route
-                        path="/account/forgot-password"
-                        element={<ForgotPassword />}
-                    />
-                    <Route path="/account/sign-out" element={<SignOut />} />
+                            <Route
+                                path="/account/reset-password"
+                                element={<ResetPassword />}
+                            />
+                            <Route
+                                path="/account/login"
+                                element={
+                                    <Login isAuthenticated={isAuthenticated} />
+                                }
+                            />
+                            <Route
+                                path="/account/verification-status"
+                                element={
+                                    <VerificationProvider>
+                                        <VerificationStatus />
+                                    </VerificationProvider>
+                                }
+                            />
+                            <Route
+                                path="/account/verify-email"
+                                element={
+                                    <VerificationProvider>
+                                        <VerifyEmail />
+                                    </VerificationProvider>
+                                }
+                            />
+                            <Route
+                                path="/account/check-your-email"
+                                element={
+                                    <VerificationProvider>
+                                        {' '}
+                                        <CheckYourEmail />{' '}
+                                    </VerificationProvider>
+                                }
+                            />
+                            <Route
+                                path="/account/register"
+                                element={
+                                    <RegisterProvider>
+                                        <Register />
+                                    </RegisterProvider>
+                                }
+                            />
+                            <Route
+                                path="/account/forgot-password"
+                                element={<ForgotPassword />}
+                            />
+                            <Route
+                                path="/account/sign-out"
+                                element={<SignOut />}
+                            />
 
-                    {/* Basket */}
-                    <Route path="/shop/basket" element={<Basket />} />
-                    <Route
-                        path="/shop/checkout"
-                        element={
-                            <DiscountCodesProvider>
-                                <Checkout />
-                            </DiscountCodesProvider>
-                        }
-                    />
-                    {/* Fallback route */}
-                    <Route path="/404" element={<FourOFour />} />
-                    <Route path="*" element={<FourOFour />} />
-                </Routes>
-            </ProductsProvider>
-        </BasketProvider>
+                            {/* Basket */}
+                            <Route path="/shop/basket" element={<Basket />} />
+                            <Route
+                                path="/shop/checkout"
+                                element={<Checkout />}
+                            />
+                            <Route
+                                path="/order/confirmation/:orderId"
+                                element={<OrderConfirmation />}
+                            />
+                            {/* Fallback route */}
+                            <Route path="/404" element={<FourOFour />} />
+                            <Route path="*" element={<FourOFour />} />
+                        </Routes>
+                    </ProductsProvider>
+                </BasketProvider>
+            </CheckoutProvider>
+        </DiscountCodesProvider>
     );
 };

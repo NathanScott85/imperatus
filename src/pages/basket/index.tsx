@@ -12,6 +12,12 @@ import { useBasketContext } from '../../context/basket';
 export const Basket = () => {
     const { basket } = useBasketContext();
 
+    const calculateSubtotal = (): string => {
+        return basket
+            .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            .toFixed(2);
+    };
+
     const calculateTotal = (): string => {
         const total = basket.reduce(
             (acc, item) => acc + item.price * item.quantity,
@@ -28,12 +34,6 @@ export const Basket = () => {
     const calculateVAT = (): string => {
         const subtotal = parseFloat(calculateSubtotal());
         return (subtotal - subtotal / 1.2).toFixed(2);
-    };
-
-    const calculateSubtotal = (): string => {
-        return basket
-            .reduce((acc, item) => acc + item.price * item.quantity, 0)
-            .toFixed(2);
     };
 
     return (

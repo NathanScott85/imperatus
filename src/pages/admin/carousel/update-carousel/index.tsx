@@ -12,7 +12,10 @@ export interface CarouselDetailProps {
     onBack: () => void;
 }
 
-export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack }) => {
+export const UpdateCarousel: React.FC<CarouselDetailProps> = ({
+    carousel,
+    onBack,
+}) => {
     const { updateCarousel, deleteCarousel } = useCarouselContext();
     const { brands, fetchBrands } = useBrandsContext();
     const { products, fetchProducts } = useProductsContext();
@@ -22,9 +25,15 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
     const [buttonText, setButtonText] = useState(carousel.buttonText || '');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(carousel.brand?.id || null);
-    const [selectedProductId, setSelectedProductId] = useState<string | undefined>(carousel.product?.id || null);
-    const [disabled, setDisabled] = useState<boolean>(carousel.disabled || false);
+    const [selectedBrandId, setSelectedBrandId] = useState<string | undefined>(
+        carousel.brand?.id || null,
+    );
+    const [selectedProductId, setSelectedProductId] = useState<
+        string | undefined
+    >(carousel.product?.id || null);
+    const [disabled, setDisabled] = useState<boolean>(
+        carousel.disabled || false,
+    );
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isUpdating, setIsUpdating] = useState(false);
@@ -47,7 +56,8 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         }
     }, [selectedFile]);
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setTitle(e.target.value);
 
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         setDescription(e.target.value);
@@ -75,7 +85,7 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
 
     const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedProductId(e.target.value);
-    }
+    };
 
     const handleDisabledChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         setDisabled(e.target.checked);
@@ -84,12 +94,6 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         setError('');
         setSuccess('');
         setIsUpdating(true);
-
-        if (!title) {
-            setError('Title is required.');
-            setIsUpdating(false);
-            return;
-        }
 
         try {
             await updateCarousel(
@@ -100,7 +104,7 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                 selectedFile || null,
                 selectedBrandId,
                 selectedProductId,
-                disabled
+                disabled,
             );
 
             setSuccess('Carousel updated successfully!');
@@ -214,9 +218,7 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
                             value={selectedProductId || ''}
                             onChange={handleProductChange}
                         >
-                            <option value="">
-                                -- Select Product --
-                            </option>
+                            <option value="">-- Select Product --</option>
                             {products!?.map((product: any) => (
                                 <option key={product.id} value={product.id}>
                                     {product.name}
@@ -288,7 +290,6 @@ export const UpdateCarousel: React.FC<CarouselDetailProps> = ({ carousel, onBack
         </CarouselContainer>
     );
 };
-
 
 const CheckboxContainer = styled.div`
     display: flex;
