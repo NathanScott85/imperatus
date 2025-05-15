@@ -47,7 +47,10 @@ export const Search: React.FC<SearchProps> = ({
     return (
         <>
             {variant === 'large' && (
-                <SearchContainer variant={variant}>
+                <SearchContainer
+                    data-testid="search-component"
+                    variant={variant}
+                >
                     <Input
                         value={search}
                         name="search"

@@ -7,11 +7,12 @@ import { useAppContext } from '../../context';
 export const Login = () => {
     const { isAuthenticated } = useAppContext();
     return (
-        <LoginContainer>
-
-            {!isAuthenticated && <Link to="/account/register">
-                <RegisterUser />
-            </Link>}
+        <LoginContainer data-testid="login-component">
+            {!isAuthenticated && (
+                <Link to="/account/register">
+                    <RegisterUser />
+                </Link>
+            )}
             {isAuthenticated ? (
                 <Link to="/account/my-account">
                     <UserIcon isAuthenticated={isAuthenticated} />

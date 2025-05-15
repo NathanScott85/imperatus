@@ -33,7 +33,12 @@ const Tag = styled.span<{ $color: string }>`
 `;
 
 const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
-    return <Tag $color={getStatusColor(status)}>{formatStatus(status)}</Tag>;
+    const color = getStatusColor(status);
+    return (
+        <Tag $color={color} style={{ color }}>
+            {formatStatus(status)}
+        </Tag>
+    );
 };
 
 export default StatusTag;

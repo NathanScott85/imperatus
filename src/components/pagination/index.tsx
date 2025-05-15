@@ -48,6 +48,7 @@ export const Pagination: React.FC<Props> = ({
             <ChevronGroup>
                 {totalPages > 5 && (
                     <PaginationButton
+                        aria-label="First page"
                         onClick={() => onPageChange(1)}
                         disabled={currentPage === 1}
                     >
@@ -55,6 +56,7 @@ export const Pagination: React.FC<Props> = ({
                     </PaginationButton>
                 )}
                 <PaginationButton
+                    aria-label="Previous page"
                     onClick={handlePrev}
                     disabled={currentPage === 1}
                 >
@@ -89,6 +91,7 @@ export const Pagination: React.FC<Props> = ({
 
             <ChevronGroup>
                 <PaginationButton
+                    aria-label="Next page"
                     onClick={handleNext}
                     disabled={currentPage === totalPages}
                 >
@@ -96,6 +99,7 @@ export const Pagination: React.FC<Props> = ({
                 </PaginationButton>
                 {totalPages > 5 && (
                     <PaginationButton
+                        aria-label="Last page"
                         onClick={() => onPageChange(totalPages)}
                         disabled={currentPage === totalPages}
                     >

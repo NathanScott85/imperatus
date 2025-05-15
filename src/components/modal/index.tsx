@@ -44,6 +44,7 @@ export const Modal = ({
                     <>
                         <label htmlFor="confirmation">{label}</label>
                         <Input
+                            id="confirmation"
                             variant="secondary"
                             size="medium"
                             value={confirmationText}
@@ -74,7 +75,9 @@ export const Modal = ({
     );
 };
 
-const ModalContent = styled.div<{ preview?: boolean }>`
+const ModalContent = styled.div.withConfig({
+    shouldForwardProp: (prop) => prop !== 'preview',
+})<{ preview?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;

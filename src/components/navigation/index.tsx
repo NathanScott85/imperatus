@@ -61,6 +61,7 @@ export const Navigation = ({ background }: NavigationProps) => {
                     <React.Fragment key={item.name + index + item.id}>
                         {item.displayed && (
                             <NavigationItem
+                                data-testid="nav-item-${item.name.toLowerCase().replace(/\\s+/g, '-')}"
                                 to={item.path}
                                 end={item.path === pathname}
                             >
@@ -93,7 +94,7 @@ export const NavigationContainer = styled.nav<NavigationProps>`
 export const NavigationList = styled('ul')`
     display: flex;
     flex-direction: row;
-     justify-content: center;
+    justify-content: center;
     align-items: center;
     list-style-type: none;
     width: 100%;

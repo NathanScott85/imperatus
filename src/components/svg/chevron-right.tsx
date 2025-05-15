@@ -5,6 +5,7 @@ export const ChevronRight: React.FC<React.SVGProps<SVGSVGElement>> = (
     stroke,
 ) => (
     <svg
+        data-testid="chevron-right"
         {...props}
         width="24"
         height="24"

@@ -35,7 +35,9 @@ type BasketContextType = {
     setAppliedCode: (code: DiscountCode | null) => void;
 };
 
-const BasketContext = createContext<BasketContextType | undefined>(undefined);
+export const BasketContext = createContext<BasketContextType | undefined>(
+    undefined,
+);
 
 export const BasketProvider = ({ children }: { children: React.ReactNode }) => {
     const [basket, setBasket] = useState<BasketItem[]>(() => {

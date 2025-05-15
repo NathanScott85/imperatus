@@ -31,9 +31,10 @@ export const Dots: React.FC<DotsProps> = ({
                     {totalPages
                         ? Array.from({ length: totalPages }, (_, index) => (
                               <StyledDot
+                                  data-testid="dot"
                                   variant={variant}
                                   key={index}
-                                  active={
+                                  $active={
                                       Math.floor(
                                           (currentIndex /
                                               reviewsPerPage) as number,
@@ -49,9 +50,10 @@ export const Dots: React.FC<DotsProps> = ({
                 <DotsContainer>
                     {items?.map((item, index) => (
                         <StyledDot
+                            data-testid="dot"
                             variant={variant}
                             key={index}
-                            active={index === currentIndex}
+                            $active={index === currentIndex}
                             onClick={() => handleDotClick?.(index)}
                         />
                     ))}
@@ -62,8 +64,8 @@ export const Dots: React.FC<DotsProps> = ({
 };
 
 interface StyledDotProps {
-    active: boolean | any;
-    variant?: string | any;
+    $active: boolean;
+    variant?: string;
 }
 
 export const StyledDot = styled.div<StyledDotProps>`
@@ -71,37 +73,26 @@ export const StyledDot = styled.div<StyledDotProps>`
     height: 10px;
     margin: 0 5px;
     border-radius: 50%;
-    background-color: ${(props) => (props.active ? '#ac8fff' : 'transparent')};
+    background-color: ${(props) => (props.$active ? '#ac8fff' : 'transparent')};
     border: 1px solid #ac8fff;
     transition: all 0.3s ease-in-out;
+
     ${(props) =>
-        props.active &&
+        props.$active &&
         css`
             transform: scale(1.8);
         `}
 
-    ${({ variant, active }) =>
+    ${({ variant, $active }) =>
         variant === 'carousel' &&
         css`
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: ${active ? '#130A30' : 'transparent'};
-            border: 1px solid #ac8fff;
-            transition: all 0.3s ease-in-out;
+            background-color: ${$active ? '#130A30' : 'transparent'};
         `}
 
-        ${({ variant, active }) =>
+    ${({ variant, $active }) =>
         variant === 'reviews' &&
         css`
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            border-radius: 50%;
-            background-color: ${active ? '#130A30' : 'transparent'};
-            border: 1px solid #ac8fff;
-            transition: all 0.3s ease-in-out;
+            background-color: ${$active ? '#130A30' : 'transparent'};
         `}
 `;
 

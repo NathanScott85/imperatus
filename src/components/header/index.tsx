@@ -52,7 +52,9 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
 };
 
 export const TopHeader = () => (
-    <ContactHeader> Mon - Fri 9:00am - 5:00pm - 01234 567 890 </ContactHeader>
+    <ContactHeader data-testid="top-header">
+        Mon - Fri 9:00am - 5:00pm - 01234 567 890{' '}
+    </ContactHeader>
 );
 
 const HeaderContainer = styled.header<HeaderProps>`
