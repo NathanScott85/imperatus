@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
 import Button from '../../components/button';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowDown } from '../../components/svg/arrow';
 import { useAppContext } from '../../context';
 import { useBasketContext } from '../../context/basket';
@@ -345,11 +345,6 @@ const SectionTitle = styled.h2`
 const StaticInfo = styled.div`
     font-size: 16px;
     margin-bottom: 6px;
-`;
-
-const Option = styled.div`
-    font-size: 16px;
-    margin-bottom: 8px;
 `;
 
 const SummaryBox = styled.div`

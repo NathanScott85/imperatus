@@ -8,7 +8,7 @@ import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { MainContainer } from '../../components/styled';
 import { BreadCrumb } from '../../components/breadcrumbs';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 
 export const FourOFour = () => {
     return (

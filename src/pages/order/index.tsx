@@ -6,7 +6,6 @@ import { TopHeader, Header } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { Footer } from '../../components/footer';
-import { FancyContainer } from '../../components/fancy-container';
 import Button from '../../components/button';
 import { useAppContext } from '../../context';
 import { Login } from '../login';
