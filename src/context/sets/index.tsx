@@ -25,7 +25,7 @@ interface Sets {
     };
 }
 
-interface SetsContext {
+interface SetsContextProps {
     fetchSets: () => void;
     sets: Sets[];
     loading: boolean;
@@ -52,7 +52,7 @@ interface SetsContext {
     deleteSet: (id: string) => Promise<void>;
 }
 
-const SetsContext = createContext<SetsContext | null>(null);
+const SetsContext = createContext<SetsContextProps | null>(null);
 
 export const SetsProvider = ({ children }: { children: ReactNode }) => {
     const [sets, setSets] = useState<Sets[]>([]);

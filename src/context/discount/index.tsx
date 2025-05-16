@@ -26,7 +26,7 @@ interface DiscountCode {
     updatedAt: string;
 }
 
-interface DiscountCodesContext {
+interface DiscountCodesProps {
     discountCodes: DiscountCode[];
     fetchDiscountCodes: () => void;
     createDiscountCode: (input: {
@@ -70,7 +70,7 @@ interface DiscountCodesContext {
     resetPagination: () => void;
 }
 
-const DiscountCodesContext = createContext<DiscountCodesContext | null>(null);
+const DiscountCodesContext = createContext<DiscountCodesProps | null>(null);
 
 export const DiscountCodesProvider = ({
     children,

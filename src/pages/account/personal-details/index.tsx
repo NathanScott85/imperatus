@@ -190,17 +190,17 @@ const AccountDetailsSection = styled.div`
     }
 `;
 
-const BirthdayContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
+// const BirthdayContainer = styled.div`
+//     display: flex;
+//     flex-direction: column;
+// `;
 
-const BirthdayWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 1.6rem;
-    justify-content: space-evenly;
-`;
+// const BirthdayWrapper = styled.div`
+//     display: flex;
+//     flex-direction: row;
+//     gap: 1.6rem;
+//     justify-content: space-evenly;
+// `;
 
 const Label = styled.label`
     display: flex;

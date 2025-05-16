@@ -5,7 +5,7 @@ import { LogoDragon } from '../svg/logo';
 import { mediaQueries } from '../../styled/breakpoints';
 
 export const ImperatusLink = () => (
-    <ImperatusLinkContainer to="/">
+    <ImperatusLinkContainer data-testid="imperatus-link" to="/">
         <LogoDragon />
     </ImperatusLinkContainer>
 );

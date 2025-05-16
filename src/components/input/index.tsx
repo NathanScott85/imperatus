@@ -11,15 +11,15 @@ interface InputProps {
     placeholder?: string;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     variant?:
-    | 'search'
-    | 'primary'
-    | 'text'
-    | 'none'
-    | 'secondary'
-    | 'birthday'
-    | 'description'
-    | 'upload'
-    | 'small';
+        | 'search'
+        | 'primary'
+        | 'text'
+        | 'none'
+        | 'secondary'
+        | 'birthday'
+        | 'description'
+        | 'upload'
+        | 'small';
     className?: string;
     name?: string;
     value?: number | undefined | string;
@@ -80,7 +80,9 @@ export const Input = forwardRef<
                             required={required}
                             onKeyDown={onKeyDown}
                         />
-                        <UploadButton onClick={onClick}>Upload Image</UploadButton>
+                        <UploadButton onClick={onClick}>
+                            Upload Image
+                        </UploadButton>
                     </ImageUploadWrapper>
                 </Wrapper>
             );
@@ -119,8 +121,15 @@ export const Input = forwardRef<
                         required={required}
                         onKeyDown={onKeyDown}
                     />
-                    <ToggleButton type="button" onClick={togglePasswordVisibility}>
-                        {isPasswordVisible ? <Eye show={isPasswordVisible} /> : <Eye />}
+                    <ToggleButton
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                    >
+                        {isPasswordVisible ? (
+                            <Eye show={isPasswordVisible} />
+                        ) : (
+                            <Eye />
+                        )}
                     </ToggleButton>
                 </PasswordWrapper>
             );
@@ -192,7 +201,9 @@ const ToggleButton = styled.button`
     z-index: 100;
 `;
 
-const StyledInput = styled.input<InputProps>`
+const StyledInput = styled.input.withConfig({
+    shouldForwardProp: (prop) => prop !== 'radio' && prop !== 'variant',
+})<InputProps>`
     ${({ radio }) =>
         radio &&
         css`
@@ -328,8 +339,7 @@ const StyledInput = styled.input<InputProps>`
 
             text-indent: 5px;
             width: 90px;
-        `
-    }
+        `}
 
     ${({ variant }) =>
         variant === 'small' &&
@@ -357,8 +367,7 @@ const StyledInput = styled.input<InputProps>`
                 font-size: 12px;
                 padding-left: 5px;
             }
-        `
-    }
+        `}
 
     ${({ variant }) =>
         variant === 'secondary' &&
@@ -371,7 +380,7 @@ const StyledInput = styled.input<InputProps>`
             border: 1px solid rgba(172, 143, 255, 0.5);
             background-color: transparent;
             color: white;
-    
+
             &:focus {
                 outline: none;
                 border: 1px solid #c79d0a;
@@ -384,15 +393,13 @@ const StyledInput = styled.input<InputProps>`
 
             text-indent: 5px;
             width: 325px;
-        `
-    }
+        `}
 
     ${({ variant }) =>
         variant === 'upload' &&
         css`
             display: none;
-        `
-    }
+        `}
     &:-webkit-autofill {
         -webkit-box-shadow: 0 0 0 1000px #130a30 inset !important;
         -webkit-text-fill-color: white !important;

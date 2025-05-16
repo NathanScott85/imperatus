@@ -75,13 +75,6 @@ const StyledModalContent = styled.div`
     gap: 1rem;
 `;
 
-const DeliveryTitle = styled.h3`
-    font-family: Cinzel;
-    font-size: 24px;
-    color: white;
-    margin-bottom: 1rem;
-`;
-
 const DeliveryContainer = styled.div`
     display: flex;
     flex-direction: row;

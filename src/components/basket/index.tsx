@@ -69,7 +69,7 @@ export const Basket = () => {
         return Array.from({ length: listLength }).map((_, i) => {
             if (removedItem && removedItem.index === i) {
                 return (
-                    <UndoBar>
+                    <UndoBar key={`undo-${i}`}>
                         <div>
                             <RemovedLabel>Removed</RemovedLabel>
                             <p>{removedItem.name}</p>
@@ -112,14 +112,19 @@ export const Basket = () => {
                             £{(item.price * item.quantity).toFixed(2)}
                         </Price>
                     </div>
-                    <Remove onClick={() => handleRemove(item, i)}>✕</Remove>
+                    <Remove
+                        data-testid="remove-item"
+                        onClick={() => handleRemove(item, i)}
+                    >
+                        ✕
+                    </Remove>
                 </PreviewItem>
             );
         });
     };
 
     return (
-        <BasketWrapper ref={ref}>
+        <BasketWrapper data-testid="basket-component" ref={ref}>
             <BasketContainer onClick={() => setOpen((prev) => !prev)}>
                 {totalItems > 0 ? (
                     <BasketIcon type="full" />

@@ -28,7 +28,7 @@ export const GrowthRate: React.FC<GrowthRateProps> = ({
             {lastMonth !== 0 && (
                 <>
                     <p>Compared to last month:</p>
-                    <GrowthRateStatValue increase={percentageDifference > 0}>
+                    <GrowthRateStatValue $increase={percentageDifference > 0}>
                         {percentageDifference.toFixed(2)}%
                     </GrowthRateStatValue>
                     <PercentageIncrease
@@ -73,12 +73,12 @@ const GrowthRateTitle = styled.h2`
     line-height: normal;
 `;
 
-const GrowthRateStatValue = styled.div<{ increase: boolean }>`
+const GrowthRateStatValue = styled.div<{ $increase: boolean }>`
     font-size: 18px;
     font-family: Cinzel;
     font-size: 18px;
     font-style: normal;
     font-weight: bold;
     line-height: normal;
-    color: ${(props) => (props.increase ? '#15B170' : '#E74949')};
+    color: ${(props) => (props.$increase ? '#15B170' : '#E74949')};
 `;
