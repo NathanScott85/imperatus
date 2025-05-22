@@ -241,8 +241,6 @@ export const AddProduct = () => {
                 stock: {
                     amount: Number(stock.amount),
                     sold: 0,
-                    instock: stock.instock,
-                    soldout: stock.soldout,
                     preorder: stock.preorder,
                 },
                 preorder: stock.preorder,

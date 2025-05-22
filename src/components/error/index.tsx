@@ -5,7 +5,7 @@ import { Header, TopHeader } from '../header';
 import { BreadCrumb } from '../breadcrumbs';
 import { Navigation } from '../navigation';
 import { FancyContainer } from '../fancy-container';
-import Reviews from '../reviews';
+// import Reviews from '../reviews';
 import { Footer } from '../footer';
 import { HomeIcon } from '../svg/home';
 import { Link } from 'react-router-dom';
@@ -34,7 +34,6 @@ export const Error = ({ error }: any) => {
             </ErrorMain>
             <Footer />
         </>
-
     );
 };
 
@@ -62,13 +61,13 @@ const ErrorMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
-const ErrorMessage = styled.span`
-    color: red;
-    font-family: Cinzel;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: bold;
-`;
+// const ErrorMessage = styled.span`
+//     color: red;
+//     font-family: Cinzel;
+//     font-size: 14px;
+//     font-style: normal;
+//     font-weight: bold;
+// `;
 
 const FancyContainerSubWrapper = styled.div`
     display: flex;
