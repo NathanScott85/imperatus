@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -11,14 +11,35 @@ import { useAppContext } from '../../context';
 import { useBasketContext } from '../../context/basket';
 import { useCheckoutContext } from '../../context/checkout';
 import { LoginSection } from './login-section';
+import { Stripe } from '../../components/payments/stripe';
+import {
+    Elements,
+    CardElement,
+    useStripe,
+    useElements,
+} from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Icon as StripeLogo } from '../../components/svg/stripe';
+import { usePaymentContext } from '../../context/payments';
+
+const stripePromise = loadStripe(
+    process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '',
+);
 
 export const Checkout = () => {
     const { user, isAuthenticated } = useAppContext();
     const { basket, clearBasket, discountCode, discountValue } =
         useBasketContext();
+    const [showStripeForm, setShowStripeForm] = useState(false);
+    const [paymentError, setPaymentError] = useState<string | null>(null);
+    const stripeFormRef = useRef<HTMLFormElement>(null);
     const navigate = useNavigate();
     const { createOrder, isFirstOrder, fetchIsFirstOrder } =
         useCheckoutContext();
+    const { clientSecret, fetchClientSecret, clearClientSecret } =
+        usePaymentContext();
+    const stripe = useStripe();
+    const elements = useElements();
 
     const calculateSubtotal = (): string => {
         return basket
@@ -56,9 +77,38 @@ export const Checkout = () => {
         return discounted.toFixed(2);
     };
 
-    const handleCheckout = async () => {
-        if (!user) return;
+    const handleCheckout = async (billingDetails: {
+        name: string;
+        email: string;
+        address: string;
+        city: string;
+        postcode: string;
+        phone: string;
+    }) => {
         const response = await createOrder({
+            ...billingDetails,
+            shippingCost: 0,
+            items: basket.map((item) => ({
+                productId: Number(item.productId),
+                quantity: item.quantity,
+                price: item.price,
+            })),
+            discountCode: isFirstOrder ? undefined : discountCode,
+        });
+
+        if (response.success && response.order) {
+            clearBasket();
+            await fetchIsFirstOrder(billingDetails.email);
+            navigate(`/order/confirmation/${response.order.id}`);
+        } else {
+            setPaymentError('Order creation failed after payment');
+        }
+    };
+
+    const handleStripeSelect = async () => {
+        if (!user) return;
+
+        await fetchClientSecret({
             email: user.email,
             name: user.fullname || '',
             address: user.address || '',
@@ -72,20 +122,62 @@ export const Checkout = () => {
                 price: item.price,
             })),
             discountCode: isFirstOrder ? undefined : discountCode,
+            orderId: 0,
         });
-        // console.log(response, 'response');
-        if (response.success) {
-            clearBasket();
-            if (response.order?.firstOrder) {
-                await fetchIsFirstOrder(user.email);
-            }
-            if (response.order) {
-                navigate(`/order/confirmation/${response.order.id}`);
-            }
-        } else {
-            console.error('Checkout failed:', response.message);
+
+        setShowStripeForm(true);
+        setPaymentError(null);
+    };
+
+    const handleStripePayment = async (billingDetails: {
+        name: string;
+        email: string;
+        address: string;
+        city: string;
+        postcode: string;
+        phone: string;
+    }) => {
+        if (!stripe || !elements) {
+            setPaymentError('Stripe is not ready');
+            return;
+        }
+
+        const card = elements.getElement(CardElement);
+        if (!card) {
+            setPaymentError('Card information is missing');
+            return;
+        }
+        console.log('CardElement:', card);
+
+        const result = await stripe.confirmCardPayment(clientSecret || '', {
+            payment_method: {
+                card,
+                billing_details: {
+                    name: billingDetails.name,
+                    email: billingDetails.email,
+                    address: {
+                        line1: billingDetails.address,
+                        city: billingDetails.city,
+                        postal_code: billingDetails.postcode,
+                    },
+                    phone: billingDetails.phone,
+                },
+            },
+        });
+
+        if (result.error) {
+            setPaymentError(result.error.message || 'Payment failed');
+            return;
+        }
+
+        if (result.paymentIntent?.status === 'succeeded') {
+            await handleCheckout(billingDetails);
+            setShowStripeForm(false);
+            clearClientSecret();
         }
     };
+
+    console.log('clientSecret:', clientSecret);
 
     return (
         <>
@@ -125,24 +217,20 @@ export const Checkout = () => {
                                                 Delivery Address
                                             </SectionTitle>
                                             <StaticInfo>
-                                                {user.fullname ||
-                                                    'Not provided'}
+                                                {user.fullname}
                                             </StaticInfo>
                                             <StaticInfo>
-                                                {user.address || 'Not provided'}
+                                                {user.address}
                                             </StaticInfo>
+                                            <StaticInfo>{user.city}</StaticInfo>
                                             <StaticInfo>
-                                                {user.city || 'Not provided'}
-                                            </StaticInfo>
-                                            <StaticInfo>
-                                                {user.postcode ||
-                                                    'Not provided'}
+                                                {user.postcode}
                                             </StaticInfo>
                                             <StaticInfo>
                                                 United Kingdom
                                             </StaticInfo>
                                             <StaticInfo>
-                                                {user.phone || 'Not provided'}
+                                                {user.phone}
                                             </StaticInfo>
                                         </Section>
                                         <Section>
@@ -150,7 +238,49 @@ export const Checkout = () => {
                                                 Payment options
                                             </SectionTitle>
                                             <StaticInfo>
-                                                Payment Method Here:
+                                                <p>Payment Method:</p>
+                                                <StripeLogo
+                                                    onClick={handleStripeSelect}
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                    }}
+                                                />
+                                                {showStripeForm &&
+                                                    clientSecret && (
+                                                        <Elements
+                                                            stripe={
+                                                                stripePromise
+                                                            }
+                                                        >
+                                                            <Stripe
+                                                                ref={
+                                                                    stripeFormRef
+                                                                }
+                                                                onSubmit={
+                                                                    handleStripePayment
+                                                                }
+                                                                error={
+                                                                    paymentError
+                                                                }
+                                                                loading={false}
+                                                                initialData={{
+                                                                    name: user.fullname,
+                                                                    email: user.email,
+                                                                    address:
+                                                                        user.address,
+                                                                    city: user.city,
+                                                                    postcode:
+                                                                        user.postcode,
+                                                                    phone: user.phone,
+                                                                }}
+                                                            />
+                                                        </Elements>
+                                                    )}
+                                                {paymentError && (
+                                                    <ErrorMessage>
+                                                        {paymentError}
+                                                    </ErrorMessage>
+                                                )}
                                             </StaticInfo>
                                         </Section>
                                     </>
@@ -160,7 +290,6 @@ export const Checkout = () => {
                                     </LeftSection>
                                 )}
                             </LeftSection>
-
                             <RightSection>
                                 <SummaryBox>
                                     <SummaryTitle>Your Order</SummaryTitle>
@@ -179,7 +308,7 @@ export const Checkout = () => {
                                     ))}
                                     <Divider />
                                     <SummaryRow>
-                                        <span>Original Subtotal:</span>
+                                        <span>Subtotal:</span>
                                         <span>£{calculateSubtotal()}</span>
                                     </SummaryRow>
                                     <SummaryRow>
@@ -213,11 +342,23 @@ export const Checkout = () => {
                                         <span>Total to Pay:</span>
                                         <span>£{calculateTotal()}</span>
                                     </SummaryTotal>
-
                                     <ButtonWrapper>
                                         {isAuthenticated ? (
                                             <Button
-                                                onClick={handleCheckout}
+                                                onClick={() =>
+                                                    user &&
+                                                    handleCheckout({
+                                                        name:
+                                                            user.fullname || '',
+                                                        email: user.email,
+                                                        address:
+                                                            user.address || '',
+                                                        city: user.city || '',
+                                                        postcode:
+                                                            user.postcode || '',
+                                                        phone: user.phone || '',
+                                                    })
+                                                }
                                                 variant="primary"
                                                 size="small"
                                                 label="Confirm Order"
@@ -345,6 +486,13 @@ const SectionTitle = styled.h2`
 const StaticInfo = styled.div`
     font-size: 16px;
     margin-bottom: 6px;
+    p {
+        font-size: 16px;
+    }
+    svg {
+        width: 48px;
+        height: 48px;
+    }
 `;
 
 const SummaryBox = styled.div`
@@ -430,4 +578,10 @@ const PromptText = styled.div`
     font-size: 14px;
     font-weight: bold;
     margin-top: 0.5rem;
+`;
+
+const ErrorMessage = styled.div`
+    color: #ff4d4f;
+    margin-top: 10px;
+    font-weight: bold;
 `;

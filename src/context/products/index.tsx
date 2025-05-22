@@ -36,6 +36,8 @@ export interface ProductFilters {
 
 interface Product {
     id: number;
+    productId?: number;
+    quantity?: number;
     name: string;
     price: number;
     slug: string;
@@ -314,6 +316,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({
                 const stock = {
                     amount: variables.stockAmount,
                     sold: variables.stockSold,
+                    preorder: variables.preorder,
                 };
 
                 const { data } = await updateProductMutation({

@@ -1,7 +1,7 @@
 import React from 'react';
 
-export const Icon = () => (
-    <svg width="226" height="167" viewBox="0 0 226 167" fill="none">
+export const Icon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg {...props} width="226" height="167" viewBox="0 0 226 167" fill="none">
         <g filter="url(#filter0_d_353_4444)">
             <rect
                 x="21.3229"

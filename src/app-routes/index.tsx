@@ -51,6 +51,13 @@ import { BasketProvider } from '../context/basket';
 import { DiscountCodesProvider } from '../context/discount';
 import { CheckoutProvider } from '../context/checkout';
 import { OrderConfirmation } from '../pages/order';
+import { PaymentProvider } from '../context/payments';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
+const stripePromise = loadStripe(
+    process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '',
+);
 
 export const AppRoutes = () => {
     const location = useLocation();
@@ -298,7 +305,13 @@ export const AppRoutes = () => {
                             <Route path="/shop/basket" element={<Basket />} />
                             <Route
                                 path="/shop/checkout"
-                                element={<Checkout />}
+                                element={
+                                    <Elements stripe={stripePromise}>
+                                        <PaymentProvider>
+                                            <Checkout />
+                                        </PaymentProvider>
+                                    </Elements>
+                                }
                             />
                             <Route
                                 path="/order/confirmation/:orderId"
