@@ -105,11 +105,13 @@ export const Footer = () => {
                         <p>
                             Imperatus Games Ltd is a registered company in
                             England & Wales. Company Registration Number:{' '}
-                            <strong>12345678</strong>
+                            <strong>16445105</strong>
                         </p>
+                        <p>&copy; Copyright 2025 Imperatus Games Ltd</p>
                     </CompanyInfo>
                 </FooterWrapper>
             </ImageContainer>
+            <div></div>
         </FooterContainer>
     );
 };
@@ -213,6 +215,7 @@ const FooterLink = styled(Link)`
 
 const CompanyInfo = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     border-top: 1px solid #c79d0a;
@@ -224,13 +227,15 @@ const CompanyInfo = styled.div`
     p {
         font-family: Barlow;
         font-size: 1.2rem;
-        font-weight: 400;
-        margin-left: 1rem;
+        font-weight: 600;
+        margin-left: 1.2rem;
+        margin-bottom: 0.25rem;
     }
 
     strong {
-        color: #c79d0a;
+        color: white;
         font-size: 1.2rem;
-        font-weight: 400;
+
+        font-weight: 600;
     }
 `;
