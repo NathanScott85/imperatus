@@ -56,7 +56,7 @@ export const Basket = () => {
                             </p>
                         </BasketHeader>
 
-                        <BasketContent>
+                        <BasketContent $isEmpty={basket.length === 0}>
                             {basket.length === 0 ? (
                                 <FancyContainer size="login" variant="login">
                                     <FancyContainerSubWrapper>
@@ -77,18 +77,20 @@ export const Basket = () => {
                                 </ProductList>
                             )}
                             <OrderSummaryContent>
-                                <OrderSummary
-                                    basketProductsLength={basket.reduce(
-                                        (sum, item) => sum + item.quantity,
-                                        0,
-                                    )}
-                                    calculateSubtotal={calculateSubtotal}
-                                    calculatePriceWithoutVAT={
-                                        calculatePriceWithoutVAT
-                                    }
-                                    calculateTotal={calculateTotal}
-                                    calculateVat={calculateVAT}
-                                />
+                                {basket.length > 0 ? (
+                                    <OrderSummary
+                                        basketProductsLength={basket.reduce(
+                                            (sum, item) => sum + item.quantity,
+                                            0,
+                                        )}
+                                        calculateSubtotal={calculateSubtotal}
+                                        calculatePriceWithoutVAT={
+                                            calculatePriceWithoutVAT
+                                        }
+                                        calculateTotal={calculateTotal}
+                                        calculateVat={calculateVAT}
+                                    />
+                                ) : null}
                             </OrderSummaryContent>
                         </BasketContent>
                     </BasketSection>
@@ -179,12 +181,13 @@ export const WishlistSection = styled.section`
     border-radius: 8px;
 `;
 
-export const BasketContent = styled.div`
+export const BasketContent = styled.div<{ $isEmpty?: boolean }>`
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: ${({ $isEmpty }) => ($isEmpty ? 'column' : 'row')};
+    justify-content: ${({ $isEmpty }) =>
+        $isEmpty ? 'center' : 'space-between'};
+    align-items: ${({ $isEmpty }) => ($isEmpty ? 'center' : 'flex-start')};
+    min-height: 300px;
 `;
 
 const OrderSummaryContent = styled.div`
