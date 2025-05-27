@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
     AdminDivider,
-    // AdminIcon,
+    AdminIcon,
     Cart,
     // Pie,
     SquareShapes,
@@ -268,10 +268,10 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
             <BottomContainer>
                 <AdminDivider />
                 <BottomMenu>
-                    {/* <MenuItem onClick={() => toggleMenu( 'Settings' )}>
+                    <MenuItem onClick={() => toggleMenu('Settings')}>
                         <AdminIcon />
                         SETTINGS
-                    </MenuItem> */}
+                    </MenuItem>
                     <StyledLink onClick={logout} to="/account/sign-out">
                         <SignOut />
                         LOGOUT

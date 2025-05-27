@@ -54,6 +54,11 @@ import { OrderConfirmation } from '../pages/order';
 import { PaymentProvider } from '../context/payments';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { useApplicationSettings } from '../context/settings';
+import { ComingSoon } from '../pages/coming-soon';
+import Maintenance from '../pages/maintenance';
+import { AdminLogin } from '../pages/login/admin-login';
+import { NotAuthorized } from '../pages/not-authorized';
 
 const stripePromise = loadStripe(
     process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '',
@@ -62,7 +67,17 @@ const stripePromise = loadStripe(
 export const AppRoutes = () => {
     const location = useLocation();
     const { isAuthenticated, isAdminOrOwner } = useAppContext();
+    const { pathname } = useLocation();
+    const isAdminRoute =
+        pathname.startsWith('/account/admin') || pathname === '/admin/login';
+    const { settings, loading } = useApplicationSettings();
 
+    if (loading) return null;
+
+    if (!isAdminRoute) {
+        if (settings?.maintenance) return <Maintenance />;
+        if (settings?.comingSoon) return <ComingSoon />;
+    }
     return (
         <DiscountCodesProvider>
             <CheckoutProvider>
@@ -77,6 +92,19 @@ export const AppRoutes = () => {
                                         <Home />
                                     </CarouselProvider>
                                 }
+                            />
+
+                            <Route
+                                path="/admin/login"
+                                element={
+                                    <AdminLogin
+                                        isAuthenticated={isAuthenticated}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="/not-authorized"
+                                element={<NotAuthorized />}
                             />
 
                             {/* Admin Route with CarouselProvider nested */}
