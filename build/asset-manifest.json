@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.js": "/static/js/main.f76659f7.js",
+    "static/js/453.28dbb011.chunk.js": "/static/js/453.28dbb011.chunk.js",
+    "static/media/footer-bg.png": "/static/media/footer-bg.c06d19334c364d6a3fe1.png",
+    "static/media/0_71.png": "/static/media/0_71.4124a3ce544d3fade1a1.png",
+    "static/media/discount-image.png": "/static/media/discount-image.f65f6117bf103be050f4.png",
+    "static/media/Infinite-forbidden.png": "/static/media/Infinite-forbidden.679613f0cec0c3644958.png",
+    "static/media/devil-pig.png": "/static/media/devil-pig.2507c49f3e2258f85714.png",
+    "static/media/pokemon-obsidian.jpg": "/static/media/pokemon-obsidian.d4f044e974e446797a13.jpg",
+    "static/media/game-works.png": "/static/media/game-works.4bb6c4bb82e656519a9f.png",
+    "static/media/hasbro.png": "/static/media/hasbro.f2b138911d3b9a777313.png",
+    "static/media/squiggle.png": "/static/media/squiggle.fbe8b00dfdb9d0143ecb.png",
+    "index.html": "/index.html",
+    "main.f76659f7.js.map": "/static/js/main.f76659f7.js.map",
+    "453.28dbb011.chunk.js.map": "/static/js/453.28dbb011.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.f76659f7.js"
+  ]
+}
