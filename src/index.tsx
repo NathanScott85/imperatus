@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './apollo-client';
+import { ApplicationSettingsProvider } from './context/settings';
 
 if (process.env.NODE_ENV === 'development') {
     const whyDidYouRender = require('@welldone-software/why-did-you-render');
@@ -25,7 +26,9 @@ root.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
             <BrowserRouter>
-                <App />
+                <ApplicationSettingsProvider>
+                    <App />
+                </ApplicationSettingsProvider>
             </BrowserRouter>
         </ApolloProvider>
     </React.StrictMode>,
