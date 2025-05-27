@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
-import { Cart, Heart, Van } from '../../components/svg';
+import { Cart, Van } from '../../components/svg';
 import Button from '../../components/button';
 import { Input } from '../../components/input';
 import { Footer } from '../../components/footer';
@@ -11,13 +11,19 @@ import { ProductDescription } from './product-page-description';
 import { BreadCrumb } from '../../components/breadcrumbs';
 import { useProductsContext } from '../../context/products';
 import { Loading } from '../loading';
+import { useBasketContext } from '../../context/basket';
 
 export const ProductPage: React.FC = () => {
     const { productid } = useParams<{ productid: string }>();
+    const [quantity, setQuantity] = useState(1);
     const location = useLocation();
     const navigate = useNavigate();
-    const { product, setProduct, fetchProductById, loading, error } = useProductsContext(); 
+    const { product, setProduct, fetchProductById, loading, error } =
+        useProductsContext();
+    const { addToBasket } = useBasketContext();
+
     const hasFetched = useRef(false);
+    console.log(product, 'product');
     useEffect(() => {
         if (location.state?.product) {
             setProduct(location.state.product);
@@ -35,6 +41,13 @@ export const ProductPage: React.FC = () => {
         return null;
     }
 
+    const increase = () => setQuantity((q) => q + 1);
+    const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+    const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(e.target.value);
+        if (!isNaN(value) && value > 0) setQuantity(value);
+    };
+    console.log(product, 'product');
     return (
         <>
             <TopHeader />
@@ -45,40 +58,94 @@ export const ProductPage: React.FC = () => {
                 <ProductContentSection>
                     <div>
                         <ProductImageWrapper>
-                            <ProductImage src={product?.img?.url} alt={product.name} />
+                            <ProductImage
+                                src={product?.img?.url}
+                                alt={product.name}
+                            />
                         </ProductImageWrapper>
                         <ProductImageSmallWrapper>
-                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
-                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
-                            <ProductImageSmall src={product?.img?.url} alt={product.name} />
+                            <ProductImageSmall
+                                src={product?.img?.url}
+                                alt={product.name}
+                            />
+                            <ProductImageSmall
+                                src={product?.img?.url}
+                                alt={product.name}
+                            />
+                            <ProductImageSmall
+                                src={product?.img?.url}
+                                alt={product.name}
+                            />
                         </ProductImageSmallWrapper>
                     </div>
                     <ProductContent>
                         <h1>{product.name}</h1>
                         <ProductPriceWrapper>
-                            <ProductPrice>£{product.price.toFixed(2)}</ProductPrice>
-                            {product.rrp && <StyledRRP>RRP £{product.rrp.toFixed(2)}</StyledRRP>}
+                            <ProductPrice>
+                                £{product.price.toFixed(2)}
+                            </ProductPrice>
+                            {product.rrp && (
+                                <StyledRRP>
+                                    RRP £{product.rrp.toFixed(2)}
+                                </StyledRRP>
+                            )}
                             <StyledRRP>19.60% OFF</StyledRRP>
                         </ProductPriceWrapper>
                         <CartContainer>
                             <CartWrapper>
-                                <Cart stroke='black' />
+                                <Cart stroke="black" />
                             </CartWrapper>
-                            <p>In Stock</p>
+                            {(product.stock?.amount ?? 0) > 0 ? (
+                                <p>In Stock</p>
+                            ) : (
+                                <p>Sold out</p>
+                            )}
                         </CartContainer>
                         <CartContainer>
                             <CartWrapper>
-                                <Van stroke='black' />
+                                <Van stroke="black" />
                             </CartWrapper>
-                            <p>Dispatched day before release, together with all other items in your order. More info</p>
+                            <p>
+                                Dispatched day before release, together with all
+                                other items in your order.
+                            </p>
                         </CartContainer>
                         <TitleAndStockContainer>
                             <StockContainer>
-                                <ProductControls>+</ProductControls>
-                                <Input type="number" />
-                                <ProductControls>-</ProductControls>
+                                <ButtonGroup>
+                                    <ArrowButton onClick={decrease}>
+                                        −
+                                    </ArrowButton>
+                                    <Input
+                                        type="number"
+                                        name={`quantity-${product.id}`}
+                                        id={`quantity-${product.id}`}
+                                        label="Quantity"
+                                        variant="secondary"
+                                        size="small"
+                                        value={String(quantity)}
+                                        onChange={handleQuantityChange}
+                                    />
+                                    <ArrowButton onClick={increase}>
+                                        +
+                                    </ArrowButton>
+                                </ButtonGroup>
+
                                 <span>
-                                    <Button variant="primary" size="small" label="add to cart" />
+                                    <Button
+                                        variant="primary"
+                                        size="small"
+                                        label="add to cart"
+                                        onClick={() =>
+                                            addToBasket({
+                                                productId: product.id,
+                                                name: product.name,
+                                                price: product.price,
+                                                quantity,
+                                                img: product.img,
+                                            })
+                                        }
+                                    />
                                 </span>
                             </StockContainer>
                         </TitleAndStockContainer>
@@ -91,6 +158,26 @@ export const ProductPage: React.FC = () => {
     );
 };
 
+const ButtonGroup = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    input {
+        width: 45px;
+        height: 35px;
+        text-align: center;
+        font-size: 1.2rem;
+        color: black;
+        border-radius: 4px;
+        padding: 0.75rem;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+`;
 
 const TitleAndStockContainer = styled.div`
     display: flex;
@@ -98,13 +185,22 @@ const TitleAndStockContainer = styled.div`
     width: 100%;
 `;
 
-const ProductControls = styled.span`
-    width: 25px;
-    height: 25px;
+const ArrowButton = styled.button`
+    background-color: #d4b05f;
+    color: white;
+    font-weight: 600;
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
     border-radius: 4px;
-    font-size: 34px;
-    text-align: center;
-    background: #d9d9d9;
+    cursor: pointer;
+    border: 2px solid #d4b05f;
+
+    &:hover {
+        background-color: #c79d0a;
+        border: 2px solid #c79d0a;
+        color: black;
+    }
 `;
 
 const ProductPriceWrapper = styled.div`
@@ -128,13 +224,6 @@ const StockContainer = styled.div`
         padding: 0 0.5rem;
         font-size: 1.2rem;
         cursor: pointer;
-    }
-    input {
-        width: 50px;
-        height: 25px;
-        border: 1px solid #d9d9d9;
-        margin: 0 0.5rem;
-        text-align: center;
     }
 `;
 

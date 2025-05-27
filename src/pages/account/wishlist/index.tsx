@@ -1,24 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
-import { products as initialProducts } from '../../../lib/product-mocks';
+// import { products as initialProducts } from '../../../lib/product-mocks';
 import { ProductItem } from '../../basket/product-item';
 import { FancyContainer } from '../../../components/fancy-container';
 import Button from '../../../components/button';
 
+interface Product {
+    productId: number;
+    name: string;
+    price: number;
+    quantity: number;
+    // Add other product properties as needed
+}
+
+const products: Product[] = [];
 export const Wishlist = () => {
     return (
         <WishlistSection>
             <h3>Wishlist</h3>
             <ProductList>
-                {initialProducts.length > 0 ? (
-                    initialProducts.map((product) => (
+                {products.length > 0 ? (
+                    products.map((product: Product) => (
                         <ProductItem
                             variant
-                            key={product.id}
+                            // key={product.id}
                             product={product}
-                            onRemove={() => console.log('here')}
-                            onMove={() => console.log('here')}
-                            moveLabel="Move to Basket"
+                            // onRemove={() => console.log('here')}
+                            // onMove={() => console.log('here')}
                         />
                     ))
                 ) : (

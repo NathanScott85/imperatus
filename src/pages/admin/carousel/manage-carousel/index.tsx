@@ -5,6 +5,7 @@ import { FancyContainer } from '../../../../components/fancy-container';
 import { UpdateCarousel } from '../update-carousel';
 import { Modal } from '../../../../components/modal';
 import { Search } from '../../../../components/search';
+import Pagination from '../../../../components/pagination';
 
 export const ManageCarousel = () => {
     const {
@@ -16,15 +17,19 @@ export const ManageCarousel = () => {
         search,
         setSearch,
         page,
-        setPage
+        setPage,
     } = useCarouselContext();
 
-    const [selectedCarouselPage, setSelectedCarouselPage] = useState<any | null>(null);
-    const [selectedThumbnail, setSelectedThumbnail] = useState<string | null>(null);
+    const [selectedCarouselPage, setSelectedCarouselPage] = useState<
+        any | null
+    >(null);
+    const [selectedThumbnail, setSelectedThumbnail] = useState<string | null>(
+        null,
+    );
 
     useEffect(() => {
         fetchCarousel();
-    }, [search, page]);
+    }, [search, page, fetchCarousel]);
 
     const handleViewPage = (page: any) => {
         setSelectedCarouselPage(page);
@@ -58,9 +63,15 @@ export const ManageCarousel = () => {
     };
 
     if (selectedCarouselPage) {
-        return <UpdateCarousel carousel={selectedCarouselPage} onBack={handleBackToList} />;
+        return (
+            <UpdateCarousel
+                carousel={selectedCarouselPage}
+                onBack={handleBackToList}
+            />
+        );
     }
-    const allPages = carousel?.flatMap((carouselPage: any) => carouselPage.pages) || [];
+    const allPages =
+        carousel?.flatMap((carouselPage: any) => carouselPage.pages) || [];
 
     return (
         <CarouselContainer>
@@ -69,10 +80,10 @@ export const ManageCarousel = () => {
                 <SearchContainer>
                     <Search
                         type="text"
-                        variant='small'
+                        variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        placeholder='Search Carousel'
+                        placeholder="Search Carousel"
                         onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
@@ -93,71 +104,84 @@ export const ManageCarousel = () => {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>Loading...</CenteredCell>
+                                    <CenteredCell colSpan={5}>
+                                        Loading...
+                                    </CenteredCell>
                                 </tr>
                             ) : error ? (
                                 <tr>
-                                    <CenteredCell colSpan={5}>Error: {error.message}</CenteredCell>
+                                    <CenteredCell colSpan={5}>
+                                        Error: {error.message}
+                                    </CenteredCell>
                                 </tr>
                             ) : (
-                                allPages.map((page: any, index: number) => (  // ✅ Iterate over all pages directly
-                                    <TableRow key={page.id} isOdd={index % 2 === 1}>
-                                        <td>{page.title}</td>
-                                        <td>{page.description}</td>
-                                        <td>
-                                            {page.img ? (
-                                                <Thumbnail
-                                                    src={page.img.url}
-                                                    alt={page.img.title || 'Thumbnail'}
-                                                    onClick={() => handleThumbnailClick(page.img.url)}
-                                                />
-                                            ) : (
-                                                'No Image Available'
-                                            )}
-                                        </td>
-                                        <td>
-                                            <StatusBadge isDisabled={page.disabled}>
-                                                {page.disabled ? 'Disabled' : 'Active'}
-                                            </StatusBadge>
-                                        </td>
-                                        <td>
-                                            <ViewButton onClick={() => handleViewPage(page)}>
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
+                                allPages.map(
+                                    (
+                                        page: any,
+                                        index: number, // ✅ Iterate over all pages directly
+                                    ) => (
+                                        <TableRow
+                                            key={page.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{page.title}</td>
+                                            <td>{page.description}</td>
+                                            <td>
+                                                {page.img ? (
+                                                    <Thumbnail
+                                                        src={page.img.url}
+                                                        alt={
+                                                            page.img.title ||
+                                                            'Thumbnail'
+                                                        }
+                                                        onClick={() =>
+                                                            handleThumbnailClick(
+                                                                page.img.url,
+                                                            )
+                                                        }
+                                                    />
+                                                ) : (
+                                                    'No Image Available'
+                                                )}
+                                            </td>
+                                            <td>
+                                                <StatusBadge
+                                                    isDisabled={page.disabled}
+                                                >
+                                                    {page.disabled
+                                                        ? 'Disabled'
+                                                        : 'Active'}
+                                                </StatusBadge>
+                                            </td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewPage(page)
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ),
+                                )
                             )}
                         </tbody>
                     </Table>
 
                     {totalPages > 1 && (
-                        <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(page + 1)}
-                                    disabled={page >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
                 </CarouselWrapper>
             ) : (
                 <FancyContainer>
                     <NoCarouselMessage>
                         {search ? (
-                            <p>No results found for "{search}"</p>
+                            <p>No results found for &quot;{search}&quot;</p>
                         ) : (
                             <p>No carousel pages added at the moment.</p>
                         )}
@@ -165,12 +189,14 @@ export const ManageCarousel = () => {
                 </FancyContainer>
             )}
 
-
             {selectedThumbnail && (
                 <Modal
                     title="Image Preview"
                     content={
-                        <ThumbnailPreview src={selectedThumbnail} alt="Full Preview" />
+                        <ThumbnailPreview
+                            src={selectedThumbnail}
+                            alt="Full Preview"
+                        />
                     }
                     handleCloseModal={handleCloseThumbnailModal}
                     preview
@@ -204,10 +230,16 @@ const CarouselTitle = styled.h2`
 `;
 
 const CarouselContainer = styled.div`
+    color: white;
+    display: grid;
     flex-direction: column;
-    padding: 1rem;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
 `;
-
 
 const ViewButton = styled.button`
     background-color: #4d3c7b;
@@ -228,8 +260,6 @@ const CarouselWrapper = styled.div`
     flex-direction: column;
     align-items: flex-end;
     padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -261,7 +291,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -284,7 +314,8 @@ const StatusBadge = styled.span<{ isDisabled: boolean }>`
     border: none;
     cursor: default;
     &:hover {
-        background-color: ${({ isDisabled }) => (isDisabled ? '#c0392b' : '#146b14')}; 
+        background-color: ${({ isDisabled }) =>
+            isDisabled ? '#c0392b' : '#146b14'};
     }
 `;
 
@@ -328,39 +359,4 @@ const ThumbnailPreview = styled.img`
     height: auto;
     border-radius: 8px;
     object-fit: contain;
-`;
-
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-    
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;

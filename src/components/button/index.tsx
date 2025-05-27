@@ -80,14 +80,14 @@ const getHoverStyles = (variant?: string, disabled?: boolean) => {
     }
 };
 
-const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
     label,
     onClick,
     size,
     variant,
-    pathname,
+    pathname = undefined,
     link,
-    type,
+    type = 'button',
     children,
     disabled,
 }) => (
@@ -129,7 +129,7 @@ const StyledLink = styled(Link)<ButtonProps>`
     font-weight: ${({ variant }) => getFontWeight(variant)};
     pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     &:hover {
         ${({ variant, disabled }) => getHoverStyles(variant, disabled)}
     }
@@ -149,9 +149,8 @@ const StyledButton = styled.button<{
     padding: 0.75rem;
     color: ${({ disabled }) => (disabled ? '#A9A9A9' : 'white')};
     z-index: 1;
-    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
+    // pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-
     &:hover {
         ${({ variant, disabled }) => getHoverStyles(variant, disabled)}
     }

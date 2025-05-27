@@ -10,37 +10,41 @@ export const Products = ({ products, label }: any) => {
         <>
             {(label === 'Latest Products' ||
                 label === 'Product Recommendations') && (
-                    <Section>
-                        <ProductsWrapper>
-                            <ProductsHeader>{label}</ProductsHeader>
-                            <ProductsContainer>
-                                {products && products.length > 0 ? (
-                                    products.map((product: any) => (
-                                        <Product key={product.id}
-                                            product={product}
-                                        />
-                                    ))
-                                ) : (
-                                    <NoProductsMessage>
-                                        <FancyContainer size="small" variant="filters">
-                                            <p>  No products available, please check back
-                                                later</p>
-                                        </FancyContainer>
-                                    </NoProductsMessage>
-                                )}
-                            </ProductsContainer>
-                        </ProductsWrapper>
-                    </Section>
-                )}
+                <Section>
+                    <ProductsWrapper>
+                        <ProductsHeader>{label}</ProductsHeader>
+                        <ProductsContainer>
+                            {products && products.length > 0 ? (
+                                products.map((product: any) => (
+                                    <Product
+                                        key={product.id}
+                                        product={product}
+                                    />
+                                ))
+                            ) : (
+                                <NoProductsMessage>
+                                    <FancyContainer
+                                        size="small"
+                                        variant="filters"
+                                    >
+                                        <p>
+                                            {' '}
+                                            No products available, please check
+                                            back later
+                                        </p>
+                                    </FancyContainer>
+                                </NoProductsMessage>
+                            )}
+                        </ProductsContainer>
+                    </ProductsWrapper>
+                </Section>
+            )}
             {label === undefined && (
                 <ProductsSection>
                     {products.length !== 0 ? (
                         <ProductsGrid>
                             {products.map((product: ProductType) => (
-                                <Product
-                                    key={product.id}
-                                    product={product}
-                                />
+                                <Product key={product.id} product={product} />
                             ))}
                         </ProductsGrid>
                     ) : (

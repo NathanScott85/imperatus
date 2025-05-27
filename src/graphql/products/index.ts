@@ -87,6 +87,180 @@ export const GET_ALL_PRODUCTS = gql`
     }
 `;
 
+export const GET_ALL_PREORDERS = gql`
+    query GetAllPreorders($page: Int, $limit: Int, $search: String, $filters: ProductFilters) {
+        getAllPreorders(page: $page, limit: $limit, search: $search, filters: $filters) {
+            totalCount
+            totalPages
+            currentPage
+            products {
+                id
+                name
+                price
+                slug
+                type {
+                    id
+                    name
+                }
+                rrp
+                description
+                preorder
+                category {
+                    id
+                    name
+                    description
+                    slug
+                }
+                brand {
+                    id
+                    name
+                    description
+                    img {
+                        id
+                        url
+                        key
+                        fileName
+                        contentType
+                        createdAt
+                    }
+                }
+                set {
+                    id
+                    setName
+                    setCode
+                    description
+                }
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+                stock {
+                    id
+                    amount
+                    sold
+                    instock
+                    soldout
+                    preorder
+                }
+            }
+            brands {
+                id
+                name
+                description
+                img {
+                    id
+                    url
+                    key
+                    fileName
+                    contentType
+                    createdAt
+                }
+            }
+            sets {
+                id
+                setName
+                setCode
+                description
+            }
+            rarities {
+                id
+                name
+            }
+        }
+    }
+`;
+
+export const GET_PREORDERS_BY_ID = gql`
+  query GetPreordersById($id: ID!, $page: Int, $limit: Int, $filters: ProductFilters) {
+    getPreordersById(id: $id, page: $page, limit: $limit, filters: $filters) {
+      totalCount
+      totalPages
+      currentPage
+      products {
+        id
+        name
+        price
+        rrp
+        description
+        slug
+        preorder
+        brand {
+          id
+          name
+          description
+        }
+        category {
+          id
+          name
+          slug
+          description
+          img {
+            id
+            url
+            key
+            fileName
+            contentType
+            createdAt
+          }
+        }
+        set {
+          id
+          setName
+          setCode
+          description
+        }
+        rarity {
+          id
+          name
+        }
+        img {
+          id
+          url
+          key
+          fileName
+          contentType
+          createdAt
+        }
+        stock {
+          id
+          amount
+          sold
+          instock
+          soldout
+          preorder
+        }
+      }
+      sets {
+        id
+        setName
+        setCode
+        description
+      }
+      rarities {
+        id
+        name
+      }
+      brands {
+        id
+        name
+        description
+        img {
+          id
+          url
+          key
+          fileName
+          contentType
+          createdAt
+        }
+      }
+    }
+  }
+`;
+
 export const GET_LATEST_PRODUCTS = gql`
     query GetLatestProducts {
         getLatestProducts {
@@ -252,7 +426,6 @@ export const CREATE_PRODUCT = gql`
         }
     }
 `;
-
 
 export const UPDATE_PRODUCT = gql`
     mutation UpdateProduct(

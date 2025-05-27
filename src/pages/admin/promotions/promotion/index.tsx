@@ -5,7 +5,7 @@ import { Input } from '../../../../components/input';
 import { Modal } from '../../../../components/modal';
 import { usePromotionsContext } from '../../../../context/promotions';
 
-export interface Promotion {
+export interface PromotionProps {
     id: string;
     title: string;
     description: string;
@@ -14,11 +14,14 @@ export interface Promotion {
 }
 
 export interface PromotionDetailProps {
-    promotion: Promotion;
+    promotion: PromotionProps;
     onBack: () => void;
 }
 
-export const Promotion: React.FC<PromotionDetailProps> = ({ promotion, onBack }) => {
+export const Promotion: React.FC<PromotionDetailProps> = ({
+    promotion,
+    onBack,
+}) => {
     const { updatePromotion, deletePromotion } = usePromotionsContext();
 
     const [title, setTitle] = useState(promotion.title);
@@ -77,7 +80,14 @@ export const Promotion: React.FC<PromotionDetailProps> = ({ promotion, onBack })
         }
 
         try {
-            await updatePromotion(Number(promotion.id), title, description, selectedFile, startDate, endDate);
+            await updatePromotion(
+                Number(promotion.id),
+                title,
+                description,
+                selectedFile,
+                startDate,
+                endDate,
+            );
 
             setSuccess('Promotion updated successfully!');
             clearFileInput();
@@ -194,13 +204,13 @@ export const Promotion: React.FC<PromotionDetailProps> = ({ promotion, onBack })
                     </ButtonContainer>
 
                     <ButtonContainer>
-                    <Button
-                        variant="primary"
-                        onClick={handleOpenModal}
-                        disabled={isDeleting}
-                    >
+                        <Button
+                            variant="primary"
+                            onClick={handleOpenModal}
+                            disabled={isDeleting}
+                        >
                             {isDeleting ? 'Deleting...' : 'Delete Promotion'}
-                    </Button>
+                        </Button>
                     </ButtonContainer>
 
                     {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -208,7 +218,9 @@ export const Promotion: React.FC<PromotionDetailProps> = ({ promotion, onBack })
                 </PromotionDetailsWrapper>
                 <ImagePreviewContainer>
                     <ImagePreviewTitle>Image Preview</ImagePreviewTitle>
-                    {previewUrl && <ImagePreview src={previewUrl} alt="Image preview" />}
+                    {previewUrl && (
+                        <ImagePreview src={previewUrl} alt="Image preview" />
+                    )}
                 </ImagePreviewContainer>
             </PromotionWrapper>
 
@@ -259,13 +271,6 @@ const Label = styled.label`
     font-size: 14px;
     margin-bottom: 0.5rem;
     display: block;
-`;
-
-const DeleteButton = styled(Button)`
-    background-color: #e74c3c;
-    &:hover {
-        background-color: #c0392b;
-    }
 `;
 
 const ImagePreviewContainer = styled.div`
@@ -328,6 +333,5 @@ const ImagePreview = styled.img`
     border: 1px solid #ac8fff;
     border-radius: 4px;
 `;
-
 
 export default Promotion;

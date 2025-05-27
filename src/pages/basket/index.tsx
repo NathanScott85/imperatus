@@ -1,109 +1,39 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
 import { BreadCrumb } from '../../components/breadcrumbs';
-import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
-import { products as initialProducts } from '../../lib/product-mocks';
-import { useState } from 'react';
-import { BasketHeader } from './basket-header';
 import { ProductItem } from './product-item';
 import { OrderSummary } from './summary';
-import { RadioButtonGroup } from './radio-button-group';
+import { FancyContainer } from '../../components/fancy-container';
+import { useBasketContext } from '../../context/basket';
 
 export const Basket = () => {
-    const [basketProducts, setBasketProducts] = useState(initialProducts);
-    const [wishlistProducts, setWishlistProducts] = useState(initialProducts);
-    const [activeTab, setActiveTab] = useState('Delivery');
-    const [selectedRadio, setSelectedRadio] = useState<string | null>(null);
+    const { basket } = useBasketContext();
 
-    const handleRemoveFromBasket = (id: number) => {
-        setBasketProducts(
-            basketProducts.filter((product) => product.id !== id),
-        );
-    };
-
-    // const handleRemoveFromWishlist = (id: number) => {
-    //     setWishlistProducts(
-    //         wishlistProducts.filter((product) => product.id !== id),
-    //     );
-    // };
-
-    const handleMoveToWishlist = (product: any) => {
-        if (!wishlistProducts.some((p) => p.id === product.id)) {
-            setWishlistProducts([...wishlistProducts, product]);
-        }
-        setBasketProducts(basketProducts.filter((p) => p.id !== product.id));
-    };
-
-    const handleMoveToBasket = (product: any) => {
-        if (!basketProducts.some((p) => p.id === product.id)) {
-            setBasketProducts([...basketProducts, product]);
-        }
-        setWishlistProducts(
-            wishlistProducts.filter((p) => p.id !== product.id),
-        );
-    };
-
-    const handleMoveAllToWishlist = () => {
-        const newWishlistProducts = [...wishlistProducts];
-        basketProducts.forEach((product) => {
-            if (!newWishlistProducts.some((p) => p.id === product.id)) {
-                newWishlistProducts.push(product);
-            }
-        });
-        setWishlistProducts(newWishlistProducts);
-        setBasketProducts([]);
-    };
-
-    const handleMoveAllToBasket = () => {
-        const newBasketProducts = [...basketProducts];
-        wishlistProducts.forEach((product) => {
-            if (!newBasketProducts.some((p) => p.id === product.id)) {
-                newBasketProducts.push(product);
-            }
-        });
-        setBasketProducts(newBasketProducts);
-        setWishlistProducts([]);
-    };
-
-    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedRadio(event.target.value);
-    };
-
-    const renderTabContent = () => {
-        if (activeTab === 'Delivery') {
-            return (
-                <RadioButtonGroup
-                    selectedRadio={selectedRadio}
-                    handleRadioChange={handleRadioChange}
-                />
-            );
-        } else if (activeTab === 'Click & Collect') {
-            return <p>Click & Collect content goes here.</p>;
-        }
-        return null;
-    };
     const calculateSubtotal = (): string => {
-        const subtotal = basketProducts.reduce(
-            (acc, product) => acc + product.price,
+        return basket
+            .reduce((acc, item) => acc + item.price * item.quantity, 0)
+            .toFixed(2);
+    };
+
+    const calculateTotal = (): string => {
+        const total = basket.reduce(
+            (acc, item) => acc + item.price * item.quantity,
             0,
         );
-
-        return subtotal.toFixed(2);
+        return total.toFixed(2);
     };
 
-    const calculateTotal = () => {
+    const calculatePriceWithoutVAT = (): string => {
         const subtotal = parseFloat(calculateSubtotal());
-        const delivery = 5.0;
-        const vat = (subtotal + delivery) * 0.2;
-        return (subtotal + delivery + vat).toFixed(2);
+        return (subtotal / 1.2).toFixed(2);
     };
 
-    const calculatePriceWithoutVAT = () => {
+    const calculateVAT = (): string => {
         const subtotal = parseFloat(calculateSubtotal());
-        const delivery = 5.0;
-        return (subtotal + delivery).toFixed(2);
+        return (subtotal - subtotal / 1.2).toFixed(2);
     };
 
     return (
@@ -112,89 +42,96 @@ export const Basket = () => {
             <Header background />
             <Navigation background />
             <BreadCrumb label="Basket" />
-            <StyledMainContainer>
+            <BasketContainer>
                 <CenteredContainer>
                     <BasketSection>
-                        {/* <BasketHeader
-                            title="Basket"
-                            hasProducts={basketProducts.length !== 0}
-                            onMoveAllClick={handleMoveAllToWishlist}
-                            moveAllLabel="Move to Wishlist"
-                        /> */}
-                        <BasketContent>
-                            {basketProducts.length === 0 ? (
-                                <EmptyMessage>
-                                    Your basket is empty.
-                                </EmptyMessage>
+                        <BasketHeader>
+                            <h1>Basket</h1>
+                            <p>
+                                Current Basket Total:{' '}
+                                {basket.reduce(
+                                    (sum, item) => sum + item.quantity,
+                                    0,
+                                )}
+                            </p>
+                        </BasketHeader>
+
+                        <BasketContent $isEmpty={basket.length === 0}>
+                            {basket.length === 0 ? (
+                                <FancyContainer size="login" variant="login">
+                                    <FancyContainerSubWrapper>
+                                        <p>
+                                            Your basket is empty. Please add
+                                            some products to your basket.
+                                        </p>
+                                    </FancyContainerSubWrapper>
+                                </FancyContainer>
                             ) : (
                                 <ProductList>
-                                    {basketProducts.map((product) => (
+                                    {basket.map((product) => (
                                         <ProductItem
-                                            key={product.id}
+                                            key={product.productId}
                                             product={product}
-                                            onRemove={handleRemoveFromBasket}
-                                            onMove={() =>
-                                                handleMoveToWishlist(product)
-                                            }
-                                            moveLabel="Move to Wishlist"
                                         />
                                     ))}
                                 </ProductList>
                             )}
                             <OrderSummaryContent>
-                                <OrderSummary
-                                    basketProductsLength={basketProducts.length}
-                                    calculateSubtotal={calculateSubtotal}
-                                    calculatePriceWithoutVAT={
-                                        calculatePriceWithoutVAT
-                                    }
-                                    calculateTotal={calculateTotal}
-                                    renderTabContent={renderTabContent}
-                                    activeTab={activeTab}
-                                    setActiveTab={setActiveTab}
-                                />
+                                {basket.length > 0 ? (
+                                    <OrderSummary
+                                        basketProductsLength={basket.reduce(
+                                            (sum, item) => sum + item.quantity,
+                                            0,
+                                        )}
+                                        calculateSubtotal={calculateSubtotal}
+                                        calculatePriceWithoutVAT={
+                                            calculatePriceWithoutVAT
+                                        }
+                                        calculateTotal={calculateTotal}
+                                        calculateVat={calculateVAT}
+                                    />
+                                ) : null}
                             </OrderSummaryContent>
                         </BasketContent>
                     </BasketSection>
-                    <WishlistSection>
-                        {/* <BasketHeader
-                            title="Wishlist"
-                            hasProducts={wishlistProducts.length !== 0}
-                            onMoveAllClick={handleMoveAllToBasket}
-                            moveAllLabel="Move All to Basket"
-                        /> */}
-                        {/* {wishlistProducts.length === 0 ? (
-                            <EmptyMessage>Your wishlist is empty.</EmptyMessage>
-                        ) : (
-                            <ProductList>
-                                {wishlistProducts.map((product) => (
-                                    <ProductItem
-                                        key={product.id}
-                                        product={product}
-                                        onRemove={handleRemoveFromWishlist}
-                                        onMove={() =>
-                                            handleMoveToBasket(product)
-                                        }
-                                        moveLabel="Move to Basket"
-                                    />
-                                ))}
-                            </ProductList>
-                        )} */}
-                    </WishlistSection>
                 </CenteredContainer>
-            </StyledMainContainer>
+            </BasketContainer>
             <Footer />
         </>
     );
 };
 
-export const StyledMainContainer = styled(MainContainer)`
+export const BasketContainer = styled.main`
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     color: black;
     background-color: #130a30;
+`;
+
+const BasketHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-left: 2rem;
+    h1 {
+        font-family: Cinzel;
+        font-size: 40px;
+        font-weight: 400;
+        line-height: 35.05px;
+        text-align: center;
+        color: #c79d0a;
+        padding: 1rem 1rem 1rem 0rem;
+    }
+    p {
+        font-family: Cinzel;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 29.66px;
+        text-align: center;
+        color: #c79d0a;
+        padding: 1rem 1rem 1rem 0rem;
+    }
 `;
 
 export const CenteredContainer = styled.div`
@@ -208,13 +145,33 @@ export const CenteredContainer = styled.div`
 export const BasketSection = styled.section`
     width: 100%;
     margin: 2rem;
-    border-radius: 8px;
+    background-color: #1b133d;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border: 2px solid #4d3c7b;
 `;
 
-const EmptyMessage = styled.p`
-    color: white;
+const FancyContainerSubWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-size: 18px;
+    color: white;
+
+    p {
+        margin: 0.5rem;
+        font-family: 'Cinzel', sans-serif;
+        font-size: 16px;
+    }
+
+    h1 {
+        margin: 1rem;
+        font-family: Cinzel;
+        font-size: 24px;
+    }
+    z-index: 50;
 `;
 
 export const WishlistSection = styled.section`
@@ -224,12 +181,13 @@ export const WishlistSection = styled.section`
     border-radius: 8px;
 `;
 
-export const BasketContent = styled.div`
+export const BasketContent = styled.div<{ $isEmpty?: boolean }>`
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: ${({ $isEmpty }) => ($isEmpty ? 'column' : 'row')};
+    justify-content: ${({ $isEmpty }) =>
+        $isEmpty ? 'center' : 'space-between'};
+    align-items: ${({ $isEmpty }) => ($isEmpty ? 'center' : 'flex-start')};
+    min-height: 300px;
 `;
 
 const OrderSummaryContent = styled.div`

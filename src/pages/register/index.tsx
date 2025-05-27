@@ -36,7 +36,7 @@ interface FormErrors {
 }
 
 export const Register = () => {
-    const { handleRegisterUser, loading, error, clearError } = useRegister(); // Destructure clearError
+    const { handleRegisterUser, loading, error, clearError } = useRegister();
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState<Address>({
@@ -79,17 +79,14 @@ export const Register = () => {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        // Clear context errors when user starts typing
         clearError();
 
-        // Update formData for Address
         if (name in formData) {
             setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
             }));
 
-            // Clear error for the specific field if it exists and input is valid
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 address: {
@@ -99,14 +96,12 @@ export const Register = () => {
             }));
         }
 
-        // Update formData for DateOfBirth
         if (name in dateOfBirth) {
             setDateOfBirth((prevData) => ({
                 ...prevData,
                 [name]: value,
             }));
 
-            // Clear error for dateOfBirth field if input is valid
             setErrors((prevErrors) => ({
                 ...prevErrors,
                 dateOfBirth: {
@@ -223,7 +218,9 @@ export const Register = () => {
                 });
 
                 if (user && user.id) {
-                    navigate('/account/verify-email');
+                    navigate('/account/check-your-email', {
+                        state: { userId: user.id }
+                    });
                 } else {
                     setErrors((prevErrors) => ({
                         ...prevErrors,
@@ -257,7 +254,7 @@ export const Register = () => {
                 }
             }
         } else {
-            console.log('Form validation failed');
+            console.error('Form validation failed');
         }
     };
 
@@ -306,6 +303,7 @@ export const Register = () => {
                                     type="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
+                                    showToggle
                                 />
                                 {errors.address.password && (
                                     <StyledParagraph>
@@ -320,6 +318,7 @@ export const Register = () => {
                                     type="password"
                                     value={formData.confirmPassword}
                                     onChange={handleInputChange}
+                                    showToggle
                                 />
                                 {errors.address.confirmPassword && (
                                     <StyledParagraph>

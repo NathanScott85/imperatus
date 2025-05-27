@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../../../../../components/button';
 import { Input } from '../../../../../components/input';
-import { useAdminContext } from '../../../../../context/admin';
 import { useProductTypeContext } from '../../../../../context/product-types';
 
 export interface TypeDetailProps {

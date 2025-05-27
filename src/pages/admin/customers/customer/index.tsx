@@ -102,7 +102,7 @@ export const Customer: React.FC<{
                     <Modal
                         title="Delete Account"
                         content="Deleting this account will remove all of the customer's
-                    information from our database. This cannot be undone."
+                        information from our database. This cannot be undone."
                         label='To confirm this, type "DELETE"'
                         confirmationText={confirmationText}
                         errorMessage={errorMessage}

@@ -1,74 +1,74 @@
 import { gql } from '@apollo/client';
 
 export const GET_CAROUSEL_PAGES = gql`
-  query GetCarouselPages($page: Int, $limit: Int, $search: String) {
-    getCarouselPages(page: $page, limit: $limit, search: $search) {
-      carouselPages {
-        id
-        createdAt
-        updatedAt
-        pages {
-          id
-          title
-          description
-          buttonText
-          brand {
-            id
-            name
-            description
-            img {
-              id
-              url
-              key
-              fileName
-              contentType
-              createdAt
-            }
-          }
-          disabled
-          product {
-            id
-            name
-            price
-            rrp
-            description
-            slug
-            preorder
-            category {
+    query GetCarouselPages($page: Int, $limit: Int, $search: String) {
+        getCarouselPages(page: $page, limit: $limit, search: $search) {
+            carouselPages {
                 id
-                name
-                description
-                slug
-            }
-            img {
-                id
-                url
-                key
-                fileName
-                contentType
                 createdAt
+                updatedAt
+                pages {
+                    id
+                    title
+                    description
+                    buttonText
+                    brand {
+                        id
+                        name
+                        description
+                        img {
+                            id
+                            url
+                            key
+                            fileName
+                            contentType
+                            createdAt
+                        }
+                    }
+                    disabled
+                    product {
+                        id
+                        name
+                        price
+                        rrp
+                        description
+                        slug
+                        preorder
+                        category {
+                            id
+                            name
+                            description
+                            slug
+                        }
+                        img {
+                            id
+                            url
+                            key
+                            fileName
+                            contentType
+                            createdAt
+                        }
+                    }
+                    img {
+                        id
+                        url
+                        key
+                        fileName
+                        contentType
+                        createdAt
+                    }
+                }
             }
-          }
-          img {
-            id
-            url
-            key
-            fileName
-            contentType
-            createdAt
-          }
+            totalCount
+            totalPages
+            currentPage
         }
-      }
-      totalCount
-      totalPages
-      currentPage
     }
-  }
 `;
 
 export const ADD_CAROUSEL_PAGE = gql`
     mutation CreateCarouselPage(
-        $title: String!
+        $title: String
         $description: String
         $buttonText: String
         $img: Upload!

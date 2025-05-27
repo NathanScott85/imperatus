@@ -23,7 +23,7 @@ export const SearchResults = () => {
         setFilters,
         brands,
         sets,
-        rarities
+        rarities,
     } = useProductsContext();
 
     const [filterOptions, setFilterOptions] = useState<{
@@ -52,9 +52,18 @@ export const SearchResults = () => {
     }, [fetchProducts, query, setSearch]);
 
     useEffect(() => {
-        const transformedBrands = (brands || []).map((b: any) => ({ ...b, id: Number(b.id) }));
-        const transformedSets = (sets || []).map((s: any) => ({ ...s, id: Number(s.id) }));
-        const transformedRarities = (rarities || []).map((r: any) => ({ ...r, id: Number(r.id) }));
+        const transformedBrands = (brands || []).map((b: any) => ({
+            ...b,
+            id: Number(b.id),
+        }));
+        const transformedSets = (sets || []).map((s: any) => ({
+            ...s,
+            id: Number(s.id),
+        }));
+        const transformedRarities = (rarities || []).map((r: any) => ({
+            ...r,
+            id: Number(r.id),
+        }));
         setFilterOptions({
             brands: transformedBrands,
             sets: transformedSets,
@@ -94,7 +103,7 @@ export const SearchResults = () => {
             <Navigation background />
             <ImageWrapper>
                 {search ? (
-                    <p>Search Results for "{search}"</p>
+                    <p>Search Results for &quot;{search}&quot;</p>
                 ) : (
                     <p>Please enter a search query</p>
                 )}
@@ -125,14 +134,20 @@ export const SearchResults = () => {
                                 <PaginationWrapper>
                                     <PaginationControls>
                                         <PageButton
-                                            onClick={() => handlePageChange(page - 1)}
+                                            onClick={() =>
+                                                handlePageChange(page - 1)
+                                            }
                                             disabled={page === 1}
                                         >
                                             Previous
                                         </PageButton>
-                                        <span>Page {page} of {totalPages}</span>
+                                        <span>
+                                            Page {page} of {totalPages}
+                                        </span>
                                         <PageButton
-                                            onClick={() => handlePageChange(page + 1)}
+                                            onClick={() =>
+                                                handlePageChange(page + 1)
+                                            }
                                             disabled={page >= totalPages}
                                         >
                                             Next

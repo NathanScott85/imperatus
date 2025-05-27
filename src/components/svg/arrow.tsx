@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface IconProps {
     width?: string;
     height?: string;
@@ -10,7 +12,13 @@ export interface IconProps {
 export const ArrowDown = ({ type, fill }: IconProps) => (
     <>
         {type.includes('small') && (
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg
+                data-testid="arrow-down-small"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+            >
                 <path
                     fillRule="evenodd"
                     clipRule="evenodd"
@@ -20,7 +28,13 @@ export const ArrowDown = ({ type, fill }: IconProps) => (
             </svg>
         )}
         {type.includes('medium') && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg
+                data-testid="arrow-down-medium"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+            >
                 <path
                     d="M19.5 13.5L12 21M12 21L4.5 13.5M12 21L12 3"
                     stroke="#0F172A"
@@ -31,7 +45,13 @@ export const ArrowDown = ({ type, fill }: IconProps) => (
             </svg>
         )}
         {type.includes('large') && (
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <svg
+                data-testid="arrow-down-large"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+            >
                 <path
                     fillRule="evenodd"
                     clipRule="evenodd"
@@ -46,7 +66,13 @@ export const ArrowDown = ({ type, fill }: IconProps) => (
 export const ArrowUp = ({ type, fill }: IconProps) => (
     <>
         {type.includes('small') && (
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <svg
+                data-testid="arrow-up-small"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+            >
                 <path
                     fillRule="evenodd"
                     clipRule="evenodd"
@@ -57,6 +83,7 @@ export const ArrowUp = ({ type, fill }: IconProps) => (
         )}
         {type.includes('medium') && (
             <svg
+                data-testid="arrow-up-medium"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -74,6 +101,7 @@ export const ArrowUp = ({ type, fill }: IconProps) => (
         )}
         {type.includes('large') && (
             <svg
+                data-testid="arrow-up-large"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"

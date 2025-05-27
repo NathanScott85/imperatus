@@ -11,25 +11,40 @@ export const PercentageIncrease = ({
     const increase = percentageIncrease !== null && percentageIncrease > 0;
 
     return (
-        <PercentageIncreaseContainer increase={increase}>
+        <PercentageIncreaseContainer
+            data-testid="percentage-increase"
+            $increase={increase}
+        >
             {increase ? (
                 <Container>
-                    <ArrowUp type="small" fill="#15B170" />
+                    <ArrowUp
+                        type="small"
+                        fill="#15B170"
+                        data-testid="arrow-up-small"
+                    />
                     <span>{percentageIncrease.toFixed(2)}%</span>
                 </Container>
             ) : (
                 <Container>
-                    <ArrowDown type="small" fill="red" />
-                    <span>{percentageIncrease?.toFixed(2)}%</span>
+                    <ArrowDown
+                        type="small"
+                        fill="red"
+                        data-testid="arrow-down-small"
+                    />
+                    <span>
+                        {percentageIncrease !== null
+                            ? `${percentageIncrease.toFixed(2)}%`
+                            : '0.00%'}
+                    </span>
                 </Container>
             )}
         </PercentageIncreaseContainer>
     );
 };
 
-const PercentageIncreaseContainer = styled.span<{ increase: boolean }>`
+const PercentageIncreaseContainer = styled.span<{ $increase: boolean }>`
     font-size: 14px;
-    color: ${(props) => (props.increase ? '#15b170' : '#E74949')};
+    color: ${(props) => (props.$increase ? '#15b170' : '#E74949')};
 `;
 
 const Container = styled.span`

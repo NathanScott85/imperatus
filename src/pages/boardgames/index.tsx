@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Header, TopHeader } from '../../components/header';
 import { Navigation } from '../../components/navigation';
@@ -6,7 +7,7 @@ import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
 import { generatePath, Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 
 // TODO: bring back boardgames from api
@@ -78,8 +79,8 @@ export const BoardGames = () => {
                         })}
                     </BoardGamesListContainer>
                 </BoardGamesContainer>
-                                {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
+                {/* <Reviews /> */}
+                {/* <p>Replace with Latest Products</p> */}
             </BoardgamesMain>
             <Footer />
         </>

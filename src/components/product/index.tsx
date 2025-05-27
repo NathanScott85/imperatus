@@ -3,12 +3,19 @@ import styled from 'styled-components';
 import { useParams, useLocation, NavLink } from 'react-router-dom';
 import Button from '../button';
 import { useProductsContext } from '../../context/products';
+import { useBasketContext } from '../../context/basket';
 import { ProductType } from '../../types';
 
-export const Product = ({ product: productProp }: { product?: ProductType }) => {
+export const Product = ({
+    product: productProp,
+}: {
+    product?: ProductType;
+}) => {
     const { id } = useParams<{ id: string }>();
     const location = useLocation();
-    const { product, setProduct, loading, fetchProductById } = useProductsContext();
+    const { product, setProduct, loading, fetchProductById } =
+        useProductsContext();
+    const { basket, addToBasket, removeFromBasket } = useBasketContext();
     const hasFetched = useRef(false);
 
     useEffect(() => {
@@ -20,13 +27,20 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
             hasFetched.current = true;
             fetchProductById(id);
         }
-    }, [id, productProp, setProduct, fetchProductById, location.state?.product]);
+    }, [
+        id,
+        productProp,
+        setProduct,
+        fetchProductById,
+        location.state?.product,
+    ]);
 
     const productToUse = productProp || product;
+    const isInBasket = basket.some(
+        (item) => item.productId === productToUse?.id,
+    );
 
-    if (!productToUse || loading) {
-        return <p>loading...</p>;
-    }
+    if (!productToUse || loading) return <p>loading...</p>;
 
     return (
         <ProductContainer>
@@ -36,22 +50,55 @@ export const Product = ({ product: productProp }: { product?: ProductType }) => 
                     state={{ product: productToUse }}
                 >
                     <ImageWrapper>
-                        {productToUse.img?.url && <ProductImage src={productToUse.img?.url} alt={productToUse.name} />}
+                        {productToUse.preorder && (
+                            <PreorderBadge>Pre-Order</PreorderBadge>
+                        )}
+                        {productToUse.img?.url && (
+                            <ProductImage
+                                src={productToUse.img?.url}
+                                alt={productToUse.name}
+                            />
+                        )}
                     </ImageWrapper>
                     <ProductName>{productToUse.name}</ProductName>
                     <ProductPriceWrapper>
-                        <ProductPrice>£{productToUse.price.toFixed(2)}</ProductPrice>
+                        <ProductPrice>
+                            £{productToUse.price.toFixed(2)}
+                        </ProductPrice>
                         {productToUse.rrp && (
-                            <StyledRRP>RRP £{productToUse.rrp.toFixed(2)}</StyledRRP>
+                            <StyledRRP>
+                                RRP £{productToUse.rrp.toFixed(2)}
+                            </StyledRRP>
                         )}
                     </ProductPriceWrapper>
                 </NavLink>
-                <Button label="Add to cart" variant="primary" size="small" />
+
+                {isInBasket ? (
+                    <Button
+                        label="Added to cart"
+                        variant="secondary"
+                        size="small"
+                    />
+                ) : (
+                    <Button
+                        label="Add to cart"
+                        variant="primary"
+                        size="small"
+                        onClick={() =>
+                            addToBasket({
+                                productId: productToUse.id,
+                                name: productToUse.name,
+                                price: productToUse.price,
+                                quantity: 1,
+                                img: productToUse.img,
+                            })
+                        }
+                    />
+                )}
             </ProductWrapper>
         </ProductContainer>
     );
 };
-
 
 const ProductContainer = styled.div`
     border: 1px solid #ac8fff;
@@ -76,7 +123,22 @@ const ProductWrapper = styled.div`
     }
 `;
 
+const PreorderBadge = styled.div`
+    position: absolute;
+    top: -0.75rem;
+    left: -2rem;
+    background-color: #c79d0a;
+    color: white;
+    font-family: Cinzel;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    z-index: 2;
+`;
+
 const ImageWrapper = styled.div`
+    position: relative;
     padding: 1rem;
     width: 100%;
     height: 200px;
@@ -101,8 +163,13 @@ const ProductName = styled.span`
     font-family: Barlow, sans-serif;
     font-size: 14px;
     font-weight: 600;
-    line-height: 16.8px;
+    line-height: 1.2;
     text-align: center;
+    height: 2.4em; // Enough for 2 lines
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 `;
 
 const ProductPriceWrapper = styled.div`

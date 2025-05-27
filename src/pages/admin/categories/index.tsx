@@ -1,9 +1,11 @@
-import React, { useDeferredValue, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useCategoriesContext } from '../../../context/categories';
 import { Category } from './category';
 import { FancyContainer } from '../../../components/fancy-container';
 import { Search } from '../../../components/search';
+import { useDebouncedEffect } from '../../../lib';
+import Pagination from '../../../components/pagination';
 
 export const AdminCategories = () => {
     const {
@@ -15,17 +17,27 @@ export const AdminCategories = () => {
         totalPages,
         setSearch,
         setPage,
-        search
+        search,
     } = useCategoriesContext();
 
-    const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+    interface CategoryType {
+        id: string;
+        name: string;
+        description: string;
+    }
 
+    const [selectedCategory, setSelectedCategory] =
+        useState<CategoryType | null>(null);
 
-    useEffect(() => {
-        fetchCategories();
-    }, [search, setSearch, fetchCategories,])
+    useDebouncedEffect(
+        () => {
+            fetchCategories();
+        },
+        [search, setSearch, fetchCategories],
+        1500,
+    );
 
-    const handleViewCategory = (category: any) => {
+    const handleViewCategory = (category: CategoryType) => {
         setSelectedCategory(category);
     };
 
@@ -49,7 +61,9 @@ export const AdminCategories = () => {
     };
 
     if (selectedCategory) {
-        return <Category category={selectedCategory} onBack={handleBackToList} />;
+        return (
+            <Category category={selectedCategory} onBack={handleBackToList} />
+        );
     }
 
     return (
@@ -59,78 +73,81 @@ export const AdminCategories = () => {
                 <SearchContainer>
                     <Search
                         type="text"
-                        variant='small'
+                        variant="small"
                         onSearch={triggerSearch}
                         search={search}
-                        placeholder='Search'
+                        placeholder="Search"
                         onChange={(e) => setSearch(e.target.value)}
                         handleReset={handleReset}
                     />
                 </SearchContainer>
-
             </TitleRow>
             {categories?.length !== 0 ? (
-                <CategoriesWrapper>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+                <>
+                    <CategoriesWrapper>
+                        <Table>
+                            <thead>
                                 <tr>
-                                    <CenteredCell>Loading...</CenteredCell>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>View</th>
                                 </tr>
-                            ) : error ? (
-                                <tr>
-                                    <CenteredCell>Error: {error.message}</CenteredCell>
-                                </tr>
-                            ) : (
-                                categories?.map((category: any, index: number) => (
-                                    <TableRow key={category.id} isOdd={index % 2 === 1}>
-                                        <td>{category.name}</td>
-                                        <td>{category.description}</td>
-                                        <td>
-                                            <ViewButton onClick={() => handleViewCategory(category)}>
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <CenteredCell>Loading...</CenteredCell>
+                                    </tr>
+                                ) : error ? (
+                                    <tr>
+                                        <CenteredCell>
+                                            Error: {error.message}
+                                        </CenteredCell>
+                                    </tr>
+                                ) : (
+                                    categories?.map(
+                                        (
+                                            category: CategoryType,
+                                            index: number,
+                                        ) => (
+                                            <TableRow
+                                                key={category.id}
+                                                isOdd={index % 2 === 1}
+                                            >
+                                                <td>{category.name}</td>
+                                                <td>{category.description}</td>
+                                                <td>
+                                                    <ViewButton
+                                                        onClick={() =>
+                                                            handleViewCategory(
+                                                                category,
+                                                            )
+                                                        }
+                                                    >
+                                                        View
+                                                    </ViewButton>
+                                                </td>
+                                            </TableRow>
+                                        ),
+                                    )
+                                )}
+                            </tbody>
+                        </Table>
+                    </CategoriesWrapper>
                     {totalPages > 1 && (
-                        <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {currentPage} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
-                </CategoriesWrapper>
+                </>
             ) : (
                 <ProductsContainer>
                     <FancyContainer>
                         <NoProductsMessage>
                             {search ? (
-                                <p>No results found for "{search}"</p>
+                                <p>No results found for &quot;{search}&quot;</p>
                             ) : (
                                 <p>No categories added at the moment.</p>
                             )}
@@ -142,7 +159,6 @@ export const AdminCategories = () => {
     );
 };
 
-
 const SearchContainer = styled.div`
     position: relative;
     display: flex;
@@ -153,9 +169,8 @@ const SearchContainer = styled.div`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
-
 
 const CenteredCell = styled.td`
     text-align: center;
@@ -204,42 +219,6 @@ const NoProductsMessage = styled.div`
     }
 `;
 
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    margin-left: 26rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem;
-    
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
-`;
-
 const CategoriesTitle = styled.h2`
     font-family: Cinzel, serif;
     font-size: 24px;
@@ -262,7 +241,16 @@ const ViewButton = styled.button`
 `;
 
 const CategoriesContainer = styled.div`
-         flex-direction: column;
+    color: white;
+    display: grid;
+    flex-direction: column;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+
+    width: 100%;
+    margin: 0 auto;
+
     p {
         font-size: 16px;
         color: white;
@@ -272,10 +260,11 @@ const CategoriesContainer = styled.div`
 const CategoriesWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center
     padding: 1rem;
-    border-radius: 8px;
+
     border: 1px solid #4d3c7b;
+    
     width: 100%;
 `;
 

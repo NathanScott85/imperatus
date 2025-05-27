@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
             <ImperatusLink />
             <Search
                 search={search}
-                variant='large'
+                variant="large"
                 handleReset={() => setSearch('')}
                 onChange={(e) => setSearch(e.target.value)}
                 onSearch={triggerSearch}
@@ -52,41 +52,59 @@ export const Header: React.FC<HeaderProps> = ({ background }: HeaderProps) => {
 };
 
 export const TopHeader = () => (
-    <ContactHeader> Mon - Fri 9:00am - 5:00pm - 01234 567 890 </ContactHeader>
+    <ContactHeader data-testid="top-header">
+        Mon - Fri 9:00am - 5:00pm - 01234 567 890{' '}
+    </ContactHeader>
 );
 
 const HeaderContainer = styled.header<HeaderProps>`
-    background-color: ${({ background }) => ` ${background ? '#130A30' : 'transparent'};`}
+    background-color: ${({ background }) =>
+        background ? '#130A30' : 'transparent'};
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    color: #C79D0A;
+    gap: 1rem;
     height: 62px;
     width: 100%;
-    padding: 0 1.75rem;
-    ${mediaQueries('md')`
-        width: 100%;
+    color: #c79d0a;
+    box-sizing: border-box;
+
+    ${mediaQueries('sm')`
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
     `};
-    ${mediaQueries('xl')`
-        padding-left: 0rem;
-        width: 100%;
+
+    ${mediaQueries('lg')`
+        flex-direction: row;
     `};
 `;
 
-const HeaderWrapper = styled('span')`
+const HeaderWrapper = styled.span`
     display: flex;
+    align-items: center;
+    gap: 1rem;
 `;
 
-const ContactHeader = styled('header')`
+const ContactHeader = styled.header`
     background-color: #05030f;
     display: flex;
-    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     color: #c79d0a;
-    height: 38px;
     width: 100%;
-    padding-left: 0.75rem;
-    line-height: 57px;
-    padding: 0 1.75rem;
+    padding: 0.75rem 1.75rem;
+    font-size: 0.9rem;
+
+    ${mediaQueries('md')`
+       justify-content: center;
+    `};
+
+    ${mediaQueries('xl')`
+             justify-content: flex-start;
+        font-size: 1rem;
+        height: 44px;
+    `};
 `;

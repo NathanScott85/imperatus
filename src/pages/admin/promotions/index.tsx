@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useMemo, useDeferredValue } from 'react';
+import React, { useEffect, useState, useDeferredValue } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { FancyContainer } from '../../../components/fancy-container';
 import { usePromotionsContext } from '../../../context/promotions';
 import { Promotion } from './promotion';
 import { Input } from '../../../components/input';
+import Pagination from '../../../components/pagination';
 
 export const AdminPromotions = () => {
     const {
@@ -19,7 +20,9 @@ export const AdminPromotions = () => {
         limit,
     } = usePromotionsContext();
 
-    const [selectedPromotion, setSelectedPromotion] = useState<any | null>(null);
+    const [selectedPromotion, setSelectedPromotion] = useState<any | null>(
+        null,
+    );
     const [searchQuery, setSearchQuery] = useState<string>('');
 
     const deferredSearchQuery = useDeferredValue(searchQuery);
@@ -65,7 +68,9 @@ export const AdminPromotions = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     {searchQuery && (
-                        <ClearButton onClick={() => setSearchQuery('')}>✕</ClearButton>
+                        <ClearButton onClick={() => setSearchQuery('')}>
+                            ✕
+                        </ClearButton>
                     )}
                 </SearchContainer>
             </TitleRow>
@@ -93,48 +98,47 @@ export const AdminPromotions = () => {
                                     </CenteredCell>
                                 </tr>
                             ) : (
-                                promotions?.map((promotion: any, index: number) => (
-                                    <TableRow key={promotion.id} isOdd={index % 2 === 1}>
-                                        <td>{promotion.title}</td>
-                                        <td>{promotion.description}</td>
-                                        <td>{moment(promotion.startDate).format('DD/MM/YYYY')}</td>
-                                        <td>{moment(promotion.endDate).format('DD/MM/YYYY')}</td>
-                                        <td>
-                                        <ViewButton
-                                                onClick={() =>
-                                                    handleViewPromotion(
-                                                        promotion
-                                                    )
-                                                }
-                                            >
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
+                                promotions?.map(
+                                    (promotion: any, index: number) => (
+                                        <TableRow
+                                            key={promotion.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{promotion.title}</td>
+                                            <td>{promotion.description}</td>
+                                            <td>
+                                                {moment(
+                                                    promotion.startDate,
+                                                ).format('DD/MM/YYYY')}
+                                            </td>
+                                            <td>
+                                                {moment(
+                                                    promotion.endDate,
+                                                ).format('DD/MM/YYYY')}
+                                            </td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewPromotion(
+                                                            promotion,
+                                                        )
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ),
+                                )
                             )}
                         </tbody>
                     </Table>
                     {totalPages > 1 && (
-                        <PaginationContainer>
-                            <PaginationControls>
-                                <PageButton
-                                    onClick={() => handlePageChange(page - 1)}
-                                    disabled={page === 1}
-                                >
-                                    Previous
-                                </PageButton>
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <PageButton
-                                    onClick={() => handlePageChange(page + 1)}
-                                    disabled={page >= totalPages}
-                                >
-                                    Next
-                                </PageButton>
-                            </PaginationControls>
-                        </PaginationContainer>
+                        <Pagination
+                            currentPage={page}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     )}
                 </PromotionsWrapper>
             ) : (
@@ -142,7 +146,10 @@ export const AdminPromotions = () => {
                     <FancyContainer>
                         <NoPromotionsMessage>
                             {searchQuery ? (
-                                <p>No results found for "{searchQuery}"</p>
+                                <p>
+                                    No results found for &quot;{searchQuery}
+                                    &quot;
+                                </p>
                             ) : (
                                 <p>No promotions available at the moment.</p>
                             )}
@@ -186,7 +193,15 @@ const TitleRow = styled.div`
 `;
 
 const PromotionsContainer = styled.div`
+    color: white;
+    display: grid;
     flex-direction: column;
+    padding: 2rem;
+    background-color: #160d35;
+    border: 1px solid #4d3c7b;
+    border-radius: 8px;
+    width: 100%;
+    margin: 0 auto;
     p {
         font-size: 16px;
         color: white;
@@ -250,7 +265,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -258,42 +273,6 @@ const CenteredCell = styled.td`
     color: #999;
     font-size: 14px;
     padding: 2rem 0;
-`;
-
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 26rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem 0rem 1rem 1rem;
-    
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
-    }
 `;
 
 const NoPromotionsMessage = styled.div`

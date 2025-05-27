@@ -43,29 +43,30 @@ export const ProductDescription = ({ product }: any) => {
                         <p>
                             Lorem Ipsum is simply dummy text of the printing and
                             typesetting industry. Lorem Ipsum has been the
-                            industry's standard dummy text ever since the 1500s,
-                            when an unknown printer took a galley of type and
-                            scrambled it to make a type specimen book. It has
-                            survived not only five centuries, but also the leap
-                            into electronic typesetting, remaining essentially
-                            unchanged. It was popularised in the 1960s with the
-                            release of Letraset sheets containing Lorem Ipsum
-                            passages, and more recently with desktop publishing
-                            software like Aldus PageMaker including versions of
-                            Lorem Ipsum.
+                            industry&apos;s standard dummy text ever since the
+                            1500s, when an unknown printer took a galley of type
+                            and scrambled it to make a type specimen book. It
+                            has survived not only five centuries, but also the
+                            leap into electronic typesetting, remaining
+                            essentially unchanged. It was popularised in the
+                            1960s with the release of Letraset sheets containing
+                            Lorem Ipsum passages, and more recently with desktop
+                            publishing software like Aldus PageMaker including
+                            versions of Lorem Ipsum.
                         </p>
                     </TabContent>
                 )}
                 {activeTab === 'whychooseus' && (
                     <TabContent>
                         <p>
-                            At Imperatus, we offer a diverse selection of games, 
+                            At Imperatus, we offer a diverse selection of games,
                             collectibles, and accessories, bringing together
-                            enthusiasts of all kinds. Whether you're a casual player, 
-                            a competitive strategist, or a dedicated collector, 
-                            we provide high-quality products, fair pricing, 
-                            and a community-driven experience. With a passion for gaming 
-                            at our core, we’re here to help you discover, play, and collect 
+                            enthusiasts of all kinds. Whether you&apos;re a
+                            casual player, a competitive strategist, or a
+                            dedicated collector, we provide high-quality
+                            products, fair pricing, and a community-driven
+                            experience. With a passion for gaming at our core,
+                            we’re here to help you discover, play, and collect
                             with confidence.
                         </p>
                     </TabContent>
@@ -83,8 +84,8 @@ const Diamond = styled.div<{ activeTab: string }>`
         props.activeTab === 'description'
             ? 'calc(16.66% - 7.5px)'
             : props.activeTab === 'delivery'
-                ? 'calc(50% + 20px)'
-                : 'calc(83.33% + 7.5px)'};
+              ? 'calc(50% + 20px)'
+              : 'calc(83.33% + 7.5px)'};
     width: 15px;
     height: 15px;
     background: white;

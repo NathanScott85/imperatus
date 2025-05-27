@@ -2,40 +2,42 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import {
     AdminDivider,
-    AdminIcon,
+    // AdminIcon,
     Cart,
-    Pie,
+    // Pie,
     SquareShapes,
     UserIcon,
-    Van,
+    // Van,
     SignOut,
     Percent,
     Carousel,
     Promotion,
+    Pound,
 } from '../../../components/svg';
 import { HomeIcon } from '../../../components/svg/home';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../../../context';
 import { useAdminContext } from '../../../context/admin';
 
-export const Sidebar = ( { setSelectedComponent }: any ) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const Sidebar = ({ setSelectedComponent }: any) => {
     const { logout } = useAppContext();
     const { resetPagination } = useAdminContext();
-    const [expandedMenu, setExpandedMenu] = useState<string | null>( null );
+    const [expandedMenu, setExpandedMenu] = useState<string | null>(null);
 
-    const toggleMenu = ( menu: string, defaultComponent?: string ) => {
-        setSelectedComponent( defaultComponent || menu );
-        setExpandedMenu( ( prev ) => ( prev === menu ? null : menu ) );
+    const toggleMenu = (menu: string, defaultComponent?: string) => {
+        setSelectedComponent(defaultComponent || menu);
+        setExpandedMenu((prev) => (prev === menu ? null : menu));
         resetPagination();
     };
 
     return (
         <SidebarAside>
             <Menu>
-                {/* <MenuItem onClick={() => toggleMenu( 'Overview' )}>
+                <MenuItem onClick={() => toggleMenu('Overview')}>
                     <HomeIcon />
                     OVERVIEW
-                </MenuItem> */}
+                </MenuItem>
                 {/* <MenuItem onClick={() => toggleMenu( 'Analytics' )}>
                     <Pie />
                     ANALYTICS
@@ -47,102 +49,205 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         </SubMenuItem>
                     </SubMenu>
                 )} */}
-                <MenuItem onClick={() => toggleMenu( 'Orders' )}>
-                    <Cart stroke='#C79D0A' />
+                <MenuItem onClick={() => toggleMenu('Orders')}>
+                    <Cart stroke="#C79D0A" />
                     ORDERS
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu( 'Discount' )}>
+                {expandedMenu === 'Orders' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('CreateOrder')}
+                        >
+                            ADD ORDER
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('Orders')}
+                        >
+                            MANAGE ORDERS
+                        </SubMenuItem>
+
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AddOrderStatus')
+                            }
+                        >
+                            ADD ORDER STATUS
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('OrderStatus')}
+                        >
+                            MANAGE ORDER STATUS
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem onClick={() => toggleMenu('Discount', 'AddDiscount')}>
                     <Percent />
                     DISCOUNT
                 </MenuItem>
-                <MenuItem onClick={() => toggleMenu( 'Categories', 'AddCategory' )}>
+                {expandedMenu === 'Discount' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddDiscount')}
+                        >
+                            ADD DISCOUNT CODE
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminDiscount')
+                            }
+                        >
+                            MANAGE DISCOUNT CODES
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
+                <MenuItem
+                    onClick={() => toggleMenu('Categories', 'AddCategory')}
+                >
                     <SquareShapes rotate={90} />
                     CATEGORIES
                 </MenuItem>
                 {expandedMenu === 'Categories' && (
                     <SubMenu>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCategory' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCategory')}
+                        >
                             ADD CATEGORY
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCategories' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminCategories')
+                            }
+                        >
                             MANAGE CATEGORIES
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu( 'Products', 'AddProduct' )}>
+                <MenuItem onClick={() => toggleMenu('Products', 'AddProduct')}>
                     <SquareShapes />
                     PRODUCTS
                 </MenuItem>
                 {expandedMenu === 'Products' && (
                     <SubMenu>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddProduct' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddProduct')}
+                        >
                             ADD NEW PRODUCT
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminProducts' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminProducts')
+                            }
+                        >
                             MANAGE PRODUCTS
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddProductType' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AddProductType')
+                            }
+                        >
                             ADD PRODUCT TYPE
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminProductTypes' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminProductTypes')
+                            }
+                        >
                             MANAGE PRODUCT TYPES
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddBrand' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddBrand')}
+                        >
                             ADD BRAND
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminBrands' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AdminBrands')}
+                        >
                             MANAGE BRAND
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddSet' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddSet')}
+                        >
                             ADD SET
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminSet' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AdminSet')}
+                        >
                             MANAGE SET
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddRarity' )}>
-                            ADD  RARITY
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddRarity')}
+                        >
+                            ADD RARITY
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminRarity' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AdminRarity')}
+                        >
                             MANAGE RARITY
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddVariant' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddVariant')}
+                        >
                             ADD VARIANT
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminVariant' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AdminVariant')}
+                        >
                             MANAGE VARIANT
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCardType' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCardType')}
+                        >
                             ADD CARDTYPE
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AdminCardTypes' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminCardTypes')
+                            }
+                        >
                             MANAGE CARDTYPE
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu( 'Promotions', 'AddPromotion' )}>
+                <MenuItem
+                    onClick={() => toggleMenu('Promotions', 'AddPromotion')}
+                >
                     <Promotion />
                     PROMOTIONS
                 </MenuItem>
                 {expandedMenu === 'Promotions' && (
                     <SubMenu>
-                        <SubMenuItem onClick={() => setSelectedComponent('AddPromotion')}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddPromotion')}
+                        >
                             ADD PROMOTION
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent('AdminPromotions')}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AdminPromotions')
+                            }
+                        >
                             MANAGE PROMOTIONS
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                <MenuItem onClick={() => toggleMenu('Carousel', 'AdminCarousel')}>
+                <MenuItem
+                    onClick={() => toggleMenu('Carousel', 'AdminCarousel')}
+                >
                     <Carousel />
                     CAROUSEL
                 </MenuItem>
                 {expandedMenu === 'Carousel' && (
                     <SubMenu>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'AddCarousel' )}>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddCarousel')}
+                        >
                             ADD CAROUSEL PAGE
                         </SubMenuItem>
-                        <SubMenuItem onClick={() => setSelectedComponent( 'ManageCarousel' )}>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('ManageCarousel')
+                            }
+                        >
                             MANAGE CAROUSEL
                         </SubMenuItem>
                     </SubMenu>
@@ -151,9 +256,13 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
                         <Van stroke='#C79D0A' />
                     SHIPPING
                 </MenuItem> */}
-                <MenuItem onClick={() => toggleMenu( 'Customers' )}>
+                <MenuItem onClick={() => toggleMenu('Customers')}>
                     <UserIcon />
                     CUSTOMERS
+                </MenuItem>
+                <MenuItem onClick={() => toggleMenu('VAT', 'AdminVAT')}>
+                    <Pound />
+                    VAT
                 </MenuItem>
             </Menu>
             <BottomContainer>
@@ -173,7 +282,7 @@ export const Sidebar = ( { setSelectedComponent }: any ) => {
     );
 };
 
-const StyledLink = styled( Link )`
+const StyledLink = styled(Link)`
     display: flex;
     align-items: center;
     color: white;

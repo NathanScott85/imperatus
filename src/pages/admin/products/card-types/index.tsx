@@ -5,140 +5,128 @@ import { FancyContainer } from '../../../../components/fancy-container';
 import { CardType } from './card-type';
 import { Search } from '../../../../components/search';
 import { useCardTypesContext } from '../../../../context/card-types';
+import Pagination from '../../../../components/pagination';
 
 export const AdminCardTypes = () => {
-    const {
-      loading,
-      error,
-      search,
-      totalPages,
-      page,
-      setPage,
-      setSearch,
-    } = useAdminContext();
+    const { loading, error, search, totalPages, page, setPage, setSearch } =
+        useAdminContext();
     const { cardTypes, fetchCardTypes } = useCardTypesContext();
 
     const [selectedType, setSelectedType] = useState<any | null>(null);
 
     useEffect(() => {
-      fetchCardTypes();
+        fetchCardTypes();
     }, [setSearch, fetchCardTypes]);
 
     const handlePageChange = (newPage: number) => {
-      if (newPage >= 1 && newPage <= totalPages) {
-        setPage(newPage);
-      }
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
     };
 
     const triggerSearch = () => {
         setSearch(search);
     };
-    
+
     const handleReset = () => {
-      setSearch('');
-      setPage(1);
+        setSearch('');
+        setPage(1);
     };
 
     const handleViewType = (type: any) => {
-      setSelectedType(type);
+        setSelectedType(type);
     };
 
     const handleBackToList = () => {
-      setSelectedType(null);
+        setSelectedType(null);
     };
 
     if (selectedType) {
-      return <CardType type={selectedType} onBack={handleBackToList} />;
+        return <CardType type={selectedType} onBack={handleBackToList} />;
     }
 
     return (
-      <TypesContainer>
-        <TitleRow>
-          <TypesTitle>Card Types</TypesTitle>
-          <SearchContainer>
-            <Search
-              type="text"
-              variant="small"
-              onSearch={triggerSearch}
-              search={search}
-              placeholder="Search Card Types"
-              onChange={(e) => setSearch(e.target.value)}
-              handleReset={handleReset}
-            />   
-          </SearchContainer>
-        </TitleRow>
+        <TypesContainer>
+            <TitleRow>
+                <TypesTitle>Card Types</TypesTitle>
+                <SearchContainer>
+                    <Search
+                        type="text"
+                        variant="small"
+                        onSearch={triggerSearch}
+                        search={search}
+                        placeholder="Search Card Types"
+                        onChange={(e) => setSearch(e.target.value)}
+                        handleReset={handleReset}
+                    />
+                </SearchContainer>
+            </TitleRow>
 
-        {cardTypes?.length !== 0 ? (
-          <TypesWrapper>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Brand</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <CenteredCell>Loading...</CenteredCell>
-                  </tr>
-                ) : error ? (
-                  <tr>
-                    <CenteredCell>Error: {error.message}</CenteredCell>
-                  </tr>
-                ) : (
-                  cardTypes?.map((type, index) => (
-                    <TableRow key={type.id} isOdd={index % 2 === 1}>
-          
-                      <td>{type.name}</td>
-                      <td>{type.brand.name}</td>
-                      <td>
-                        <ViewButton onClick={() => handleViewType(type)}>
-                          View
-                        </ViewButton>
-                      </td>
-                    </TableRow>
-                  ))
-                )}
-              </tbody>
-            </Table>
-            {totalPages > 1 && (
-              <PaginationContainer>
-                <PaginationControls>
-                  <PageButton
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1}
-                  >
-                    Previous
-                  </PageButton>
-                  <span>
-                    Page {page} of {totalPages}
-                  </span>
-                  <PageButton
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page >= totalPages}
-                  >
-                    Next
-                  </PageButton>
-                </PaginationControls>
-              </PaginationContainer>
+            {cardTypes?.length !== 0 ? (
+                <TypesWrapper>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Brand</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <CenteredCell>Loading...</CenteredCell>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <CenteredCell>
+                                        Error: {error.message}
+                                    </CenteredCell>
+                                </tr>
+                            ) : (
+                                cardTypes?.map((type, index) => (
+                                    <TableRow
+                                        key={type.id}
+                                        isOdd={index % 2 === 1}
+                                    >
+                                        <td>{type.name}</td>
+                                        <td>{type.brand.name}</td>
+                                        <td>
+                                            <ViewButton
+                                                onClick={() =>
+                                                    handleViewType(type)
+                                                }
+                                            >
+                                                View
+                                            </ViewButton>
+                                        </td>
+                                    </TableRow>
+                                ))
+                            )}
+                        </tbody>
+                    </Table>
+                    {totalPages === 1 && (
+                        <Pagination
+                            currentPage={page}
+                            totalPages={12}
+                            onPageChange={handlePageChange}
+                        />
+                    )}
+                </TypesWrapper>
+            ) : (
+                <TypesContainer>
+                    <FancyContainer>
+                        <NoTypesMessage>
+                            {search ? (
+                                <p>No results found for &quot;{search}&quot;</p>
+                            ) : (
+                                <p>No Card Types added at the moment.</p>
+                            )}
+                        </NoTypesMessage>
+                    </FancyContainer>
+                </TypesContainer>
             )}
-          </TypesWrapper>
-        ) : (
-          <TypesContainer>
-            <FancyContainer>
-              <NoTypesMessage>
-                {search ? (
-                  <p>No results found for "{search}"</p>
-                ) : (
-                  <p>No Card Types added at the moment.</p>
-                )}
-              </NoTypesMessage>
-            </FancyContainer>
-          </TypesContainer>
-        )}
-      </TypesContainer>
+        </TypesContainer>
     );
 };
 
@@ -152,10 +140,10 @@ const SearchContainer = styled.div`
 `;
 
 const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
 `;
 
 const NoTypesMessage = styled.div`
@@ -185,6 +173,8 @@ const NoTypesMessage = styled.div`
 
 const TypesContainer = styled.div`
     flex-direction: column;
+    padding: 1rem;
+    border: 1px solid #4d3c7b;
     p {
         font-size: 16px;
         color: white;
@@ -201,10 +191,8 @@ const TypesTitle = styled.h2`
 const TypesWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
     padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #4d3c7b;
     width: 100%;
 `;
 
@@ -244,7 +232,7 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr<{ isOdd: boolean }>`
-   background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
+    background-color: ${({ isOdd }) => (isOdd ? '#1e1245' : '#160d35')};
 `;
 
 const CenteredCell = styled.td`
@@ -252,42 +240,6 @@ const CenteredCell = styled.td`
     color: #999;
     font-size: 14px;
     padding: 2rem 0;
-`;
-
-const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 26rem;
-`;
-
-const PaginationControls = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem 0rem 1rem 1rem;
-    
-    span {
-        color: white;
-        text-align: center;
-        margin: 0 1rem;
-    }
-`;
-
-const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
-    color: #fff;
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
-    font-family: Barlow, sans-serif;
-    font-size: 14px;
-    border-radius: 4px;
-    &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
-    }
 `;
 
 const ViewButton = styled.button`

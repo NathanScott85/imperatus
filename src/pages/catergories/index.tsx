@@ -7,7 +7,7 @@ import { MainContainer } from '../../components/styled';
 import { Footer } from '../../components/footer';
 import { Link } from 'react-router-dom';
 import { FancyContainer } from '../../components/fancy-container';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 import { mediaQueries } from '../../styled/breakpoints';
 import { useCategoriesContext } from '../../context/categories';
 import { Error } from '../../components/error';
@@ -24,21 +24,23 @@ export const Categories: React.FC = () => {
         limit,
     } = useCategoriesContext();
 
-    useEffect( () => {
+    useEffect(() => {
         fetchCategories();
-    }, [fetchCategories, currentPage, limit] );
+    }, [fetchCategories, currentPage, limit]);
 
-    if ( error ) return <Error error={error} />;
+    if (error) return <Error error={error} />;
 
-    const sortedCategories = categories ? [...categories].sort( ( a, b ) => a.name.localeCompare( b.name ) ) : [];
+    const sortedCategories = categories
+        ? [...categories].sort((a, b) => a.name.localeCompare(b.name))
+        : [];
 
-    const handlePageChange = ( newPage: number ) => {
-        if ( newPage >= 1 && newPage <= totalPages ) {
-            setPage( newPage );
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
             fetchCategories();
         }
     };
-    
+
     return (
         <>
             <TopHeader />
@@ -56,7 +58,7 @@ export const Categories: React.FC = () => {
                     </CategoriesContainer>
                 ) : sortedCategories.length === 0 ? (
                     <CategoriesContainer>
-                          <FancyContainer variant="login" size="login">
+                        <FancyContainer variant="login" size="login">
                             <NoProductsMessage>
                                 <p>No categories available at the moment.</p>
                             </NoProductsMessage>
@@ -67,27 +69,31 @@ export const Categories: React.FC = () => {
                         <FiltersAndCategoriesContainer>
                             <CategoriesFilterContainer>
                                 <h1>Categories</h1>
-                                <FancyContainer variant="filters" size="filters">
+                                <FancyContainer
+                                    variant="filters"
+                                    size="filters"
+                                >
                                     <CategoriesFilter>
-                                        {sortedCategories.map( ( category ) => (
-                                            <CatergoriesWrapper key={category.id}>
-                                                <StyledLink 
-                                                    state={{category}} 
+                                        {sortedCategories.map((category) => (
+                                            <CatergoriesWrapper
+                                                key={category.id}
+                                            >
+                                                <StyledLink
+                                                    state={{ category }}
                                                     to={`/shop/categories/category/${category.id}/${category.slug}`}
                                                 >
                                                     {category.name}
                                                 </StyledLink>
                                             </CatergoriesWrapper>
-                                        ) )}
+                                        ))}
                                     </CategoriesFilter>
                                 </FancyContainer>
                             </CategoriesFilterContainer>
                             <CategoriesListContainer>
-                                {sortedCategories.map( ( category ) => (
-                         
-                                   <Link 
+                                {sortedCategories.map((category) => (
+                                    <Link
                                         key={category.id}
-                                        state={{ category }} 
+                                        state={{ category }}
                                         to={`/shop/categories/category/${category.id}/${category.name.replace(/\s+/g, '-').toLowerCase()}`}
                                     >
                                         <CategoryItem>
@@ -100,14 +106,16 @@ export const Categories: React.FC = () => {
                                             <p>{category.name}</p>
                                         </CategoryItem>
                                     </Link>
-                                ) )}
+                                ))}
                             </CategoriesListContainer>
                         </FiltersAndCategoriesContainer>
                         {totalPages > 1 && (
                             <PaginationContainer>
                                 <PaginationControls>
                                     <PageButton
-                                        onClick={() => handlePageChange( currentPage - 1 )}
+                                        onClick={() =>
+                                            handlePageChange(currentPage - 1)
+                                        }
                                         disabled={currentPage === 1}
                                     >
                                         Previous
@@ -116,7 +124,9 @@ export const Categories: React.FC = () => {
                                         Page {currentPage} of {totalPages}
                                     </span>
                                     <PageButton
-                                        onClick={() => handlePageChange( currentPage + 1 )}
+                                        onClick={() =>
+                                            handlePageChange(currentPage + 1)
+                                        }
                                         disabled={currentPage >= totalPages}
                                     >
                                         Next
@@ -126,14 +136,13 @@ export const Categories: React.FC = () => {
                         )}
                     </CategoriesContainer>
                 )}
-                                {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
+                {/* <Reviews /> */}
+                {/* <p>Replace with Latest Products</p> */}
             </CategoriesMain>
             <Footer />
         </>
     );
 };
-
 
 const FiltersAndCategoriesContainer = styled.div`
     display: flex;
@@ -154,7 +163,7 @@ const PaginationControls = styled.div`
     align-items: center;
     justify-content: center;
     margin: 1rem;
-    
+
     span {
         color: white;
         text-align: center;
@@ -163,16 +172,16 @@ const PaginationControls = styled.div`
 `;
 
 const PageButton = styled.button<{ disabled?: boolean }>`
-    background-color: ${( { disabled } ) => ( disabled ? '#999' : '#4d3c7b' )};
+    background-color: ${({ disabled }) => (disabled ? '#999' : '#4d3c7b')};
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;
-    cursor: ${( { disabled } ) => ( disabled ? 'not-allowed' : 'pointer' )};
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     font-family: Barlow, sans-serif;
     font-size: 14px;
     border-radius: 4px;
     &:hover {
-        background-color: ${( { disabled } ) => ( disabled ? '#999' : '#2a1f51' )};
+        background-color: ${({ disabled }) => (disabled ? '#999' : '#2a1f51')};
     }
 `;
 
@@ -201,7 +210,7 @@ const NoProductsMessage = styled.div`
     }
 `;
 
-const StyledLink = styled( Link )`
+const StyledLink = styled(Link)`
     font-family: Cinzel;
     font-size: 18px;
     font-weight: 500;
@@ -220,7 +229,8 @@ const StyledLink = styled( Link )`
 const CategoriesContainer = styled.section`
     display: flex;
     flex-direction: column;
-    margin-bottom: 2.5rem;
+    margin: 2.5rem;
+    min-height: 50vh;
 `;
 
 const ImageWrapper = styled.div`
@@ -234,6 +244,11 @@ const ImageWrapper = styled.div`
     align-items: center;
     width: 260px;
     height: 200px;
+
+    ${mediaQueries('sm')`
+        width: 200px;
+        height: 175px;
+    `};
 `;
 
 const CategoryImage = styled.img`
@@ -247,7 +262,7 @@ const CategoryImage = styled.img`
     }
 `;
 
-const CategoriesMain = styled( MainContainer )`
+const CategoriesMain = styled(MainContainer)`
     flex-direction: column;
 `;
 
@@ -288,10 +303,10 @@ const CategoriesListContainer = styled.div`
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding: 2rem;
-    ${mediaQueries( 'sm' )`
+    ${mediaQueries('sm')`
         grid-template-columns: repeat(2, 1fr);
     `};
-    ${mediaQueries( 'xl' )`
+    ${mediaQueries('xl')`
         grid-template-columns: repeat(3, 1fr);
     `};
     p {

@@ -6,7 +6,7 @@ import React, {
     ReactNode,
     useMemo,
 } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { ApolloError, useLazyQuery, useMutation } from '@apollo/client';
 import {
     GET_CATEGORIES,
     GET_CATEGORY_BY_ID,
@@ -75,7 +75,7 @@ export interface CategoryFilters {
 interface CategoriesContextProps {
     categories: Category[] | null;
     loading: boolean;
-    error: any;
+    error: ApolloError | undefined;
     updateCategory: (variables: UpdateCategoryInput) => Promise<void>;
     deleteCategory: (id: string) => Promise<void>;
     fetchCategories: () => void;
@@ -85,7 +85,7 @@ interface CategoriesContextProps {
         id: number,
         page?: number,
         limit?: number,
-        filters?: CategoryFilters
+        filters?: CategoryFilters,
     ) => void;
     categoryLoading: boolean;
     totalCount: number;
@@ -111,19 +111,24 @@ const CategoriesContext = createContext<CategoriesContextProps | null>(null);
 
 export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
     const [categories, setCategories] = useState<Category[]>([]);
-    const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+    const [currentCategory, setCurrentCategory] = useState<Category | null>(
+        null,
+    );
     const [limit, setLimit] = useState(10);
     const [totalCount, setTotalCount] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
     const [filters, setFilters] = useState<CategoryFilters>({});
-    const queryVariables = useMemo(() => ({
-        page: currentPage,
-        limit,
-        search,
-        filters,
-    }), [currentPage, limit, search, filters]);
+    const queryVariables = useMemo(
+        () => ({
+            page: currentPage,
+            limit,
+            search,
+            filters,
+        }),
+        [currentPage, limit, search, filters],
+    );
 
     const resetPagination = () => {
         setCurrentPage(1);
@@ -143,7 +148,7 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
         fetchCategoryByIdQuery,
         { loading: categoryLoading, error: categoryError },
     ] = useLazyQuery(GET_CATEGORY_BY_ID, {
-        fetchPolicy: "cache-and-network",
+        fetchPolicy: 'cache-and-network',
         variables: queryVariables,
         onCompleted: (data) => {
             setTotalCount(data?.getCategoryById?.totalCount || 0);
@@ -154,14 +159,14 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
                 rarities: data?.getCategoryById?.rarities || [],
                 sets: data?.getCategoryById?.sets || [],
             });
-        }
+        },
     });
-    
+
     const fetchCategoryById = (
         id: number,
         page = currentPage,
         limitOverride = limit,
-        filtersOverride = filters
+        filtersOverride = filters,
     ) => {
         fetchCategoryByIdQuery({
             variables: {
@@ -187,13 +192,18 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
         fetchCategories();
     }, [fetchCategories, limit]);
 
-    const updateCategory = async ({ id, name, description, img }: UpdateCategoryInput) => {
+    const updateCategory = async ({
+        id,
+        name,
+        description,
+        img,
+    }: UpdateCategoryInput) => {
         try {
             const { data } = await updateCategoryMutation({
-                variables: { 
-                    id, 
-                    name, 
-                    description, 
+                variables: {
+                    id,
+                    name,
+                    description,
                     img,
                 },
             });
@@ -212,7 +222,7 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
 
     const deleteCategory = async (id: string) => {
         try {
-            const { data } = await deleteCategoryMutation({ 
+            const { data } = await deleteCategoryMutation({
                 variables: { id },
             });
 
@@ -249,7 +259,7 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
                 deleteError,
                 search,
                 setPage: setCurrentPage,
-                categorySuccess: !!updatedCategoryData,      
+                categorySuccess: !!updatedCategoryData,
                 limit,
                 setLimit,
                 setSearch,
@@ -266,7 +276,9 @@ export const CategoriesProvider = ({ children }: { children: ReactNode }) => {
 export const useCategoriesContext = () => {
     const context = useContext(CategoriesContext);
     if (!context) {
-        throw new Error("useCategoriesContext must be used within a CategoriesProvider");
+        throw new Error(
+            'useCategoriesContext must be used within a CategoriesProvider',
+        );
     }
     return context;
 };

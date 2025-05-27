@@ -8,7 +8,7 @@ import { Footer } from '../../components/footer';
 import { HomeIcon } from '../../components/svg/home';
 import { MainContainer } from '../../components/styled';
 import { BreadCrumb } from '../../components/breadcrumbs';
-import Reviews from '../../components/reviews';
+// import Reviews from '../../components/reviews';
 
 export const FourOFour = () => {
     return (
@@ -16,9 +16,7 @@ export const FourOFour = () => {
             <TopHeader />
             <Header background />
             <Navigation background />
-            <BreadCrumb
-                label='404 Error, Page not found'
-            />
+            <BreadCrumb label="404 Error, Page not found" />
             <MainContainer>
                 <Section>
                     <FancyContainer variant="login" size="login">
@@ -33,7 +31,7 @@ export const FourOFour = () => {
                 </Section>
 
                 {/* <Reviews /> */}
-                <p>Replace with Latest Products</p>
+                {/* <p>Replace with Latest Products</p> */}
             </MainContainer>
             <Footer />
         </>
