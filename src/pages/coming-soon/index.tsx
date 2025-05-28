@@ -34,7 +34,7 @@ export const ComingSoon: React.FC = () => {
                     Twitter
                 </a>
                 <a
-                    href="https://instagram.com/imperatusgames"
+                    href="https://www.instagram.com/imperatus_games/"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
