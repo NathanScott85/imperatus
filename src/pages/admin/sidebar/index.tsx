@@ -7,7 +7,7 @@ import {
     // Pie,
     SquareShapes,
     UserIcon,
-    // Van,
+    Van,
     SignOut,
     Percent,
     Carousel,
@@ -252,10 +252,42 @@ export const Sidebar = ({ setSelectedComponent }: any) => {
                         </SubMenuItem>
                     </SubMenu>
                 )}
-                {/* <MenuItem onClick={() => toggleMenu( 'Shipping' )}>
-                        <Van stroke='#C79D0A' />
+                <MenuItem
+                    onClick={() =>
+                        toggleMenu('Shipping', 'AddShippingProvider')
+                    }
+                >
+                    <Van stroke="#C79D0A" />
                     SHIPPING
-                </MenuItem> */}
+                </MenuItem>
+                {expandedMenu === 'Shipping' && (
+                    <SubMenu>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('AddShippingProvider')
+                            }
+                        >
+                            ADD PROVIDER
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() =>
+                                setSelectedComponent('ShippingProviders')
+                            }
+                        >
+                            MANAGE PROVIDERS
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('AddShipping')}
+                        >
+                            ADD OPTIONS
+                        </SubMenuItem>
+                        <SubMenuItem
+                            onClick={() => setSelectedComponent('Shipping')}
+                        >
+                            MANAGE OPTIONS
+                        </SubMenuItem>
+                    </SubMenu>
+                )}
                 <MenuItem onClick={() => toggleMenu('Customers')}>
                     <UserIcon />
                     CUSTOMERS

@@ -54,7 +54,7 @@ export const AdminProducts = () => {
     }
 
     return (
-        <ProductsContainer>
+        <>
             <TitleRow>
                 <ProductsTitle>Products</ProductsTitle>
                 <SearchContainer>
@@ -69,90 +69,103 @@ export const AdminProducts = () => {
                     />
                 </SearchContainer>
             </TitleRow>
-
-            {products?.length !== 0 ? (
-                <ProductsWrapper>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Category</th>
-                                <th>Brand</th>
-                                <th>Set</th>
-                                <th>Preorder</th>
-                                <th>Price</th>
-                                <th>Stock</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+            <ProductsContainer>
+                {products?.length !== 0 ? (
+                    <ProductsWrapper>
+                        <Table>
+                            <thead>
                                 <tr>
-                                    <CenteredCell>Loading...</CenteredCell>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Brand</th>
+                                    <th>Set</th>
+                                    <th>Preorder</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>View</th>
                                 </tr>
-                            ) : error ? (
-                                <tr>
-                                    <CenteredCell>
-                                        Error: {error.message}
-                                    </CenteredCell>
-                                </tr>
-                            ) : (
-                                products?.map((product, index) => (
-                                    <TableRow
-                                        key={product.id}
-                                        isOdd={index % 2 === 1}
-                                    >
-                                        <td>{product.name}</td>
-                                        <td>
-                                            {product.category?.name || 'N/A'}
-                                        </td>
-                                        <td>{product?.brand?.name || 'N/A'}</td>
-                                        <td>{product.set?.setName || 'N/A'}</td>
-                                        <PreOrderCell
-                                            $preorder={product.preorder}
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <CenteredCell>Loading...</CenteredCell>
+                                    </tr>
+                                ) : error ? (
+                                    <tr>
+                                        <CenteredCell>
+                                            Error: {error.message}
+                                        </CenteredCell>
+                                    </tr>
+                                ) : (
+                                    products?.map((product, index) => (
+                                        <TableRow
+                                            key={product.id}
+                                            isOdd={index % 2 === 1}
                                         >
-                                            {product.preorder ? 'YES' : 'NO'}
-                                        </PreOrderCell>
-                                        <td>£{product.price}</td>
-                                        <td>
-                                            {product.stock?.amount ?? 'N/A'}
-                                        </td>
-                                        <td>
-                                            <ViewButton
-                                                onClick={() =>
-                                                    handleViewProduct(product)
-                                                }
+                                            <td>{product.name}</td>
+                                            <td>
+                                                {product.category?.name ||
+                                                    'N/A'}
+                                            </td>
+                                            <td>
+                                                {product?.brand?.name || 'N/A'}
+                                            </td>
+                                            <td>
+                                                {product.set?.setName || 'N/A'}
+                                            </td>
+                                            <PreOrderCell
+                                                $preorder={product.preorder}
                                             >
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-                    {totalPages > 1 && (
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                        />
-                    )}
-                </ProductsWrapper>
-            ) : (
-                <ProductsContainer>
-                    <FancyContainer>
-                        <NoProductsMessage>
-                            {search ? (
-                                <p>No results found for &quot;{search}&quot;</p>
-                            ) : (
-                                <p>No Products added at the moment.</p>
-                            )}
-                        </NoProductsMessage>
-                    </FancyContainer>
-                </ProductsContainer>
-            )}
-        </ProductsContainer>
+                                                {product.preorder
+                                                    ? 'YES'
+                                                    : 'NO'}
+                                            </PreOrderCell>
+                                            <td>£{product.price}</td>
+                                            <td>
+                                                {product.stock?.amount ?? 'N/A'}
+                                            </td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewProduct(
+                                                            product,
+                                                        )
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                        {totalPages > 1 && (
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                            />
+                        )}
+                    </ProductsWrapper>
+                ) : (
+                    <ProductsContainer>
+                        <FancyContainer>
+                            <NoProductsMessage>
+                                {search ? (
+                                    <p>
+                                        No results found for &quot;{search}
+                                        &quot;
+                                    </p>
+                                ) : (
+                                    <p>No Products added at the moment.</p>
+                                )}
+                            </NoProductsMessage>
+                        </FancyContainer>
+                    </ProductsContainer>
+                )}
+            </ProductsContainer>
+        </>
     );
 };
 

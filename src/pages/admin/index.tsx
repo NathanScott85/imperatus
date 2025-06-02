@@ -10,7 +10,7 @@ import { Overview } from './overview';
 import { Analytics } from './analytics';
 import { Orders } from './orders';
 import { AdminProducts } from './products';
-// import { Shipping } from './shipping';
+import { Shipping } from './shipping';
 import { Customers } from './customers';
 import { Settings } from './settings';
 import { Discount } from './discounts';
@@ -37,6 +37,9 @@ import { OrderStatus } from './orders/order-status';
 import { AddOrderStatus } from './orders/add-status';
 import { AddOrder } from './orders/add-order';
 import { AdminVAT } from './vat';
+import { ShippingProviders } from './shipping-providers';
+import { AddShippingProvider } from './shipping-providers/add-provider';
+import { AddShipping } from './shipping/add-shipping';
 
 export const Admin = () => {
     const [selectedComponent, setSelectedComponent] = useState('Overview');
@@ -73,8 +76,14 @@ export const Admin = () => {
                 return <AddCarousel />;
             case 'ManageCarousel':
                 return <ManageCarousel />;
-            // case 'Shipping':
-            //     return <Shipping />;
+            case 'Shipping':
+                return <Shipping />;
+            case 'ShippingProviders':
+                return <ShippingProviders />;
+            case 'AddShippingProvider':
+                return <AddShippingProvider />;
+            case 'AddShipping':
+                return <AddShipping />;
             case 'Customers':
                 return <Customers />;
             case 'Settings':

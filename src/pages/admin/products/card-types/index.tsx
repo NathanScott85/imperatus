@@ -46,7 +46,7 @@ export const AdminCardTypes = () => {
     }
 
     return (
-        <TypesContainer>
+        <>
             <TitleRow>
                 <TypesTitle>Card Types</TypesTitle>
                 <SearchContainer>
@@ -61,72 +61,76 @@ export const AdminCardTypes = () => {
                     />
                 </SearchContainer>
             </TitleRow>
-
-            {cardTypes?.length !== 0 ? (
-                <TypesWrapper>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Brand</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+            <TypesContainer>
+                {cardTypes?.length !== 0 ? (
+                    <TypesWrapper>
+                        <Table>
+                            <thead>
                                 <tr>
-                                    <CenteredCell>Loading...</CenteredCell>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>View</th>
                                 </tr>
-                            ) : error ? (
-                                <tr>
-                                    <CenteredCell>
-                                        Error: {error.message}
-                                    </CenteredCell>
-                                </tr>
-                            ) : (
-                                cardTypes?.map((type, index) => (
-                                    <TableRow
-                                        key={type.id}
-                                        isOdd={index % 2 === 1}
-                                    >
-                                        <td>{type.name}</td>
-                                        <td>{type.brand.name}</td>
-                                        <td>
-                                            <ViewButton
-                                                onClick={() =>
-                                                    handleViewType(type)
-                                                }
-                                            >
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-                    {totalPages === 1 && (
-                        <Pagination
-                            currentPage={page}
-                            totalPages={12}
-                            onPageChange={handlePageChange}
-                        />
-                    )}
-                </TypesWrapper>
-            ) : (
-                <TypesContainer>
-                    <FancyContainer>
-                        <NoTypesMessage>
-                            {search ? (
-                                <p>No results found for &quot;{search}&quot;</p>
-                            ) : (
-                                <p>No Card Types added at the moment.</p>
-                            )}
-                        </NoTypesMessage>
-                    </FancyContainer>
-                </TypesContainer>
-            )}
-        </TypesContainer>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <CenteredCell>Loading...</CenteredCell>
+                                    </tr>
+                                ) : error ? (
+                                    <tr>
+                                        <CenteredCell>
+                                            Error: {error.message}
+                                        </CenteredCell>
+                                    </tr>
+                                ) : (
+                                    cardTypes?.map((type, index) => (
+                                        <TableRow
+                                            key={type.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{type.name}</td>
+                                            <td>{type.brand.name}</td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewType(type)
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                        {totalPages === 1 && (
+                            <Pagination
+                                currentPage={page}
+                                totalPages={12}
+                                onPageChange={handlePageChange}
+                            />
+                        )}
+                    </TypesWrapper>
+                ) : (
+                    <TypesContainer>
+                        <FancyContainer>
+                            <NoTypesMessage>
+                                {search ? (
+                                    <p>
+                                        No results found for &quot;{search}
+                                        &quot;
+                                    </p>
+                                ) : (
+                                    <p>No Card Types added at the moment.</p>
+                                )}
+                            </NoTypesMessage>
+                        </FancyContainer>
+                    </TypesContainer>
+                )}
+            </TypesContainer>
+        </>
     );
 };
 

@@ -59,6 +59,7 @@ import { ComingSoon } from '../pages/coming-soon';
 import Maintenance from '../pages/maintenance';
 import { AdminLogin } from '../pages/login/admin-login';
 import { NotAuthorized } from '../pages/not-authorized';
+import { ShippingProvider } from '../context/shipping';
 
 const stripePromise = loadStripe(
     process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || '',
@@ -214,13 +215,13 @@ export const AppRoutes = () => {
                                 element={<BoardGames />}
                             />
                             {/* <Route
-                    path="/shop/board-games/boardgame/:id/:name"
-                    element={<BoardGame />}
-                />
-                <Route
-                    path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
-                    element={<ProductPage />}
-                /> */}
+                                path="/shop/board-games/boardgame/:id/:name"
+                                element={<BoardGame />}
+                            />
+                            <Route
+                                path="/shop/board-games/boardgame/:id/:name/:productid/:productname"
+                                element={<ProductPage />}
+                            /> */}
                             <Route path="/shop/offers" element={<Offers />} />
 
                             {/* Informational pages */}
@@ -330,13 +331,22 @@ export const AppRoutes = () => {
                             />
 
                             {/* Basket */}
-                            <Route path="/shop/basket" element={<Basket />} />
+                            <Route
+                                path="/shop/basket"
+                                element={
+                                    <ShippingProvider>
+                                        <Basket />
+                                    </ShippingProvider>
+                                }
+                            />
                             <Route
                                 path="/shop/checkout"
                                 element={
                                     <Elements stripe={stripePromise}>
                                         <PaymentProvider>
-                                            <Checkout />
+                                            <ShippingProvider>
+                                                <Checkout />
+                                            </ShippingProvider>
                                         </PaymentProvider>
                                     </Elements>
                                 }

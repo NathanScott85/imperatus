@@ -1,5 +1,4 @@
-import React from 'react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { DiscountCodesProvider } from '../../discount';
 import { AdminProvider } from '..';
 import { BrandsProvider } from '../../brands';
@@ -13,6 +12,7 @@ import { SetsProvider } from '../../sets';
 import { VariantsProvider } from '../../variants';
 import { OrdersProvider } from '../../orders';
 import { VatProvider } from '../../vat';
+import { ShippingProvider } from '../../shipping';
 
 const AdminProviders = ({ children }: { children: ReactNode }) => {
     return (
@@ -29,7 +29,9 @@ const AdminProviders = ({ children }: { children: ReactNode }) => {
                                                 <RaritiesProvider>
                                                     <CardTypesProvider>
                                                         <VariantsProvider>
-                                                            {children}
+                                                            <ShippingProvider>
+                                                                {children}
+                                                            </ShippingProvider>
                                                         </VariantsProvider>
                                                     </CardTypesProvider>
                                                 </RaritiesProvider>

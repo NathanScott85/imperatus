@@ -85,7 +85,7 @@ export const Customers: React.FC = () => {
     }
 
     return (
-        <ProductsContainer>
+        <>
             <TitleRow>
                 <CustomersTitle>Customers</CustomersTitle>
                 <SearchContainer>
@@ -100,123 +100,128 @@ export const Customers: React.FC = () => {
                     />
                 </SearchContainer>
             </TitleRow>
-
-            {users?.length !== 0 ? (
-                <CustomersWrapper>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>Full Name</th>
-                                <th>Display</th>
-                                <th>Email</th>
-                                <th>Date of Birth</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>View</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
+            <ProductsContainer>
+                {users?.length !== 0 ? (
+                    <CustomersWrapper>
+                        <Table>
+                            <thead>
                                 <tr>
-                                    <CenteredCell colSpan={7}>
-                                        Loading...
-                                    </CenteredCell>
+                                    <th>Full Name</th>
+                                    <th>Display</th>
+                                    <th>Email</th>
+                                    <th>Date of Birth</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>View</th>
                                 </tr>
-                            ) : error ? (
-                                <tr>
-                                    <CenteredCell colSpan={7}>
-                                        Error: {error.message}
-                                    </CenteredCell>
-                                </tr>
-                            ) : (
-                                users?.map((user: any, index: number) => (
-                                    <TableRow
-                                        key={user.id}
-                                        isOdd={index % 2 === 1}
-                                    >
-                                        <td>{user.fullname}</td>
-                                        <td>
-                                            <EyeIcon
-                                                onClick={() =>
-                                                    toggleVisibility(
-                                                        user.id.toString(),
-                                                    )
-                                                }
-                                            >
-                                                <Eye />
-                                            </EyeIcon>
-                                        </td>
-                                        <td>
-                                            {visibleDetails[user.id] ? (
-                                                <span>{user.email}</span>
-                                            ) : (
-                                                <span>...</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {visibleDetails[user.id] ? (
-                                                user.dob ? (
-                                                    <span>{user.dob}</span>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <CenteredCell colSpan={7}>
+                                            Loading...
+                                        </CenteredCell>
+                                    </tr>
+                                ) : error ? (
+                                    <tr>
+                                        <CenteredCell colSpan={7}>
+                                            Error: {error.message}
+                                        </CenteredCell>
+                                    </tr>
+                                ) : (
+                                    users?.map((user: any, index: number) => (
+                                        <TableRow
+                                            key={user.id}
+                                            isOdd={index % 2 === 1}
+                                        >
+                                            <td>{user.fullname}</td>
+                                            <td>
+                                                <EyeIcon
+                                                    onClick={() =>
+                                                        toggleVisibility(
+                                                            user.id.toString(),
+                                                        )
+                                                    }
+                                                >
+                                                    <Eye />
+                                                </EyeIcon>
+                                            </td>
+                                            <td>
+                                                {visibleDetails[user.id] ? (
+                                                    <span>{user.email}</span>
                                                 ) : (
-                                                    <span>N/A</span>
-                                                )
-                                            ) : (
-                                                <span>...</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {visibleDetails[user.id] ? (
-                                                <span>{user.phone}</span>
-                                            ) : (
-                                                <span>...</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {visibleDetails[user.id] ? (
-                                                <span>
-                                                    {user.address}, <br />
-                                                    {user.city}, {user.postcode}
-                                                </span>
-                                            ) : (
-                                                <span>...</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            <ViewButton
-                                                onClick={() =>
-                                                    handleViewCustomer(user)
-                                                }
-                                            >
-                                                View
-                                            </ViewButton>
-                                        </td>
-                                    </TableRow>
-                                ))
-                            )}
-                        </tbody>
-                    </Table>
-                    {totalPages > 1 && (
-                        <Pagination
-                            currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                        />
-                    )}
-                </CustomersWrapper>
-            ) : (
-                <ProductsContainer>
-                    <FancyContainer>
-                        <NoResultsMessage>
-                            {search ? (
-                                <p>No results found for &quot;{search}&quot;</p>
-                            ) : (
-                                <p>No customers added at the moment.</p>
-                            )}
-                        </NoResultsMessage>
-                    </FancyContainer>
-                </ProductsContainer>
-            )}
-        </ProductsContainer>
+                                                    <span>...</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {visibleDetails[user.id] ? (
+                                                    user.dob ? (
+                                                        <span>{user.dob}</span>
+                                                    ) : (
+                                                        <span>N/A</span>
+                                                    )
+                                                ) : (
+                                                    <span>...</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {visibleDetails[user.id] ? (
+                                                    <span>{user.phone}</span>
+                                                ) : (
+                                                    <span>...</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {visibleDetails[user.id] ? (
+                                                    <span>
+                                                        {user.address}, <br />
+                                                        {user.city},{' '}
+                                                        {user.postcode}
+                                                    </span>
+                                                ) : (
+                                                    <span>...</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                <ViewButton
+                                                    onClick={() =>
+                                                        handleViewCustomer(user)
+                                                    }
+                                                >
+                                                    View
+                                                </ViewButton>
+                                            </td>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </tbody>
+                        </Table>
+                        {totalPages > 1 && (
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                            />
+                        )}
+                    </CustomersWrapper>
+                ) : (
+                    <ProductsContainer>
+                        <FancyContainer>
+                            <NoResultsMessage>
+                                {search ? (
+                                    <p>
+                                        No results found for &quot;{search}
+                                        &quot;
+                                    </p>
+                                ) : (
+                                    <p>No customers added at the moment.</p>
+                                )}
+                            </NoResultsMessage>
+                        </FancyContainer>
+                    </ProductsContainer>
+                )}
+            </ProductsContainer>
+        </>
     );
 };
 
